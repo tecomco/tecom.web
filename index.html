@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app='tecomApp'>
+
+<head>
+    <title>Tecom</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <base href="/">
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/bootstrap/dist/css/bootstrap.min.css" /> -->
+    <!-- remove the line below and delete the file as well! -->
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.rtl.css" />
+    <link rel="stylesheet" type="text/css" href="static/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/style.css" />
+
+    <script type="text/javascript" src="static/lib/angular/angular.min.js"></script>
+</head>
+
+<body>
+    <div class="content">
+      <ui-view></ui-view>
+    </div>
+
+    <!--<script data-main="app/main.js" src="static/lib/requirejs/require.js"></script>-->
+
+    <script type="text/javascript" src="static/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="static/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="static/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="static/lib/socket.io-client/socket.io.js"></script>
+    <script type="text/javascript" src="app/app.module.js"></script>
+    <script type="text/javascript" src="app/app.routes.js"></script>
+    <script type="text/javascript" src="app/components/messenger/channels/channelsController.js"></script>
+    <script type="text/javascript" src="app/components/messenger/messages/messagesController.js"></script>
+    <script type="text/javascript" src="app/components/messenger/channels/channelsService.js"></script>
+    <script type="text/javascript" src="app/components/messenger/messages/messagesService.js"></script>
+    <script type="text/javascript" src="app/components/messenger/messages/socket.js"></script>
+</body>
+
+</html>

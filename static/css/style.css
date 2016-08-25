@@ -1,0 +1,368 @@
+@font-face {
+    font-family: 'iransans';
+    src: url("../font/IRANSansWeb_UltraLight.eot"), url("../font/IRANSansWeb_UltraLight.woff") format("woff"), url("../font/IRANSansWeb_UltraLight.ttf") format("truetype"), url("../font/IRANSansWeb_UltraLight.woff2") format("woff2");
+    font-weight: 100
+}
+@font-face {
+    font-family: 'iransans';
+    src: url("../font/IRANSansWeb_Light.eot"), url("../font/IRANSansWeb_Light.woff") format("woff"), url("../font/IRANSansWeb_Light.ttf") format("truetype"), url("../font/IRANSansWeb_Light.woff2") format("woff2");
+    font-weight: 200;
+}
+@font-face {
+    font-family: 'iransans';
+    src: url("../font/IRANSansWeb.eot"), url("../font/IRANSansWeb.woff") format("woff"), url("../font/IRANSansWeb.ttf") format("truetype"), url("../font/IRANSansWeb.woff2") format("woff2");
+    font-weight: 300;
+}
+@font-face {
+    font-family: 'iransans';
+    src: url("../font/IRANSansWeb_Medium.eot"), url("../font/IRANSansWeb_Medium.woff") format("woff"), url("../font/IRANSansWeb_Medium.ttf") format("truetype"), url("../font/IRANSansWeb_Medium.woff2") format("woff2");
+    font-weight: 400;
+}
+@font-face {
+    font-family: 'iransans';
+    src: url("../font/IRANSansWeb_Bold.eot"), url("../font/IRANSansWeb_Bold.woff") format("woff"), url("../font/IRANSansWeb_Bold.ttf") format("truetype"), url("../font/IRANSansWeb_Bold.woff2") format("woff2");
+    font-weight: 500;
+}
+html, body, ul, li {
+    margin: 0;
+    padding: 0;
+    font-family: 'iransans';
+}
+* {
+    outline: 0 !important;
+}
+h1, h2, h3, h4, h5 {
+    font-family: 'iransans';
+}
+body {
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    font-family: 'iransans', 'calibri';
+    background: #fff;
+    color: #666;
+    font-weight: 200;
+    overflow: hidden;
+}
+a, a:hover, a:visited, a:focus {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+}
+label{
+  display: inline-block;
+}
+.header {
+    background: #f7f7f7;
+    color: #555;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #eee;
+}
+.header ul {
+    display: inline-block;
+    width: 60%;
+}
+.header ul li {
+    display: inline-block;
+}
+.header ul li a {
+    padding: 20px 16px 12px;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    color: #999;
+}
+.header ul li a:hover {
+    color: #444;
+}
+.site-logo {
+    display: inline-block;
+}
+.site-logo img {
+    height: 24px;
+}
+.header ul.top-left {
+    float: left;
+    width: 50%;
+    direction: ltr;
+}
+.head-search {
+    position: relative;
+    top: -4px;
+}
+.head-search input {
+    width: 100%;
+    border: 1px solid #eee;
+    box-shadow: none;
+    padding: 10px 40px 10px 10px;
+    font-size: 16px;
+    font-weight: 100;
+    color: #999;
+}
+.head-search i {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 24px;
+    color: #999;
+}
+.header .name {
+    display: inline-block;
+}
+.header .name> label {
+    font-size: 20px;
+    font-weight: 400;
+    padding: 8px 16px 0;
+}
+.header .name .det label {
+    color: #999;
+    padding: 0 16px;
+    font-weight: 100;
+}
+.header .name .det label:first-of-type {
+    border-left: 1px solid #ddd;
+}
+.right-section {
+    background: #4a615b;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    color: #fff;
+    position: relative;
+}
+.right-section-header{
+  padding: 16px 0 8px;
+  background: rgba(17, 17, 17, 0.1);
+}
+.noti-holder {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.5);
+}
+.right-section img {
+    width: 60px;
+    margin-bottom: 10px;
+    padding-right: 14px;
+    display: block;
+}
+.right-section-main{
+
+  padding-left: 16px;
+}
+.group-holder-header, .direct-holder-header {
+    border-bottom: 1px solid rgba(237, 237, 237, 0.05);
+    padding-top: 32px;
+    padding-right: 16px;
+    text-align: right;
+    font-size: 18px;
+    padding-bottom: 4px;
+    font-weight: 200;
+    position: relative;
+    color: rgba(255, 255, 255, 0.6);
+}
+.group-holder-header a.plus-g, .direct-holder-header a.plus-d {
+    position: absolute;
+    top: 36px;
+    font-size: 24px;
+    left: 2px;
+    display: inline-block;
+}
+.group-holder-header a.plus-g:hover, .direct-holder-header a.plus-d:hover {
+    color: #fff;
+}
+.group-holder {
+    font-size: 16px;
+}
+.group-holder ul {
+    list-style: none;
+    text-align: right;
+}
+.group-holder ul li a {
+    color: rgba(255, 255, 255, 0.6);
+    padding: 3px 16px;
+    display: block;
+    font-size: 16px;
+    font-weight: 100;
+}
+.group-holder ul li a:hover {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(17, 17, 17, 0.1);
+}
+.group-holder ul li.active a {
+    background: rgba(92, 255, 216, 0.5);
+    color: #fff;
+    border-radius: 4px 0 0 4px;
+}
+.direct-holder ul li a i {
+    font-size: 10px;
+}
+.direct-holder ul li a i.zmdi-circle {
+    color: rgba(92, 255, 216, 0.5);
+}
+.direct-holder ul li.active a i.zmdi-circle {
+    color: rgba(61, 61, 61, 0.53)
+}
+.chat {
+    height: calc(100vh - 66px);
+    overflow-y: scroll;
+}
+.main {
+    padding-bottom: 80px;
+    padding: 32px;
+    background: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px;
+}
+.main> div {
+    flex: 0 1 auto;
+}
+.main .card-one {
+    height: 83vh;
+    background: #fff;
+    width: 100%;
+    margin: 0 0 16px 16px;
+    float: right;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.21);
+}
+.date-holder {
+    text-align: center;
+    position: relative;
+    margin: 8px 0;
+    font-weight: 100;
+}
+.date-holder:after {
+    display: block;
+    height: 1px;
+    content: "";
+    position: absolute;
+    top: 28px;
+    left: 0;
+    right: 0;
+    background: #ddd;
+    z-index: 1;
+}
+.date-holder label {
+    background: #f1f1f1;
+    padding: 16px;
+    font-size: 18px;
+    color: #aaa;
+    position: relative;
+    z-index: 2;
+}
+.msg {
+    display: inline-block;
+    min-width: 200px;
+    position: relative;
+    max-width: 80%;
+    padding: 8px 12px;
+    background: #fff;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-weight: 100;
+    font-size: 15px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+}
+.msg.msg-send {
+    float: right;
+}
+.msg .name {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 400;
+}
+.msg.msg-send .name {
+    color: #888;
+}
+.msg.msg-recieve .name {
+    color: rgb(5, 198, 186);
+}
+.msg .time {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    color: #bbb;
+    font-weight: 100;
+}
+.msg.msg-recieve {
+    float: left;
+}
+.msg:after {
+    display: block;
+    height: 0;
+    content: "";
+    clear: both;
+    float: none;
+}
+.input-holder {
+    background: #f1f1f1;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 32px;
+    z-index: 3;
+}
+.input-holder input {
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+    padding: 8px 40px;
+    font-size: 16px;
+    font-weight: 300;
+    border: 1px solid #ddd;
+    color: #555;
+}
+.input-holder a {
+    display: block;
+    position: absolute;
+    top: 14px;
+    font-size: 24px;
+    color: #999;
+}
+.input-holder a:hover {
+    color: #666;
+}
+.input-holder a:first-of-type {
+    right: 48px;
+}
+.input-holder a:last-of-type {
+    left: 44px;
+}
+.clearfix:after {
+    display: block;
+    height: 0;
+    content: "";
+    clear: both;
+    float: none;
+}
+.no-padding {
+    padding: 0;
+}
+
+/* Large Devices, Wide Screens */
+
+@media only screen and (max-width: 1200px) {}
+
+/* Medium Devices, Desktops */
+
+@media only screen and (max-width: 992px) {}
+
+/* Small Devices, Tablets */
+
+@media only screen and (max-width: 768px) {}
+
+/* Extra Small Devices, Phones */
+
+@media only screen and (max-width: 480px) {}
+
+/* Custom, iPhone Retina */
+
+@media only screen and (max-width: 320px) {}

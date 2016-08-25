@@ -1,0 +1,22 @@
+<div class="main" ng-controller='messagesController'>
+    <div class="date-holder">
+        <label>۱۵ مرداد</label>
+    </div>
+    <div ng-repeat='message in messages' class="msg-holder">
+        <div class="msg msg-send">
+            <label class="name">{{message.sender}}</label>
+            <label class="time">{{message.dateTime}}</label>
+            <label>{{message.body}}</label>
+        </div>
+
+        <div class="input-holder">
+            <a href="#">
+                <i class="zmdi zmdi-plus"></i>
+            </a>
+            <input type="text" placeholder="متن پیام" ng-model='inputMessage' ng-change="textChanged(inputMessage)"/>
+            <a href="#">
+                <i class="zmdi zmdi-mood"></i>
+            </a>
+        </div>
+    </div>
+</div>

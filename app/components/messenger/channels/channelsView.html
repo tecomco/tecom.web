@@ -1,0 +1,33 @@
+<div ng-controller='channelsController'>
+    <div class="group-holder-header">
+        <i class="zmdi zmdi-accounts"></i>
+        <label>گروه‌ ها</label>
+        <a class="plus-g">
+            <i class="zmdi zmdi-plus"></i>
+        </a>
+    </div>
+    <div class="group-holder">
+        <ul>
+            <li ng-repeat='channel in channels' ng-class="{'active': channel.id == selectedChat()}">
+                <a ui-sref="messenger({chatId: '{{channel.id}}'})">{{channel.name}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="direct-holder-header">
+        <i class="zmdi zmdi-inbox"></i>
+        <label>پیغام خصوصی</label>
+        <a class="plus-d">
+            <i class="zmdi zmdi-plus"></i>
+        </a>
+    </div>
+    <div class="direct-holder group-holder">
+        <ul>
+            <li ng-repeat='person in people' ng-class="{'active': '@' + person.id == selectedChat()}">
+                <a ui-sref="messenger({chatId: '@{{person.id}}'})">
+                    <i ng-class="(person.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
+                    <span>{{person.name}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
