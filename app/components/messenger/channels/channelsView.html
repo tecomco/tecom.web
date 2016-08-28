@@ -8,8 +8,8 @@
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat='channel in channels' ng-class="{'active': channel.id == selectedChat()}">
-                <a ui-sref="messenger({chatId: '{{channel.id}}'})">{{channel.name}}</a>
+            <li ng-repeat='channel in channels' ng-class="{'active': channel.slug == selectedChat()}">
+                <a ui-sref="messenger({chatId: '{{channel.slug}}'})">{{channel.name}}</a>
             </li>
         </ul>
     </div>

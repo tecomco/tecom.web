@@ -1,24 +1,12 @@
 'use strict';
 
-app.service('channelsService', function () {
+app.service('channelsService', ['socket', function (socket) {
 
-    var channels = [
-        {
-            name: 'تیکام',
-            id: 'tecom'
-        },
-        {
-            name: 'کدمد',
-            id: 'codmod'
-        },
-        {
-            name: 'گوگل',
-            id: 'google'
-        },
-        {
-            name: 'فیسبوک',
-            id: 'facebook'
-        }];
+    var channels;
+    socket.on('init', function(data){
+        // console.log(data);
+        channels = data.channels;
+    });
 
     var people = [
         {
@@ -37,7 +25,6 @@ app.service('channelsService', function () {
             online: true
         }];
 
-
     return {
         getChannels: function () {
             return channels
@@ -46,7 +33,5 @@ app.service('channelsService', function () {
         getPeople: function () {
             return people
         }
-
-
     }
-})
+}]);
