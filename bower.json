@@ -1,13 +1,13 @@
 {
-    "name": "tecom.web",
-    "version": "0.0.1",
-    "dependencies": {
-        "angular": "~1.5.9",
-        "angular-ui-router": "~1.0.0",
-        "bootstrap": "~3.3.7",
-        "font-awesome": "~4.6.3",
-        "material-design-iconic-font": "~2.2.0",
-        "socket.io-client": "~1.4.8",
-        "requirejs": "~2.2.0"
-    }
+  "name": "tecom.web",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "~1.5.9",
+    "angular-ui-router": "~1.0.0",
+    "bootstrap": "~3.3.7",
+    "font-awesome": "~4.6.3",
+    "material-design-iconic-font": "~2.2.0",
+    "socket.io-client": "~1.4.8",
+    "requirejs": "~2.2.0"
+  }
 }

@@ -27,11 +27,11 @@ app.service('channelsService', ['socket', function (socket) {
 
     return {
         getChannels: function () {
-            return channels
+            return channels;
         },
 
         getPeople: function () {
-            return people
+            return people;
         }
-    }
+    };
 }]);

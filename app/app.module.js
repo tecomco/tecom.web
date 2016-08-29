@@ -1,3 +1,3 @@
-'use strict'
+'use strict';
 
-var app = angular.module('tecomApp', ['ui.router']);
+var app = angular.module('tecomApp', ['ui.router', 'config']);
