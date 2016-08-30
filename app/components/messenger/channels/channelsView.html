@@ -9,7 +9,7 @@
     <div class="group-holder">
         <ul>
             <li ng-repeat='channel in channels' ng-class="{'active': channel.slug == selectedChat()}">
-                <a ui-sref="messenger({chatId: '{{channel.slug}}'})">{{channel.name}}</a>
+                <a ui-sref=".messages({chatId: '{{channel.slug}}'})">{{channel.name}}</a>
             </li>
         </ul>
     </div>
@@ -23,7 +23,7 @@
     <div class="direct-holder group-holder">
         <ul>
             <li ng-repeat='person in people' ng-class="{'active': '@' + person.id == selectedChat()}">
-                <a ui-sref="messenger({chatId: '@{{person.id}}'})">
+                <a ui-sref=".messages({chatId: '@{{person.id}}'})">
                     <i ng-class="(person.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
                     <span>{{person.name}}</span>
                 </a>
