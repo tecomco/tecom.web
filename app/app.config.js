@@ -2,6 +2,6 @@
 
  angular.module('config', [])
 
-.constant('ENV', {name:'dev',socketUri:'//192.168.2.37:3000/'})
+.constant('ENV', {name:'dev',socketUri:'//localhost:8000/'})
 
 ;

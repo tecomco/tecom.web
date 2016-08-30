@@ -31,7 +31,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'dev',
-            socketUri: '//192.168.2.37:3000/'
+            socketUri: '//localhost:8000/'
           }
         }
       }
