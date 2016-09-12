@@ -4,7 +4,7 @@ app.factory('socket', ['$rootScope', 'ENV', function ($rootScope, ENV) {
   var socket = io.connect(ENV.socketUri, {
     path: '/ws/',
     query: {
-      username: 'mohsen',
+      username: 'test_user',
       memberId: '1'
     }
   });
