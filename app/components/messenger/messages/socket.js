@@ -1,6 +1,13 @@
 'use strict';
 
 app.factory('socket', ['$rootScope', 'ENV', function ($rootScope, ENV) {
+  // TODO: Choose a better approach :/
+  if (ENV.name === 'ui') {
+    return {
+      on: function () {},
+      emit: function () {}
+    }
+  }
   var socket = io.connect(ENV.socketUri, {
     path: '/ws/',
     query: {

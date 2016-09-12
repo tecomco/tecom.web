@@ -38,7 +38,7 @@
     "webserver:config": "cp nginx.conf /usr/local/etc/nginx/",
     "webserver:start": "npm run webserver:config && sudo nginx",
     "webserver:stop": "sudo nginx -s stop",
-    "start": "npm run build && npm run webserver:start",
+    "start": "npm run build",
     "stop": "npm run webserver:stop"
   }
 }

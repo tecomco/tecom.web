@@ -3,7 +3,9 @@
 module.exports = function (grunt) {
   grunt.initConfig({
     jshint: {
-      files: ['*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'],
+      files: [
+        '*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
+      ],
       options: {
         "node": true,
         "undef": true,
@@ -20,7 +22,7 @@ module.exports = function (grunt) {
       // Options for all targets
       options: {
         space: '  ',
-        wrap: '"use strict";\n\n {\%= __ngModule %}',
+        wrap: '\'use strict\';\n\n {\%= __ngModule %}',
         name: 'config',
       },
       // Environment targets
@@ -34,6 +36,17 @@ module.exports = function (grunt) {
             socketUri: '//localhost:8000/'
           }
         }
+      },
+      ui: {
+        options: {
+          dest: 'app/app.config.js'
+        },
+        constants: {
+          ENV: {
+            name: 'ui',
+            socketUri: ''
+          }
+        }
       }
     }
   });
@@ -41,6 +54,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-ng-constant');
 
-  grunt.registerTask('default', ['jshint']);
-  grunt.registerTask('env-dev', ['ngconstant:dev']);
+  grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
+  grunt.registerTask('ui', ['ngconstant:ui']);
 };

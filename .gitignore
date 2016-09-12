@@ -5,3 +5,4 @@ static/lib
 tmp
 .DS_Store
 .idea
+app/app.config.js
