@@ -1,4 +1,5 @@
 logs/*
+.log
 !.gitkeep
 node_modules/
 static/lib
@@ -6,3 +7,6 @@ tmp
 .DS_Store
 .idea
 app/app.config.js
+logs/
+npm-debug.log
+docs

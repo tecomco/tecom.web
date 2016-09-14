@@ -1,11 +1,11 @@
 'use strict';
 
 module.exports = function (grunt) {
+  var SRC_FILES = ['*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'];
+
   grunt.initConfig({
     jshint: {
-      files: [
-        '*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
-      ],
+      files: SRC_FILES,
       options: {
         "node": true,
         "undef": true,
@@ -48,12 +48,21 @@ module.exports = function (grunt) {
           }
         }
       }
+    },
+    jsdoc: {
+      dist: {
+        src: SRC_FILES,
+        options: {
+          destination: 'docs'
+        }
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-ng-constant');
+  grunt.loadNpmTasks('grunt-jsdoc');
 
-  grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
+  grunt.registerTask('dev', ['jshint', 'ngconstant:dev', 'jsdoc']);
   grunt.registerTask('ui', ['ngconstant:ui']);
 };

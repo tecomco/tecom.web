@@ -6,7 +6,7 @@ app.factory('socket', ['$rootScope', 'ENV', function ($rootScope, ENV) {
     return {
       on: function () {},
       emit: function () {}
-    }
+    };
   }
   var socket = io.connect(ENV.socketUri, {
     path: '/ws/',
