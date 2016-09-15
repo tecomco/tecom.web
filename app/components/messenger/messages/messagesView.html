@@ -9,6 +9,13 @@
         <div ng-repeat='message in messages' class="msg-holder">
             <div class="msg msg-send">
                 <label class="name">{{message.sender}}</label>
+                <label class="status">
+                    <i class="zmdi zmdi-check"></i>
+                    <!--TODO
+                       do this like <i class="zmdi zmdi-{{status}}"></i>
+                       status options = {time, check, check-all}
+                    -->
+                </label>
                 <label class="time">{{message.dateTime}}</label>
                 <label>{{message.body}}</label>
             </div>
@@ -18,6 +25,9 @@
                     <i class="zmdi zmdi-plus"></i>
                 </a>
                 <input type="text" placeholder="متن پیام" ng-model='inputMessage' ng-change="textChanged(inputMessage)"/>
+                <a class="send-btn" href="#">
+                    <label>ارسال</label>
+                </a>
                 <a href="#">
                     <i class="zmdi zmdi-mood"></i>
                 </a>
