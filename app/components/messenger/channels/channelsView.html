@@ -2,13 +2,13 @@
     <div class="group-holder-header">
         <i class="zmdi zmdi-accounts"></i>
         <label>گروه‌ ها</label>
-        <a class="plus-g">
+        <a class="plus-g" ng-click="test(channels)">
             <i class="zmdi zmdi-plus"></i>
         </a>
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat='channel in channels' ng-class="{'active': channel.slug == selectedChat()}">
+            <li ng-repeat='channel in channels | filter: filterByPublicAndPrivate' ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({chatId: '{{channel.slug}}'})">
                   #
                   <span>{{channel.name}}</span>
@@ -25,10 +25,10 @@
     </div>
     <div class="direct-holder group-holder">
         <ul>
-            <li ng-repeat='person in people' ng-class="{'active': '@' + person.id == selectedChat()}">
-                <a ui-sref=".messages({chatId: '@{{person.id}}'})">
-                    <i ng-class="(person.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
-                    <span>{{person.name}}</span>
+            <li ng-repeat='direct in channels | filter: filterByDirect' ng-class="{'active': '@' + direct.slug == selectedChat()}">
+                <a ui-sref=".messages({chatId: '@{{direct.slug}}'})">
+                    <i ng-class="(direct.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
+                    <span>{{direct.name}}</span>
                 </a>
             </li>
         </ul>

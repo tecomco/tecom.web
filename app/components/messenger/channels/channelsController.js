@@ -1,14 +1,26 @@
 'use strict';
 
-app.controller('channelsController', function ($scope, $stateParams, channelsService, socket) {
+app.controller('channelsController', function ($scope, $stateParams, channelsService) {
+  $scope.selectedChat = function () {
+    return $stateParams.chatId;
+  };
+  var channelType = {
+    PUBLIC: 0,
+    PRIVATE: 1,
+    DIRECT: 2
+  };
 
-    $scope.selectedChat = function () {
-        return $stateParams.chatId;
-    };
+  $scope.filterByPublicAndPrivate = function (channel) {
+    return channel.type === channelType.PUBLIC || channel.type === channelType.PRIVATE;
+  };
 
-    socket.on('init', function(data){
-        $scope.channels = data;
-    });
+  $scope.filterByDirect = function (channel) {
+    return channel.type === channelType.DIRECT;
+  };
 
-    $scope.people = channelsService.getPeople();
+
+  channelsService.getChannels().then(function (data) {
+    $scope.channels = data;
+  });
+
 });

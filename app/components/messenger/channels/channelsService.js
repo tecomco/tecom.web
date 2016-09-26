@@ -1,37 +1,16 @@
 'use strict';
 
-app.service('channelsService', ['socket', function (socket) {
+app.service('channelsService', ['$q', 'socket', function ($q, socket) {
 
-    var channels;
-    socket.on('init', function(data){
-        // console.log(data);
-        channels = data.channels;
-    });
+  var deferred = $q.defer();
 
-    var people = [
-        {
-            name: 'محسن',
-            id: 'mohsen',
-            online: true
-        },
-        {
-            name: 'آرین',
-            id: 'arian',
-            online: false
-        },
-        {
-            name: 'کیارش',
-            id: 'kiarash',
-            online: true
-        }];
+  socket.on('init', function (data) {
+    deferred.resolve(data);
+  });
 
-    return {
-        getChannels: function () {
-            return channels;
-        },
-
-        getPeople: function () {
-            return people;
-        }
-    };
+  return {
+    getChannels: function () {
+      return deferred.promise;
+    }
+  };
 }]);
