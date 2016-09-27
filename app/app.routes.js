@@ -16,6 +16,9 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         },
         'channels@messenger': {
           templateUrl: 'app/components/messenger/channels/channelsView.html'
+        },
+        'createChannel@messenger': {
+          templateUrl: 'app/components/messenger/channels/createChannelView.html'
         }
       }
     })
