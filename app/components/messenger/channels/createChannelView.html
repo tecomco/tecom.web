@@ -1,18 +1,29 @@
 <!-- Modal -->
-<div id="createChannelModal" class="modal fade" role="dialog">
+<div ng-controller="channelsController" id="createChannelModal" class="modal fade" role="dialog" style="color: black">
     <div class="modal-dialog">
 
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
+                <button type="button" class="close" data-dismiss="modal" ng-click="exitCreateChannel()">&times;</button>
+                <h4 class="modal-title">ایجاد گروه جدید</h4>
             </div>
             <div class="modal-body">
-                <p>Some text in the modal.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <style>input.ng-invalid.ng-dirty {background-color: pink}</style>
+                <form name="newChannelForm" novalidate>
+                    <label>نام گروه</label><br>
+                    <input type="text" name="name" ng-model="newChannel.name" ng-maxlength="5" required>
+                    <span ng-show="newChannelForm.name.$touched && !newChannelForm.name.$viewValue" style="color: red">وارد کردن نام گروه الزامی است !</span>
+                    <span ng-show="newChannelForm.name.$viewValue && newChannelForm.name.$invalid" style="color: red">نام گروه حد اکثر باید شامل ۳۲ حرف باشد.</span>
+                    <br><br>
+                    <label>توضیح گروه</label><br>
+                    <input type="text" name="description" ng-model="newChannel.description" ng-maxlength="10">
+                    <span ng-show="newChannelForm.description.$invalid" style="color: red">توضیح گروه حد اکثر باید شامل ۲۵۶ حرف باشد.</span>
+                    <br><br>
+                    <input type="checkbox" ng-model="newChannel.isPrivate">
+                    <label> این گروه خصوصی است</label><br><br>
+                    <button  ng-disabled="newChannelForm.$invalid" class="btn btn-primary center-bloc" ng-click="createChannelSubmit()">ایجاد گروه</button>
+                </form>
             </div>
         </div>
 
