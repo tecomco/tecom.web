@@ -10,11 +10,16 @@ app.controller('channelsController', function ($scope, $stateParams, channelsSer
     DIRECT: 2
   };
 
-  var clearNewChannelForm = function(){
-    $scope.newChannel.name = "";
-    $scope.newChannel.description = "";
+  console.log('Instanciated newChannel.');
+  $scope.newChannel = {};
+  $scope.forms = {};
+
+  var clearNewChannelForm = function () {
+    $scope.newChannel.name = '';
+    $scope.newChannel.description = '';
     $scope.newChannel.isPrivate = false;
-  }
+  };
+
   $scope.filterByPublicAndPrivate = function (channel) {
     return channel.type === channelType.PUBLIC || channel.type === channelType.PRIVATE;
   };
@@ -24,20 +29,24 @@ app.controller('channelsController', function ($scope, $stateParams, channelsSer
   };
 
   $scope.createChannelInitial = function () {
+    console.log($scope.newChannel);
+    clearNewChannelForm();
+    $scope.forms.newChannelForm.$setPristine();
+    $('#createChannelModal').modal();
   }
 
   $scope.createChannelSubmit = function () {
-    clearNewChannelForm();
+    console.log("Salam");
   }
 
-  $scope.exitCreateChannel = function(){
-    clearNewChannelForm();
+  $scope.exitCreateChannel = function () {
   }
+
   channelsService.getChannels().then(function (data) {
     $scope.channels = data;
   });
 
-  $scope.checkTextSizeValidation = function(text, size){
+  $scope.checkTextSizeValidation = function (text, size) {
     console.log(text);
   }
 

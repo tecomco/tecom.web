@@ -1,17 +1,18 @@
-<div ng-controller='channelsController'>
+<div ng-controller="channelsController">
     <div class="group-holder-header">
         <i class="zmdi zmdi-accounts"></i>
         <label>گروه‌ ها</label>
-        <a class="plus-g" ng-click="createChannelInitial()" data-toggle="modal" data-target="#createChannelModal">
+        <a class="plus-g" ng-click="createChannelInitial()">
             <i class="zmdi zmdi-plus"></i>
         </a>
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat='channel in channels | filter: filterByPublicAndPrivate' ng-class="{'active': channel.slug == selectedChat()}">
+            <li ng-repeat='channel in channels | filter: filterByPublicAndPrivate'
+                ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({chatId: '{{channel.slug}}'})">
-                  #
-                  <span>{{channel.name}}</span>
+                    #
+                    <span>{{channel.name}}</span>
                 </a>
             </li>
         </ul>
@@ -25,7 +26,8 @@
     </div>
     <div class="direct-holder group-holder">
         <ul>
-            <li ng-repeat='direct in channels | filter: filterByDirect' ng-class="{'active': '@' + direct.slug == selectedChat()}">
+            <li ng-repeat='direct in channels | filter: filterByDirect'
+                ng-class="{'active': '@' + direct.slug == selectedChat()}">
                 <a ui-sref=".messages({chatId: '@{{direct.slug}}'})">
                     <i ng-class="(direct.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
                     <span>{{direct.name}}</span>
@@ -33,4 +35,5 @@
             </li>
         </ul>
     </div>
+    <div ui-view='createChannel'></div>
 </div>
