@@ -1,23 +1,11 @@
 'use strict';
 
-app.controller('channelsController', function ($scope, $stateParams, channelsService) {
-  $scope.selectedChat = function () {
-    return $stateParams.chatId;
-  };
-  var channelType = {
-    PUBLIC: 0,
-    PRIVATE: 1,
-    DIRECT: 2
-  };
+app.controller('channelsController', ['$scope', '$stateParams', '$log', 'channelsService', function ($scope, $stateParams, $log, channelsService) {
 
-  console.log('Instanciated newChannel.');
   $scope.newChannel = {};
   $scope.forms = {};
-
-  var clearNewChannelForm = function () {
-    $scope.newChannel.name = '';
-    $scope.newChannel.description = '';
-    $scope.newChannel.isPrivate = false;
+  $scope.selectedChat = function () {
+    return $stateParams.chatId;
   };
 
   $scope.filterByPublicAndPrivate = function (channel) {
@@ -29,25 +17,58 @@ app.controller('channelsController', function ($scope, $stateParams, channelsSer
   };
 
   $scope.createChannelInitial = function () {
-    console.log($scope.newChannel);
-    clearNewChannelForm();
-    $scope.forms.newChannelForm.$setPristine();
+    $log.info('New channel modal opened');
+    initializeNewChannelForm();
     $('#createChannelModal').modal();
   }
 
   $scope.createChannelSubmit = function () {
-    console.log("Salam");
+    $log.info('New channel form submited');
+    sendNewChannelData();
   }
 
-  $scope.exitCreateChannel = function () {
+  $scope.closeCreateChannel = function () {
+    $log.info('New channel modal closed');
   }
 
   channelsService.getChannels().then(function (data) {
     $scope.channels = data;
   });
 
-  $scope.checkTextSizeValidation = function (text, size) {
-    console.log(text);
-  }
+  var channelType = {
+    PUBLIC: 0,
+    PRIVATE: 1,
+    DIRECT: 2
+  };
 
-});
+  var initializeNewChannelForm = function () {
+    $scope.newChannel.name = '';
+    $scope.newChannel.description = '';
+    $scope.newChannel.isPrivate = false;
+    $scope.forms.newChannelForm.serverError = false;
+    $scope.forms.newChannelForm.$setPristine();
+  };
+
+  var sendNewChannelData = function () {
+    $log.info('Sneding Form to Server...');
+    var newChannelType = $scope.newChannel.isPrivate ? channelType.PRIVATE : channelType.PUBLIC;
+    var newChannelData = {
+      name: $scope.newChannel.name,
+      description: $scope.newChannel.description,
+      type: newChannelType,
+      members: '',
+      creator: '1'
+    };
+    channelsService.sendNewChannel(newChannelData, function (response) {
+      console.log(response);
+      if (response.status) {
+        $('#createChannelModal').modal('toggle');
+        $log.info('New channel modal closed')
+      }
+      else {
+        $error('Error sending new channel form to server');
+        $scope.forms.newChannelForm.serverError = true;
+      }
+    });
+  };
+}]);

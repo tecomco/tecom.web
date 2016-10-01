@@ -6,7 +6,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"
-                        ng-click="exitCreateChannel()">&times;</button>
+                        ng-click="closeCreateChannel()">&times;</button>
                 <h4 class="modal-title">ایجاد گروه جدید</h4>
             </div>
             <div class="modal-body">
@@ -24,7 +24,9 @@
                     <br><br>
                     <input type="checkbox" ng-model="newChannel.isPrivate">
                     <label> این گروه خصوصی است</label><br><br>
-                    <input type="submit" value="ایجاد گروه" class="btn btn-default">
+                    <input type="submit" value="ایجاد گروه" class="btn btn-default"><br>
+                    <span ng-show="forms.newChannelForm.serverError" style="color: red">خطا در اتصال به سرور</span>
+
                 </form>
             </div>
         </div>
