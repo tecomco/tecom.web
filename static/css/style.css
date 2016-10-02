@@ -3,37 +3,45 @@
     src: url("../font/IRANSansWeb_UltraLight.eot"), url("../font/IRANSansWeb_UltraLight.woff") format("woff"), url("../font/IRANSansWeb_UltraLight.ttf") format("truetype"), url("../font/IRANSansWeb_UltraLight.woff2") format("woff2");
     font-weight: 100
 }
+
 @font-face {
     font-family: 'iransans';
     src: url("../font/IRANSansWeb_Light.eot"), url("../font/IRANSansWeb_Light.woff") format("woff"), url("../font/IRANSansWeb_Light.ttf") format("truetype"), url("../font/IRANSansWeb_Light.woff2") format("woff2");
     font-weight: 200;
 }
+
 @font-face {
     font-family: 'iransans';
     src: url("../font/IRANSansWeb.eot"), url("../font/IRANSansWeb.woff") format("woff"), url("../font/IRANSansWeb.ttf") format("truetype"), url("../font/IRANSansWeb.woff2") format("woff2");
     font-weight: 300;
 }
+
 @font-face {
     font-family: 'iransans';
     src: url("../font/IRANSansWeb_Medium.eot"), url("../font/IRANSansWeb_Medium.woff") format("woff"), url("../font/IRANSansWeb_Medium.ttf") format("truetype"), url("../font/IRANSansWeb_Medium.woff2") format("woff2");
     font-weight: 400;
 }
+
 @font-face {
     font-family: 'iransans';
     src: url("../font/IRANSansWeb_Bold.eot"), url("../font/IRANSansWeb_Bold.woff") format("woff"), url("../font/IRANSansWeb_Bold.ttf") format("truetype"), url("../font/IRANSansWeb_Bold.woff2") format("woff2");
     font-weight: 500;
 }
+
 html, body, ul, li {
     margin: 0;
     padding: 0;
     font-family: 'iransans';
 }
+
 * {
     outline: 0 !important;
 }
+
 h1, h2, h3, h4, h5 {
     font-family: 'iransans';
 }
+
 body {
     margin: 0;
     padding: 0;
@@ -44,6 +52,7 @@ body {
     font-weight: 200;
     overflow: hidden;
 }
+
 a, a:hover, a:visited, a:focus {
     text-decoration: none;
     color: inherit;
@@ -54,42 +63,52 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
+
 .header {
     background: #f7f7f7;
     color: #555;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid #eee;
 }
+
 .header ul {
     display: inline-block;
     width: 60%;
 }
+
 .header ul li {
     display: inline-block;
 }
+
 .header ul li a {
     padding: 16px 16px 5px;
     font-size: 24px;
     color: #999;
 }
+
 .header ul li a:hover {
     color: #444;
 }
+
 .site-logo {
     display: inline-block;
 }
+
 .site-logo img {
     height: 24px;
 }
+
 .header ul.top-left {
     float: left;
     width: 50%;
     direction: ltr;
 }
+
 .head-search {
     position: relative;
     top: -6px;
 }
+
 .head-search input {
     width: 100%;
     border: 1px solid #eee;
@@ -99,6 +118,7 @@ a, a:hover, a:visited, a:focus {
     font-weight: 100;
     color: #999;
 }
+
 .head-search i {
     position: absolute;
     top: 10px;
@@ -106,26 +126,32 @@ a, a:hover, a:visited, a:focus {
     font-size: 24px;
     color: #999;
 }
+
 .header .name {
     display: inline-block;
 }
+
 .header .name>label {
     font-size: 20px;
     font-weight: 400;
     padding: 5px 16px 0;
 }
+
 .header .name .det {
-  margin-top: -4px;
+    margin-top: -4px;
 }
+
 .header .name .det label {
     color: #999;
     padding: 0 16px;
     font-weight: 100;
     font-size: 12px;
 }
+
 .header .name .det label:first-of-type {
     border-left: 1px solid #ddd;
 }
+
 .right-section {
     background: #188c67;
     padding: 0;
@@ -133,10 +159,12 @@ a, a:hover, a:visited, a:focus {
     color: #fff;
     position: relative;
 }
+
 .right-section-header {
     padding: 14px 0 8px;
     background: rgba(17, 17, 17, 0.1);
 }
+
 .noti-holder {
     position: absolute;
     top: 16px;
@@ -144,20 +172,24 @@ a, a:hover, a:visited, a:focus {
     font-size: 24px;
     color: rgba(255, 255, 255, 0.5);
 }
+
 .right-section img {
     width: 60px;
     padding-right: 14px;
     display: block;
 }
+
 .right-section-main {
     padding-left: 16px;
     height: calc(100vh - 64px);
     overflow-y: scroll;
     direction: ltr;
 }
+
 .right-section-main * {
-  direction: rtl;
+    direction: rtl;
 }
+
 .group-holder-header, .direct-holder-header {
     border-bottom: 1px solid rgba(237, 237, 237, 0.05);
     padding-top: 32px;
@@ -170,6 +202,7 @@ a, a:hover, a:visited, a:focus {
     position: relative;
     color: rgba(255, 255, 255, 0.6);
 }
+
 .group-holder-header a.plus-g, .direct-holder-header a.plus-d {
     position: absolute;
     top: 30px;
@@ -177,16 +210,20 @@ a, a:hover, a:visited, a:focus {
     left: 2px;
     display: inline-block;
 }
+
 .group-holder-header a.plus-g:hover, .direct-holder-header a.plus-d:hover {
     color: #fff;
 }
+
 .group-holder {
     font-size: 16px;
 }
+
 .group-holder ul {
     list-style: none;
     text-align: right;
 }
+
 .group-holder ul li a {
     color: rgba(255, 255, 255, 0.6);
     padding: 3px 16px;
@@ -194,31 +231,39 @@ a, a:hover, a:visited, a:focus {
     font-size: 16px;
     font-weight: 100;
 }
+
 .group-holder ul li a:hover {
     color: rgba(255, 255, 255, 0.8);
     background: rgba(17, 17, 17, 0.1);
 }
+
 .group-holder ul li.active a {
     background: rgba(92, 255, 216, 0.5);
     color: #fff;
     border-radius: 4px 0 0 4px;
 }
-.direct-holder{
-  padding-bottom: 40px;
+
+.direct-holder {
+    padding-bottom: 40px;
 }
+
 .direct-holder ul li a i {
     font-size: 10px;
 }
+
 .direct-holder ul li a i.zmdi-circle {
     color: rgba(92, 255, 216, 0.5);
 }
+
 .direct-holder ul li.active a i.zmdi-circle {
     color: rgba(61, 61, 61, 0.53)
 }
+
 .chat {
     height: calc(100vh - 66px);
     overflow-y: scroll;
 }
+
 .main {
     padding-bottom: 80px;
     padding: 32px;
@@ -227,9 +272,11 @@ a, a:hover, a:visited, a:focus {
     flex-direction: column;
     padding-bottom: 80px;
 }
+
 .main>div {
     flex: 0 1 auto;
 }
+
 .main .card-one {
     height: 83vh;
     background: #fff;
@@ -238,12 +285,14 @@ a, a:hover, a:visited, a:focus {
     float: right;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.21);
 }
+
 .date-holder {
     text-align: center;
     position: relative;
     margin: 8px 0;
     font-weight: 100;
 }
+
 .date-holder:after {
     display: block;
     height: 1px;
@@ -255,6 +304,7 @@ a, a:hover, a:visited, a:focus {
     background: #ddd;
     z-index: 1;
 }
+
 .date-holder label {
     background: #f1f1f1;
     padding: 16px;
@@ -263,6 +313,7 @@ a, a:hover, a:visited, a:focus {
     position: relative;
     z-index: 2;
 }
+
 .msg {
     display: inline-block;
     min-width: 200px;
@@ -276,23 +327,29 @@ a, a:hover, a:visited, a:focus {
     font-size: 15px;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
 }
+
 .msg.msg-send {
     float: right;
 }
+
 .msg .name {
     display: block;
     margin-bottom: 4px;
     font-weight: 400;
 }
+
 .msg.msg-send .name {
     color: #888;
 }
+
 .msg.msg-recieve .name {
     color: rgb(5, 198, 186);
 }
+
 .msg.msg-recieve .status {
     display: none;
 }
+
 .msg .time {
     position: absolute;
     top: 8px;
@@ -300,24 +357,30 @@ a, a:hover, a:visited, a:focus {
     color: #bbb;
     font-weight: 100;
 }
+
 .msg .status {
     position: absolute;
     top: 10px;
     left: 50px;
     font-size: 12px;
 }
+
 .msg .status .zmdi-check {
     color: #bbb;
 }
+
 .msg .status .zmdi-time {
     color: #bbb;
 }
+
 .msg .status .zmdi-check-all {
     color: rgb(5, 198, 186)
 }
+
 .msg.msg-recieve {
     float: left;
 }
+
 .msg:after {
     display: block;
     height: 0;
@@ -325,6 +388,7 @@ a, a:hover, a:visited, a:focus {
     clear: both;
     float: none;
 }
+
 .input-holder {
     background: #f1f1f1;
     position: absolute;
@@ -334,6 +398,7 @@ a, a:hover, a:visited, a:focus {
     padding: 8px 32px;
     z-index: 3;
 }
+
 .input-holder input {
     width: 100%;
     border: 0;
@@ -346,6 +411,7 @@ a, a:hover, a:visited, a:focus {
     color: #555;
     box-sizing: padding-box;
 }
+
 .input-holder a {
     display: block;
     position: absolute;
@@ -353,15 +419,19 @@ a, a:hover, a:visited, a:focus {
     font-size: 24px;
     color: #999;
 }
+
 .input-holder a:hover {
     color: #666;
 }
+
 .input-holder a:first-of-type {
     right: 48px;
 }
+
 .input-holder a:last-of-type {
     left: 44px;
 }
+
 .input-holder .send-btn {
     position: absolute;
     left: 68px;
@@ -369,12 +439,242 @@ a, a:hover, a:visited, a:focus {
     padding: 10px 20px;
     top: 9px;
 }
+
 .input-holder .send-btn:hover {
     color: rgb(5, 198, 186)
 }
+
 .input-holder .send-btn label {
     cursor: pointer;
 }
+
+
+/* SEXY MODAL */
+
+.modal {
+    padding: 0 !important;
+    text-align: center;
+    overflow: hidden;
+}
+
+#createChannelModal {
+    padding-left: 0 !important;
+}
+
+.modal-header {
+    border: 0;
+    padding: 50px;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.modal-header button.close {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    left: 40px;
+    top: 40px;
+    z-index: 1051;
+    padding-top: 13px;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 40px;
+    background: rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+}
+
+.modal-header button.close:focus {
+    opacity: 0.8;
+    color: #188c67;
+    background: rgba(163, 240, 207, 0.2)
+}
+
+.modal-header h4 {
+    font-size: 40px;
+    font-weight: 200;
+    color: #188c67;
+}
+
+.modal-dialog {
+    background: transparent;
+    margin: 0;
+    height: 100vh;
+    width: 100%;
+}
+
+.modal.fade .modal-dialog {
+    transform: translate(0px, 0px);
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.modal.in .modal-dialog {
+    transform: translate(0, 0);
+    overflow: hidden;
+}
+
+.modal.fade .modal-dialog .modal-content {
+    transform: translate(0px, 2%);
+    transition: all 0.1s ease;
+}
+
+.modal.in .modal-dialog .modal-content {
+    transform: translate(0, 0);
+}
+
+.modal.fade .modal-dialog .modal-content>div {
+    transform: translate(0px, 20%);
+    transition: all 0.3s ease 0.05s;
+}
+
+.modal.in .modal-dialog .modal-content>div {
+    transform: translate(0, 0);
+}
+
+.modal-content {
+    height: 100vh;
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    opacity: 0.97;
+}
+
+.modal-body {
+    padding: 20px 20%;
+}
+
+.modal-body label {
+    font-weight: 100;
+    color: #999;
+    font-size: 24px;
+}
+
+.modal-body [type="text"] {
+    padding: 8px 16px;
+    display: block;
+    width: 50%;
+    margin: 16px 25%;
+    font-size: 24px;
+    color: #666;
+    border-radius: 4px;
+    border: 1px solid rgba(122, 122, 122, 0.1);
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+}
+
+.modal-body [type="text"]:focus {
+    color: #188c67;
+}
+
+.modal-body br {
+    display: none;
+}
+
+.modal-backdrop.in {
+    opacity: 0;
+}
+
+.modal [type="submit"] {
+    display: block;
+    font-weight: 300;
+    width: 50%;
+    margin: 16px 25%;
+    font-size: 24px;
+    color: #fff;
+    border: 0;
+    background: rgb(23, 182, 144);
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+}
+.modal [type="submit"]:hover{
+  background: rgb(18, 142, 112);
+}
+.modal [type="submit"]:focus, .modal [type="submit"]:active{
+  background: rgb(19, 108, 87);
+  color: #f3f3f3;
+}
+.modal-input{
+  position: relative;
+}
+.modal-err {
+    color: #fff;
+    left: -17%;
+    right: 80%;
+    top: 8px;
+    padding: 8px 16px;
+    position: absolute;
+    border-radius: 4px;
+    background: rgb(226, 89, 89);
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    font-weight: 100;
+}
+
+label.ws-checkbox>input {
+    visibility: hidden;
+    position: absolute;
+    opacity: 0;
+}
+
+label.ws-checkbox>.checkbox-stat i {
+    font-size: 60px;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: -18px;
+    left: -4px;
+    transition: all 0.2s;
+    -o-transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+}
+
+label.ws-checkbox>.checkbox-stat {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    display: inline-block;
+    position: relative;
+    top: 4px;
+    transition: all 0.2s;
+    -o-transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+}
+
+label.ws-checkbox>input+.checkbox-stat {
+    cursor: pointer;
+    background-size: cover;
+    box-shadow: 0 0 rgba(0, 0, 0, 0);
+    transition: all 0.2s;
+    -o-transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    background-color: #fff;
+}
+
+label.ws-checkbox>input:checked+.checkbox-stat>i {
+    opacity: 1;
+    visibility: visible;
+    color: rgb(32, 164, 109);
+    transform: rotateZ(-5deg);
+}
+
+
+/* SEXY MODAL END */
+
 .clearfix:after {
     display: block;
     height: 0;
@@ -382,33 +682,41 @@ a, a:hover, a:visited, a:focus {
     clear: both;
     float: none;
 }
+
 .no-padding {
     padding: 0;
 }
+
 input {
     box-sizing: padding-box;
     direction: rtl;
     font-family: "iransans"
 }
-label{
-  display: inline-block;
+
+label {
+    display: inline-block;
 }
+
 
 /* Large Devices, Wide Screens */
 
 @media only screen and (max-width: 1200px) {}
 
+
 /* Medium Devices, Desktops */
 
 @media only screen and (max-width: 992px) {}
+
 
 /* Small Devices, Tablets */
 
 @media only screen and (max-width: 768px) {}
 
+
 /* Extra Small Devices, Phones */
 
 @media only screen and (max-width: 480px) {}
+
 
 /* Custom, iPhone Retina */
 
