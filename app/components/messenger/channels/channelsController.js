@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('channelsController', ['$scope', '$stateParams', '$log',
-  'channelsService',
-  function ($scope, $stateParams, $log, channelsService) {
+  '$uibModal', 'channelsService',
+  function ($scope, $stateParams, $log, $uibModal, channelsService) {
 
     $scope.newChannel = {};
     $scope.forms = {};
@@ -22,8 +22,11 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
 
     $scope.createChannelInitial = function () {
       initializeNewChannelForm();
-      // TODO: Change this to angular-ui bootstrap.
-      $('#createChannelModal').modal();
+      $uibModal.open({
+        templateUrl: 'createChannelModal.html',
+        controller: 'createChannelController',
+        controllerAs: '$ctrl'
+      });
       $log.info('New channel modal opened.');
     };
 

@@ -27,7 +27,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       template: '<h1>لطفا یک گروه را انتخاب کنید.</h1>'
     })
     .state('messenger.messages', {
-      url: '/:chatId',
+      url: '/:slug',
       views: {
         '': {
           templateUrl: 'app/components/messenger/messages/messagesView.html'

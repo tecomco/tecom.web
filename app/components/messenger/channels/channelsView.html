@@ -10,7 +10,7 @@
         <ul>
             <li ng-repeat="channel in channels | filter: filterByPublicAndPrivate"
                 ng-class="{'active': channel.slug == selectedChat()}">
-                <a ui-sref=".messages({chatId: '{{channel.slug}}'})">
+                <a ui-sref=".messages({slug: '{{channel.slug}}'})">
                     #
                     <span>{{channel.name}}</span>
                 </a>
@@ -28,7 +28,7 @@
         <ul>
             <li ng-repeat="direct in channels | filter: filterByDirect"
                 ng-class="{'active': '@' + direct.slug == selectedChat()}">
-                <a ui-sref=".messages({chatId: '@{{direct.slug}}'})">
+                <a ui-sref=".messages({slug: '@{{direct.slug}}'})">
                     <i ng-class="(direct.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
                     <span>{{direct.name}}</span>
                 </a>

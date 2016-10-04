@@ -5,4 +5,4 @@
  *
  * @module app
  */
-var app = angular.module('tecomApp', ['ui.router', 'config']);
+var app = angular.module('tecomApp', ['ui.router', 'ui.bootstrap', 'config']);
