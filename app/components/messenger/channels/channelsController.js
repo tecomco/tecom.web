@@ -53,6 +53,7 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
       $scope.newChannel.isPrivate = false;
       $scope.forms.newChannelForm.serverError = false;
       $scope.forms.newChannelForm.$setPristine();
+      $log.info($scope.forms.newChannelForm);
     };
 
     var sendNewChannelData = function () {

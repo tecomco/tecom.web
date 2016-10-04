@@ -2,20 +2,25 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" ng-click="closeCreateChannel()">&times;</button>
+                <button type="button" class="close" data-dismiss="modal"
+                        ng-click="closeCreateChannel()">&times;</button>
                 <h4 class="modal-title">ایجاد گروه جدید</h4>
             </div>
             <div class="modal-body">
-                <form name="forms.newChannelForm" ng-submit="forms.newChannelForm.$valid && createChannelSubmit()" novalidate>
+                <form name="forms.newChannelForm" ng-submit="forms.newChannelForm.$valid && createChannelSubmit()"
+                      novalidate>
                     <div class="modal-input">
 
-                        <input type="text" name="name" ng-model="newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
-                        <span class="modal-err" ng-show="(forms.newChannelForm.name.$touched || forms.newChannelForm.$submitted) && !forms.newChannelForm.name.$viewValue">وارد کردن نام گروه الزامی است!</span>
-                        <span class="modal-err" ng-show="forms.newChannelForm.name.$viewValue && forms.newChannelForm.name.$invalid">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+                        <input type="text" name="name" ng-model="newChannel.name" ng-maxlength="32"
+                               placeholder="نام گروه" required>
+                        <span class="modal-err"
+                              ng-show="(forms.newChannelForm.name.$touched || forms.newChannelForm.$submitted) && !newChannel.name && !forms.newChannelForm.$pristine">وارد کردن نام گروه الزامی است!</span>
+                        <span class="modal-err" ng-show="newChannel.name && forms.newChannelForm.name.$invalid">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
                     </div>
                     <br><br>
                     <div class="modal-input">
-                        <input type="text" name="description" ng-model="newChannel.description" ng-maxlength="256" placeholder="توضیح گروه">
+                        <input type="text" name="description" ng-model="newChannel.description" ng-maxlength="256"
+                               placeholder="توضیح گروه">
                         <span class="modal-err" ng-show="forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
                     </div>
                     <br><br>
