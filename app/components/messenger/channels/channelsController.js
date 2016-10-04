@@ -1,11 +1,14 @@
 'use strict';
 
 app.controller('channelsController', ['$scope', '$stateParams', '$log',
-  'channelsService',
-  function ($scope, $stateParams, $log, channelsService) {
+  '$uibModal', 'channelsService',
+  function ($scope, $stateParams, $log, $uibModal, channelsService) {
 
-    $scope.newChannel = {};
-    $scope.forms = {};
+    var channelType = {
+      PUBLIC: 0,
+      PRIVATE: 1,
+      DIRECT: 2
+    };
 
     $scope.selectedChat = function () {
       return $stateParams.chatId;
@@ -20,14 +23,47 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
       return channel.type === channelType.DIRECT;
     };
 
-    $scope.createChannelInitial = function () {
-      initializeNewChannelForm();
-      // TODO: Change this to angular-ui bootstrap.
-      $('#createChannelModal').modal();
+    channelsService.getChannels().then(function (data) {
+      $scope.channels = data;
+    });
+
+    /////////////////////////////////////////////////////////////////////////
+
+    // var $ctrl = this;
+    //
+    // $scope.open = function () {
+    //   var modalInstance = $uibModal.open({
+    //     animation: $ctrl.animationsEnabled,
+    //     ariaLabelledBy: 'modal-title',
+    //     ariaDescribedBy: 'modal-body',
+    //     templateUrl: 'createChannelView.html',
+    //     controller: 'createChannelController',
+    //     controllerAs: '$ctrl',
+    //     resolve: {
+    //       items: function () {
+    //         return $ctrl.items;
+    //       }
+    //     }
+    //   });
+    //
+    //   modalInstance.result.then(function (selectedItem) {
+    //     $ctrl.selected = selectedItem;
+    //   }, function () {
+    //     $log.info('Modal dismissed at: ' + new Date());
+    //   });
+    // };
+
+    $scope.createChannelOpen = function () {
+      $uibModal.open({
+        templateUrl: 'app/components/messenger/channels/createChannelView.html',
+        controller: 'createChannelController',
+        controllerAs: '$ctrl'
+      });
       $log.info('New channel modal opened.');
     };
 
-    $scope.createChannelSubmit = function () {
+
+    /*$scope.createChannelSubmit = function () {
       sendNewChannelData();
       $log.info('New channel form submited.');
     };
@@ -35,16 +71,6 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
     $scope.closeCreateChannel = function () {
       $('#createChannelModal').modal('toggle');
       $log.info('New channel modal closed.');
-    };
-
-    channelsService.getChannels().then(function (data) {
-      $scope.channels = data;
-    });
-
-    var channelType = {
-      PUBLIC: 0,
-      PRIVATE: 1,
-      DIRECT: 2
     };
 
     var initializeNewChannelForm = function () {
@@ -78,5 +104,7 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
         }
       });
     };
+    */
+
   }
 ]);
