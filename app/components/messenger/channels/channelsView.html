@@ -8,7 +8,7 @@
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat='channel in channels | filter: filterByPublicAndPrivate'
+            <li ng-repeat="channel in channels | filter: filterByPublicAndPrivate"
                 ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({chatId: '{{channel.slug}}'})">
                     #
@@ -26,7 +26,7 @@
     </div>
     <div class="direct-holder group-holder">
         <ul>
-            <li ng-repeat='direct in channels | filter: filterByDirect'
+            <li ng-repeat="direct in channels | filter: filterByDirect"
                 ng-class="{'active': '@' + direct.slug == selectedChat()}">
                 <a ui-sref=".messages({chatId: '@{{direct.slug}}'})">
                     <i ng-class="(direct.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
@@ -35,5 +35,5 @@
             </li>
         </ul>
     </div>
-    <div ui-view='createChannel'></div>
+    <div ui-view="createChannel"></div>
 </div>

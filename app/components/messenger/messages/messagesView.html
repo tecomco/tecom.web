@@ -1,12 +1,12 @@
 <div class="header clearfix">
-    <div ui-view='header'></div>
+    <div ui-view="header"></div>
 </div>
 <div class="chat">
-    <div class="main" ng-controller='messagesController'>
+    <div class="main" ng-controller="messagesController">
         <div class="date-holder">
             <label>۱۵ مرداد</label>
         </div>
-        <div ng-repeat='message in messages' class="msg-holder">
+        <div ng-repeat="message in messages" class="msg-holder">
             <div class="msg msg-send">
                 <label class="name">{{message.sender}}</label>
                 <label class="status">
@@ -24,7 +24,7 @@
                 <a href="#">
                     <i class="zmdi zmdi-plus"></i>
                 </a>
-                <input type="text" placeholder="متن پیام" ng-model='inputMessage' ng-change="textChanged(inputMessage)"/>
+                <input type="text" placeholder="متن پیام" ng-model="inputMessage" ng-change="textChanged(inputMessage)"/>
                 <a class="send-btn" href="#">
                     <label>ارسال</label>
                 </a>

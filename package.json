@@ -3,19 +3,22 @@
   "version": "0.0.1",
   "description": "Tecom client-side web application.",
   "authors": [
-    {
-      "name": "Mohsen Iranmanesh",
-      "email": ""
-    },
-    {
-      "name": "Arian Rahimi",
-      "email": "itsarianr@gmail.com"
-    }
-  ],
+  {
+    "name": "Mohsen Iranmanesh",
+    "email": ""
+  },
+  {
+    "name": "Arian Rahimi",
+    "email": "itsarianr@gmail.com"
+  },
+  {
+    "name": "Kiarash NY",
+    "email": "kiarashny@gmail.com"
+  }],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@192.168.2.37:repo/tecom.web"
+    "url": "https://github.com/tecomco/tecom.web.git"
   },
   "dependencies": {
     "bower": "^1.7.9"
@@ -37,10 +40,6 @@
     "build": "npm run build:server && npm run build:client",
     "build:server": "npm install",
     "build:client": "bower install",
-    "webserver:config": "cp nginx.conf /usr/local/etc/nginx/",
-    "webserver:start": "npm run webserver:config && sudo nginx",
-    "webserver:stop": "sudo nginx -s stop",
-    "start": "npm run build",
-    "stop": "npm run webserver:stop"
+    "start": "npm run build"
   }
 }

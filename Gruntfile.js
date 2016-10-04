@@ -1,20 +1,23 @@
 'use strict';
 
 module.exports = function (grunt) {
-  var SRC_FILES = ['*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'];
+
+  var SRC_FILES = [
+    '*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
+  ];
 
   grunt.initConfig({
     jshint: {
       files: SRC_FILES,
       options: {
-        "node": true,
-        "undef": true,
-        "unused": false,
-        "globalstrict": true,
-        "globals": {
-          "angular": true,
-          "app": true,
-          "io": true
+        'node': true,
+        'undef': true,
+        'unused': false,
+        'globalstrict': true,
+        'globals': {
+          'angular': true,
+          'app': true,
+          'io': true
         }
       }
     },
