@@ -8,7 +8,7 @@
     "font-awesome": "~4.6.3",
     "material-design-iconic-font": "~2.2.0",
     "socket.io-client": "~1.4.8",
-    "requirejs": "~2.2.0"
+    "requirejs": "~2.2.0",
+    "angular-pouchdb": "^5.0.0"
   }
 }
-
