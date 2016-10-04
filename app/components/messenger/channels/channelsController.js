@@ -60,13 +60,13 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log', 'channel
       creator: '1'
     };
     channelsService.sendNewChannel(newChannelData, function (response) {
-      console.log(response);
+      $log.info(response);
       if (response.status) {
         $('#createChannelModal').modal('toggle');
         $log.info('New channel modal closed')
       }
       else {
-        $error('Error sending new channel form to server');
+        $log.error('Error sending new channel form to server');
         $scope.forms.newChannelForm.serverError = true;
       }
     });
