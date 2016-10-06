@@ -27,84 +27,15 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
       $scope.channels = data;
     });
 
-    /////////////////////////////////////////////////////////////////////////
-
-    // var $ctrl = this;
-    //
-    // $scope.open = function () {
-    //   var modalInstance = $uibModal.open({
-    //     animation: $ctrl.animationsEnabled,
-    //     ariaLabelledBy: 'modal-title',
-    //     ariaDescribedBy: 'modal-body',
-    //     templateUrl: 'createChannelView.html',
-    //     controller: 'createChannelController',
-    //     controllerAs: '$ctrl',
-    //     resolve: {
-    //       items: function () {
-    //         return $ctrl.items;
-    //       }
-    //     }
-    //   });
-    //
-    //   modalInstance.result.then(function (selectedItem) {
-    //     $ctrl.selected = selectedItem;
-    //   }, function () {
-    //     $log.info('Modal dismissed at: ' + new Date());
-    //   });
-    // };
-
-    $scope.createChannelOpen = function () {
-      $uibModal.open({
-        templateUrl: 'app/components/messenger/channels/createChannelView.html',
+    $scope.openCreateChannelModal = function () {
+      var modalInstance = $uibModal.open({
+        templateUrl: 'myModalContent.html',
         controller: 'createChannelController',
         controllerAs: '$ctrl'
       });
+      modalInstance.result.then(function(){},function(){});
+      $log.warn(modalInstance);
       $log.info('New channel modal opened.');
     };
-
-
-    /*$scope.createChannelSubmit = function () {
-      sendNewChannelData();
-      $log.info('New channel form submited.');
-    };
-
-    $scope.closeCreateChannel = function () {
-      $('#createChannelModal').modal('toggle');
-      $log.info('New channel modal closed.');
-    };
-
-    var initializeNewChannelForm = function () {
-      $scope.newChannel.name = '';
-      $scope.newChannel.description = '';
-      $scope.newChannel.isPrivate = false;
-      $scope.forms.newChannelForm.serverError = false;
-      $scope.forms.newChannelForm.$setPristine();
-      $log.info($scope.forms.newChannelForm);
-    };
-
-    var sendNewChannelData = function () {
-      $log.info('Sending Form to Server.');
-      var newChannelType = $scope.newChannel.isPrivate ?
-        channelType.PRIVATE : channelType.PUBLIC;
-      var newChannelData = {
-        name: $scope.newChannel.name,
-        description: $scope.newChannel.description,
-        type: newChannelType,
-        members: '',
-        creator: 1
-      };
-      channelsService.sendNewChannel(newChannelData, function (response) {
-        $log.info('New channel response: ' + response);
-        if (response.status) {
-          $scope.closeCreateChannel();
-        } else {
-          $log.error('Error sending new channel form to server.');
-          $log.error('Error meessage: ' + response.meessage);
-          $scope.forms.newChannelForm.serverError = true;
-        }
-      });
-    };
-    */
-
   }
 ]);

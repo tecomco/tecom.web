@@ -5,10 +5,10 @@ app.service('channelsService', ['$q', '$log', 'socket',
 
     var deferred = $q.defer();
 
-    socket.on('init', function (data) {
+    /*socket.on('init', function (data) {
       $log.info('Socket opened and connection established successfuly.');
       deferred.resolve(data);
-    });
+    });*/
 
     return {
       getChannels: function () {
