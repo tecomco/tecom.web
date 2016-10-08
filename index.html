@@ -2,7 +2,7 @@
 <html ng-app="tecomApp">
 
 <head>
-    <title>Tecom</title>
+    <title>سرویس تیکام</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width">
     <base href="/">
@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="static/css/style.css" />
 
     <script src="static/lib/angular/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pouchdb/2.2.3/pouchdb.js"></script>
+
 </head>
 
 <body>
@@ -22,12 +24,13 @@
 
     <script src="static/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="static/lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="static/lib/angular-pouchdb/angular-pouchdb.min.js"></script>
     <script src="static/lib/socket.io-client/socket.io.js"></script>
     <script src="app/app.module.js"></script>
-    <script src="app/app.db.js"></script>
     <script src="app/app.routes.js"></script>
     <script src="app/app.config.js"></script>
     <script src="app/shared/socket/socket.js"></script>
+    <script src="app/app.db.js"></script>
     <script src="app/components/messenger/channels/channelsController.js"></script>
     <script src="app/components/messenger/channels/createChannelController.js"></script>
     <script src="app/components/messenger/messages/messagesController.js"></script>

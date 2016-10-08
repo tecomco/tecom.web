@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('channelsController', ['$scope', '$stateParams', '$log',
-  '$uibModal', 'channelsService',
-  function ($scope, $stateParams, $log, $uibModal, channelsService) {
+  '$uibModal', 'dataBase', 'channelsService',
+  function ($scope, $stateParams, $log, $uibModal, dataBase, channelsService) {
 
     var channelType = {
       PUBLIC: 0,
@@ -37,5 +37,13 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
       $log.warn(modalInstance);
       $log.info('New channel modal opened.');
     };
+
+    //var db = pouchDB('dbname');
+    //var doc = { name: 'David' };
+
+    //console.log(db);
+    dataBase.post();
+    //console.log(dataBase.get());
+
   }
 ]);
