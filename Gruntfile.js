@@ -40,6 +40,17 @@ module.exports = function (grunt) {
           }
         }
       },
+      stage: {
+        options: {
+          dest: 'app/app.config.js'
+        },
+        constants: {
+          ENV: {
+            name: 'stage',
+            socketUri: '//95.38.21.250/'
+          }
+        }
+      },
       ui: {
         options: {
           dest: 'app/app.config.js'
@@ -67,5 +78,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-jsdoc');
 
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev', 'jsdoc']);
+  grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
   grunt.registerTask('ui', ['ngconstant:ui']);
 };
