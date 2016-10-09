@@ -568,7 +568,42 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
-
+.modal-body.two-part-modal {
+  padding: 20px 10%;
+}
+.modal-body.two-part-modal [type="text"] {
+  width: 100%;
+  margin: 16px 0;
+}
+.modal-body.two-part-modal h3{
+  font-weight: 100;
+  color: #888;
+}
+.modal-body .g-members{
+  height: 200px;
+  overflow-y: scroll;
+  text-align: right;
+  margin-bottom: 32px;
+}
+.modal-fake-height{
+  height: 50px;
+}
+.g-m-one{
+  padding: 16px 40px;
+}
+.g-m-one img{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.g-m-one  label{
+  padding-right: 16px;
+}
+.g-m-one .ws-checkbox{
+  padding-top: 10px;
+  float: left;
+}
 .modal-body [type="text"]:focus {
     color: #188c67;
 }

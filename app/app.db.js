@@ -2,10 +2,14 @@
 
 app.service('dataBase', function(pouchDB) {
   var db = pouchDB('myDB');
+
   var data = {name: 'mohsen'};
+  db.info().then(function (info) {
+    console.log(info);
+  });
 
   function error(err) {
-    $log.error(err);
+    // $log.error(err);
   }
 
   function get(res) {
@@ -18,6 +22,8 @@ app.service('dataBase', function(pouchDB) {
   function bind(res) {
     data = res;
     console.log(data);
+    console.log(res);
+    console.log(db);
   }
 
   return{
@@ -29,7 +35,6 @@ app.service('dataBase', function(pouchDB) {
         .then(get)
         .then(bind)
         .catch(error);
-
     }
-  }
+  };
 });

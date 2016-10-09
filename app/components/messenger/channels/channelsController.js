@@ -37,13 +37,5 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
       $log.warn(modalInstance);
       $log.info('New channel modal opened.');
     };
-
-    //var db = pouchDB('dbname');
-    //var doc = { name: 'David' };
-
-    //console.log(db);
-    dataBase.post();
-    //console.log(dataBase.get());
-
   }
 ]);

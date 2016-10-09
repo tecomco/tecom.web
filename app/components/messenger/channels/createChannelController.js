@@ -5,15 +5,27 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
 
     var $ctrl = this;
 
-    $ctrl.creatChannlSubmit = function () {
+    $ctrl.forms = {};
+
+    $ctrl.createChannlSubmit = function () {
       $uibModalInstance.close();
       $log.info('submit');
     };
 
     $ctrl.closeCreateChannel = function () {
       $log.info($uibModalInstance);
+      //$log.info($ctrl.newChannel.name);
       $uibModalInstance.dismiss('cancel');
       $log.info('close');
+
+    };
+
+    $ctrl.checkEmpty = function(input)
+    {
+      if(input.length > 0)
+        return true;
+      else
+        return false;
     };
 
     /*$scope.createChannelSubmit = function () {
