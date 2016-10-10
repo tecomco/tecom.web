@@ -12,7 +12,7 @@ app.factory('socket', ['$rootScope', 'ENV', function ($rootScope, ENV) {
     path: '/ws/',
     query: {
       username: 'test_user',
-      memberId: '1'
+      memberId: window.memberId
     }
   });
   return {

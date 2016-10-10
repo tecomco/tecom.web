@@ -1,74 +1,69 @@
 'use strict';
 
-app.controller('createChannelController', ['$uibModalInstance', '$log',
-  function ($uibModalInstance, $log) {
+app.controller('createChannelController', ['$uibModalInstance', '$log', 'channelsService',
+  function ($uibModalInstance, $log, channelsService) {
 
     var $ctrl = this;
 
-    $ctrl.forms = {};
-
-    $ctrl.createChannlSubmit = function () {
-      $uibModalInstance.close();
-      $log.info('submit');
+    var channelType = {
+      PUBLIC: 0,
+      PRIVATE: 1,
+      DIRECT: 2
     };
 
+    $ctrl.forms = {};
+
     $ctrl.closeCreateChannel = function () {
-      $log.info($uibModalInstance);
-      //$log.info($ctrl.newChannel.name);
       $uibModalInstance.dismiss('cancel');
       $log.info('close');
 
     };
 
-    $ctrl.checkEmpty = function(input)
-    {
-      if(input.length > 0)
-        return true;
-      else
-        return false;
+    $ctrl.createChannelSubmit = function () {
+      sendNewChannelData();
+      $uibModalInstance.close();
+      $log.info('New channel form submited.');
     };
 
-    /*$scope.createChannelSubmit = function () {
-     sendNewChannelData();
-     $log.info('New channel form submited.');
-     };
+    var initializeNewChannelForm = function () {
+      $ctrl.newChannel.name = '';
+      $ctrl.newChannel.description = '';
+      $ctrl.newChannel.isPrivate = false;
+      $ctrl.forms.newChannelForm.serverError = false;
+      $ctrl.forms.newChannelForm.$setPristine();
+      $log.info($ctrl.forms.newChannelForm);
+    };
 
-     $scope.closeCreateChannel = function () {
-     $('#createChannelModal').modal('toggle');
-     $log.info('New channel modal closed.');
-     };
+    var sendNewChannelData = function () {
+      $log.info('Sending Form to Server.');
+      //var newChannelType = $ctrl.newChannel.isPrivate ?
+      //channelType.PRIVATE : channelType.PUBLIC;
+      // var newChannelData = {
+      // name: $ctrl.newChannel.name,
+      // description: $ctrl.newChannel.description,
+      // type: newChannelType,
+      // members: '',
+      // creator: 1
+      // };
 
-     var initializeNewChannelForm = function () {
-     $scope.newChannel.name = '';
-     $scope.newChannel.description = '';
-     $scope.newChannel.isPrivate = false;
-     $scope.forms.newChannelForm.serverError = false;
-     $scope.forms.newChannelForm.$setPristine();
-     $log.info($scope.forms.newChannelForm);
-     };
-
-     var sendNewChannelData = function () {
-     $log.info('Sending Form to Server.');
-     var newChannelType = $scope.newChannel.isPrivate ?
-     channelType.PRIVATE : channelType.PUBLIC;
-     var newChannelData = {
-     name: $scope.newChannel.name,
-     description: $scope.newChannel.description,
-     type: newChannelType,
-     members: '',
-     creator: 1
-     };
-
-     channelsService.sendNewChannel(newChannelData, function (response) {
-     $log.info('New channel response: ' + response);
-     if (response.status) {
-     $scope.closeCreateChannel();
-     } else {
-     $log.error('Error sending new channel form to server.');
-     $log.error('Error meessage: ' + response.meessage);
-     $scope.forms.newChannelForm.serverError = true;
-     }
-     });
-     };*/
+      var newChannelData = {
+        name: 'mohsen',
+        description: 'Salam',
+        type: 1,
+        members: '',
+        creator: 1
+      };
+      channelsService.sendNewChannel(newChannelData, function (response) {
+        console.log(response);
+        $log.info('New channel response: ' + response);
+        if (response.status) {
+          $ctrl.closeCreateChannel();
+        } else {
+          $log.error('Error sending new channel form to server.');
+          $log.error('Error message: ' + response.message);
+          //  $ctrl.forms.newChannelForm.serverError = true;
+        }
+      });
+    };
   }
 ]);
