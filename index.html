@@ -33,8 +33,10 @@
     <script src="app/app.db.js"></script>
     <script src="app/components/messenger/channels/channelsController.js"></script>
     <script src="app/components/messenger/channels/createChannelController.js"></script>
-    <script src="app/components/messenger/messages/messagesController.js"></script>
+    <script src="app/components/messenger/channels/channelDetailsController.js"></script>
     <script src="app/components/messenger/channels/channelsService.js"></script>
+    <script src="app/components/messenger/header/headerController.js"></script>
+    <script src="app/components/messenger/messages/messagesController.js"></script>
     <script src="app/components/messenger/messages/messagesService.js"></script>
     <script>
     // TODO: This is obviously temporary. Please remove after login implementation.
@@ -71,7 +73,7 @@
       } else {
         window.memberId = cookie;
       }
-      
+
       console.log('MemberId is set to: ' + window.memberId);
     })();
     </script>

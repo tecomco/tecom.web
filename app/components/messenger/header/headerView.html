@@ -1,41 +1,42 @@
-<div class="name">
-    <label>تیکام</label>
-    <div class="det">
-        <label>۴ عضو</label>
-        <label>توضیح گروه</label>
+<div ng-controller="headerController">
+    <div class="name">
+        <label>تیکام</label>
+        <div class="det">
+            <label>۴ عضو</label>
+            <label>توضیح گروه</label>
+        </div>
     </div>
-</div>
-<ul class="top-left">
-    <li>
-        <a href="#">
-            <i class="zmdi zmdi-more-vert"></i>
-        </a>
-    </li>
-    <li>
-        <a href="#">
-            <i class="zmdi zmdi-settings"></i>
-        </a>
-    </li>
-    <!-- <li>
+    <ul class="top-left">
+        <li>
+            <a href="#">
+                <i class="zmdi zmdi-more-vert"></i>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="zmdi zmdi-settings"></i>
+            </a>
+        </li>
+        <!-- <li>
         <a href="#">
             <i class="zmdi zmdi-favorite-outline"></i>
         </a>
     </li> -->
-    <li>
-        <div class="head-search">
-            <input type="text" placeholder="جستجو"/>
-            <i class="zmdi zmdi-search"></i>
-        </div>
-    </li>
-    <li>
-        <a href="#">
-            <i class="zmdi zmdi-edit"></i>
-            <!-- TODO this the channel edit btn -->
-        </a>
-    </li>
-    <!--<li>
+        <li>
+            <div class="head-search">
+                <input type="text" placeholder="جستجو"/>
+                <i class="zmdi zmdi-search"></i>
+            </div>
+        </li>
+        <li>
+            <a ng-click="openChannelDetailsModal()">
+                <i class="zmdi zmdi-edit"></i>
+            </a>
+        </li>
+        <!--<li>
         <a href="#">
             <i class="zmdi zmdi-email"></i>
         </a>
     </li> -->
-</ul>
+    </ul>
+</div>
