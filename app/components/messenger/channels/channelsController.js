@@ -11,7 +11,7 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
     };
 
     $scope.selectedChat = function () {
-      return $stateParams.chatId;
+      return $stateParams.slug;
     };
 
     $scope.filterByPublicAndPrivate = function (channel) {
@@ -29,11 +29,12 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
 
     $scope.openCreateChannelModal = function () {
       var modalInstance = $uibModal.open({
+        animation: true,
         templateUrl: 'myModalContent.html',
         controller: 'createChannelController',
         controllerAs: '$ctrl'
       });
-      modalInstance.result.then(function(){},function(){});
+      modalInstance.result.then(function(){},function(){$log.info('Modal dismissed at: ' + new Date());});
       $log.warn(modalInstance);
       $log.info('New channel modal opened.');
     };

@@ -12,14 +12,39 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
     };
 
     $ctrl.forms = {};
+    $ctrl.teamMembers = [];
+    var selectedMembers = [];
+
+    var makeSelectedMembersArray = function(){
+      selectedMembers = [];
+      selectedMembers.push(window.memberId);
+      for(var i=0; i<$ctrl.teamMembers.length;i++)
+      {
+        if($ctrl.teamMembers[i].selected == true)
+          selectedMembers.push($ctrl.teamMembers[i].id);
+      }
+    };
+
+    channelsService.getTeamMembers(window.teamId).then(function (event) {
+      $ctrl.teamMembers = event;
+      for(var i=0; i<$ctrl.teamMembers.length;i++)
+      {
+        $ctrl.teamMembers[i].selected = false;
+      };
+      $log.info('team members :');
+      $log.info(event);
+    }, function (status) {
+      $log.info('error getting team members :');
+      $log.error(status);
+    });
 
     $ctrl.closeCreateChannel = function () {
       $uibModalInstance.dismiss('cancel');
       $log.info('close');
-
     };
 
     $ctrl.createChannelSubmit = function () {
+      $log.info($ctrl.teamMembers);
       sendNewChannelData();
       $uibModalInstance.close();
       $log.info('New channel form submited.');
@@ -45,14 +70,15 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
       // members: '',
       // creator: 1
       // };
-
+      makeSelectedMembersArray();
       var newChannelData = {
         name: 'mohsen',
         description: 'Salam',
         type: 1,
-        members: '',
+        members: selectedMembers,
         creator: 1
       };
+
       channelsService.sendNewChannel(newChannelData, function (response) {
         console.log(response);
         $log.info('New channel response: ' + response);
