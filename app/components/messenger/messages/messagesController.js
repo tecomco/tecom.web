@@ -1,13 +1,11 @@
 'use strict';
 
-app.controller('messagesController', ['$scope', '$stateParams', 'messagesService',
-  function ($scope, $stateParams, messagesService) {
+app.controller('messagesController', ['$scope', '$stateParams', '$log', 'messagesService',
+  function ($scope, $stateParams, $log, messagesService) {
 
     $scope.messages = messagesService.getMessages();
 
-    // TODO: Remove this.
-    // $scope.textChanged = function (message) {
-    //   $scope.messages[0].body = message;
-    // };
+    $log.info('In messages:');
+    $log.info($stateParams);
   }
 ]);

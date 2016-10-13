@@ -10,7 +10,7 @@
         <ul>
             <li ng-repeat="channel in channels | filter: filterByPublicAndPrivate"
                 ng-class="{'active': channel.slug == selectedChat()}">
-                <a ui-sref=".messages({slug: '{{channel.slug}}'})">
+                <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     #
                     <span>{{channel.name}}</span>
                 </a>
@@ -28,7 +28,7 @@
         <ul>
             <li ng-repeat="direct in channels | filter: filterByDirect"
                 ng-class="{'active': '@' + direct.slug == selectedChat()}">
-                <a ui-sref=".messages({slug: '@{{direct.slug}}'})">
+                <a ui-sref=".messages({slug: '@{{direct.slug}}', channel: {{direct}} })">
                     <i ng-class="(direct.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
                     <span>{{direct.name}}</span>
                 </a>
@@ -94,19 +94,18 @@
             <h4 class="modal-title">ایجاد گروه جدید</h4>
         </div>
         <div class="modal-body">
-            <form name="forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
+            <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
                 <div class="modal-input">
                     <input type="text" name="name" ng-model="$ctrl.newChannel.name" ng-maxlength="32"
                            placeholder="نام گروه" required>
                     <span class="modal-err"
-                          ng-show="(forms.newChannelForm.name.$touched || forms.newChannelForm.$submitted) && !$ctrl.newChannel.name && forms.newChannelForm.name.$pristine">وارد کردن نام گروه الزامی است!</span>
-                    <span class="modal-err" ng-show="$ctrl.newChannel.name && forms.newChannelForm.name.$invalid">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
-                    <span>{{$ctrl.newChannel.name}}</span>
+                          ng-show="$ctrl.newChannelNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
+                    <span class="modal-err" ng-show="$ctrl.newChannelNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
                 </div>
                 <div class="modal-input">
                     <input type="text" name="description" ng-model="$ctrl.newChannel.description" ng-maxlength="256"
                            placeholder="توضیح گروه">
-                    <span class="modal-err" ng-show="forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+                    <span class="modal-err" ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
                 </div>
                 <label class="ws-checkbox">
                     <span>این گروه خصوصی است.</span>
@@ -119,7 +118,7 @@
                 <div class="modal-input">
                     <input type="submit" value="ایجاد گروه" class="btn btn-default">
                 </div>
-                <span class="modal-err" ng-show="forms.newChannelForm.serverError">خطا در اتصال به سرور</span>
+                <span class="modal-err" ng-show="$ctrl.newChannel.serverError">خطا در اتصال به سرور</span>
 
                 <h3>اعضای گروه</h3>
                 <div class="modal-input">

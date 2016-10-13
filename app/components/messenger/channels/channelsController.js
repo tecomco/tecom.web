@@ -1,8 +1,8 @@
 'use strict';
 
-app.controller('channelsController', ['$scope', '$stateParams', '$log',
+app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log',
   '$uibModal', 'dataBase', 'channelsService',
-  function ($scope, $stateParams, $log, $uibModal, dataBase, channelsService) {
+  function ($scope, $state, $stateParams, $log, $uibModal, dataBase, channelsService) {
 
     var channelType = {
       PUBLIC: 0,
@@ -25,6 +25,11 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
 
     channelsService.getChannels().then(function (data) {
       $scope.channels = data;
+      // var channel = $scope.channels.filter(function (channel) {
+      //   return (channel.slug === $stateParams.slug);
+      // });
+      //  $stateParams.channel = channel;
+      // $state.go('messenger.messages', {slug: channel.slug, channel: channel[0]}, {notify: false});
     });
 
     $scope.openCreateChannelModal = function () {
@@ -34,7 +39,10 @@ app.controller('channelsController', ['$scope', '$stateParams', '$log',
         controller: 'createChannelController',
         controllerAs: '$ctrl'
       });
-      modalInstance.result.then(function(){},function(){$log.info('Modal dismissed at: ' + new Date());});
+      modalInstance.result.then(function () {
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
       $log.warn(modalInstance);
       $log.info('New channel modal opened.');
     };

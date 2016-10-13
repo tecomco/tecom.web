@@ -1,9 +1,9 @@
 <div ng-controller="headerController">
     <div class="name">
-        <label>تیکام</label>
+        <label>{{channel.name}}</label>
         <div class="det">
-            <label>۴ عضو</label>
-            <label>توضیح گروه</label>
+            <label dir="rtl">{{channel.membersCount}} عضو</label>
+            <label ng-click="$scope.showAndEditChannelDetails()">مشخصات گروه</label>
         </div>
     </div>
     <ul class="top-left">

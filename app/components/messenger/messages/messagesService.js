@@ -1,6 +1,6 @@
 'use strict';
 
-app.service('messagesService', [function () {
+app.service('messagesService', ['$q' ,function ($q) {
 
   var messages = [];
 

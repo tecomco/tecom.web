@@ -35,6 +35,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         'header@messenger.messages': {
           templateUrl: 'app/components/messenger/header/headerView.html'
         }
+      },
+      params: {
+        channel: null,
+        slug: null
       }
     });
 });
