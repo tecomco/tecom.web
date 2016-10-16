@@ -465,7 +465,7 @@ a, a:hover, a:visited, a:focus {
 .modal-header {
     border: 0;
     padding: 50px;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     position: relative;
 }
 
@@ -499,10 +499,11 @@ a, a:hover, a:visited, a:focus {
     font-weight: 200;
     color: #188c67;
 }
-.modal-header label{
-  font-size: 100;
-  font-size: 18px;
-  color: #999;
+
+.modal-header label {
+    font-size: 100;
+    font-size: 18px;
+    color: #999;
 }
 
 .modal-dialog {
@@ -601,18 +602,19 @@ a, a:hover, a:visited, a:focus {
 }
 
 .g-m-one {
-    padding: 16px 40px;
+    padding: 8px 0px 8px 16px;
 }
 
 .g-m-one img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .g-m-one label {
     padding-right: 16px;
+    font-size: 18px;
 }
 
 .g-m-one .ws-checkbox {
@@ -661,13 +663,14 @@ a, a:hover, a:visited, a:focus {
 }
 
 .modal-err {
+    border-radius: 4px;
     color: #fff;
-    left: -17%;
-    right: 80%;
-    top: 8px;
+    font-weight: 100;
+    left: 101%;
     padding: 8px 16px;
     position: absolute;
-    border-radius: 4px;
+    right: -25%;
+    top: 0;
     background: rgb(226, 89, 89);
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
