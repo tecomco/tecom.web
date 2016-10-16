@@ -38,7 +38,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       },
       params: {
         channel: null,
-        slug: null
+        slug: null,
       }
     });
 });

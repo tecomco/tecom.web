@@ -11,7 +11,7 @@
             <li ng-repeat="channel in channels | filter: filterByPublicAndPrivate"
                 ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
-                    #
+                    <i ng-class="(channel.type === channelType.PRIVATE) ? 'fa fa-lock' : 'fa fa-hashtag'"></i>
                     <span>{{channel.name}}</span>
                 </a>
             </li>
@@ -36,58 +36,68 @@
         </ul>
     </div>
 
-    <!-- Channel Details Modal -->
-    <script type="text/ng-template" id="channelDetailsModal.html">
+    <!-- Channel Create Modal -->
+    <script type="text/ng-template" id="myModalContent.html">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"
-                    ng-click="$ctrl.closeDetailsChannel()">&times;</button>
-            <h4>نام چنل/گروه</h4>
-            <label>توضیحات چنل/گروه</label>
+                    ng-click="$ctrl.closeCreateChannel()">&times;</button>
+            <h4 class="modal-title">ایجاد گروه جدید</h4>
         </div>
-        <div class="modal-body two-part-modal">
-            <div class="container-fluid">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-6">
-                    <h3>اعضای گروه</h3>
-                    <div class="g-members">
-                        <div class="g-m-one">
-                            <img src=""/>
-                            <label>آرین رحیمی</label>
-                            <label class="ws-checkbox">
-                                <input type="checkbox">
-                                <div class="checkbox-stat">
-                                    <i class="zmdi zmdi-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="g-m-one">
-                            <img src=""/>
-                            <label>اکبر سینایی</label>
-                            <label class="ws-checkbox">
-                                <input type="checkbox">
-                                <div class="checkbox-stat">
-                                    <i class="zmdi zmdi-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="g-m-one">
-                            <img src=""/>
-                            <label>سینا اکبری</label>
-                            <label class="ws-checkbox">
-                                <input type="checkbox">
-                                <div class="checkbox-stat">
-                                    <i class="zmdi zmdi-check"></i>
-                                </div>
-                            </label>
+        <div class="modal-body">
+            <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
+                <div class="modal-input">
+                    <input type="text" name="name" ng-model="$ctrl.newChannel.name" ng-maxlength="32"
+                           placeholder="نام گروه" required>
+                    <span class="modal-err"
+                          ng-show="$ctrl.newChannelNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
+                    <span class="modal-err" ng-show="$ctrl.newChannelNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+                </div>
+                <div class="modal-input">
+                    <input type="text" name="description" ng-model="$ctrl.newChannel.description" ng-maxlength="256"
+                           placeholder="توضیح گروه">
+                    <span class="modal-err" ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+                </div>
+                <label class="ws-checkbox">
+                    <span>این گروه خصوصی است.</span>
+                    <input type="checkbox" ng-model="$ctrl.newChannel.isPrivate">
+                    <div class="checkbox-stat">
+                        <i class="zmdi zmdi-check"></i>
+                    </div>
+                </label>
+
+                <div class="modal-input">
+                    <input type="submit" value="ایجاد گروه" class="btn btn-default">
+                </div>
+                <span class="modal-err" ng-show="$ctrl.newChannel.serverError">خطا در اتصال به سرور</span>
+
+                <h3>اعضای گروه</h3>
+                <div class="modal-input">
+                    <input type="text" name="search" ng-model="$ctrl.newChannel.search"
+                           placeholder="جستجو">
+                </div>
+                <div class="modal-body two-part-modal">
+                    <div class="container-fluid">
+                        <div class="g-members">
+                            <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
+                                <img ng-src="static/img/user-def.png"/>
+                                <label>{{teamMember.full_name}}</label>
+                                <label dir="ltr">(@{{teamMember.username}})</label>
+                                <label class="ws-checkbox">
+                                    <input type="checkbox" ng-model="teamMember.selected">
+                                    <div class="checkbox-stat">
+                                        <i class="zmdi zmdi-check"></i>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </script>
 
     <!-- Channel Create Modal -->
-    <script type="text/ng-template" id="myModalContent.html">
+    <script type="text/ng-template" id="newDirect.html">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"
                     ng-click="$ctrl.closeCreateChannel()">&times;</button>

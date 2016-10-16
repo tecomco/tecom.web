@@ -1,9 +1,9 @@
-<div ng-controller="headerController">
+<div ng-controller="headerController as $ctrl">
     <div class="name">
         <label>{{channel.name}}</label>
         <div class="det">
             <label dir="rtl">{{channel.membersCount}} عضو</label>
-            <label ng-click="$scope.showAndEditChannelDetails()">مشخصات گروه</label>
+            <label>{{channel.description}}</label>
         </div>
     </div>
     <ul class="top-left">
@@ -39,4 +39,37 @@
         </a>
     </li> -->
     </ul>
+
+    <!-- Channel Details Modal -->
+    <script type="text/ng-template" id="channelDetailsModal.html">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+                    ng-click="$ctrl.closeDetailsChannel()">&times;</button>
+            <h4>{{$ctrl.channel.name}}</h4>
+            <label>توضیحات گروه</label>
+            <h2>{{$ctrl.channel.description}}</h2>
+        </div>
+        <div class="modal-body two-part-modal">
+            <div class="container-fluid">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <h3>اعضای گروه</h3>
+                    <div class="g-members">
+                        <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' " class="g-m-one">
+                            <img ng-src="static/img/user-def.png"/>
+                            <label>{{teamMember.full_name}}</label>
+                            <label dir="ltr">(@{{teamMember.username}})</label>
+                            <!--<label class="ws-checkbox">-->
+                                <!--<input type="checkbox" ng-model="teamMember.selected">-->
+                                <!--<div class="checkbox-stat">-->
+                                    <!--<i class="zmdi zmdi-check"></i>-->
+                                <!--</div>-->
+                            <!--</label>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
 </div>

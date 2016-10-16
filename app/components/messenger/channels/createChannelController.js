@@ -5,7 +5,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
 
     var $ctrl = this;
 
-    var channelType = {
+    $ctrl.channelType = {
       PUBLIC: 0,
       PRIVATE: 1,
       DIRECT: 2
@@ -61,7 +61,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
       makeSelectedMembersArray();
       $log.info(selectedMembers);
       var newChannelType = $ctrl.newChannel.isPrivate ?
-        channelType.PRIVATE : channelType.PUBLIC;
+        $ctrl.channelType.PRIVATE : $ctrl.channelType.PUBLIC;
       var newChannelData = {
         name: $ctrl.newChannel.name,
         description: $ctrl.newChannel.description,

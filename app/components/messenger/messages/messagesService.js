@@ -1,6 +1,6 @@
 'use strict';
 
-app.service('messagesService', ['$q' ,function ($q) {
+app.service('messagesService', ['$q' , 'socket', function ($q, socket) {
 
   var messages = [];
 
@@ -15,6 +15,9 @@ app.service('messagesService', ['$q' ,function ($q) {
         };
       }
       return messages;
+    },
+    sendMessage: function (data, callback) {
+      socket.emit('message:send', data, callback);
     }
   };
 }]);

@@ -5,7 +5,8 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log', 'message
 
     $scope.messages = messagesService.getMessages();
 
-    $log.info('In messages:');
-    $log.info($stateParams);
+    $scope.sendMessage = function(){
+      $log.info($scope.inputMessage);
+    }
   }
 ]);
