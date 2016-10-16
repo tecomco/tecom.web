@@ -26,18 +26,18 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
     channelsService.getChannels().then(function (data) {
       $scope.channels = data;
       if($stateParams.slug != null) {
-        var slugTmp = $stateParams.slug.replace('@', '');
-        var channel = $scope.channels.filter(function (channel) {
-          return (channel.slug === slugTmp);
+        var tmpSlug = $stateParams.slug.replace('@', '');
+        var tmpChannel = $scope.channels.find(function(channel) {
+          return (channel.slug === tmpSlug);
         });
-        $stateParams.channel = channel[0];
+        $stateParams.channel = tmpChannel;
       }
     });
 
     $scope.openCreateChannelModal = function () {
       var modalInstance = $uibModal.open({
         animation: true,
-        templateUrl: 'myModalContent.html',
+        templateUrl: 'createNewChannelModal.html',
         controller: 'createChannelController',
         controllerAs: '$ctrl'
       });

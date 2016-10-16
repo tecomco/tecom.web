@@ -18,10 +18,10 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
 
     var makeSelectedMembersArray = function () {
       selectedMembers = [];
-      selectedMembers.push(window.memberId);
+      selectedMembers.push(window.memberId.toString());
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
-        if ($ctrl.teamMembers[i].selected == true)
-          selectedMembers.push($ctrl.teamMembers[i].id);
+        if ($ctrl.teamMembers[i].selected === true)
+          selectedMembers.push($ctrl.teamMembers[i].id.toString());
       }
     };
 
@@ -66,9 +66,10 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
         name: $ctrl.newChannel.name,
         description: $ctrl.newChannel.description,
         type: newChannelType,
-        members: selectedMembers,
+        member_ids: selectedMembers,
         creator: window.memberId
       };
+      $log.info(newChannelData);
 
       channelsService.sendNewChannel(newChannelData, function (response) {
         console.log(response);
