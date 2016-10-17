@@ -25,15 +25,26 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
         socket.emit('channel:create', data, callback);
       },
       getTeamMembers: function (teamId) {
-        var defferedTeamMember = $q.defer();
+        var defferedTeamMembers = $q.defer();
         $http({method: 'GET', url: '/api/v1/teams/'+teamId+'/members/'}).
           success(function(data, status, headers, config){
-            defferedTeamMember.resolve(data);
+            defferedTeamMembers.resolve(data);
         }).
           error(function(data, status, headers, config){
-            defferedTeamMember.reject(status);
+            defferedTeamMembers.reject(status);
         });
-        return defferedTeamMember.promise;
+        return defferedTeamMembers.promise;
+      },
+      getChannelMembers: function (channelId) {
+        var defferedChannelMembers = $q.defer();
+        $http({method: 'GET', url: '/api/v1/messenger/channels/'+channelId+'/details/'}).
+        success(function(data, status, headers, config){
+          defferedChannelMembers.resolve(data);
+        }).
+        error(function(data, status, headers, config){
+          defferedChannelMembers.reject(status);
+        });
+        return defferedChannelMembers.promise;
       }
     };
   }

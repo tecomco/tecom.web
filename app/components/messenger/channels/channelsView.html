@@ -96,7 +96,7 @@
     <script type="text/ng-template" id="newDirectModal.html">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeCreateChannel()">&times;</button>
-            <h4 class="modal-title">ایجاد گروه جدید</h4>
+            <h4 class="modal-title">مکالمه مستقیم</h4>
         </div>
         <div class="modal-body two-part-modal">
             <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
@@ -111,12 +111,6 @@
                                 <img ng-src="static/img/user-def.png"/>
                                 <label>{{teamMember.full_name}}</label>
                                 <label dir="ltr">(@{{teamMember.username}})</label>
-                                <label class="ws-checkbox">
-                                    <input type="checkbox" ng-model="teamMember.selected">
-                                    <div class="checkbox-stat">
-                                        <i class="zmdi zmdi-check"></i>
-                                    </div>
-                                </label>
                             </div>
                         </div>
                     </div>

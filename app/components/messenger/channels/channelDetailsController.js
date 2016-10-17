@@ -4,8 +4,13 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
   function ($uibModalInstance, $log ,channelInfo, channelsService) {
 
     var $ctrl = this;
-    $ctrl.teamMembers = [];
-    $ctrl.channelMembers = [];
+
+    $ctrl.editMode = false;
+    $ctrl.isAdmin = true;
+
+    $ctrl.editChannel = function(){
+        $log.info("edit");
+    };
 
     $ctrl.channel = channelInfo;
     $log.info($ctrl.channel);
@@ -15,14 +20,10 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
       $log.info('Channel details modal closed.');
     };
 
-    channelsService.getTeamMembers(window.teamId).then(function (event) {
-      $ctrl.teamMembers = event;
-      for (var i = 0; i < $ctrl.teamMembers.length; i++) {
-        $ctrl.teamMembers[i].selected = false;
-      };
+    channelsService.getChannelMembers($ctrl.channel.id).then(function(event) {
+      $ctrl.channel = event;
     }, function (status) {
-      $log.info('error getting team members :');
-      $log.error(status);
+      $log.info('error getting channel members :' ,status);
     });
   }
 ]);

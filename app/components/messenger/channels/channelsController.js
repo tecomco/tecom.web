@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log',
-  '$uibModal', 'dataBase', 'channelsService',
-  function ($scope, $state, $stateParams, $log, $uibModal, dataBase, channelsService) {
+  '$uibModal', /*'dataBase',*/ 'channelsService',
+  function ($scope, $state, $stateParams, $log, $uibModal, /*dataBase,*/ channelsService) {
 
     $scope.channelType = {
       PUBLIC: 0,
@@ -30,6 +30,11 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
         var tmpChannel = $scope.channels.find(function(channel) {
           return (channel.slug === tmpSlug);
         });
+        if(tmpSlug === undefined)
+        {
+          // channelsService.checkIfSlugIsValid($stateParams.slug)
+        }
+        $log.info("tmpChannel : ", tmpChannel);
         $stateParams.channel = tmpChannel;
       }
     });

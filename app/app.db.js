@@ -1,5 +1,5 @@
 'use strict';
-
+/*
 app.service('dataBase', function(pouchDB) {
   var db = pouchDB('myDB');
 
@@ -37,4 +37,4 @@ app.service('dataBase', function(pouchDB) {
         .catch(error);
     }
   };
-});
+});*/
