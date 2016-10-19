@@ -43,25 +43,32 @@
     <!-- Channel Details Modal -->
     <script type="text/ng-template" id="channelDetailsModal.html">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeChannelDetailsModal()">&times;</button>
+            <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeDetailsModal()">&times;</button>
             <h4 class="modal-title">اطلاعات گروه</h4>
         </div>
         <div class="modal-body two-part-modal">
-            <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.editChannelDetailsSubmit()" novalidate>
+            <form name="$ctrl.forms.detailsForm" ng-submit="$ctrl.editChannelDetailsSubmit()" novalidate>
                 <div class="container-fluid">
                     <div class="col-sm-7">
+                        <div ng-show="!$ctrl.editMode">
+                            <h1>{{$ctrl.channel.name}}</h1>
+                        </div>
                         <div class="modal-input" ng-show="$ctrl.editMode">
-                            <input type="text" name="name" ng-model="$ctrl.newChannel.name" ng-maxlength="32" required>
+                            <input type="text" name="name" ng-model="$ctrl.details.name" ng-maxlength="32" required>
                             <span class="modal-err" ng-show="$ctrl.newChannelNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
                             <span class="modal-err" ng-show="$ctrl.newChannelNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
                         </div>
+                        <div ng-show="!$ctrl.editMode">
+                            <label>توضیحات گروه :</label>
+                            <h2>{{$ctrl.channel.description}}</h2>
+                        </div>
                         <div class="modal-input" ng-show="$ctrl.editMode">
-                            <input type="text" name="description" ng-model="$ctrl.newChannel.description" ng-maxlength="256">
-                            <span class="modal-err" ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+                            <input type="text" name="description" ng-model="$ctrl.details.description" ng-maxlength="256">
+                            <span class="modal-err" ng-show="$ctrl.forms.detailsForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
                         </div>
                         <label class="ws-checkbox" ng-show="$ctrl.editMode">
                             <span>این گروه خصوصی است.</span>
-                            <input type="checkbox" ng-model="$ctrl.newChannel.isPrivate">
+                            <input type="checkbox" ng-model="$ctrl.details.isPrivate">
                             <div class="checkbox-stat">
                                 <i class="zmdi zmdi-check"></i>
                             </div>
@@ -70,22 +77,27 @@
                     <div class="col-sm-5">
                         <h3>اعضای گروه</h3>
                         <div class="modal-input" ng-show="$ctrl.editMode">
-                            <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
+                            <input type="text" name="search" ng-model="$ctrl.details.search" placeholder="جستجو">
                         </div>
                         <div class="g-members">
-                            <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
+                            <div ng-repeat="channelMember in $ctrl.channel.members | orderBy : 'username' | filter : {full_name : $ctrl.details.search}" class="g-m-one">
                                 <img ng-src="static/img/user-def.png"/>
-                                <label>{{teamMember.full_name}}</label>
-                                <label dir="ltr">(@{{teamMember.username}})</label>
+                                <label>{{channelMember.full_name}}</label>
+                                <label dir="ltr">(@{{channelMember.username}})</label>
                             </div>
                         </div>
+                        <div class="modal-input">
+                            <button ng-click="$ctrl.addMember()">اضافه کردن عضو</button>
+                        </div>
                     </div>
-                    <div class="clearfix">
 
                     </div>
-                    <div class="modal-input">
+                    <div class="modal-input" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
+                        <button ng-click="$ctrl.editChannel()">ویرایش اطلاعات گروه</button>
+                    </div>
+                    <div class="modal-input" ng-show="$ctrl.editMode">
                         <input type="submit" value="ذخیره تغییرات" class="btn btn-default">
-                        <span class="modal-err" ng-show="$ctrl.newChannel.serverError">خطا در اتصال به سرور</span>
+                        <span class="modal-err" ng-show="$ctrl.details.serverError">خطا در اتصال به سرور</span>
                     </div>
                 </div>
             </form>

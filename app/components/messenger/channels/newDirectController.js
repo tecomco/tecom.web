@@ -25,14 +25,6 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
       }
     };
 
-    $ctrl.newChannelNameCheckEmpty = function (form) {
-      return ((form.name.$touched || form.$submitted) && (!form.name.$viewValue))
-    };
-
-    $ctrl.newChannelNameCheckMax = function (form) {
-      return (form.name.$viewValue && form.name.$invalid)
-    };
-
     channelsService.getTeamMembers(window.teamId).then(function (event) {
       $ctrl.teamMembers = event;
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
@@ -85,15 +77,11 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
     };
 
     angular.element(document).ready(function () {
-      initializeNewChannelForm();
+      initializeNewDirect();
     });
 
-    var initializeNewChannelForm = function () {
-      $ctrl.forms.newChannelForm.name.$viewValue = '';
-      $ctrl.forms.newChannelForm.description.$viewValue = '';
-      $ctrl.newChannel.isPrivate = false;
+    var initializeNewDirect = function () {
       $ctrl.newChannel.serverError = false;
-      $ctrl.forms.newChannelForm.$setPristine();
     };
   }
 ]);

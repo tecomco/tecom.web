@@ -44,14 +44,14 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
     });
 
     $ctrl.closeCreateChannel = function () {
-      $uibModalInstance.dismiss('cancel');
+      $uibModalInstance.close();
       $log.info('close');
     };
 
     $ctrl.createChannelSubmit = function () {
+      $ctrl.newChannel.serverError = false;
       if ($ctrl.forms.newChannelForm.$valid === true) {
         sendNewChannelData();
-        $uibModalInstance.close();
         $log.info('New channel form submited.');
       }
     };
@@ -67,7 +67,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
         description: $ctrl.newChannel.description,
         type: newChannelType,
         member_ids: selectedMembers,
-        creator: window.memberId
+        creator: window.memberId,
+        team: window.teamId
       };
       $log.info(newChannelData);
 
@@ -75,10 +76,9 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
         console.log(response);
         $log.info('New channel response: ' + response);
         if (response.status) {
-          $ctrl.closeCreateChannel();
+           $ctrl.closeCreateChannel();
         } else {
-          $log.error('Error sending new channel form to server.');
-          $log.error('Error message: ' + response.message);
+          $log.error('Error sending new channel form to server :' ,response.message);
           $ctrl.newChannel.serverError = true;
         }
       });
@@ -89,8 +89,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
     });
 
     var initializeNewChannelForm = function () {
-      $ctrl.forms.newChannelForm.name.$viewValue = '';
-      $ctrl.forms.newChannelForm.description.$viewValue = '';
+      $ctrl.newChannel.name = '';
+      $ctrl.newChannel.description = '';
       $ctrl.newChannel.isPrivate = false;
       $ctrl.newChannel.serverError = false;
       $ctrl.forms.newChannelForm.$setPristine();

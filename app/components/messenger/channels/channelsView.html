@@ -10,7 +10,7 @@
         <ul>
             <li ng-repeat="channel in channels | filter: filterByPublicAndPrivate" ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
-                    #
+                    <i ng-class="(channel.type == channelType.PRIVATE) ? 'fa fa-lock' : 'fa fa-hashtag'"></i>
                     <span>{{channel.name}}</span>
                 </a>
             </li>
