@@ -37,7 +37,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
       $ctrl.teamMembers = event;
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
         $ctrl.teamMembers[i].selected = false;
-      };
+      }
+      ;
     }, function (status) {
       $log.info('error getting team members : ', status);
     });
@@ -67,12 +68,19 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
       };
 
       channelsService.sendNewChannel(newChannelData, function (response) {
-        $log.info('New channel response: ' + response);
+        $log.info('New channel response: ', response);
         if (response.status) {
-           $ctrl.closeCreateChannel();
-        } else {
-          $log.error('Error sending new channel form to server :' ,response.message);
-          $ctrl.newChannel.serverError = true;
+          $ctrl.closeCreateChannel();
+        }
+        else {
+          if (response.message.indexOf('Duplicate slug in team.') != -1) {
+            $log.error('Error : Dublicate Slug');
+            $ctrl.newChannel.dublicateError = true;
+          }
+          else {
+            $ctrl.newChannel.serverError = true;
+            $log.error('Error sending new channel form to server :', response.message);
+          }
         }
       });
     };
@@ -85,6 +93,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
       $ctrl.newChannel.name = '';
       $ctrl.newChannel.description = '';
       $ctrl.newChannel.isPrivate = false;
+      $ctrl.newChannel.dublicateError = false;
       $ctrl.newChannel.serverError = false;
       $ctrl.forms.newChannelForm.$setPristine();
     };
