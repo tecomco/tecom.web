@@ -17,7 +17,6 @@ app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal
       modalInstance.result.then(function () {
       }, function () {
       });
-      $log.info('Channel details modal opened.');
     };
 
     $scope.$watch(
@@ -30,7 +29,6 @@ app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal
     );
 
     $scope.showAndEditChannelDetails = function () {
-      $log("Details");
     };
   }
 ]);

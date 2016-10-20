@@ -13,8 +13,6 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     socket.on('channel:new', function (data) {
       deferredNewChannel.resolve(data);
-      $log.info('new channel promise : ');
-      $log.info(deferredNewChannel.promise);
     });
 
     return {
@@ -23,6 +21,9 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       },
       sendNewChannel: function (data, callback) {
         socket.emit('channel:create', data, callback);
+      },
+      getNewChannel: function(){
+        return deferredNewChannel.promise;
       },
       getTeamMembers: function (teamId) {
         var defferedTeamMembers = $q.defer();

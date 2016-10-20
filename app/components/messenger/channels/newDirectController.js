@@ -31,27 +31,22 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
         $ctrl.teamMembers[i].selected = false;
       };
     }, function (status) {
-      $log.info('error getting team members :');
-      $log.error(status);
+      $log.info('error getting team members : ', status);
     });
 
     $ctrl.closeCreateChannel = function () {
       $uibModalInstance.dismiss('cancel');
-      $log.info('close');
     };
 
     $ctrl.createChannelSubmit = function () {
       if ($ctrl.forms.newChannelForm.$valid === true) {
         sendNewChannelData();
         $uibModalInstance.close();
-        $log.info('New channel form submited.');
       }
     };
 
     var sendNewChannelData = function () {
-      $log.info('Sending Form to Server.');
       makeSelectedMembersArray();
-      $log.info(selectedMembers);
       var newChannelType = $ctrl.newChannel.isPrivate ?
         $ctrl.channelType.PRIVATE : $ctrl.channelType.PUBLIC;
       var newChannelData = {
@@ -61,16 +56,13 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
         member_ids: selectedMembers,
         creator: window.memberId
       };
-      $log.info(newChannelData);
 
       channelsService.sendNewChannel(newChannelData, function (response) {
-        console.log(response);
         $log.info('New channel response: ' + response);
         if (response.status) {
           $ctrl.closeCreateChannel();
         } else {
-          $log.error('Error sending new channel form to server.');
-          $log.error('Error message: ' + response.message);
+          $log.error('Error sending new channel form to server : ', response.message);
           $ctrl.newChannel.serverError = true;
         }
       });

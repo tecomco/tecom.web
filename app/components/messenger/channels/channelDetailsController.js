@@ -18,14 +18,12 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
     };
 
     $ctrl.channel = channelInfo;
-    $log.info($ctrl.channel);
 
     $ctrl.addMember = function(){
     };
 
     $ctrl.closeDetailsModal = function () {
       $uibModalInstance.close();
-      $log.info('Channel details modal closed.');
     };
 
     channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
