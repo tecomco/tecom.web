@@ -5,6 +5,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     var deferredInit = $q.defer();
     var deferredNewChannel = $q.defer();
+    //var deferredDetailsEditedChannel = $q.defer();
 
     socket.on('init', function (data) {
       $log.info('Socket opened and connection established successfuly.');
@@ -14,6 +15,10 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
     socket.on('channel:new', function (data) {
       deferredNewChannel.resolve(data);
     });
+
+    /*socket.on('channel:edit:details', function (data) {
+      deferredDetailsEditedChannel.resolve(data);
+    });*/
 
     return {
       getChannels: function () {
@@ -46,6 +51,10 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
           defferedChannelMembers.reject(status);
         });
         return defferedChannelMembers.promise;
+      },
+      sendDetailsEditedChannel: function(channel, callback){
+        $log.info("Emit");
+        socket.emit('channel:edit:details', channel, callback);
       }
     };
   }

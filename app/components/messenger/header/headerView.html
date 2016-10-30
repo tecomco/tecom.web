@@ -91,13 +91,12 @@
                         </div>
                     </div>
 
-                    </div>
                     <div class="modal-input" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
                         <button ng-click="$ctrl.editChannel()">ویرایش اطلاعات گروه</button>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.editMode">
                         <input type="submit" value="ذخیره تغییرات" class="btn btn-default">
-                        <span class="modal-err" ng-show="$ctrl.details.serverError">خطا در اتصال به سرور</span>
+                        <span class="modal-err" ng-show="$ctrl.details.serverError && $ctrl.editMode">خطا در اتصال به سرور</span>
                     </div>
                 </div>
             </form>
