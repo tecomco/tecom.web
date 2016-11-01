@@ -80,4 +80,5 @@ module.exports = function (grunt) {
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev', 'jsdoc']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
   grunt.registerTask('ui', ['ngconstant:ui']);
+  grunt.registerTask('lint', ['jshint']);
 };
