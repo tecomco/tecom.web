@@ -25,8 +25,21 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
       }
     };
 
+    Array.prototype.getIndexBy = function (name, value) {
+      for (var i = 0; i < this.length; i++) {
+        if (this[i][name] == value) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
     channelsService.getTeamMembers(window.teamId).then(function (event) {
       $ctrl.teamMembers = event;
+      var ownIndex =  $ctrl.teamMembers.getIndexBy('id', window.memberId);
+      if (ownIndex > -1) {
+        $ctrl.teamMembers.splice(ownIndex, 1);
+      }
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
         $ctrl.teamMembers[i].selected = false;
       };

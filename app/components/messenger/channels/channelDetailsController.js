@@ -34,6 +34,8 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
     };
 
     $ctrl.editChannelDetailsSubmit = function () {
+      $ctrl.forms.detailsForm.$setPristine();
+
       var type = $ctrl.details.isPrivate ?
         $ctrl.channelType.PRIVATE : $ctrl.channelType.PUBLIC;
       var editedData = {
@@ -61,6 +63,18 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
       );
     };
 
+    angular.element(document).ready(function () {
+      initializeDetailsForm();
+    });
+
+    var initializeDetailsForm = function () {
+      $ctrl.editMode = true;
+      $ctrl.details.dublicateError = false;
+      $ctrl.details.serverError = false;
+      $ctrl.forms.detailsForm.$setPristine();
+      $ctrl.forms.detailsForm.$submitted = false;
+      $log.info($ctrl.forms.detailsForm);
+    };
 
     channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
       $ctrl.channel = event;
