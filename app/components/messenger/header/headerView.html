@@ -48,13 +48,40 @@
             <h4 class="modal-title">اطلاعات گروه</h4>
         </div>
         <div class="modal-body two-part-modal">
-            <form name="$ctrl.forms.detailsForm"
+            <form name="$ctrl.forms.detailsForm" ng-show="$ctrl.editMode"
                   ng-submit="$ctrl.editChannelDetailsSubmit()" novalidate>
-                <div class="modal-input">
-                    <input type="text" name="name"
-                           ng-model="$ctrl.details.name"
-                           ng-maxlength="32" required>
+                <div class="container-fluid">
+                        <div class="modal-input">
+                            <input type="text" name="name"
+                                   ng-model="$ctrl.details.name"
+                                   ng-maxlength="32" required>
+                            <span class="modal-err"
+                                  ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.detailsForm)">وارد کردن نام گروه الزامی است!</span>
+                            <span class="modal-err"
+                                  ng-show="$ctrl.formNameCheckMax($ctrl.forms.detailsForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+                        </div>
+                        <div class="modal-input">
+                            <input type="text" name="description"
+                                   ng-model="$ctrl.details.description"
+                                   ng-maxlength="256">
+                            <span class="modal-err"
+                                  ng-show="$ctrl.forms.detailsForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+                        </div>
+                        <label class="ws-checkbox">
+                            <span>این گروه خصوصی است.</span>
+                            <input type="checkbox"
+                                   ng-model="$ctrl.details.isPrivate">
+                            <div class="checkbox-stat">
+                                <i class="zmdi zmdi-check"></i>
+                            </div>
+                        </label>
+                    <div class="modal-input">
+                        <input type="submit" value="ذخیره تغییرات"
+                               class="btn btn-default">
+                        <span class="modal-err"
+                              ng-show="$ctrl.details.serverError">خطا در اتصال به سرور</span>
                     </div>
+                </div>
             </form>
             <div ng-show="!$ctrl.editMode" class="container-fluid">
                 <div class="col-sm-7">
