@@ -19,6 +19,9 @@ app.factory('socket', ['$rootScope', 'ENV', 'authService',
       query: {
         username: 'test_user',
         memberId: window.memberId
+      },
+      extraHeaders: {
+        Connection: 'keep-alive'
       }
     });
 
