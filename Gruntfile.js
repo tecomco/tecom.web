@@ -17,7 +17,9 @@ module.exports = function (grunt) {
         'globals': {
           'angular': true,
           'app': true,
-          'io': true
+          'io': true,
+          'document': true,
+          'window': true
         }
       }
     },

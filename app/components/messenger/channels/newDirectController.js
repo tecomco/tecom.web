@@ -1,7 +1,7 @@
 'use strict';
 
-app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsService',
-  function ($uibModalInstance, $log, channelsService) {
+app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage',
+  function ($uibModalInstance, $log, channelsService, $localStorage) {
 
     var $ctrl = this;
 
@@ -32,17 +32,17 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
         }
       }
       return -1;
-    }
+    };
 
-    channelsService.getTeamMembers(window.teamId).then(function (event) {
+    channelsService.getTeamMembers($localStorage.decodedToken.memberships[0].team_id).then(function (event) {
       $ctrl.teamMembers = event;
-      var ownIndex =  $ctrl.teamMembers.getIndexBy('id', window.memberId);
+      var ownIndex = $ctrl.teamMembers.getIndexBy('id', window.memberId);
       if (ownIndex > -1) {
         $ctrl.teamMembers.splice(ownIndex, 1);
       }
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
         $ctrl.teamMembers[i].selected = false;
-      };
+      }
     }, function (status) {
       $log.info('error getting team members : ', status);
     });

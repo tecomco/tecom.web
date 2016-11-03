@@ -21,7 +21,7 @@ app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal
 
     $scope.$watch(
       function () {
-        return $stateParams.channel
+        return $stateParams.channel;
       },
       function handleFooChange(newValue, oldValue) {
         $scope.channel = $stateParams.channel;

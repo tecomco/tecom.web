@@ -1,10 +1,10 @@
 'use strict';
 
-app.factory('socket', ['$rootScope', 'ENV', 'authService',
-  function ($rootScope, ENV, authService) {
+app.factory('socket', ['$rootScope', '$localStorage','ENV', 'authService',
+  function ($rootScope, $localStorage, ENV, authService) {
 
     // TODO: Change this!
-    authService.login('test', 'test123');
+    authService.login('test@gmail.com', 'test123');
 
     // TODO: Choose a better approach :/
     if (ENV.name === 'ui') {
@@ -17,8 +17,7 @@ app.factory('socket', ['$rootScope', 'ENV', 'authService',
     var socket = io.connect(ENV.socketUri, {
       path: '/ws/',
       query: {
-        username: 'test_user',
-        memberId: window.memberId
+        token: $localStorage.userToken
       },
       extraHeaders: {
         Connection: 'keep-alive'

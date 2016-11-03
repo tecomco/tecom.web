@@ -5,7 +5,7 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log', 'message
 
     $scope.messages = messagesService.getMessages();
 
-    $scope.sendMessage = function(){
-    }
+    $scope.sendMessage = function () {
+    };
   }
 ]);

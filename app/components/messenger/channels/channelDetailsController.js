@@ -29,6 +29,14 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
     $ctrl.addMember = function () {
     };
 
+    $ctrl.formNameCheckEmpty = function (form) {
+      return ((form.name.$touched || form.$submitted) && (!form.name.$viewValue));
+    };
+
+    $ctrl.formNameCheckMax = function (form) {
+      return (form.name.$viewValue && form.name.$invalid);
+    };
+
     $ctrl.closeDetailsModal = function () {
       $uibModalInstance.close();
     };
@@ -68,7 +76,7 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
     });
 
     var initializeDetailsForm = function () {
-      $ctrl.editMode = true;
+      $ctrl.editMode = false;
       $ctrl.details.dublicateError = false;
       $ctrl.details.serverError = false;
       $ctrl.forms.detailsForm.$setPristine();

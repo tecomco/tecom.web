@@ -17,8 +17,8 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
     });
 
     /*socket.on('channel:edit:details', function (data) {
-      deferredDetailsEditedChannel.resolve(data);
-    });*/
+     deferredDetailsEditedChannel.resolve(data);
+     });*/
 
     return {
       getChannels: function () {
@@ -27,32 +27,34 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       sendNewChannel: function (data, callback) {
         socket.emit('channel:create', data, callback);
       },
-      getNewChannel: function(){
+      getNewChannel: function () {
         return deferredNewChannel.promise;
       },
       getTeamMembers: function (teamId) {
         var defferedTeamMembers = $q.defer();
-        $http({method: 'GET', url: '/api/v1/teams/'+teamId+'/members/'}).
-          success(function(data, status, headers, config){
-            defferedTeamMembers.resolve(data);
-        }).
-          error(function(data, status, headers, config){
-            defferedTeamMembers.reject(status);
+        $http({
+          method: 'GET',
+          url: '/api/v1/teams/' + teamId + '/members/'
+        }).success(function (data, status, headers, config) {
+          defferedTeamMembers.resolve(data);
+        }).error(function (data, status, headers, config) {
+          defferedTeamMembers.reject(status);
         });
         return defferedTeamMembers.promise;
       },
       getChannelMembers: function (channelId) {
         var defferedChannelMembers = $q.defer();
-        $http({method: 'GET', url: '/api/v1/messenger/channels/'+channelId+'/details/'}).
-        success(function(data, status, headers, config){
+        $http({
+          method: 'GET',
+          url: '/api/v1/messenger/channels/' + channelId + '/details/'
+        }).success(function (data, status, headers, config) {
           defferedChannelMembers.resolve(data);
-        }).
-        error(function(data, status, headers, config){
+        }).error(function (data, status, headers, config) {
           defferedChannelMembers.reject(status);
         });
         return defferedChannelMembers.promise;
       },
-      sendDetailsEditedChannel: function(channel, callback){
+      sendDetailsEditedChannel: function (channel, callback) {
         $log.info("Emit");
         socket.emit('channel:edit:details', channel, callback);
       }

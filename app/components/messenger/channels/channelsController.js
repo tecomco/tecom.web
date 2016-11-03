@@ -25,7 +25,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
 
     channelsService.getChannels().then(function (data) {
       $scope.channels = data;
-      if ($stateParams.slug != null) {
+      if ($stateParams.slug !== null && $stateParams.slug !== undefined) {
         var tmpSlug = $stateParams.slug.replace('@', '');
         var tmpChannel = $scope.channels.find(function (channel) {
           return (channel.slug === tmpSlug);
@@ -48,7 +48,9 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
         controller: 'createChannelController',
         controllerAs: '$ctrl'
       });
-      modalInstance.result.then(function () {}, function () {});
+      modalInstance.result.then(function () {
+      }, function () {
+      });
     };
 
     $scope.openNewDirectModal = function () {
@@ -58,7 +60,9 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
         controller: 'newDirectController',
         controllerAs: '$ctrl'
       });
-      modalInstance.result.then(function () {}, function () {});
+      modalInstance.result.then(function () {
+      }, function () {
+      });
     };
 
   }

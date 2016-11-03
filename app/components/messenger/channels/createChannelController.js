@@ -1,7 +1,7 @@
 'use strict';
 
-app.controller('createChannelController', ['$uibModalInstance', '$log', 'channelsService',
-  function ($uibModalInstance, $log, channelsService) {
+app.controller('createChannelController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage',
+  function ($uibModalInstance, $log, channelsService, $localStorage) {
 
     var $ctrl = this;
 
@@ -23,7 +23,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
         }
       }
       return -1;
-    }
+    };
 
     var makeSelectedMembersArray = function () {
       selectedMembers = [];
@@ -34,24 +34,23 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
       }
     };
 
-    $ctrl.newChannelNameCheckEmpty = function (form) {
-      return ((form.name.$touched || form.$submitted) && (!form.name.$viewValue))
+    $ctrl.formNameCheckEmpty = function (form) {
+      return ((form.name.$touched || form.$submitted) && (!form.name.$viewValue));
     };
 
-    $ctrl.newChannelNameCheckMax = function (form) {
-      return (form.name.$viewValue && form.name.$invalid)
+    $ctrl.formNameCheckMax = function (form) {
+      return (form.name.$viewValue && form.name.$invalid);
     };
 
-    channelsService.getTeamMembers(window.teamId).then(function (event) {
+    channelsService.getTeamMembers($localStorage.decodedToken.memberships[0].team_id).then(function (event) {
       $ctrl.teamMembers = event;
-      var ownIndex =  $ctrl.teamMembers.getIndexBy('id', window.memberId);
+      var ownIndex = $ctrl.teamMembers.getIndexBy('id', window.memberId);
       if (ownIndex > -1) {
         $ctrl.teamMembers.splice(ownIndex, 1);
       }
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
         $ctrl.teamMembers[i].selected = false;
       }
-      ;
     }, function (status) {
       $log.info('error getting team members : ', status);
     });
@@ -76,8 +75,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
         description: $ctrl.newChannel.description,
         type: newChannelType,
         member_ids: selectedMembers,
-        creator: window.memberId,
-        team: window.teamId
+        creator: $localStorage.decodedToken.memberships[0].id,
+        team: $localStorage.decodedToken.memberships[0].team_id
       };
 
       channelsService.sendNewChannel(newChannelData, function (response) {
