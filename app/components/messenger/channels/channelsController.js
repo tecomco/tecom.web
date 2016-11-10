@@ -39,17 +39,30 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
       }
     });
 
-    $ctrl.editedChannel = channelsService.getEditedChannel();
+    $ctrl.myPromiss = channelsService.getEditedChannel();
 
-    $ctrl.editedChannel.then(function (channel) {
-      $log.info('Edit channel then()');
-      var index = arrayUtil.getIndexByKeyValue($scope.channels, 'id', channel.id);
-      $scope.channels[index] = channel;
-      if ($stateParams.channel.id === channel.id) {
-        $stateParams.channel = channel;
+    var doing = function (promiss) {
+      promiss.then(function (channel) {
+        $log.info('Edit channel then()');
+        var index = arrayUtil.getIndexByKeyValue($scope.channels, 'id', channel.id);
+        $scope.channels[index] = channel;
+        if ($stateParams.channel.id === channel.id) {
+          $stateParams.channel = channel;
+        }
+        promiss = channelsService.getEditedChannel();
+      });
+    };
+
+    doing($ctrl.myPromiss);
+
+    $scope.$watch(
+      function () {
+        return $ctrl.myPromiss;
+      },
+      function handleStateParamChange(newValue, oldValue) {
+        doing($ctrl.myPromiss);
       }
-      //$ctrl.editedChannel = channelsService.getEditedChannel();
-    });
+    );
 
     channelsService.getNewChannel().then(function (data) {
       $scope.channels.push(data);
