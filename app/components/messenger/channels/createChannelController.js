@@ -1,7 +1,7 @@
 'use strict';
 
-app.controller('createChannelController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage',
-  function ($uibModalInstance, $log, channelsService, $localStorage) {
+app.controller('createChannelController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage', 'arrayUtil',
+  function ($uibModalInstance, $log, channelsService, $localStorage, arrayUtil) {
 
     var $ctrl = this;
 
@@ -16,18 +16,9 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
     $ctrl.teamMembers = [];
     var selectedMembers = [];
 
-    Array.prototype.getIndexBy = function (name, value) {
-      for (var i = 0; i < this.length; i++) {
-        if (this[i][name] == value) {
-          return i;
-        }
-      }
-      return -1;
-    };
-
     var makeSelectedMembersArray = function () {
       selectedMembers = [];
-      selectedMembers.push(window.memberId.toString());
+      selectedMembers.push($localStorage.decodedToken.memberships[0].id.toString());
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
         if ($ctrl.teamMembers[i].selected === true)
           selectedMembers.push($ctrl.teamMembers[i].id.toString());
@@ -44,7 +35,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
 
     channelsService.getTeamMembers($localStorage.decodedToken.memberships[0].team_id).then(function (event) {
       $ctrl.teamMembers = event;
-      var ownIndex = $ctrl.teamMembers.getIndexBy('id', window.memberId);
+      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', window.memberId);
       if (ownIndex > -1) {
         $ctrl.teamMembers.splice(ownIndex, 1);
       }

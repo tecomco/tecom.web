@@ -23,7 +23,7 @@ app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal
       function () {
         return $stateParams.channel;
       },
-      function handleFooChange(newValue, oldValue) {
+      function handleStateParamChange(newValue, oldValue) {
         $scope.channel = $stateParams.channel;
       }
     );

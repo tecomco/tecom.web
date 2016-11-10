@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('socket', ['$rootScope', '$localStorage','ENV', 'authService',
-  function ($rootScope, $localStorage, ENV, authService) {
+app.factory('socket', ['$rootScope', '$log', '$localStorage', 'ENV', 'authService',
+  function ($rootScope, $log, $localStorage, ENV, authService) {
 
     // TODO: Change this!
     authService.login('test@gmail.com', 'test123');
@@ -9,8 +9,10 @@ app.factory('socket', ['$rootScope', '$localStorage','ENV', 'authService',
     // TODO: Choose a better approach :/
     if (ENV.name === 'ui') {
       return {
-        on: function () {},
-        emit: function () {}
+        on: function () {
+        },
+        emit: function () {
+        }
       };
     }
 
@@ -23,6 +25,14 @@ app.factory('socket', ['$rootScope', '$localStorage','ENV', 'authService',
         Connection: 'keep-alive'
       }
     });
+
+    socket.on('err', function (err) {
+      $log.info('Error On Socket :', err);
+      if (err.name === 'TokenExpiredError') {
+        authService.login('test@gmail.com', 'test123');
+      }
+    });
+
 
     return {
       on: function (eventName, callback) {

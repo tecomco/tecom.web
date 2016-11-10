@@ -1,8 +1,10 @@
 'use strict';
 
 app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log',
-  '$uibModal', /*'dataBase',*/ 'channelsService',
-  function ($scope, $state, $stateParams, $log, $uibModal, /*dataBase,*/ channelsService) {
+  '$uibModal', /*'dataBase',*/ 'channelsService', 'arrayUtil',
+  function ($scope, $state, $stateParams, $log, $uibModal, /*dataBase,*/ channelsService, arrayUtil) {
+
+    var $ctrl = this;
 
     $scope.channelType = {
       PUBLIC: 0,
@@ -35,6 +37,18 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
         }
         $stateParams.channel = tmpChannel;
       }
+    });
+
+    $ctrl.editedChannel = channelsService.getEditedChannel();
+
+    $ctrl.editedChannel.then(function (channel) {
+      $log.info('Edit channel then()');
+      var index = arrayUtil.getIndexByKeyValue($scope.channels, 'id', channel.id);
+      $scope.channels[index] = channel;
+      if ($stateParams.channel.id === channel.id) {
+        $stateParams.channel = channel;
+      }
+      //$ctrl.editedChannel = channelsService.getEditedChannel();
     });
 
     channelsService.getNewChannel().then(function (data) {

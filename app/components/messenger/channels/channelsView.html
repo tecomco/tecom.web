@@ -46,35 +46,33 @@
         <div class="modal-body two-part-modal">
             <form name="$ctrl.forms.newChannelForm"
                   ng-submit="$ctrl.createChannelSubmit()" novalidate>
+                <h3>مشخصات گروه</h3>
                 <div class="container-fluid">
-                    <div class="col-sm-7">
-                        <h3>مشخصات گروه</h3>
-                        <div class="modal-input">
-                            <input type="text" name="name"
-                                   ng-model="$ctrl.newChannel.name"
-                                   ng-maxlength="32" placeholder="نام گروه"
-                                   required>
-                            <span class="modal-err"
-                                  ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
-                            <span class="modal-err"
-                                  ng-show="$ctrl.formNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
-                        </div>
-                        <div class="modal-input">
-                            <input type="text" name="description"
-                                   ng-model="$ctrl.newChannel.description"
-                                   ng-maxlength="256" placeholder="توضیح گروه">
-                            <span class="modal-err"
-                                  ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
-                        </div>
-                        <label class="ws-checkbox">
-                            <span>این گروه خصوصی است.</span>
-                            <input type="checkbox"
-                                   ng-model="$ctrl.newChannel.isPrivate">
-                            <div class="checkbox-stat">
-                                <i class="zmdi zmdi-check"></i>
-                            </div>
-                        </label>
+                    <div class="modal-input">
+                        <input type="text" name="name"
+                               ng-model="$ctrl.newChannel.name"
+                               ng-maxlength="32" placeholder="نام گروه"
+                               required>
+                        <span class="modal-err"
+                              ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
+                        <span class="modal-err"
+                              ng-show="$ctrl.formNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
                     </div>
+                    <div class="modal-input">
+                        <input type="text" name="description"
+                               ng-model="$ctrl.newChannel.description"
+                               ng-maxlength="256" placeholder="توضیح گروه">
+                        <span class="modal-err"
+                              ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+                    </div>
+                    <label class="ws-checkbox">
+                        <span>این گروه خصوصی است.</span>
+                        <input type="checkbox"
+                               ng-model="$ctrl.newChannel.isPrivate">
+                        <div class="checkbox-stat">
+                            <i class="zmdi zmdi-check"></i>
+                        </div>
+                    </label>
                     <div class="modal-input">
                         <input type="submit" value="ایجاد گروه"
                                class="btn btn-default">

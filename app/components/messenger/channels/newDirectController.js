@@ -1,7 +1,7 @@
 'use strict';
 
-app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage',
-  function ($uibModalInstance, $log, channelsService, $localStorage) {
+app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage', 'arrayUtil',
+  function ($uibModalInstance, $log, channelsService, $localStorage, arrayUtil) {
 
     var $ctrl = this;
 
@@ -25,18 +25,9 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
       }
     };
 
-    Array.prototype.getIndexBy = function (name, value) {
-      for (var i = 0; i < this.length; i++) {
-        if (this[i][name] == value) {
-          return i;
-        }
-      }
-      return -1;
-    };
-
     channelsService.getTeamMembers($localStorage.decodedToken.memberships[0].team_id).then(function (event) {
       $ctrl.teamMembers = event;
-      var ownIndex = $ctrl.teamMembers.getIndexBy('id', window.memberId);
+      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', window.memberId);
       if (ownIndex > -1) {
         $ctrl.teamMembers.splice(ownIndex, 1);
       }
