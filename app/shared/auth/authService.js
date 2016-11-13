@@ -4,7 +4,7 @@ app.factory('authService', ['$http', 'jwtHelper', '$localStorage',
   function ($http, jwtHelper, $localStorage) {
 
     return {
-      login: function (username, password) {
+      login: function (username, password, callback) {
         var data = {
           username: username,
           password: password
@@ -20,6 +20,7 @@ app.factory('authService', ['$http', 'jwtHelper', '$localStorage',
             $localStorage.decodedToken = jwtHelper.decodeToken(
               response.data.token);
             console.log('Token:', $localStorage.decodedToken);
+            callback(true);
           }
         });
       },

@@ -41,6 +41,22 @@
     <script src="app/components/messenger/header/headerController.js"></script>
     <script src="app/components/messenger/messages/messagesController.js"></script>
     <script src="app/components/messenger/messages/messagesService.js"></script>
+    <script type="text/ng-template" id="login.html">
+        <div class="modal-header">
+            <h4 class="modal-title">ورود کاربر</h4>
+        </div>
+        <div class="modal-body two-part-modal">
+            <div class="container-fluid">
+              <form name="$ctrl.forms.login" ng-submit="$ctrl.login()" novalidate>
+                <div class="modal-input">
+                    <input type="text" name="username" ng-model="$ctrl.username" placeholder="نام کاربری" style="margin-right: 300px;text-align: center;width: 40%;" required>
+                </div>
+                <input type="submit" class="btn btn-primary" value="ورود"/>
+                <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">بیخیال :)</button>
+              </form>
+            </div>
+        </div>
+    </script>
 </body>
 
 </html>
