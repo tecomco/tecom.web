@@ -29,7 +29,7 @@ app.factory('socket', ['$rootScope', '$log', '$localStorage', 'ENV', 'authServic
     socket.on('err', function (err) {
       $log.info('Error On Socket :', err);
       if (err.name === 'TokenExpiredError') {
-        authService.login('test@gmail.com', 'test123');
+        authService.refreshToken($localStorage.userToken);
       }
     });
 
