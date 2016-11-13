@@ -25,6 +25,7 @@ app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal
       },
       function handleStateParamChange(newValue, oldValue) {
         $scope.channel = $stateParams.channel;
+        $log.info('Update Header', $scope.channel);
       }
     );
 

@@ -25,7 +25,11 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
       return channel.type === $scope.channelType.DIRECT;
     };
 
-    channelsService.getChannels().then(function (data) {
+    $scope.editedPromise = channelsService.getEditedChannel();
+    $scope.newChannelPromise = channelsService.getNewChannel();
+    $scope.initChannelsPromise = channelsService.getInitChannels();
+
+    $scope.bindInitChannels = function (data) {
       $scope.channels = data;
       if ($stateParams.slug !== null && $stateParams.slug !== undefined) {
         var tmpSlug = $stateParams.slug.replace('@', '');
@@ -36,37 +40,53 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
           // channelsService.checkIfSlugIsValid($stateParams.slug)
         }
         $stateParams.channel = tmpChannel;
+        $scope.initChannelsPromise = channelsService.getInitChannels();
       }
-    });
-
-    $ctrl.myPromiss = channelsService.getEditedChannel();
-
-    var doing = function (promiss) {
-      promiss.then(function (channel) {
-        $log.info('Edit channel then()');
-        var index = arrayUtil.getIndexByKeyValue($scope.channels, 'id', channel.id);
-        $scope.channels[index] = channel;
-        if ($stateParams.channel.id === channel.id) {
-          $stateParams.channel = channel;
-        }
-        promiss = channelsService.getEditedChannel();
-      });
+    }
+    $scope.bindNewChannel = function (data) {
+      $scope.channels.push(data);
+      $scope.newChannelPromise = channelsService.getNewChannel();
     };
 
-    doing($ctrl.myPromiss);
+    $scope.bindEditedChannel = function (channel) {
+      $log.info('Edit channel then()');
+      var index = arrayUtil.getIndexByKeyValue($scope.channels, 'id', channel.id);
+      $scope.channels[index] = channel;
+      if ($stateParams.channel.id === channel.id) {
+        $state.go('messenger.messages', {slug:channel.slug, channel: channel});
+        $log.info('Update URL');
+      }
+      $scope.editedPromise = channelsService.getEditedChannel();
+    };
+
+    $scope.promiseThenFunction = function(promise, thenFunc){
+      promise.then(thenFunc);
+    };
 
     $scope.$watch(
-      function () {
-        return $ctrl.myPromiss;
+      function() {
+        return $scope.editedPromise;
       },
-      function handleStateParamChange(newValue, oldValue) {
-        doing($ctrl.myPromiss);
+      function() {
+        $scope.promiseThenFunction($scope.editedPromise, $scope.bindEditedChannel);
       }
     );
-
-    channelsService.getNewChannel().then(function (data) {
-      $scope.channels.push(data);
-    });
+    $scope.$watch(
+      function() {
+        return $scope.newChannelPromise;
+      },
+      function() {
+        $scope.promiseThenFunction($scope.newChannelPromise, $scope.bindNewChannel);
+      }
+    );
+    $scope.$watch(
+      function() {
+        return $scope.initChannelsPromise;
+      },
+      function() {
+        $scope.promiseThenFunction($scope.initChannelsPromise, $scope.bindInitChannels);
+      }
+    );
 
     $scope.openCreateChannelModal = function () {
       var modalInstance = $uibModal.open({

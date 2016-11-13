@@ -6,7 +6,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
     var self = this;
     self.deferredInit = $q.defer();
     self.deferredNewChannel = $q.defer();
-    //self.deferredEditedChannel = $q.defer();
+    self.deferredEditedChannel = $q.defer();
 
     socket.on('init', function (data) {
       $log.info('Socket opened and connection established successfuly.');
@@ -17,20 +17,20 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       self.deferredNewChannel.resolve(data);
     });
 
-    var listenToEdit = function(){
-      socket.on('channel:edit', function (data) {
-        self.deferredEditedChannel.resolve(data);
-      });
-    };
+    socket.on('channel:edit', function (data) {
+      self.deferredEditedChannel.resolve(data);
+    });
 
     return {
-      getChannels: function () {
+      getInitChannels: function () {
+        self.deferredInit = $q.defer();
         return self.deferredInit.promise;
       },
       sendNewChannel: function (data, callback) {
         socket.emit('channel:create', data, callback);
       },
       getNewChannel: function () {
+        self.deferredNewChannel = $q.defer();
         return self.deferredNewChannel.promise;
       },
       getTeamMembers: function (teamId) {
@@ -62,11 +62,8 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
         socket.emit('channel:edit:details', channel, callback);
       },
       getEditedChannel: function () {
-        var deferredEditedChannel = $q.defer();
-        socket.on('channel:edit', function (data) {
-          deferredEditedChannel.resolve(data);
-        });
-        return deferredEditedChannel.promise;
+        self.deferredEditedChannel = $q.defer();
+        return self.deferredEditedChannel.promise;
       }
     };
   }
