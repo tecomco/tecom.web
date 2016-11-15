@@ -6,7 +6,8 @@
  * @module app
  */
 var app = angular.module('tecomApp', [
-  'ui.router', 'ngStorage', 'angular-jwt', 'ui.bootstrap', 'config'
+  'ui.router', 'ngStorage', 'angular-jwt', 'ui.bootstrap', 'config',
+  'angularMoment',
 ]);
 
 app.config(['$httpProvider', '$localStorageProvider', 'jwtOptionsProvider',
@@ -27,3 +28,7 @@ app.config(['$httpProvider', 'jwtInterceptorProvider',
     jwtInterceptorProvider.authPrefix = 'JWT ';
   }
 ]);
+
+app.run(function (amMoment) {
+  amMoment.changeLocale('fa');
+});

@@ -16,22 +16,21 @@
                        status options = {time, check, check-all}
                     -->
                 </label>
-                <label class="time">{{message.dateTime}}</label>
+                <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
                 <label>{{message.body}}</label>
             </div>
-
-            <div class="input-holder">
-                <a href="#">
-                    <i class="zmdi zmdi-plus"></i>
-                </a>
-                <input type="text" placeholder="متن پیام" ng-model="inputMessage" ng-change="textChanged(inputMessage)"/>
-                <a class="send-btn" href="#" ng-click="sendMessage()">
-                    <label>ارسال</label>
-                </a>
-                <a href="#">
-                    <i class="zmdi zmdi-mood"></i>
-                </a>
-            </div>
+        </div>
+        <div class="input-holder">
+            <a href="#">
+                <i class="zmdi zmdi-plus"></i>
+            </a>
+            <input type="text" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage()"/>
+            <a class="send-btn" href="#" ng-click="sendMessage()">
+                <label>ارسال</label>
+            </a>
+            <a href="#">
+                <i class="zmdi zmdi-mood"></i>
+            </a>
         </div>
     </div>
 </div>

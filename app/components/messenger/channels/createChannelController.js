@@ -35,7 +35,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
 
     channelsService.getTeamMembers($localStorage.decodedToken.memberships[0].team_id).then(function (event) {
       $ctrl.teamMembers = event;
-      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', window.memberId);
+      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', $localStorage.decodedToken.memberships[0].id);
       if (ownIndex > -1) {
         $ctrl.teamMembers.splice(ownIndex, 1);
       }

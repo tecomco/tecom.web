@@ -12,6 +12,7 @@
     "angular-pouchdb": "^5.0.0",
     "angular-bootstrap": "^2.1.4",
     "angular-jwt": "^0.1.7",
-    "ngstorage": "^0.3.11"
+    "ngstorage": "^0.3.11",
+    "angular-moment": "^1.0.0"
   }
 }
