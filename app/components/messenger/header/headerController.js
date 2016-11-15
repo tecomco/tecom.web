@@ -1,7 +1,8 @@
 'use strict';
 
-app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal',
-  function ($scope, $log, $stateParams, $uibModal) {
+app.controller('headerController', [
+  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal',
+  function ($scope, $log, $stateParams, $localStorage, $uibModal) {
 
     $scope.openChannelDetailsModal = function () {
       var modalInstance = $uibModal.open({
@@ -14,9 +15,7 @@ app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal
           }
         }
       });
-      modalInstance.result.then(function () {
-      }, function () {
-      });
+      modalInstance.result.then(function () {}, function () {});
     };
 
     $scope.$watch(
@@ -29,7 +28,10 @@ app.controller('headerController', ['$scope', '$log', '$stateParams', '$uibModal
       }
     );
 
-    $scope.showAndEditChannelDetails = function () {
+    $scope.showAndEditChannelDetails = function () {};
+
+    $scope.clearCache = function () {
+      $localStorage.$reset();
     };
   }
 ]);
