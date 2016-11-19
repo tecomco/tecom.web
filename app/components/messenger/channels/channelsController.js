@@ -42,7 +42,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
         $stateParams.channel = tmpChannel;
         $scope.initChannelsPromise = channelsService.getInitChannels();
       }
-    }
+    };
     $scope.bindNewChannel = function (data) {
       $scope.channels.push(data);
       $scope.newChannelPromise = channelsService.getNewChannel();

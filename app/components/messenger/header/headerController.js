@@ -32,6 +32,7 @@ app.controller('headerController', [
 
     $scope.clearCache = function () {
       $localStorage.$reset();
+      $log.info('Local storage cleared.');
     };
   }
 ]);

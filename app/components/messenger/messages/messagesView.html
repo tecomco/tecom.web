@@ -1,36 +1,34 @@
 <div class="header clearfix">
     <div ui-view="header"></div>
 </div>
-<div class="chat">
-    <div class="main" ng-controller="messagesController">
-        <div class="date-holder">
-            <label>۱۵ مرداد</label>
-        </div>
-        <div ng-repeat="message in messages" class="msg-holder">
-            <div class="msg msg-send">
-                <label class="name">{{message.sender}}</label>
-                <label class="status">
-                    <i class="zmdi zmdi-check"></i>
-                    <!--TODO
-                       do this like <i class="zmdi zmdi-{{status}}"></i>
-                       status options = {time, check, check-all}
-                    -->
-                </label>
-                <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
-                <label>{{message.body}}</label>
+<div ng-controller="messagesController">
+    <div id="messagesHolder" class="chat">
+        <div class="main">
+            <!--<div class="date-holder">-->
+            <!--<label>۱۵ مرداد</label>-->
+            <!--</div>-->
+            <div ng-repeat="message in messages" class="msg-holder">
+                <div class="msg msg-send">
+                    <label class="name">{{message.sender}}</label>
+                    <label class="status">
+                        <i ng-class="getMessageStatusIcon(message)"></i>
+                    </label>
+                    <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
+                    <label>{{message.body}}</label>
+                </div>
             </div>
         </div>
-        <div class="input-holder">
-            <a href="#">
-                <i class="zmdi zmdi-plus"></i>
-            </a>
-            <input type="text" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage()"/>
-            <a class="send-btn" href="#" ng-click="sendMessage()">
-                <label>ارسال</label>
-            </a>
-            <a href="#">
-                <i class="zmdi zmdi-mood"></i>
-            </a>
-        </div>
+    </div>
+    <div class="input-holder">
+        <a href="#">
+            <i class="zmdi zmdi-plus"></i>
+        </a>
+        <input type="text" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage()"/>
+        <a class="send-btn" href="#" ng-click="sendMessage()">
+            <label>ارسال</label>
+        </a>
+        <a href="#">
+            <i class="zmdi zmdi-mood"></i>
+        </a>
     </div>
 </div>
