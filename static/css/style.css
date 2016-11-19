@@ -174,8 +174,10 @@ a, a:hover, a:visited, a:focus {
 }
 
 .right-section img {
-    height: 36px;
-    padding-right: 14px;
+    height: 47px;
+    margin-bottom: -4px;
+    margin-top: -8px;
+    padding-right: 25px;
     display: block;
 }
 

@@ -1,6 +1,6 @@
 <div ng-controller="channelsController as $ctrl">
     <div class="group-holder-header">
-        <i class="zmdi zmdi-accounts"></i>
+        <i class="fa fa-users"></i>
         <label>گروه‌ ها</label>
         <a class="plus-g" ng-click="openCreateChannelModal()">
             <i class="zmdi zmdi-plus"></i>
@@ -11,15 +11,15 @@
             <li ng-repeat="channel in channels | filter: filterByPublicAndPrivate | orderBy : 'name'"
                 ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
-                    <i ng-class="(channel.type == channelType.PRIVATE) ? 'fa fa-lock' : 'fa fa-hashtag'"></i>
+                    <i ng-class="(channel.type == channelType.PRIVATE) ? 'fa fa-lock' : 'zmdi zmdi-8tracks'"></i>
                     <span>{{channel.name}}</span>
                 </a>
             </li>
         </ul>
     </div>
     <div class="direct-holder-header">
-        <i class="zmdi zmdi-inbox"></i>
-        <label>پیغام خصوصی</label>
+        <i class="fa fa-user"></i>
+        <label>پیام خصوصی</label>
         <a class="plus-d" ng-click="openNewDirectModal()">
             <i class="zmdi zmdi-plus"></i>
         </a>

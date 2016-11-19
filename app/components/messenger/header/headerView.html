@@ -2,17 +2,17 @@
     <div class="name">
         <label>{{channel.name}}</label>
         <div class="det">
-            <label dir="rtl">{{channel.membersCount}}
-                عضو</label>
+            <label dir="rtl">{{channel.membersCount}} عضو</label>
             <label>{{channel.description}}</label>
         </div>
     </div>
     <ul class="top-left">
         <li>
             <a ng-click="clearCache()">
-                <i class="fa fa-refresh"></i>
+                <i class="fa fa-code"></i>
             </a>
         </li>
+        <!--
         <li>
             <a href="#">
                 <i class="zmdi zmdi-more-vert"></i>
@@ -29,9 +29,10 @@
                 <i class="zmdi zmdi-search"></i>
             </div>
         </li>
+        -->
         <li>
             <a ng-click="openChannelDetailsModal()">
-                <i class="zmdi zmdi-edit"></i>
+                <i class="fa fa-bars"></i>
             </a>
         </li>
     </ul>
