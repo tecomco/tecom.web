@@ -271,17 +271,16 @@ a, a:hover, a:visited, a:focus {
 }
 
 .chat {
-    height: calc(100vh - 66px);
+    height: calc(100vh - 121px);
     overflow-y: scroll;
     background: #f1f1f1;
 }
 
 .main {
-    padding-bottom: 80px;
     padding: 32px;
     display: flex;
     flex-direction: column;
-    padding-bottom: 80px;
+    padding-bottom: 16px;
 }
 
 .main>div {
@@ -403,7 +402,7 @@ a, a:hover, a:visited, a:focus {
 
 .input-holder {
     background: #f1f1f1;
-    position: absolute;
+    position: relative;
     bottom: 0;
     left: 0;
     right: 0;
