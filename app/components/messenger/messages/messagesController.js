@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('messagesController', ['$scope', '$stateParams', '$log',
-  '$localStorage', 'socket', 'messagesService', 'arrayUtil',
+  '$localStorage', 'socket', 'messagesService', '$timeout', 'arrayUtil',
   function ($scope, $stateParams, $log, $localStorage, socket, messagesService,
-            arrayUtil) {
+            $timeout, arrayUtil) {
 
     var messageStatus = {
       PENDING: 0,
@@ -14,10 +14,10 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log',
 
     $scope.messages = [];
 
-    socket.on('message', function (message) {
-      message.datetime = new Date(message.datetime);
-      pushMessage(message);
-    });
+    // socket.on('message', function (message) {
+    //   message.datetime = new Date(message.datetime);
+    //   pushMessage(message);
+    // });
 
     var Message = function (sender, channelId, body) {
       return {
@@ -49,9 +49,10 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log',
 
     var pushMessage = function (message) {
       $scope.messages.push(message);
-      var holder = document.getElementById('messagesHolder');
-      console.log('Holder height:', holder.scrollHeight);
-      holder.scrollTop = holder.scrollHeight;
+      $timeout(function(){
+        var holder = document.getElementById('messagesHolder');
+        holder.scrollTop = holder.scrollHeight;
+      }, 0, false);
     };
 
     $scope.getMessageStatusIcon = function (message) {
@@ -70,6 +71,10 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log',
         return 'msg msg-send';
       else
         return 'msg msg-recieve';
+    };
+
+    return {
+      pushMessage: pushMessage
     };
   }
 ]);
