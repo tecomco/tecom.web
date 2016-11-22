@@ -26,6 +26,7 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log',
         holder.scrollTop = holder.scrollHeight;
       }, 0, false);
     };
+    messagesService.setCallbackFunciton(pushMessage);
 
   }
 ]);

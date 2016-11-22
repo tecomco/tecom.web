@@ -11,6 +11,10 @@ app.factory('Message', ['$localStorage', function ($localStorage) {
     this.datetime = new Date();
   }
 
+  Message.prototype.isFromMe = function () {
+    return this.sender === $localStorage.decodedToken.memberships[0].username;
+  };
+
   Message.prototype.getStatusIcon = function () {
     switch (this.status) {
     case Message.STATUS_TYPE.PENDING:
@@ -25,7 +29,7 @@ app.factory('Message', ['$localStorage', function ($localStorage) {
   };
 
   Message.prototype.getCssClass = function () {
-    var username = $localStorage.decodedToken.memberships[0].username
+    var username = $localStorage.decodedToken.memberships[0].username;
     return username === this.sender ? 'msg msg-send' : 'msg msg-recieve';
   };
 

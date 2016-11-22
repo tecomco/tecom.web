@@ -1,10 +1,13 @@
 'use strict';
 
-app.service('messagesService', ['$q', 'socket', function ($q, socket) {
+app.service('messagesService', ['$q', 'socket', 'Message',
+  function ($q, socket, Message) {
 
-    socket.on('message', function (message) {
-      // message.datetime = new Date(message.datetime);
-      // messagesController.pushMessage(message);
+    var ctrlCallbackFunction;
+
+    socket.on('message', function (data) {
+      var message = new Message(0, data.body, data.sender, data.channelId);
+      ctrlCallbackFunction(message);
     });
 
     return {
@@ -12,6 +15,9 @@ app.service('messagesService', ['$q', 'socket', function ($q, socket) {
       },
       sendMessage: function (data, callback) {
         socket.emit('message', data, callback);
+      },
+      setCallbackFunciton: function (callback) {
+        ctrlCallbackFunction = callback;
       }
     };
   }]);
