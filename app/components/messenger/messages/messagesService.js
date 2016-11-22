@@ -1,11 +1,10 @@
 'use strict';
 
-app.service('messagesService', ['$q', 'messagesController', 'socket',
-  function ($q, messagesController, socket) {
+app.service('messagesService', ['$q', 'socket', function ($q, socket) {
 
     socket.on('message', function (message) {
-      message.datetime = new Date(message.datetime);
-      messagesController.pushMessage(message);
+      // message.datetime = new Date(message.datetime);
+      // messagesController.pushMessage(message);
     });
 
     return {
