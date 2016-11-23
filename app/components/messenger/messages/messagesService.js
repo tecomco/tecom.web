@@ -1,13 +1,14 @@
 'use strict';
 
-app.service('messagesService', ['$q', 'socket', 'Message',
-  function ($q, socket, Message) {
+app.service('messagesService', ['$q', 'socket', 'Message', '$stateParams',
+  function ($q, socket, Message, $stateParams) {
 
     var ctrlCallbackFunction;
 
     socket.on('message', function (data) {
       var message = new Message(0, data.body, data.sender, data.channelId);
-      ctrlCallbackFunction(message);
+      if(message.channelId === $stateParams.channel.id)
+        ctrlCallbackFunction(message);
     });
 
     return {

@@ -27,6 +27,5 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log',
       }, 0, false);
     };
     messagesService.setCallbackFunciton(pushMessage);
-
   }
 ]);
