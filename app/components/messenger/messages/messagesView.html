@@ -8,10 +8,10 @@
             <!--<label>۱۵ مرداد</label>-->
             <!--</div>-->
             <div ng-repeat="message in messages" class="msg-holder">
-                <div class="msg msg-send">
+                <div ng-class="message.getCssClass()">
                     <label class="name">{{message.sender}}</label>
-                    <label class="status">
-                        <i ng-class="getMessageStatusIcon(message)"></i>
+                    <label class="status" ng-show="message.isFromMe()">
+                        <i ng-class="message.getStatusIcon()"></i>
                     </label>
                     <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
                     <label>{{message.body}}</label>

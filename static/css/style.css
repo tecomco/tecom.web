@@ -301,7 +301,7 @@ a, a:hover, a:visited, a:focus {
     padding: 32px;
     display: flex;
     flex-direction: column;
-    padding-bottom: 16px;
+    padding-bottom: 5px;
 }
 
 .main>div {

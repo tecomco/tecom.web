@@ -1,7 +1,7 @@
 'use strict';
-/*
-app.service('dataBase', function(pouchDB) {
-  var db = pouchDB('myDB');
+
+/*app.service('db', function(pouchDB) {
+  var db = new pouchDB('myDB');
 
   var data = {name: 'mohsen'};
   db.info().then(function (info) {
