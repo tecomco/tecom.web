@@ -24,7 +24,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     })
     .state('messenger.home', {
       url: '/',
-      template: '<h1>لطفا یک گروه را انتخاب کنید.</h1>'
+      template: '<div class="msg-landing"><div class="col-sm-4"></div><div class="col-sm-4"><img src="static/img/tecom-bw.png" class="img-responsive" /><h1>لطفا یک گروه را انتخاب کنید.</h1></div></div>'
     })
     .state('messenger.messages', {
       url: '/:slug',

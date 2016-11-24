@@ -63,6 +63,27 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
+.content .col-sm-5.col-lg-6, .content .col-sm-9.col-lg-10{
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+}
+.msg-landing {
+    background: #f1f1f1;
+    height: 100vh;
+    padding-top: 100px;
+}
+
+.msg-landing img {
+    padding: 40px;
+}
+
+.msg-landing h1 {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 24px;
+}
 
 .header {
     background: #f7f7f7;
@@ -162,7 +183,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .right-section {
-    background: #4f9e5d;
+    background: #116071;
     padding: 0;
     width: 100%;
     color: #fff;
@@ -211,7 +232,7 @@ a, a:hover, a:visited, a:focus {
     font-weight: 200;
     direction: rtl;
     position: relative;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 1);
 }
 
 .group-holder-header a.plus-g, .direct-holder-header a.plus-d {
@@ -236,7 +257,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .group-holder ul li a {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 1);
     padding: 3px 16px;
     display: block;
     font-size: 16px;
@@ -244,12 +265,12 @@ a, a:hover, a:visited, a:focus {
 }
 
 .group-holder ul li a:hover {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 1);
     background: rgba(17, 17, 17, 0.1);
 }
 
 .group-holder ul li.active a {
-    background: rgba(92, 255, 216, 0.5);
+    background: #c46964;
     color: #fff;
     border-radius: 4px 0 0 4px;
 }
@@ -332,7 +353,7 @@ a, a:hover, a:visited, a:focus {
     max-width: 80%;
     padding: 8px 12px;
     background: #fff;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 8px;
     font-weight: 100;
     font-size: 15px;
@@ -413,6 +434,7 @@ a, a:hover, a:visited, a:focus {
 .input-holder input {
     width: 100%;
     border: 0;
+    border-radius: 4px;
     box-shadow: none;
     padding: 8px 40px;
     font-size: 16px;
@@ -500,14 +522,14 @@ a, a:hover, a:visited, a:focus {
 
 .modal-header button.close:focus {
     opacity: 0.8;
-    color: #188c67;
+    color: #116071;
     background: rgba(163, 240, 207, 0.2)
 }
 
 .modal-header h4 {
     font-size: 40px;
     font-weight: 200;
-    color: #188c67;
+    color: #116071;
 }
 
 .modal-header label {
@@ -576,9 +598,9 @@ a, a:hover, a:visited, a:focus {
     display: block;
     width: 50%;
     margin: 16px 25%;
-    font-size: 24px;
+    font-size: 18px;
     color: #666;
-    border-radius: 4px;
+    border-radius: 8px;
     border: 1px solid rgba(122, 122, 122, 0.1);
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
@@ -607,9 +629,22 @@ a, a:hover, a:visited, a:focus {
     margin-bottom: 32px;
 }
 
+.modal-body .g-members a {
+    display: block;
+    padding: 4px;
+}
+.modal-body .g-members a:hover{
+  background: #f8f8f8;
+}
+.modal-body .g-members a * {
+    cursor: pointer;
+}
+
 .modal-fake-height {
     height: 50px;
 }
+
+.modal-body .g-details span {}
 
 .g-m-one {
     padding: 8px 0px 8px 16px;
@@ -628,7 +663,6 @@ a, a:hover, a:visited, a:focus {
 }
 
 .g-m-one .ws-checkbox {
-    padding-top: 10px;
     float: left;
 }
 
@@ -644,7 +678,7 @@ a, a:hover, a:visited, a:focus {
     opacity: 0;
 }
 
-.modal [type="submit"] {
+.modal [type="submit"], .modal-btn {
     display: block;
     font-weight: 300;
     width: 50%;
@@ -652,19 +686,26 @@ a, a:hover, a:visited, a:focus {
     font-size: 24px;
     color: #fff;
     border: 0;
-    background: rgb(23, 182, 144);
+    border-radius: 4px;
+    background: rgb(17, 96, 113);
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
 
-.modal [type="submit"]:hover {
-    background: rgb(18, 142, 112);
+.modal .modal-btn {
+    padding: 8px 16px;
+    font-size: 16px;
+    margin: 0 auto;
 }
 
-.modal [type="submit"]:focus, .modal [type="submit"]:active {
-    background: rgb(19, 108, 87);
+.modal [type="submit"]:hover, .modal .modal-btn:hover {
+    background: rgba(17, 96, 113, 0.8);
+}
+
+.modal [type="submit"]:focus, .modal [type="submit"]:active, .modal .modal-btn:focus, .modal .modal-btn:active {
+    background: rgba(17, 96, 113, 0.8);
     color: #f3f3f3;
 }
 
@@ -676,17 +717,23 @@ a, a:hover, a:visited, a:focus {
     border-radius: 4px;
     color: #fff;
     font-weight: 100;
-    left: 101%;
-    padding: 8px 16px;
-    position: absolute;
-    right: -25%;
-    top: 0;
+    padding: 4px 10px;
+    font-size: 12px;
     background: rgb(226, 89, 89);
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     font-weight: 100;
+}
+
+.modal .ws-checkbox {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.modal .g-m-one .ws-checkbox {
+    margin: 0;
 }
 
 label.ws-checkbox>input {
