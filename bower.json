@@ -13,6 +13,8 @@
     "angular-bootstrap": "^2.1.4",
     "angular-jwt": "^0.1.7",
     "ngstorage": "^0.3.11",
-    "angular-moment": "^1.0.0"
+    "angular-moment": "^1.0.0",
+    "pouchdb-find": "^0.10.3",
+    "pouchdb": "^6.0.7"
   }
 }
