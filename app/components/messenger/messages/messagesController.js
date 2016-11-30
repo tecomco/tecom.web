@@ -1,8 +1,15 @@
 'use strict';
 
-app.controller('messagesController', ['$scope', '$stateParams', '$log',
-  'User', '$timeout', 'arrayUtil', 'messagesService', 'Message', 'db',
-  function ($scope, $stateParams, $log, User, $timeout, arrayUtil,
+app.run(['$rootScope', function($rootScope){
+  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+    $rootScope.toParams = toParams;
+    console.log("Parameters:",toParams);
+  });
+}]);
+
+app.controller('messagesController', ['$rootScope','$scope', '$stateParams',
+  '$log', 'User', '$timeout', 'arrayUtil', 'messagesService', 'Message', 'db',
+  function ($rootScope, $scope, $stateParams, $log, User, $timeout, arrayUtil,
             messagesService, Message, db) {
 
     $scope.messages = [];
@@ -15,13 +22,9 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log',
             message.channelId, message.status, message._id, message.id);
           pushMessage(tmpMessage);
         });
-        $log.info($scope.messages);
         $scope.$apply();
       });
     };
-
-
-    $scope.loadMessagesFromDb($stateParams.channel.id);
 
     $scope.sendMessage = function () {
       var messageBody = $scope.inputMessage.trim();
@@ -45,5 +48,16 @@ app.controller('messagesController', ['$scope', '$stateParams', '$log',
       }, 0, false);
     };
     messagesService.setCallbackFunciton(pushMessage);
+
+    $scope.$watch(
+      function () {
+        return $stateParams.channel;
+      },
+      function handleStateParamChange(newValue) {
+        if(newValue !== null) {
+          $scope.loadMessagesFromDb(newValue.id);
+        }
+      }
+    );
   }
 ]);

@@ -7,8 +7,9 @@ app.service('messagesService', ['$q', 'socket', 'Message', '$stateParams', 'db',
 
     socket.on('message:send', function (data) {
       var message = new Message(data.body, data.sender, data.channelId,
-        data.status, data.id, message.findId(), data.datetime);
-      db.saveMessage();
+        data.status, data.id, null, data.datetime);
+      message.setId();
+      message.save();
       if(message.channelId === $stateParams.channel.id)
         ctrlCallbackFunction(message);
     });
