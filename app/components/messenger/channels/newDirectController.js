@@ -1,7 +1,8 @@
 'use strict';
 
-app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage', 'arrayUtil',
-  function ($uibModalInstance, $log, channelsService, $localStorage, arrayUtil) {
+app.controller('newDirectController', ['$uibModalInstance', '$log',
+  'channelsService', 'arrayUtil', 'User',
+  function ($uibModalInstance, $log, channelsService, arrayUtil, User) {
 
     var $ctrl = this;
 
@@ -25,7 +26,7 @@ app.controller('newDirectController', ['$uibModalInstance', '$log', 'channelsSer
       }
     };
 
-    channelsService.getTeamMembers($localStorage.decodedToken.memberships[0].team_id).then(function (event) {
+    channelsService.getTeamMembers(User.teamId).then(function (event) {
       $ctrl.teamMembers = event;
       var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', window.memberId);
       if (ownIndex > -1) {

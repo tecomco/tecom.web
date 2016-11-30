@@ -1,8 +1,9 @@
 'use strict';
 
-app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log',
-  '$uibModal', /*'dataBase',*/ 'channelsService', 'arrayUtil',
-  function ($scope, $state, $stateParams, $log, $uibModal, /*dataBase,*/ channelsService, arrayUtil) {
+app.controller('channelsController', ['$scope', '$state', '$stateParams',
+  '$log', '$uibModal', 'channelsService', 'arrayUtil',
+  function ($scope, $state, $stateParams, $log, $uibModal, channelsService,
+    arrayUtil) {
 
     var $ctrl = this;
 
@@ -53,37 +54,40 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
       var index = arrayUtil.getIndexByKeyValue($scope.channels, 'id', channel.id);
       $scope.channels[index] = channel;
       if ($stateParams.channel.id === channel.id) {
-        $state.go('messenger.messages', {slug:channel.slug, channel: channel});
+        $state.go('messenger.messages', {
+          slug: channel.slug,
+          channel: channel
+        });
         $log.info('Update URL');
       }
       $scope.editedPromise = channelsService.getEditedChannel();
     };
 
-    $scope.promiseThenFunction = function(promise, thenFunc){
+    $scope.promiseThenFunction = function (promise, thenFunc) {
       promise.then(thenFunc);
     };
 
     $scope.$watch(
-      function() {
+      function () {
         return $scope.editedPromise;
       },
-      function() {
+      function () {
         $scope.promiseThenFunction($scope.editedPromise, $scope.bindEditedChannel);
       }
     );
     $scope.$watch(
-      function() {
+      function () {
         return $scope.newChannelPromise;
       },
-      function() {
+      function () {
         $scope.promiseThenFunction($scope.newChannelPromise, $scope.bindNewChannel);
       }
     );
     $scope.$watch(
-      function() {
+      function () {
         return $scope.initChannelsPromise;
       },
-      function() {
+      function () {
         $scope.promiseThenFunction($scope.initChannelsPromise, $scope.bindInitChannels);
       }
     );
@@ -95,9 +99,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
         controller: 'createChannelController',
         controllerAs: '$ctrl'
       });
-      modalInstance.result.then(function () {
-      }, function () {
-      });
+      modalInstance.result.then(function () {}, function () {});
     };
 
     $scope.openNewDirectModal = function () {
@@ -107,9 +109,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams', '$log'
         controller: 'newDirectController',
         controllerAs: '$ctrl'
       });
-      modalInstance.result.then(function () {
-      }, function () {
-      });
+      modalInstance.result.then(function () {}, function () {});
     };
 
   }

@@ -10,12 +10,12 @@ var app = angular.module('tecomApp', [
   'angularMoment',
 ]);
 
-app.config(['$httpProvider', '$localStorageProvider', 'jwtOptionsProvider',
-  function ($httpProvider, $localStorageProvider, jwtOptionsProvider) {
+app.config(['$httpProvider', 'jwtOptionsProvider', 'UserProvider',
+  function ($httpProvider, jwtOptionsProvider, UserProvider) {
 
     jwtOptionsProvider.config({
       tokenGetter: function () {
-        return $localStorageProvider.get('userToken');
+        return UserProvider.$get().token;
       }
     });
 

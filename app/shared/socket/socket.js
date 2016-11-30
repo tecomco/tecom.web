@@ -1,26 +1,28 @@
 'use strict';
 
 app.factory('socket', [
-  '$rootScope', '$log', '$localStorage', 'ENV', '$uibModal', 'authService',
-  function ($rootScope, $log, $localStorage, ENV, $uibModal, authService) {
+  '$rootScope', '$log', 'ENV', '$uibModal', 'AuthService', 'User',
+  function ($rootScope, $log, ENV, $uibModal, AuthService, User) {
 
     var self = this;
 
-    // TODO: Change this!
-    // $localStorage.userToken = null;
-    if (!$localStorage.userToken) {
+    if (!User.exists()) {
       var modalInstance = $uibModal.open({
         templateUrl: 'login.html',
         controller: 'loginController',
         controllerAs: '$ctrl'
       });
       modalInstance.result.then(function (username) {
-        authService.login(username + '@gmail.com', 'test123', function (res) {
+        AuthService.login(username + '@gmail.com', 'test123', function (res) {
           if (res) {
             window.location.reload();
           }
         });
       }, function () {});
+      return {
+        on: function () {},
+        emit: function () {}
+      };
     }
 
     // TODO: Choose a better approach :/
@@ -34,7 +36,7 @@ app.factory('socket', [
     self.socket = io.connect(ENV.socketUri, {
       path: '/ws/',
       query: {
-        token: $localStorage.userToken
+        token: User.token
       },
       extraHeaders: {
         Connection: 'keep-alive'
@@ -43,8 +45,8 @@ app.factory('socket', [
 
     self.socket.on('err', function (err) {
       $log.info('Error On Socket :', err);
-      if (err.name === 'TokenExpiredError' && $localStorage.userToken) {
-        authService.refreshToken($localStorage.userToken);
+      if (err.name === 'TokenExpiredError' && User.exists()) {
+        AuthService.refreshToken(User.token);
       }
     });
 

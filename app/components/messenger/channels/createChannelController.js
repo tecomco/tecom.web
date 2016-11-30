@@ -1,7 +1,8 @@
 'use strict';
 
-app.controller('createChannelController', ['$uibModalInstance', '$log', 'channelsService', '$localStorage', 'arrayUtil',
-  function ($uibModalInstance, $log, channelsService, $localStorage, arrayUtil) {
+app.controller('createChannelController', ['$uibModalInstance', '$log',
+  'channelsService', 'arrayUtil', 'User',
+  function ($uibModalInstance, $log, channelsService, arrayUtil, User) {
 
     var $ctrl = this;
 
@@ -18,7 +19,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
 
     var makeSelectedMembersArray = function () {
       selectedMembers = [];
-      selectedMembers.push($localStorage.decodedToken.memberships[0].id.toString());
+      selectedMembers.push(User.id.toString());
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
         if ($ctrl.teamMembers[i].selected === true)
           selectedMembers.push($ctrl.teamMembers[i].id.toString());
@@ -33,9 +34,9 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
       return (form.name.$viewValue && form.name.$invalid);
     };
 
-    channelsService.getTeamMembers($localStorage.decodedToken.memberships[0].team_id).then(function (event) {
+    channelsService.getTeamMembers(User.teamId).then(function (event) {
       $ctrl.teamMembers = event;
-      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', $localStorage.decodedToken.memberships[0].id);
+      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', User.id);
       if (ownIndex > -1) {
         $ctrl.teamMembers.splice(ownIndex, 1);
       }
@@ -66,8 +67,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log', 'channel
         description: $ctrl.newChannel.description,
         type: newChannelType,
         member_ids: selectedMembers,
-        creator: $localStorage.decodedToken.memberships[0].id,
-        team: $localStorage.decodedToken.memberships[0].team_id
+        creator: User.id,
+        team: User.teamId
       };
 
       channelsService.sendNewChannel(newChannelData, function (response) {
