@@ -25,7 +25,7 @@ app.factory('User', ['$localStorage', function ($localStorage) {
       username: this.username,
       email: this.email,
       teamId: this.teamId,
-      token: this.token,
+      token: this.token
     };
   };
 

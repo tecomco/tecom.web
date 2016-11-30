@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('headerController', [
-  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal',
-  function ($scope, $log, $stateParams, $localStorage, $uibModal) {
+  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', 'db',
+  function ($scope, $log, $stateParams, $localStorage, $uibModal, db) {
 
     $scope.openChannelDetailsModal = function () {
       var modalInstance = $uibModal.open({
@@ -24,7 +24,6 @@ app.controller('headerController', [
       },
       function handleStateParamChange(newValue, oldValue) {
         $scope.channel = $stateParams.channel;
-        $log.info('Update Header', $scope.channel);
       }
     );
 
@@ -33,6 +32,7 @@ app.controller('headerController', [
     $scope.clearCache = function () {
       $localStorage.$reset();
       $log.info('Local storage cleared.');
+      db.destroy();
     };
   }
 ]);

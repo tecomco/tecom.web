@@ -1,12 +1,14 @@
 'use strict';
 
-app.service('messagesService', ['$q', 'socket', 'Message', '$stateParams',
-  function ($q, socket, Message, $stateParams) {
+app.service('messagesService', ['$q', 'socket', 'Message', '$stateParams', 'db',
+  function ($q, socket, Message, $stateParams, db) {
 
     var ctrlCallbackFunction;
 
-    socket.on('message', function (data) {
-      var message = new Message(0, data.body, data.sender, data.channelId);
+    socket.on('message:send', function (data) {
+      var message = new Message(data.body, data.sender, data.channelId,
+        data.status, data.id, message.findId(), data.datetime);
+      db.saveMessage();
       if(message.channelId === $stateParams.channel.id)
         ctrlCallbackFunction(message);
     });
@@ -15,7 +17,7 @@ app.service('messagesService', ['$q', 'socket', 'Message', '$stateParams',
       getMessages: function () {
       },
       sendMessage: function (data, callback) {
-        socket.emit('message', data, callback);
+        socket.emit('message:send', data, callback);
       },
       setCallbackFunciton: function (callback) {
         ctrlCallbackFunction = callback;
