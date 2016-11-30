@@ -4,7 +4,11 @@
 app.service('db', ['$window', '$localStorage', function ($window, $localStorage) {
 
   var db = new $window.PouchDB('Testtttt');
-
+  db.createIndex({
+    index: {
+      fields: ['id', 'channelId']
+    }
+  });
   return {
     getDb: function () {
       return db;
@@ -17,20 +21,30 @@ app.service('db', ['$window', '$localStorage', function ($window, $localStorage)
       });
     },
     loadChannelMessages: function (channelId, callback) {
-      db.createIndex({
-        index: {
-          fields: ['id', 'channelId']
-        }
-      });
       db.find({
         selector: {
           id: {$gt: null},
           channelId: {$eq: channelId}
         },
         sort: [{id: 'desc'}],
-        limit: 5
+        limit: 50
       }).then(function (result) {
         callback(result.docs);
+      });
+    },
+    getLastChannelMessage: function(channelId, callback){
+      db.find({
+        selector: {
+          id: {$gt: null},
+          channelId: {$eq: channelId}
+        },
+        sort: [{id: 'desc'}],
+        limit: 1
+      }).then(function (result) {
+        if(result.docs.length === 0)
+          callback(null);
+        else
+          callback(result.docs[0]);
       });
     },
     destroy: function () {
@@ -39,6 +53,6 @@ app.service('db', ['$window', '$localStorage', function ($window, $localStorage)
       }).catch(function (err) {
         console.log("Error Clearing Database: ", err);
       });
-    }
+    },
   };
 }]);

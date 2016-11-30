@@ -8,9 +8,11 @@ app.factory('Message', ['$log', 'db', 'User',
       this.sender = sender;
       this.channelId = channelId;
       this.status = status || Message.STATUS_TYPE.PENDING;
-      this.datetime = datetime || new Date();
+      this.datetime = (datetime !== undefined) ? new Date(datetime) : new Date();
       this._id = _id || null;
       this.id = id || null;
+      
+      $log.info("Date object: ", new Date(this.datetime));
     }
 
     Message.prototype.isFromMe = function () {

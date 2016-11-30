@@ -1,7 +1,8 @@
 'use strict';
 
 app.service('channelsService', ['$http', '$q', '$log', 'socket',
-  function ($http, $q, $log, socket) {
+  'messagesService',
+  function ($http, $q, $log, socket, messagesService) {
 
     var self = this;
     self.deferredInit = $q.defer();
@@ -11,6 +12,9 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
     socket.on('init', function (data) {
       $log.info('Socket opened and connection established successfuly.');
       self.deferredInit.resolve(data);
+      angular.forEach(data, function(channel){
+        messagesService.getUnreadMessagesFromServer(channel.id);
+      });
     });
 
     socket.on('channel:new', function (data) {

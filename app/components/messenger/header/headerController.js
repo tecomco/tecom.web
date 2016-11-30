@@ -33,6 +33,8 @@ app.controller('headerController', [
       $localStorage.$reset();
       $log.info('Local storage cleared.');
       db.destroy();
+      // var indexFields = ['id', 'channelId'];
+      // db.createIndex(indexFields);
     };
   }
 ]);

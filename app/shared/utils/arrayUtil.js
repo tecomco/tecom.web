@@ -9,6 +9,11 @@ app.factory('arrayUtil', function () {
         }
       }
       return -1;
+    },
+    lastElement: function (array) {
+      if(array.length === 0)
+        return null;
+      return array[array.length-1];
     }
   };
 });

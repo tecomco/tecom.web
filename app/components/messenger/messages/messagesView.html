@@ -7,7 +7,7 @@
             <!--<div class="date-holder">-->
             <!--<label>۱۵ مرداد</label>-->
             <!--</div>-->
-            <div ng-repeat="message in messages" class="msg-holder">
+            <div ng-repeat="message in messages | orderBy : 'datetime'" class="msg-holder">
                 <div ng-class="message.getCssClass()">
                     <label class="name">{{message.sender}}</label>
                     <label class="status" ng-show="message.isFromMe()">
