@@ -10,9 +10,8 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
     self.deferredEditedChannel = $q.defer();
 
     socket.on('init', function (data) {
-      $log.info('Socket opened and connection established successfuly.');
       self.deferredInit.resolve(data);
-      angular.forEach(data, function(channel){
+      angular.forEach(data, function (channel) {
         messagesService.getUnreadMessagesFromServer(channel.id);
       });
     });
@@ -62,7 +61,6 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
         return self.defferedChannelMembers.promise;
       },
       sendDetailsEditedChannel: function (channel, callback) {
-        $log.info('Emit channel edit.');
         socket.emit('channel:edit:details', channel, callback);
       },
       getEditedChannel: function () {

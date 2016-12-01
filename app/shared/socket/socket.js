@@ -18,18 +18,23 @@ app.factory('socket', [
             window.location.reload();
           }
         });
-      }, function () {});
+      }, function () {
+      });
       return {
-        on: function () {},
-        emit: function () {}
+        on: function () {
+        },
+        emit: function () {
+        }
       };
     }
 
     // TODO: Choose a better approach :/
     if (ENV.name === 'ui') {
       return {
-        on: function () {},
-        emit: function () {}
+        on: function () {
+        },
+        emit: function () {
+        }
       };
     }
 
@@ -41,6 +46,10 @@ app.factory('socket', [
       extraHeaders: {
         Connection: 'keep-alive'
       }
+    });
+
+    self.socket.on('connect', function () {
+      $log.info('Socket opened and connection established successfuly.');
     });
 
     self.socket.on('err', function (err) {

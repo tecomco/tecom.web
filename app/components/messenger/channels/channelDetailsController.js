@@ -4,6 +4,8 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
   function ($uibModalInstance, $log, channelInfo, channelsService) {
 
     var $ctrl = this;
+    $ctrl.channel = channelInfo;
+    console.log("channel: ",$ctrl.channel);
 
     $ctrl.channelType = {
       PUBLIC: 0,
@@ -19,12 +21,10 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
       $ctrl.editMode = true;
       $ctrl.details.name = $ctrl.channel.name;
       $ctrl.details.description = $ctrl.channel.description;
-      $ctrl.details.isPrivate = $ctrl.channel.isPrivate;
+      $ctrl.details.isPrivate = ($ctrl.channel.type === $ctrl.channelType.PRIVATE) ? true : false;
       $ctrl.details.dublicateError = false;
       $ctrl.details.serverError = false;
     };
-
-    $ctrl.channel = channelInfo;
 
     $ctrl.addMember = function () {
     };

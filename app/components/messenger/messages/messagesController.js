@@ -1,12 +1,5 @@
 'use strict';
 
-app.run(['$rootScope', function ($rootScope) {
-  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-    $rootScope.toParams = toParams;
-    console.log("Parameters:", toParams);
-  });
-}]);
-
 app.controller('messagesController', ['$rootScope', '$scope', '$stateParams',
   '$log', 'User', '$timeout', 'arrayUtil', 'messagesService', 'Message', 'db',
   function ($rootScope, $scope, $stateParams, $log, User, $timeout, arrayUtil,
@@ -19,7 +12,8 @@ app.controller('messagesController', ['$rootScope', '$scope', '$stateParams',
         messages.reverse();
         angular.forEach(messages, function (message) {
           var tmpMessage = new Message(message.body, message.sender,
-            message.channelId, message.status, message._id, message.id);
+            message.channelId, message.status, message._id, message.id,
+            message.datetime);
           pushMessage(tmpMessage);
         });
         $scope.$apply();
@@ -41,7 +35,6 @@ app.controller('messagesController', ['$rootScope', '$scope', '$stateParams',
     };
 
     var pushMessage = function (message) {
-      $log.info("pushed message: ", message);
       $scope.messages.push(message);
       $timeout(function () {
         var holder = document.getElementById('messagesHolder');

@@ -8,11 +8,9 @@ app.factory('Message', ['$log', 'db', 'User',
       this.sender = sender;
       this.channelId = channelId;
       this.status = status || Message.STATUS_TYPE.PENDING;
-      this.datetime = (datetime !== undefined) ? new Date(datetime) : new Date();
+      this.datetime = datetime ? new Date(datetime) : new Date();
       this._id = _id || null;
       this.id = id || null;
-      
-      $log.info("Date object: ", new Date(this.datetime));
     }
 
     Message.prototype.isFromMe = function () {
@@ -41,7 +39,7 @@ app.factory('Message', ['$log', 'db', 'User',
       this._id = data.id;
       this.id = parseInt(data.id.slice(data.id.lastIndexOf(':') + 1,
         data.id.length));
-      this.datetime = data.datetime;
+      this.datetime = new Date(data.datetime);
     };
 
     Message.prototype.setId = function () {

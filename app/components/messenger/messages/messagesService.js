@@ -28,30 +28,25 @@ app.service('messagesService', ['$log', '$q', 'socket', 'Message',
         ctrlPushCallbackFunction = callback;
       },
       getUnreadMessagesFromServer: function (channelId) {
-      var dataToBeSend = {
-        channelId: channelId
-      };
-      db.getLastChannelMessage(channelId, function (lastMessage) {
-        // $log.info("last Element:", lastMessage);
-        if(lastMessage !== null)
-          dataToBeSend.lastSavedMessageId = lastMessage.id;
+        var dataToBeSend = {
+          channelId: channelId
+        };
+        db.getLastChannelMessage(channelId, function (lastMessage) {
+          if (lastMessage !== null)
+            dataToBeSend.lastSavedMessageId = lastMessage.id;
 
-        // $log.info("data to be send:",dataToBeSend);
-        getMessages(dataToBeSend, function (err, messages) {
-
-          $log.info("MESSAGES: ", messages);
-          angular.forEach(messages, function (message) {
-            // $log.info("Message:", message);
-            var tmpMessage = new Message(message.body, message.sender, message.channelId,
-              Message.STATUS_TYPE.SENT, message.id, null, message.datetime);
-             $log.info("tmpMessage: ", tmpMessage);
-            tmpMessage.setId();
-            if(tmpMessage.channelId === $stateParams.channel.id)
-              ctrlPushCallbackFunction(tmpMessage);
-            tmpMessage.save();
+          getMessages(dataToBeSend, function (err, messages) {
+            angular.forEach(messages, function (message) {
+              var tmpMessage = new Message(message.body, message.sender, message.channelId,
+                Message.STATUS_TYPE.SENT, message.id, null, message.datetime);
+              tmpMessage.setId();
+              if ($stateParams.channel &&
+                tmpMessage.channelId === $stateParams.channel.id)
+                ctrlPushCallbackFunction(tmpMessage);
+              tmpMessage.save();
+            });
           });
         });
-      });
-    }
+      }
     };
   }]);
