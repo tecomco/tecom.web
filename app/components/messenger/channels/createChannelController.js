@@ -34,7 +34,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
       return (form.name.$viewValue && form.name.$invalid);
     };
 
-    channelsService.getTeamMembers(User.teamId).then(function (event) {
+    channelsService.getTeamMembers(User.team.id).then(function (event) {
       $ctrl.teamMembers = event;
       var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', User.id);
       if (ownIndex > -1) {
@@ -68,7 +68,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
         type: newChannelType,
         member_ids: selectedMembers,
         creator: User.id,
-        team: User.teamId
+        team: User.team.id
       };
 
       channelsService.sendNewChannel(newChannelData, function (response) {

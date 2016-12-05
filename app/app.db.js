@@ -53,6 +53,6 @@ app.service('db', ['$window', '$localStorage', function ($window, $localStorage)
       }).catch(function (err) {
         console.log("Error Clearing Database: ", err);
       });
-    },
+    }
   };
 }]);

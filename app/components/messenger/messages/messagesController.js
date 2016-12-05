@@ -11,7 +11,7 @@ app.controller('messagesController', ['$rootScope', '$scope', '$stateParams',
       db.loadChannelMessages($stateParams.channel.id, function (messages) {
         messages.reverse();
         angular.forEach(messages, function (message) {
-          var tmpMessage = new Message(message.body, message.sender,
+          var tmpMessage = new Message(message.body, message.senderId,
             message.channelId, message.status, message._id, message.id,
             message.datetime);
           pushMessage(tmpMessage);

@@ -1,11 +1,11 @@
 'use strict';
 
-app.factory('Message', ['$log', 'db', 'User',
-  function ($log, db, User) {
+app.factory('Message', ['$log', 'db', 'User', 'Team',
+  function ($log, db, User, Team) {
 
-    function Message(body, sender, channelId, status, _id, id, datetime) {
+    function Message(body, senderId, channelId, status, _id, id, datetime) {
       this.body = body;
-      this.sender = sender;
+      this.senderId = senderId;
       this.channelId = channelId;
       this.status = status || Message.STATUS_TYPE.PENDING;
       this.datetime = datetime ? new Date(datetime) : new Date();
@@ -14,7 +14,7 @@ app.factory('Message', ['$log', 'db', 'User',
     }
 
     Message.prototype.isFromMe = function () {
-      return this.sender === User.username;
+      return this.senderId === User.id;
     };
 
     Message.prototype.getStatusIcon = function () {
@@ -31,8 +31,11 @@ app.factory('Message', ['$log', 'db', 'User',
     };
 
     Message.prototype.getCssClass = function () {
-      var username = User.username;
-      return username === this.sender ? 'msg msg-send' : 'msg msg-recieve';
+      return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+    };
+
+    Message.prototype.getUsername = function () {
+      return Team.getUserById(this.senderId);
     };
 
     Message.prototype.updateIdAndDatetime = function (data) {
@@ -64,7 +67,7 @@ app.factory('Message', ['$log', 'db', 'User',
         _id: this._id,
         id: this.id,
         body: this.body,
-        sender: this.sender,
+        senderId: this.senderId,
         channelId: this.channelId,
         status: this.status,
         datetime: this.datetime

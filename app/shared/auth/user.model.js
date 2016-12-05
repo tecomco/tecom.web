@@ -2,11 +2,11 @@
 
 app.factory('User', ['$localStorage', function ($localStorage) {
 
-  function User(id, username, email, teamId, token) {
+  function User(id, username, email, team, token) {
     this.id = id;
     this.username = username;
     this.email = email;
-    this.teamId = teamId;
+    this.team = team;
     this.token = token;
   }
 
@@ -24,14 +24,14 @@ app.factory('User', ['$localStorage', function ($localStorage) {
       id: this.id,
       username: this.username,
       email: this.email,
-      teamId: this.teamId,
+      team: this.team,
       token: this.token
     };
   };
 
   if ($localStorage.user) {
     return new User($localStorage.user.id, $localStorage.user.username,
-      $localStorage.user.email, $localStorage.user.teamId,
+      $localStorage.user.email, $localStorage.user.team,
       $localStorage.user.token);
   } else {
     return User;

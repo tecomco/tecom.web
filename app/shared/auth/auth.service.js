@@ -1,15 +1,16 @@
 'use strict';
 
-app.factory('AuthService', ['$http', 'jwtHelper', 'User',
-  function ($http, jwtHelper, User) {
+app.factory('AuthService', ['$log', '$q', '$http', 'jwtHelper', 'User', 'Team',
+  function ($log, $q, $http, jwtHelper, User, Team) {
 
+    /* jshint loopfunc:true */
     var createUser = function (token) {
       var decodedToken = jwtHelper.decodeToken(token);
-      var currentMembership = decodedToken.memberships[0];
-      var user = new User(currentMembership.id,
-        currentMembership.username, decodedToken.username,
-        currentMembership.team_id, token);
-      user.save();
+      decodedToken.memberships.forEach(function (membership) {
+        var user = new User(membership.id,
+          membership.username, decodedToken.username, team, token);
+        user.save();
+      });
     };
 
     var login = function (username, password, callback) {
@@ -24,11 +25,25 @@ app.factory('AuthService', ['$http', 'jwtHelper', 'User',
         skipAuthorization: true
       }).then(function (response) {
         var token = response.data.token;
+        console.log('Token :', token);
         if (token) {
           createUser(token);
           callback(true);
         }
       });
+    };
+
+    var bindUserTeams = function (teamId) {
+      var deferredMembers = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/v1/teams/' + teamId + '/members/'
+      }).then(function (data) {
+        deferredMembers.resolve(data);
+      }, function (err) {
+        $log.info("Error getting team members: ", err);
+      });
+      return deferredMembers.promise;
     };
 
     var refreshToken = function (token) {

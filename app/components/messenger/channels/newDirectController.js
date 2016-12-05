@@ -26,7 +26,7 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
       }
     };
 
-    channelsService.getTeamMembers(User.teamId).then(function (event) {
+    channelsService.getTeamMembers(User.team.id).then(function (event) {
       $ctrl.teamMembers = event;
       var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', window.memberId);
       if (ownIndex > -1) {

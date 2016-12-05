@@ -7,7 +7,7 @@ app.service('messagesService', ['$log', '$q', 'socket', 'Message',
     var ctrlPushCallbackFunction;
 
     socket.on('message:send', function (data) {
-      var message = new Message(data.body, data.sender, data.channelId,
+      var message = new Message(data.body, data.senderId, data.channelId,
         data.status, data.id, null, data.datetime);
       message.setId();
       message.save();
@@ -29,6 +29,7 @@ app.service('messagesService', ['$log', '$q', 'socket', 'Message',
       },
       getUnreadMessagesFromServer: function (channelId) {
         var dataToBeSend = {
+
           channelId: channelId
         };
         db.getLastChannelMessage(channelId, function (lastMessage) {
@@ -37,7 +38,8 @@ app.service('messagesService', ['$log', '$q', 'socket', 'Message',
 
           getMessages(dataToBeSend, function (err, messages) {
             angular.forEach(messages, function (message) {
-              var tmpMessage = new Message(message.body, message.sender, message.channelId,
+              console.log('message:', message);
+              var tmpMessage = new Message(message.body, message.senderId, message.channelId,
                 Message.STATUS_TYPE.SENT, message.id, null, message.datetime);
               tmpMessage.setId();
               if ($stateParams.channel &&
@@ -47,6 +49,10 @@ app.service('messagesService', ['$log', '$q', 'socket', 'Message',
             });
           });
         });
+      },
+      sendSeenNotif: function(channelId, lastMessageId, callback){
+        var data = {channelId: channelId, lastMessageId: lastMessageId};
+        socket.emit('message:seen', data, callback);
       }
     };
   }]);
