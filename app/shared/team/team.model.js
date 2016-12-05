@@ -1,37 +1,37 @@
 'use strict';
 
-app.factory('Team', ['$localStorage', 'arrayUtil',
-  function ($localStorage, arrayUtil) {
+app.factory('Team', ['$http', '$log', 'arrayUtil',
+  function ($http, $log, arrayUtil) {
 
-    function Team(teamId, teamMembers) {
-      this.id = teamId;
-      this.members = teamMembers;
+    function Team(id, token) {
+      this.id = id;
+      this.bindMembersFromServer(token);
     }
 
-    Team.exist = function (that) {
-      var self = that || this;
-      return self instanceof Team;
-    };
-
-    Team.prototype.exist = function () {
-      return this.constructor.exist(this);
-    };
-
-    Team.prototype.save = function () {
-      $localStorage.team = {id: this.id, members: this.members};
+    Team.prototype.bindMembersFromServer = function (token) {
+      var that = this;
+      $http({
+        method: 'GET',
+        url: '/api/v1/teams/' + this.id + '/members/',
+        headers: {
+          'Authorization': 'JWT ' + token
+        }
+      }).then(function (res) {
+        that.members = res.data;
+      }).catch(function (err) {
+        $log.info('Error getting team members.', err);
+      });
     };
 
     Team.prototype.getUserById = function (userId) {
+      if (!this.members)
+        return 'Loading...';
       var index = arrayUtil.getIndexByKeyValue(this.members, 'id', userId);
+      console.log('username:', this.members[index].username);
       return (index === -1) ? this.members[index].username : null;
     };
 
-    if ($localStorage.team) {
-      return new Team($localStorage.team.id, $localStorage.team.teamMembers);
-    }
-    else {
-      return Team;
-    }
-  }]).config(function (TeamProvider) {
-  TeamProvider.$get();
-});
+    return Team;
+
+  }
+]);

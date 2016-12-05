@@ -36,23 +36,31 @@ app.service('messagesService', ['$log', '$q', 'socket', 'Message',
           if (lastMessage !== null)
             dataToBeSend.lastSavedMessageId = lastMessage.id;
 
-          getMessages(dataToBeSend, function (err, messages) {
-            angular.forEach(messages, function (message) {
-              console.log('message:', message);
-              var tmpMessage = new Message(message.body, message.senderId, message.channelId,
-                Message.STATUS_TYPE.SENT, message.id, null, message.datetime);
-              tmpMessage.setId();
-              if ($stateParams.channel &&
-                tmpMessage.channelId === $stateParams.channel.id)
-                ctrlPushCallbackFunction(tmpMessage);
-              tmpMessage.save();
-            });
+          getMessages(dataToBeSend, function (err, res) {
+            if (!err) {
+              var messages = res.messages;
+              angular.forEach(messages, function (message) {
+                var tmpMessage = new Message(message.body, message.senderId, message.channelId,
+                  Message.STATUS_TYPE.SENT, message.id, null, message.datetime);
+                tmpMessage.setId();
+                if ($stateParams.channel &&
+                  tmpMessage.channelId === $stateParams.channel.id)
+                  ctrlPushCallbackFunction(tmpMessage);
+                tmpMessage.save();
+              });
+            } else {
+              $log.error('Get messages from server error.', err);
+            }
           });
         });
       },
-      sendSeenNotif: function(channelId, lastMessageId, callback){
-        var data = {channelId: channelId, lastMessageId: lastMessageId};
+      sendSeenNotif: function (channelId, lastMessageId, callback) {
+        var data = {
+          channelId: channelId,
+          lastMessageId: lastMessageId
+        };
         socket.emit('message:seen', data, callback);
       }
     };
-  }]);
+  }
+]);

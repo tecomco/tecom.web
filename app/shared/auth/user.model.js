@@ -1,13 +1,13 @@
 'use strict';
 
-app.factory('User', ['$localStorage', function ($localStorage) {
+app.factory('User', ['$localStorage', 'Team', function ($localStorage, Team) {
 
-  function User(id, username, email, team, token) {
+  function User(id, username, email, teamId, token) {
     this.id = id;
     this.username = username;
     this.email = email;
-    this.team = team;
     this.token = token;
+    this.team = new Team(teamId, token);
   }
 
   User.exists = function (that) {
@@ -24,14 +24,14 @@ app.factory('User', ['$localStorage', function ($localStorage) {
       id: this.id,
       username: this.username,
       email: this.email,
-      team: this.team,
+      teamId: this.team.id,
       token: this.token
     };
   };
 
   if ($localStorage.user) {
     return new User($localStorage.user.id, $localStorage.user.username,
-      $localStorage.user.email, $localStorage.user.team,
+      $localStorage.user.email, $localStorage.user.teamId,
       $localStorage.user.token);
   } else {
     return User;

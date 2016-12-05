@@ -15,7 +15,7 @@ app.factory('socket', [
       modalInstance.result.then(function (username) {
         AuthService.login(username + '@gmail.com', 'test123', function (res) {
           if (res) {
-            // window.location.reload();
+            window.location.reload();
           }
         });
       }, function () {

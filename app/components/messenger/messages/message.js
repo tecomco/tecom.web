@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('Message', ['$log', 'db', 'User', 'Team',
-  function ($log, db, User, Team) {
+app.factory('Message', ['$log', 'db', 'User',
+  function ($log, db, User) {
 
     function Message(body, senderId, channelId, status, _id, id, datetime) {
       this.body = body;
@@ -19,14 +19,14 @@ app.factory('Message', ['$log', 'db', 'User', 'Team',
 
     Message.prototype.getStatusIcon = function () {
       switch (this.status) {
-        case Message.STATUS_TYPE.PENDING:
-          return 'zmdi zmdi-time';
-        case Message.STATUS_TYPE.SENT:
-          return 'zmdi zmdi-check';
-        case Message.STATUS_TYPE.DELIVERED:
-          return 'zmdi zmdi-ckeck-all';
-        case Message.STATUS_TYPE.SEEN:
-          return 'zmdi zmdi-eye';
+      case Message.STATUS_TYPE.PENDING:
+        return 'zmdi zmdi-time';
+      case Message.STATUS_TYPE.SENT:
+        return 'zmdi zmdi-check';
+      case Message.STATUS_TYPE.DELIVERED:
+        return 'zmdi zmdi-ckeck-all';
+      case Message.STATUS_TYPE.SEEN:
+        return 'zmdi zmdi-eye';
       }
     };
 
@@ -35,7 +35,7 @@ app.factory('Message', ['$log', 'db', 'User', 'Team',
     };
 
     Message.prototype.getUsername = function () {
-      return Team.getUserById(this.senderId);
+      return User.team.getUserById(this.senderId);
     };
 
     Message.prototype.updateIdAndDatetime = function (data) {
@@ -87,4 +87,5 @@ app.factory('Message', ['$log', 'db', 'User', 'Team',
 
     return Message;
 
-  }]);
+  }
+]);
