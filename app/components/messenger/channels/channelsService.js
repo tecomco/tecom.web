@@ -12,7 +12,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
     socket.on('init', function (data) {
       self.deferredInit.resolve(data);
       angular.forEach(data, function (channel) {
-        messagesService.getUnreadMessagesFromServer(channel.id);
+        messagesService.getNewMessagesFromServer(channel.id);
       });
     });
 

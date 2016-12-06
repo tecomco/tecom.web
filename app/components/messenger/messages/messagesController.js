@@ -1,57 +1,56 @@
 'use strict';
 
-app.controller('messagesController', ['$rootScope', '$scope', '$stateParams',
-  '$log', 'User', '$timeout', 'arrayUtil', 'messagesService', 'Message', 'db',
-  function ($rootScope, $scope, $stateParams, $log, User, $timeout, arrayUtil,
-            messagesService, Message, db) {
+app.controller('messagesController',
+  ['$scope', '$stateParams', 'User', '$timeout', 'messagesService', 'Message',
+  function ($scope, $stateParams, User, $timeout, messagesService, Message) {
 
     $scope.messages = [];
 
-    $scope.loadMessagesFromDb = function () {
-      db.loadChannelMessages($stateParams.channel.id, function (messages) {
-        messages.reverse();
-        angular.forEach(messages, function (message) {
-          var tmpMessage = new Message(message.body, message.senderId,
-            message.channelId, message.status, message._id, message.id,
-            message.datetime);
-          pushMessage(tmpMessage);
+    function loadMessagesFromDb() {
+      messagesService.getMessagesFromDb($stateParams.channel.id,
+        function (messages) {
+          messages.forEach(function (message) {
+            var message = new Message(message.body, message.senderId,
+              message.channelId, message.status, message._id, message.datetime);
+            addMessageToArray(message);
+          });
+          $scope.$apply();
         });
-        $scope.$apply();
-      });
     };
 
-    $scope.sendMessage = function () {
-      var messageBody = $scope.inputMessage.trim();
-      if (!messageBody) return;
-      var username = User.username;
-      var message = new Message(messageBody, username, $stateParams.channel.id);
-      pushMessage(message);
-      $scope.inputMessage = '';
-      messagesService.sendMessage(message.getServerWellFormed(), function (data) {
-        message.status = Message.STATUS_TYPE.SENT;
-        message.updateIdAndDatetime(data);
-        message.save();
-      });
-    };
-
-    var pushMessage = function (message) {
+    function addMessageToArray(message) {
       $scope.messages.push(message);
       $timeout(function () {
         var holder = document.getElementById('messagesHolder');
         holder.scrollTop = holder.scrollHeight;
       }, 0, false);
     };
-    messagesService.setPushCallbackFunction(pushMessage);
+
+    $scope.sendMessage = function () {
+      var messageBody = $scope.inputMessage.trim();
+      if (!messageBody) return;
+      var message = new Message(messageBody, User.id, $stateParams.channel.id);
+      addMessageToArray(message);
+      $scope.inputMessage = '';
+      messagesService.sendMessage(message.getServerWellFormed(),
+        function (data) {
+          message.status = Message.STATUS_TYPE.SENT;
+          message.updateIdAndDatetime(data.id, data.datetime);
+          message.save();
+        });
+    };
 
     $scope.$watch(
       function () {
         return $stateParams.channel;
       },
-      function handleStateParamChange(newValue) {
-        if (newValue !== null) {
-          $scope.loadMessagesFromDb();
+      function (newChannelValue) {
+        if (!newChannelValue) {
+          loadMessagesFromDb();
         }
       }
     );
+
+    messagesService.setCtrlCallback(addMessageToArray);
   }
 ]);

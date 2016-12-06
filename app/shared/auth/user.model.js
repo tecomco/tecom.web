@@ -2,12 +2,12 @@
 
 app.factory('User', ['$localStorage', 'Team', function ($localStorage, Team) {
 
-  function User(id, username, email, teamId, token) {
+  function User(id, username, email, teamId, teamMembers, token) {
     this.id = id;
     this.username = username;
     this.email = email;
     this.token = token;
-    this.team = new Team(teamId, token);
+    this.team = new Team(teamId, teamMembers, token);
   }
 
   User.exists = function (that) {
@@ -20,19 +20,23 @@ app.factory('User', ['$localStorage', 'Team', function ($localStorage, Team) {
   };
 
   User.prototype.save = function () {
-    $localStorage.user = {
-      id: this.id,
-      username: this.username,
-      email: this.email,
-      teamId: this.team.id,
-      token: this.token
-    };
+    var that = this;
+    this.team.members.then(function (teamMembers) {
+      $localStorage.user = {
+        id: that.id,
+        username: that.username,
+        email: that.email,
+        teamId: that.team.id,
+        teamMembers: teamMembers,
+        token: that.token
+      };
+    });
   };
 
-  if ($localStorage.user) {
-    return new User($localStorage.user.id, $localStorage.user.username,
-      $localStorage.user.email, $localStorage.user.teamId,
-      $localStorage.user.token);
+  var currentUser = $localStorage.user;
+  if (currentUser) {
+    return new User(currentUser.id, currentUser.username, currentUser.email,
+      currentUser.teamId, currentUser.teamMembers, currentUser.token);
   } else {
     return User;
   }

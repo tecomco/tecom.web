@@ -8,7 +8,7 @@ app.factory('AuthService', ['$log', '$http', 'jwtHelper', 'User',
       // TODO: Get current membership properly.
       var currentMembership = decodedToken.memberships[0];
       var user = new User(currentMembership.id, currentMembership.username,
-        currentMembership.username, currentMembership.team_id, token);
+        currentMembership.username, currentMembership.team_id, null, token);
       user.save();
     };
 

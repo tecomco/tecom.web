@@ -1,66 +1,108 @@
 'use strict';
 
-app.service('messagesService', ['$log', '$q', 'socket', 'Message',
-  '$stateParams', 'db',
-  function ($log, $q, socket, Message, $stateParams, db) {
+app.service('messagesService',
+  ['$log', 'socket', 'Message', '$stateParams', 'db',
+  function ($log, socket, Message, $stateParams, db) {
 
-    var ctrlPushCallbackFunction;
+    var self = this;
 
     socket.on('message:send', function (data) {
       var message = new Message(data.body, data.senderId, data.channelId,
-        data.status, data.id, null, data.datetime);
-      message.setId();
+        data.status, data.id, data.datetime);
       message.save();
-      if (message.channelId === $stateParams.channel.id)
-        ctrlPushCallbackFunction(message);
+      if (message.channelId === $stateParams.channel.id) {
+        self.ctrlCallback(message);
+      }
     });
 
-    var getMessages = function (data, callback) {
-      socket.emit('message:get', data, callback);
-    };
+    function sendMessage(data, callback) {
+      socket.emit('message:send', data, callback);
+    }
+
+    function setCtrlCallback(callback) {
+      self.ctrlCallback = callback;
+    }
+
+    function getMessagesFromDb(channelId, callback) {
+      db.getDb().find({
+        selector: {
+          id: {
+            $gt: null
+          },
+          channelId: {
+            $eq: channelId
+          }
+        },
+        sort: [{
+          id: 'desc'
+        }],
+        limit: 50
+      }).then(function (result) {
+        callback(result.docs);
+      });
+    }
+
+    function getLastMessageFromDb(channelId, callback) {
+      db.getDb().find({
+        selector: {
+          id: {
+            $gt: null
+          },
+          channelId: {
+            $eq: channelId
+          }
+        },
+        sort: [{
+          id: 'desc'
+        }],
+        limit: 1
+      }).then(function (result) {
+        if (result.docs.length === 0)
+          callback(null);
+        else
+          callback(result.docs[0]);
+      });
+    }
+
+    function getNewMessagesFromServer(channelId) {
+      var dataToBeSend = {
+        channelId: channelId
+      };
+      getLastMessageFromDb(channelId, function (lastMessage) {
+        if (lastMessage !== null)
+          dataToBeSend.lastSavedMessageId = lastMessage.id;
+        socket.emit('message:get', dataToBeSend, function (err, res) {
+          if (!err) {
+            var messages = res.messages;
+            messages.forEach(function (msg) {
+              var message = new Message(msg.body, msg.senderId, msg.channelId,
+                Message.STATUS_TYPE.SENT, msg.id, msg.datetime);
+              if ($stateParams.channel &&
+                message.channelId === $stateParams.channel.id)
+                self.ctrlCallback(message);
+              message.save();
+            });
+          } else {
+            $log.error('Get messages from server error.', err);
+          }
+        });
+      });
+    }
+
+    function sendSeenNotif(channelId, lastMessageId, callback) {
+      var data = {
+        channelId: channelId,
+        lastMessageId: lastMessageId
+      };
+      socket.emit('message:seen', data, callback);
+    }
 
     return {
-      getMessages: getMessages,
-      sendMessage: function (data, callback) {
-        socket.emit('message:send', data, callback);
-      },
-      setPushCallbackFunction: function (callback) {
-        ctrlPushCallbackFunction = callback;
-      },
-      getUnreadMessagesFromServer: function (channelId) {
-        var dataToBeSend = {
-
-          channelId: channelId
-        };
-        db.getLastChannelMessage(channelId, function (lastMessage) {
-          if (lastMessage !== null)
-            dataToBeSend.lastSavedMessageId = lastMessage.id;
-
-          getMessages(dataToBeSend, function (err, res) {
-            if (!err) {
-              var messages = res.messages;
-              angular.forEach(messages, function (message) {
-                var tmpMessage = new Message(message.body, message.senderId, message.channelId,
-                  Message.STATUS_TYPE.SENT, message.id, null, message.datetime);
-                tmpMessage.setId();
-                if ($stateParams.channel &&
-                  tmpMessage.channelId === $stateParams.channel.id)
-                  ctrlPushCallbackFunction(tmpMessage);
-                tmpMessage.save();
-              });
-            } else {
-              $log.error('Get messages from server error.', err);
-            }
-          });
-        });
-      },
-      sendSeenNotif: function (channelId, lastMessageId, callback) {
-        var data = {
-          channelId: channelId,
-          lastMessageId: lastMessageId
-        };
-        socket.emit('message:seen', data, callback);
-      }
+      sendMessage: sendMessage,
+      setCtrlCallback: setCtrlCallback,
+      getMessagesFromDb: getMessagesFromDb,
+      getNewMessagesFromServer: getNewMessagesFromServer,
+      sendSeenNotif: sendSeenNotif
     };
   }
 ]);

@@ -1,15 +1,17 @@
 'use strict';
 
-app.factory('Team', ['$http', '$log', 'arrayUtil',
-  function ($http, $log, arrayUtil) {
+app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
+  function ($http, $q, $log, arrayUtil) {
 
-    function Team(id, token) {
+    function Team(id, members, token) {
       this.id = id;
-      this.bindMembersFromServer(token);
+      this.members = Array.isArray(members) ? members :
+        this.getMembersFromServer(token);
     }
 
-    Team.prototype.bindMembersFromServer = function (token) {
+    Team.prototype.getMembersFromServer = function (token) {
       var that = this;
+      var defered = $q.defer();
       $http({
         method: 'GET',
         url: '/api/v1/teams/' + this.id + '/members/',
@@ -17,18 +19,19 @@ app.factory('Team', ['$http', '$log', 'arrayUtil',
           'Authorization': 'JWT ' + token
         }
       }).then(function (res) {
-        that.members = res.data;
+        var members = res.data;
+        $log.info('Successful getting team members. length:', members.length);
+        defered.resolve(members);
       }).catch(function (err) {
-        $log.info('Error getting team members.', err);
+        $log.error('Error getting team members.', err);
+        defered.reject();
       });
+      return defered.promise;
     };
 
-    Team.prototype.getUserById = function (userId) {
-      if (!this.members)
-        return 'Loading...';
+    Team.prototype.getUsernameById = function (userId) {
       var index = arrayUtil.getIndexByKeyValue(this.members, 'id', userId);
-      console.log('username:', this.members[index].username);
-      return (index === -1) ? this.members[index].username : null;
+      return (index !== -1) ? this.members[index].username : '';
     };
 
     return Team;
