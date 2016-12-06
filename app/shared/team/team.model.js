@@ -3,15 +3,20 @@
 app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
   function ($http, $q, $log, arrayUtil) {
 
+    var isBusy = false;
+
     function Team(id, members, token) {
       this.id = id;
-      this.members = Array.isArray(members) ? members :
-        this.getMembersFromServer(token);
+      if (!isBusy) {
+        this.members = Array.isArray(members) ? members :
+          this.getMembersFromServer(token);
+      }
     }
 
     Team.prototype.getMembersFromServer = function (token) {
       var that = this;
       var defered = $q.defer();
+      isBusy = true;
       $http({
         method: 'GET',
         url: '/api/v1/teams/' + this.id + '/members/',

@@ -19,6 +19,11 @@ app.factory('Message', ['$log', 'db', 'User', function ($log, db, User) {
       return this.senderId === User.id;
     };
 
+    Message.prototype.isEnglish = function () {
+      var english = /^[A-Za-z0-9]*$/;
+      return english.test(this.body);
+    };
+
     Message.prototype.getStatusIcon = function () {
       switch (this.status) {
       case Message.STATUS_TYPE.PENDING:
