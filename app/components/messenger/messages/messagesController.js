@@ -9,14 +9,14 @@ app.controller('messagesController',
     function loadMessagesFromDb() {
       messagesService.getMessagesFromDb($stateParams.channel.id,
         function (messages) {
-          messages.forEach(function (message) {
-            var message = new Message(message.body, message.senderId,
-              message.channelId, message.status, message._id, message.datetime);
+          messages.forEach(function (msg) {
+            var message = new Message(msg.body, msg.senderId, msg.channelId,
+              msg.status, msg._id, msg.datetime);
             addMessageToArray(message);
           });
           $scope.$apply();
         });
-    };
+    }
 
     function addMessageToArray(message) {
       $scope.messages.push(message);
@@ -24,7 +24,7 @@ app.controller('messagesController',
         var holder = document.getElementById('messagesHolder');
         holder.scrollTop = holder.scrollHeight;
       }, 0, false);
-    };
+    }
 
     $scope.sendMessage = function () {
       var messageBody = $scope.inputMessage.trim();
