@@ -1,55 +1,50 @@
 'use strict';
 
-app.factory('Message', ['$log', 'db', 'User',
-  function ($log, db, User) {
+app.factory('Message', ['$log', 'db', 'User', function ($log, db, User) {
 
-    function Message(body, sender, channelId, status, _id, id, datetime) {
+    function Message(body, senderId, channelId, status, _id, datetime) {
       this.body = body;
-      this.sender = sender;
+      this.senderId = senderId;
       this.channelId = channelId;
       this.status = status || Message.STATUS_TYPE.PENDING;
       this.datetime = datetime ? new Date(datetime) : new Date();
       this._id = _id || null;
-      this.id = id || null;
+      if (this._id) {
+        this.id = Message.generateIntegerId(_id);
+      }
+      this.username = User.team.getUsernameById(this.senderId);
     }
 
     Message.prototype.isFromMe = function () {
-      return this.sender === User.username;
+      return this.senderId === User.id;
     };
 
     Message.prototype.getStatusIcon = function () {
       switch (this.status) {
-        case Message.STATUS_TYPE.PENDING:
-          return 'zmdi zmdi-time';
-        case Message.STATUS_TYPE.SENT:
-          return 'zmdi zmdi-check';
-        case Message.STATUS_TYPE.DELIVERED:
-          return 'zmdi zmdi-ckeck-all';
-        case Message.STATUS_TYPE.SEEN:
-          return 'zmdi zmdi-eye';
+      case Message.STATUS_TYPE.PENDING:
+        return 'zmdi zmdi-time';
+      case Message.STATUS_TYPE.SENT:
+        return 'zmdi zmdi-check';
+      case Message.STATUS_TYPE.DELIVERED:
+        return 'zmdi zmdi-ckeck-all';
+      case Message.STATUS_TYPE.SEEN:
+        return 'zmdi zmdi-eye';
       }
     };
 
     Message.prototype.getCssClass = function () {
-      var username = User.username;
-      return username === this.sender ? 'msg msg-send' : 'msg msg-recieve';
+      return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
     };
 
-    Message.prototype.updateIdAndDatetime = function (data) {
-      this._id = data.id;
-      this.id = parseInt(data.id.slice(data.id.lastIndexOf(':') + 1,
-        data.id.length));
-      this.datetime = new Date(data.datetime);
+    Message.prototype.updateIdAndDatetime = function (_id, datetime) {
+      this._id = _id;
+      this.id = Message.generateIntegerId(_id);
+      this.datetime = new Date(datetime);
     };
 
-    Message.prototype.setId = function () {
-      this.id = parseInt(this._id.slice(this._id.lastIndexOf(':') + 1,
-        this._id.length));
-    };
-
-    Message.prototype.findId = function () {
-      return parseInt(this._id.slice(this._id.lastIndexOf(':') + 1,
-        this._id.length));
+    Message.generateIntegerId = function (stringId) {
+      return parseInt(stringId.slice(stringId.lastIndexOf(':') + 1,
+        stringId.length));
     };
 
     Message.prototype.getServerWellFormed = function () {
@@ -64,7 +59,7 @@ app.factory('Message', ['$log', 'db', 'User',
         _id: this._id,
         id: this.id,
         body: this.body,
-        sender: this.sender,
+        senderId: this.senderId,
         channelId: this.channelId,
         status: this.status,
         datetime: this.datetime
@@ -72,7 +67,11 @@ app.factory('Message', ['$log', 'db', 'User',
     };
 
     Message.prototype.save = function () {
-      db.saveMessage(this.getJson());
+      db.getDb().put(this.getJson(), function (err) {
+        if (err) {
+          $log.error('Error saving message.', err);
+        }
+      });
     };
 
     Message.STATUS_TYPE = {
@@ -84,4 +83,5 @@ app.factory('Message', ['$log', 'db', 'User',
 
     return Message;
 
-  }]);
+  }
+]);

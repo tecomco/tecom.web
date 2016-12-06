@@ -9,7 +9,7 @@
             <!--</div>-->
             <div ng-repeat="message in messages | orderBy : 'datetime'" class="msg-holder">
                 <div ng-class="message.getCssClass()">
-                    <label class="name">{{message.sender}}</label>
+                    <label class="name">{{message.username}}</label>
                     <label class="status" ng-show="message.isFromMe()">
                         <i ng-class="message.getStatusIcon()"></i>
                     </label>
