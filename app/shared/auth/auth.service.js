@@ -8,8 +8,8 @@ app.factory('AuthService', ['$log', '$http', 'jwtHelper', 'User',
       // TODO: Get current membership properly.
       var currentMembership = decodedToken.memberships[0];
       var user = new User(currentMembership.id, currentMembership.username,
-        currentMembership.username, currentMembership.team_id, null, token);
-      user.save();
+        decodedToken.username, currentMembership.team_id, null, token);
+      return user.save();
     };
 
     var login = function (username, password, callback) {
@@ -25,8 +25,9 @@ app.factory('AuthService', ['$log', '$http', 'jwtHelper', 'User',
       }).then(function (response) {
         var token = response.data.token;
         if (token) {
-          createUser(token);
-          callback(true);
+          createUser(token).then(function () {
+            callback(true);
+          });
         }
       });
     };
