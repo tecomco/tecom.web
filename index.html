@@ -3,68 +3,68 @@
 
 <head>
     <title>تیکام</title>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width">
     <base href="/">
-    <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css"/>
-    <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css"/>
-    <link rel="stylesheet" href="static/css/style.css"/>
+    <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css" />
+    <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
+    <link rel="stylesheet" href="static/css/style.css" />
 
     <script src="static/lib/angular/angular.min.js"></script>
 
 </head>
 
 <body>
-<div class="content">
-    <ui-view></ui-view>
-</div>
+    <div class="content">
+        <ui-view></ui-view>
+    </div>
 
-<script src="static/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
-<script src="static/lib/angular-jwt/dist/angular-jwt.min.js"></script>
-<script src="static/lib/ngstorage/ngStorage.min.js"></script>
-<script src="static/lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-<script src="static/lib/pouchdb/dist/pouchdb.js"></script>
-<script src="static/lib/pouchdb-find/dist/pouchdb.find.js"></script>
-<script src="static/lib/socket.io-client/socket.io.js"></script>
-<script src="static/lib/moment/min/moment.min.js"></script>
-<script src="static/lib/moment/locale/fa.js"></script>
-<script src="static/lib/angular-moment/angular-moment.min.js"></script>
-<script src="app/app.module.js"></script>
-<script src="app/app.routes.js"></script>
-<script src="app/app.config.js"></script>
-<script src="app/shared/utils/arrayUtil.js"></script>
-<script src="app/shared/socket/socket.js"></script>
-<script src="app/shared/auth/user.model.js"></script>
-<script src="app/shared/team/team.model.js"></script>
-<script src="app/shared/auth/auth.service.js"></script>
-<script src="app/shared/db/db.service.js"></script>
-<script src="app/components/messenger/channels/channelsController.js"></script>
-<script src="app/components/messenger/channels/createChannelController.js"></script>
-<script src="app/components/messenger/channels/newDirectController.js"></script>
-<script src="app/components/messenger/channels/channelDetailsController.js"></script>
-<script src="app/components/messenger/channels/channelsService.js"></script>
-<script src="app/components/messenger/header/headerController.js"></script>
-<script src="app/components/messenger/messages/message.js"></script>
-<script src="app/components/messenger/messages/messagesController.js"></script>
-<script src="app/components/messenger/messages/messagesService.js"></script>
-<script type="text/ng-template" id="login.html">
-    <div class="modal-header">
-        <h4 class="modal-title">ورود کاربر</h4>
-    </div>
-    <div class="modal-body two-part-modal">
-        <div class="container-fluid">
-            <form name="$ctrl.forms.login" ng-submit="$ctrl.login()" novalidate>
-                <div class="modal-input">
-                    <input type="text" name="username" ng-model="$ctrl.username" placeholder="نام کاربری" style="margin-right: 300px;text-align: center;width: 40%;" required>
-                </div>
-                <input type="submit" class="btn btn-primary" value="ورود"/>
-                <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">بیخیال :)</button>
-            </form>
+    <script src="static/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="static/lib/angular-jwt/dist/angular-jwt.min.js"></script>
+    <script src="static/lib/ngstorage/ngStorage.min.js"></script>
+    <script src="static/lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="static/lib/pouchdb/dist/pouchdb.js"></script>
+    <script src="static/lib/pouchdb-find/dist/pouchdb.find.js"></script>
+    <script src="static/lib/socket.io-client/socket.io.js"></script>
+    <script src="static/lib/moment/min/moment.min.js"></script>
+    <script src="static/lib/moment/locale/fa.js"></script>
+    <script src="static/lib/angular-moment/angular-moment.min.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/app.routes.js"></script>
+    <script src="app/app.config.js"></script>
+    <script src="app/shared/utils/arrayUtil.js"></script>
+    <script src="app/shared/socket/socket.js"></script>
+    <script src="app/shared/auth/user.model.js"></script>
+    <script src="app/shared/team/team.model.js"></script>
+    <script src="app/shared/auth/auth.service.js"></script>
+    <script src="app/shared/db/db.service.js"></script>
+    <script src="app/components/messenger/channels/channelsController.js"></script>
+    <script src="app/components/messenger/channels/createChannelController.js"></script>
+    <script src="app/components/messenger/channels/newDirectController.js"></script>
+    <script src="app/components/messenger/channels/channelDetailsController.js"></script>
+    <script src="app/components/messenger/channels/channelsService.js"></script>
+    <script src="app/components/messenger/header/headerController.js"></script>
+    <script src="app/components/messenger/messages/message.js"></script>
+    <script src="app/components/messenger/messages/messagesController.js"></script>
+    <script src="app/components/messenger/messages/messagesService.js"></script>
+    <script type="text/ng-template" id="login.html">
+        <div class="modal-header">
+            <h4 class="modal-title">ورود کاربر</h4>
         </div>
-    </div>
-</script>
+        <div class="modal-body two-part-modal">
+            <div class="container-fluid">
+                <form name="$ctrl.forms.login" ng-submit="$ctrl.login()" novalidate>
+                    <div class="modal-input">
+                        <input type="text" name="username" ng-model="$ctrl.username" placeholder="نام کاربری" required>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="ورود" />
+                    <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">بیخیال :)</button>
+                </form>
+            </div>
+        </div>
+    </script>
 </body>
 
 </html>

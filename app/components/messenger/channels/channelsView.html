@@ -43,8 +43,7 @@
         <div class="modal-body two-part-modal">
             <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
                 <div class="container-fluid">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-6">
                         <h3>مشخصات گروه</h3>
                         <div class="modal-input">
                             <input type="text" name="name" ng-model="$ctrl.newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
@@ -63,14 +62,14 @@
                             </div>
                         </label>
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-6">
                         <h3>اعضای گروه</h3>
                         <div class="modal-input">
                             <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
                         </div>
                         <div class="g-members">
                             <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
-                                <img ng-src="static/img/user-def.png"/>
+                                <img ng-src="static/img/user-def.png" />
                                 <label>{{teamMember.full_name}}</label>
                                 <label dir="ltr">(@{{teamMember.username}})</label>
                                 <label class="ws-checkbox">
@@ -95,6 +94,7 @@
     </script>
 
     <script type="text/ng-template" id="newDirectModal.html">
+
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeCreateChannel()">&times;</button>
             <h4 class="modal-title">مکالمه مستقیم</h4>
@@ -102,17 +102,16 @@
         <div class="modal-body two-part-modal">
             <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
                 <div class="container-fluid">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-10 col-sm-offset-1">
                         <h3>لطفا مخاطب مورد نظرتان را انتخاب کنید</h3>
                         <div class="modal-input">
                             <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
                         </div>
                         <div class="g-members">
                             <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
-                                  <img ng-src="static/img/user-def.png"/>
-                                  <label>{{teamMember.full_name}}</label>
-                                  <label>(@{{teamMember.username}})</label>
+                                <img ng-src="static/img/user-def.png" />
+                                <label>{{teamMember.full_name}}</label>
+                                <label>(@{{teamMember.username}})</label>
                             </a>
                         </div>
                     </div>

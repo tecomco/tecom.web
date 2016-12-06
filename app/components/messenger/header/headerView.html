@@ -47,8 +47,7 @@
         <div class="modal-body two-part-modal">
             <form name="$ctrl.forms.detailsForm" ng-show="$ctrl.editMode" ng-submit="$ctrl.editChannelDetailsSubmit()" novalidate>
                 <div class="container-fluid">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-10 col-sm-offset-1">
                         <div class="modal-input">
                             <input type="text" name="name" ng-model="$ctrl.details.name" ng-maxlength="32" required>
                             <span class="modal-err" ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.detailsForm)">وارد کردن نام گروه الزامی است!</span>
@@ -74,8 +73,7 @@
                 </div>
             </form>
             <div ng-show="!$ctrl.editMode" class="container-fluid">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <h1>{{$ctrl.channel.name}}</h1>
 
                     <div class="g-details">
@@ -84,29 +82,28 @@
                     </div>
 
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <h3>اعضای گروه</h3>
                     <div class="modal-input" ng-show="$ctrl.editMode">
                         <input type="text" name="search" ng-model="$ctrl.details.search" placeholder="جستجو">
                     </div>
                     <div class="g-members">
                         <div ng-repeat="channelMember in $ctrl.channel.members | orderBy : 'username' | filter : {full_name : $ctrl.details.search}" class="g-m-one">
-                            <img ng-src="static/img/user-def.png"/>
+                            <img ng-src="static/img/user-def.png" />
                             <label>{{channelMember.full_name}}</label>
                             <label>(@{{channelMember.username}})</label>
                         </div>
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="col-sm-1"></div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
 
                     <div class="modal-input" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
                         <button class="modal-btn" ng-click="$ctrl.editChannel()">ویرایش اطلاعات گروه
                         </button>
                     </div>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <div class="modal-input">
                         <button ng-click="$ctrl.addMember()" class="modal-btn">اضافه کردن عضو</button>
                     </div>
