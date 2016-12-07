@@ -45,7 +45,7 @@ app.controller('messagesController',
         return $stateParams.channel;
       },
       function (newChannelValue) {
-        if (!newChannelValue) {
+        if (newChannelValue !== null) {
           loadMessagesFromDb();
         }
       }
