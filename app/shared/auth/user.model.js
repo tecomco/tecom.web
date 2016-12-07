@@ -28,8 +28,10 @@ app.factory('User', ['$localStorage', '$q', 'Team',
           id: that.id,
           username: that.username,
           email: that.email,
-          teamId: that.team.id,
-          teamMembers: teamMembers,
+          team: {
+            id: that.team.id,
+            members: teamMembers
+          },
           token: that.token
         };
         defered.resolve();
@@ -40,7 +42,7 @@ app.factory('User', ['$localStorage', '$q', 'Team',
     var currentUser = $localStorage.user;
     if (currentUser) {
       return new User(currentUser.id, currentUser.username, currentUser.email,
-        currentUser.teamId, currentUser.teamMembers, currentUser.token);
+        currentUser.team.id, currentUser.team.members, currentUser.token);
     } else {
       return User;
     }
