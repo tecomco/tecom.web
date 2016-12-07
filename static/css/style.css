@@ -37,6 +37,21 @@ html, body, ul, li {
 * {
     outline: 0 !important;
 }
+ ::scrollbar {
+    display: none;
+}
+
+ ::-o-scrollbar {
+    display: none;
+}
+
+::-webkit-scrollbar {
+   display: none;
+}
+
+ ::-moz-scrollbar {
+    display: none;
+}
 
 h1, h2, h3, h4, h5 {
     font-family: 'iransans';
@@ -63,12 +78,14 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
-.content .col-sm-5.col-lg-6, .content .col-sm-9.col-lg-10{
-  transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
+
+.content .col-sm-5.col-lg-6, .content .col-sm-9.col-lg-10 {
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
 }
+
 .msg-landing {
     background: #f1f1f1;
     height: 100vh;
@@ -483,6 +500,8 @@ a, a:hover, a:visited, a:focus {
 
 
 /* SEXY MODAL */
+
+
 /*
 
 .modal.fade .modal-dialog {
@@ -521,7 +540,7 @@ a, a:hover, a:visited, a:focus {
     display: block;
     width: 50%;
     margin: 16px 25%;
-    font-size: 18px;
+    font-size: 15px;
     color: #666;
     border-radius: 8px;
     border: 1px solid rgba(122, 122, 122, 0.1);
@@ -550,7 +569,7 @@ a, a:hover, a:visited, a:focus {
     font-weight: 300;
     width: 50%;
     margin: 16px 25%;
-    font-size: 24px;
+    font-size: 20px;
     color: #fff;
     border: 0;
     border-radius: 4px;
@@ -581,7 +600,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .modal-body.two-part-modal {
-    padding: 20px 10%;
+    padding: 20px 2%;
 }
 
 .modal-body.two-part-modal [type="text"] {
@@ -595,15 +614,13 @@ a, a:hover, a:visited, a:focus {
 }
 
 .modal-body .g-members {
-    height: 40vh;
+    height: 30vh;
     overflow-y: scroll;
     text-align: right;
     margin-bottom: 32px;
 }
 
-
 .modal-body .g-details span {}
-
 
 .modal-body [type="text"]:focus {
     color: #188c67;
@@ -619,11 +636,15 @@ a, a:hover, a:visited, a:focus {
 
 .modal-content {
     height: 100vh;
-    width: 100%;
+    /*width: 100%;*/
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    opacity: 0.97;
+    /*opacity: 0.97;*/
+    /*min-width: 800px;*/
+    margin: 0 auto;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 .modal-body {
@@ -633,7 +654,7 @@ a, a:hover, a:visited, a:focus {
 .modal-body label {
     font-weight: 100;
     color: #999;
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .modal-dialog {
@@ -671,7 +692,7 @@ a, a:hover, a:visited, a:focus {
     padding-top: 13px;
     text-align: center;
     border-radius: 50%;
-    font-size: 40px;
+    font-size: 30px;
     background: rgba(0, 0, 0, 0.1);
     transition: all 0.3s;
     -webkit-transition: all 0.3s;
@@ -686,23 +707,26 @@ a, a:hover, a:visited, a:focus {
 }
 
 .modal-header h4 {
-    font-size: 40px;
+    font-size: 30px;
     font-weight: 200;
     color: #116071;
 }
 
 .modal-header label {
-    font-size: 100;
-    font-size: 18px;
+    font-weight: 100;
+    font-size: 15px;
     color: #999;
 }
+
 .modal-body .g-members a {
     display: block;
     padding: 4px;
 }
-.modal-body .g-members a:hover{
-  background: #f8f8f8;
+
+.modal-body .g-members a:hover {
+    background: #f8f8f8;
 }
+
 .modal-body .g-members a * {
     cursor: pointer;
 }
@@ -723,15 +747,16 @@ a, a:hover, a:visited, a:focus {
 }
 
 .g-m-one label {
-    padding-right: 16px;
-    font-size: 18px;
+    padding-right: 5px;
+    font-size: 15px;
 }
 
 .g-m-one .ws-checkbox {
     float: left;
 }
+
 .modal .ws-checkbox {
-    font-size: 18px;
+    font-size: 15px;
     margin-top: 10px;
 }
 
@@ -746,7 +771,7 @@ label.ws-checkbox>input {
 }
 
 label.ws-checkbox>.checkbox-stat i {
-    font-size: 60px;
+    font-size: 40px;
     visibility: hidden;
     opacity: 0;
     position: absolute;
@@ -789,6 +814,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
     color: rgb(32, 164, 109);
     transform: rotateZ(-5deg);
 }
+
 /* SEXY MODAL END */
 
 .clearfix:after {
@@ -814,86 +840,106 @@ label {
     font-weight: 200;
 }
 
-
 /* Large Devices, Wide Screens */
-
 @media only screen and (max-width: 1200px) {}
 
-
 /* Medium Devices, Desktops */
-
 @media only screen and (max-width: 992px) {}
 
-
 /* Small Devices, Tablets */
-
 @media only screen and (max-width: 768px) {}
 
-
 /* Extra Small Devices, Phones */
-
 @media only screen and (max-width: 480px) {}
 
-
 /* Custom, iPhone Retina */
-
 @media only screen and (max-width: 320px) {}
 
-  /*Customizing Bootstrap Modal*/
-  .modal.fade .modal-dialog {
-      -webkit-transform: scale(0.1);
-      -moz-transform: scale(0.1);
-      -ms-transform: scale(0.1);
-      transform: scale(0.1);
-      opacity: 0;
-      -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      transition: all 0.3s;
-  }
 
-  .modal.in .modal-dialog {
+/*Customizing Bootstrap Modal*/
+
+.modal.fade .modal-dialog {
+    -webkit-transform: scale(0.1);
+    -moz-transform: scale(0.1);
+    -ms-transform: scale(0.1);
+    transform: scale(0.1);
+    opacity: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.modal.in .modal-dialog {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
     opacity: 1;
-  }
-  .modal.in ~ .content {
+}
+
+.modal.in ~ .content {
     -webkit-filter: blur(5px);
     -moz-filter: blur(5px);
     filter: blur(5px);
-    /*-webkit-transform: scale(1.015);
-    -moz-transform: scale(1.015);
-    -ms-transform: scale(1.015);
-    transform: scale(1.015);*/
-  }
+    -webkit-transform: scale(1.04);
+    -moz-transform: scale(1.04);
+    -ms-transform: scale(1.04);
+    transform: scale(1.04);
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+    -o-transition: all 0.3s;
+}
 
-  .modal-content {
-      position: relative;
-      background-color: #fff;
-      -webkit-background-clip: padding-box;
-      background-clip: padding-box;
-      /*border: 1px solid #999;
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    /*border: 1px solid #999;
       border: 1px solid rgba(0, 0, 0, .2);*/
-      border-radius: 10px;
-      outline: 0;
-      /*-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+    outline: 0;
+    /*-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
       box-shadow: 0 3px 9px rgba(0, 0, 0, .5);*/
-  }
-  @media (min-width: 768px) {
-      .modal-dialog {
-          width: 600px;
-          margin: 30px auto;
-      }
-      .modal-content {
-          /*-webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-          box-shadow: 0 5px 15px rgba(0, 0, 0, .5);*/
-      }
-      .modal-sm {
-          width: 300px;
-      }
-      .
-  }
+}
 
+@media (min-width: 850px) {
+    .modal-dialog {
+        margin: 30px auto;
+        padding: 0 75px;
+        /*height: 90vh;*/
+        /*overflow: hidden;*/
+    }
+
+    .modal-content {
+        /*margin: 0 175px;*/
+        border-radius: 20px;
+        -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+    }
+    .modal-sm {
+        width: 300px;
+    }
+
+}
+@media (min-width: 1100px) {
+    .modal-dialog {
+        margin: 30px auto;
+        padding: 0 225px;
+        /*height: 90vh;*/
+        /*overflow: hidden;*/
+    }
+
+    .modal-content {
+        /*margin: 0 175px;*/
+        border-radius: 20px;
+        -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+    }
+    .modal-sm {
+        width: 300px;
+    }
+
+}
 
 /*Customizing Boostrap Modal End*/
