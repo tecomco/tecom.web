@@ -3,14 +3,14 @@
 
 <head>
     <title>تیکام</title>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width">
     <base href="/">
-    <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css"/>
-    <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css"/>
-    <link rel="stylesheet" href="static/css/style.css"/>
+    <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css" />
+    <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
+    <link rel="stylesheet" href="static/css/style.css" />
 
     <script src="static/lib/angular/angular.min.js"></script>
 
@@ -53,19 +53,19 @@
 <script type="text/ng-template" id="login.html">
     <div class="modal-header">
         <h4 class="modal-title">ورود کاربر</h4>
-    </div>
-    <div class="modal-body two-part-modal">
-        <div class="container-fluid">
-            <form name="$ctrl.forms.login" ng-submit="$ctrl.login()" novalidate>
-                <div class="modal-input">
-                    <input type="text" name="username" ng-model="$ctrl.username" placeholder="نام کاربری" style="margin-right: 300px;text-align: center;width: 40%;" required>
-                </div>
-                <input type="submit" class="btn btn-primary" value="ورود"/>
-                <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">بیخیال :)</button>
-            </form>
         </div>
-    </div>
-</script>
+        <div class="modal-body two-part-modal">
+            <div class="container-fluid">
+                <form name="$ctrl.forms.login" ng-submit="$ctrl.login()" novalidate>
+                    <div class="modal-input">
+                        <input type="text" name="username" ng-model="$ctrl.username" placeholder="نام کاربری" required>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="ورود" />
+                    <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">بیخیال :)</button>
+                </form>
+            </div>
+        </div>
+    </script>
 </body>
 
 </html>
