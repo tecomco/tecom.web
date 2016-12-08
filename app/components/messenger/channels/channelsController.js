@@ -1,29 +1,14 @@
 'use strict';
 
 app.controller('channelsController', ['$scope', '$state', '$stateParams',
-  '$log', '$uibModal', 'channelsService', 'arrayUtil',
+  '$log', '$uibModal', 'channelsService', 'arrayUtil', 'Channel',
   function ($scope, $state, $stateParams, $log, $uibModal, channelsService,
-    arrayUtil) {
+            arrayUtil, Channel) {
 
     var $ctrl = this;
 
-    $scope.channelType = {
-      PUBLIC: 0,
-      PRIVATE: 1,
-      DIRECT: 2
-    };
-
     $scope.selectedChat = function () {
       return $stateParams.slug;
-    };
-
-    $scope.filterByPublicAndPrivate = function (channel) {
-      return channel.type === $scope.channelType.PUBLIC ||
-        channel.type === $scope.channelType.PRIVATE;
-    };
-
-    $scope.filterByDirect = function (channel) {
-      return channel.type === $scope.channelType.DIRECT;
     };
 
     $scope.editedPromise = channelsService.getEditedChannel();
@@ -44,8 +29,14 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
         $scope.initChannelsPromise = channelsService.getInitChannels();
       }
     };
-    $scope.bindNewChannel = function (data) {
-      $scope.channels.push(data);
+
+    $scope.bindNewChannel = function (channel) {
+      $log.info("NewCghannel:", channel);
+      /*var newChannel = new Channel(channel.name, channel.slug,
+        channel.description, channel.type, channel.id, channel.membersCount,
+        null, null, null);
+      $scope.channels.push(newChannel);
+      $log.info("Channels: ", $scope.channels);*/
       $scope.newChannelPromise = channelsService.getNewChannel();
     };
 
@@ -65,6 +56,30 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
 
     $scope.promiseThenFunction = function (promise, thenFunc) {
       promise.then(thenFunc);
+    };
+
+    $scope.openCreateChannelModal = function () {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'createNewChannelModal.html',
+        controller: 'createChannelController',
+        controllerAs: '$ctrl'
+      });
+      modalInstance.result.then(function () {
+      }, function () {
+      });
+    };
+
+    $scope.openNewDirectModal = function () {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'newDirectModal.html',
+        controller: 'newDirectController',
+        controllerAs: '$ctrl'
+      });
+      modalInstance.result.then(function () {
+      }, function () {
+      });
     };
 
     $scope.$watch(
@@ -91,26 +106,5 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
         $scope.promiseThenFunction($scope.initChannelsPromise, $scope.bindInitChannels);
       }
     );
-
-    $scope.openCreateChannelModal = function () {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        templateUrl: 'createNewChannelModal.html',
-        controller: 'createChannelController',
-        controllerAs: '$ctrl'
-      });
-      modalInstance.result.then(function () {}, function () {});
-    };
-
-    $scope.openNewDirectModal = function () {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        templateUrl: 'newDirectModal.html',
-        controller: 'newDirectController',
-        controllerAs: '$ctrl'
-      });
-      modalInstance.result.then(function () {}, function () {});
-    };
-
   }
 ]);

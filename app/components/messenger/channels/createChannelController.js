@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('createChannelController', ['$uibModalInstance', '$log',
-  'channelsService', 'arrayUtil', 'User',
-  function ($uibModalInstance, $log, channelsService, arrayUtil, User) {
+  'channelsService', 'arrayUtil', 'User', 'Channel',
+  function ($uibModalInstance, $log, channelsService, arrayUtil, User, Channel) {
 
     var $ctrl = this;
 
@@ -14,6 +14,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
 
     $ctrl.forms = {};
     $ctrl.newChannel = {};
+
     $ctrl.teamMembers = [];
     var selectedMembers = [];
 

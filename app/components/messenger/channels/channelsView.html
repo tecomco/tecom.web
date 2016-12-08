@@ -8,10 +8,10 @@
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat="channel in channels | filter: filterByPublicAndPrivate | orderBy : 'name'" ng-class="{'active': channel.slug == selectedChat()}">
+            <li ng-repeat="channel in channels | filter: channel.filterByPublicAndPrivate | orderBy : 'notificationCount'" ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
-                    <i ng-class="(channel.type == channelType.PRIVATE) ? 'fa fa-lock' : 'fa fa-globe'"></i>
-                    <span>{{channel.name}}</span>
+                    <i ng-class="channel.getCssClass()"></i>
+                    <span>{{channel.name + " (" + channel.membersCount + ")"}}</span>
                 </a>
             </li>
         </ul>
@@ -25,9 +25,9 @@
     </div>
     <div class="direct-holder group-holder">
         <ul>
-            <li ng-repeat="direct in channels | filter: filterByDirect | orderBy : 'name'" ng-class="{'active': '@' + direct.slug == selectedChat()}">
+            <li ng-repeat="direct in channels | filter: direct.filterByDirect | orderBy : 'notificationCount'" ng-class="{'active': '@' + direct.slug == selectedChat()}">
                 <a ui-sref=".messages({slug: '@{{direct.slug}}', channel: {{direct}} })">
-                    <i ng-class="(direct.online) ? 'zmdi zmdi-circle' : 'zmdi zmdi-circle-o'"></i>
+                    <i ng-class="direct.getCssClass()"></i>
                     <span>{{direct.name}}</span>
                 </a>
             </li>
