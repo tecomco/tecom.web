@@ -74,11 +74,17 @@
             </form>
             <div ng-show="!$ctrl.editMode" class="container-fluid">
                 <div class="col-sm-6">
-                    <h1>{{$ctrl.channel.name}}</h1>
-
+                    <div class="g-title">
+                        <span>{{$ctrl.channel.name}}</span>
+                    </div>
                     <div class="g-details">
                         <!-- <label>توضیحات گروه :</label> -->
                         <span>{{$ctrl.channel.description}}</span>
+                    </div>
+
+                    <div class="modal-input" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
+                        <button class="modal-btn" ng-click="$ctrl.editChannel()">ویرایش اطلاعات
+                        </button>
                     </div>
 
                 </div>
@@ -94,20 +100,11 @@
                             <label>(@{{channelMember.username}})</label>
                         </div>
                     </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="col-sm-6">
-
-                    <div class="modal-input" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
-                        <button class="modal-btn" ng-click="$ctrl.editChannel()">ویرایش اطلاعات گروه
-                        </button>
-                    </div>
-                </div>
-                <div class="col-sm-6">
                     <div class="modal-input">
                         <button ng-click="$ctrl.addMember()" class="modal-btn">اضافه کردن عضو</button>
                     </div>
                 </div>
+                <div class="clearfix"></div>
             </div>
 
         </div>
