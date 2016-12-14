@@ -28,6 +28,35 @@
     font-weight: 500;
 }
 
+/*Vazir Font*/
+@font-face {
+  font-family: Vazir;
+  src: url('../font/Vazir.eot');
+  src: url('../font/../font/Vazir.eot?#iefix') format('embedded-opentype'),
+       url('../font/Vazir.woff') format('woff'),
+       url('../font/Vazir.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url('../font/Vazir-Bold.eot');
+  src: url('../font/Vazir-Bold.eot?#iefix') format('embedded-opentype'),
+       url('../font/Vazir-Bold.woff') format('woff'),
+       url('../font/Vazir-Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url('../font/Vazir-Light.eot');
+  src: url('../font/Vazir-Light.eot?#iefix') format('embedded-opentype'),
+       url('../font/Vazir-Light.woff') format('woff'),
+       url('../font/Vazir-Light.ttf') format('truetype');
+  font-weight: 300;
+}
+/*Vazir Font End*/
+
 html, body, ul, li {
     margin: 0;
     padding: 0;
@@ -37,7 +66,8 @@ html, body, ul, li {
 * {
     outline: 0 !important;
 }
- ::scrollbar {
+/*
+::scrollbar {
     display: none;
 }
 
@@ -51,6 +81,29 @@ html, body, ul, li {
 
  ::-moz-scrollbar {
     display: none;
+}*/
+
+/*Customized scrollbar*/
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(100,100,100,0.7);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(100,100,100,0.4);
 }
 
 h1, h2, h3, h4, h5 {
@@ -78,6 +131,16 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
+
+.brand-name-right-header {
+      font-size: 1.8em;
+      font-weight: bold;
+      padding: 0;
+      margin: 0;
+      position: absolute;
+      top: 15px;
+      right: 85px;
+  }
 
 .content .col-sm-5.col-lg-6, .content .col-sm-9.col-lg-10 {
     transition: all 0.3s ease;
@@ -543,11 +606,30 @@ a, a:hover, a:visited, a:focus {
     font-size: 15px;
     color: #666;
     border-radius: 8px;
-    border: 1px solid rgba(122, 122, 122, 0.1);
+    /*border: 1px solid rgba(122, 122, 122, 0.1);*/
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
+    outline: none;
+    border: 1px solid #DDDDDD;
+}
+
+.modal-body [type="text"]:focus, textarea:focus {
+    padding: 8px 16px;
+    display: block;
+    width: 50%;
+    margin: 16px 25%;
+    font-size: 15px;
+    color: #666;
+    border-radius: 8px;
+    /*border: 1px solid rgba(122, 122, 122, 0.1);*/
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1);
 }
 
 .modal-err {
@@ -566,9 +648,9 @@ a, a:hover, a:visited, a:focus {
 
 .modal [type="submit"], .modal-btn {
     display: block;
-    font-weight: 300;
-    width: 50%;
-    margin: 16px 25%;
+    font-weight: 200;
+    width: 150px;
+    margin: 0 auto;
     font-size: 20px;
     color: #fff;
     border: 0;
@@ -620,7 +702,28 @@ a, a:hover, a:visited, a:focus {
     margin-bottom: 32px;
 }
 
-.modal-body .g-details span {}
+.modal-body .g-title {
+    padding: 5px 0;
+    margin: 10px 0;
+}
+
+.modal-body .g-title span {
+    font-size: 25px;
+    font-weight: 300;
+    color: #666;
+    border-bottom: 1px solid #999;
+
+}
+
+.modal-body .g-details {
+    margin-bottom: 25px;
+}
+
+.modal-body .g-details span {
+    font-size: 15px;
+    font-weight: 100;
+    color: #999;
+}
 
 .modal-body [type="text"]:focus {
     color: #188c67;
@@ -635,16 +738,26 @@ a, a:hover, a:visited, a:focus {
 }
 
 .modal-content {
-    height: 100vh;
+    /*height: 100vh;*/
     /*width: 100%;*/
+    padding-bottom: 20px;
     border: 0;
     border-radius: 0;
     box-shadow: none;
     /*opacity: 0.97;*/
     /*min-width: 800px;*/
     margin: 0 auto;
-    height: 100%;
-    overflow-y: scroll;
+    /*height: 100%;*/
+    overflow-y: hidden;
+    position: relative;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    /*border: 1px solid #999;
+      border: 1px solid rgba(0, 0, 0, .2);*/
+    outline: 0;
+    /*-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+      box-shadow: 0 3px 9px rgba(0, 0, 0, .5);*/
 }
 
 .modal-body {
@@ -660,20 +773,23 @@ a, a:hover, a:visited, a:focus {
 .modal-dialog {
     background: transparent;
     margin: 0;
-    height: 100vh;
+    /*height: 100vh;*/
     width: 100%;
+    overflow: hidden;
 }
 
 .modal {
     padding: 0 !important;
-    text-align: center;
+    /*text-align: center;*/
     overflow: hidden;
 }
 
 #createChannelModal {
     padding-left: 0 !important;
 }
-
+.modal-title {
+    text-align: center;
+}
 .modal-header {
     border: 0;
     padding: 50px;
@@ -685,6 +801,7 @@ a, a:hover, a:visited, a:focus {
     position: absolute;
     width: 60px;
     height: 60px;
+    opacity: 0.3;
     padding: 10px;
     left: 40px;
     top: 40px;
@@ -700,10 +817,10 @@ a, a:hover, a:visited, a:focus {
     -o-transition: all 0.3s;
 }
 
-.modal-header button.close:focus {
-    opacity: 0.8;
-    color: #116071;
-    background: rgba(163, 240, 207, 0.2)
+.modal-header button.close:hover {
+    opacity: 0.6;
+    /*color: #116071;
+    background: rgba(163, 240, 207, 0.2);*/
 }
 
 .modal-header h4 {
@@ -736,12 +853,12 @@ a, a:hover, a:visited, a:focus {
 }
 
 .g-m-one {
-    padding: 8px 0px 8px 16px;
+    padding: 4px;
 }
 
 .g-m-one img {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -784,8 +901,8 @@ label.ws-checkbox>.checkbox-stat i {
 }
 
 label.ws-checkbox>.checkbox-stat {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border-radius: 4px;
     border: 1px solid #ddd;
     display: inline-block;
@@ -891,22 +1008,12 @@ label {
     -o-transition: all 0.3s;
 }
 
-.modal-content {
-    position: relative;
-    background-color: #fff;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    /*border: 1px solid #999;
-      border: 1px solid rgba(0, 0, 0, .2);*/
-    outline: 0;
-    /*-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-      box-shadow: 0 3px 9px rgba(0, 0, 0, .5);*/
-}
+
 
 @media (min-width: 850px) {
     .modal-dialog {
         margin: 30px auto;
-        padding: 0 75px;
+        padding: 0 110px;
         /*height: 90vh;*/
         /*overflow: hidden;*/
     }
