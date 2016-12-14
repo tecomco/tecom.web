@@ -16,7 +16,7 @@ app.factory('Channel', ['$log', function ($log) {
     this.setSeenStatus();
   }
 
-  Channel.prototype.setSeenStatus = function(channelLastSeenId, userLastSeenId){
+  Channel.prototype.setSeenStatus = function (channelLastSeenId, userLastSeenId) {
     if (channelLastSeenId !== null && userLastSeenId !== null) {
       this.channelLastSeen = channelLastSeenId;
       this.userLastSeenId = userLastSeenId;
@@ -28,13 +28,13 @@ app.factory('Channel', ['$log', function ($log) {
   };
 
   Channel.prototype.isPrivate = function () {
-    return (this.type == Channel.TYPE.PRIVATE) ? true : false;
+    return this.type == Channel.TYPE.PRIVATE;
   };
   Channel.prototype.isDirect = function () {
-    return (this.type == Channel.TYPE.DIRECT) ? true : false;
+    return this.type == Channel.TYPE.DIRECT;
   };
   Channel.prototype.isPublic = function () {
-    return (this.type == Channel.TYPE.PUBLIC) ? true : false;
+    return this.type == Channel.TYPE.PUBLIC;
   };
 
   Channel.prototype.filterByPublicAndPrivate = function () {

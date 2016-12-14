@@ -24,6 +24,7 @@ app.controller('headerController', [
       },
       function handleStateParamChange() {
         $scope.channel = $stateParams.channel;
+        $log.info("Channel:", $scope.channel);
       }
     );
 
