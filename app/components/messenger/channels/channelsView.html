@@ -11,8 +11,10 @@
             <li ng-repeat="channel in channels | filter: channel.filterByPublicAndPrivate | orderBy : '-notifCount'" ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     <i ng-class="channel.getCssClass()"></i>
-                    <span>{{channel.name + " (" + channel.notifCount + ")"}}</span>
+                    <span>{{channel.name}}</span>
+                    <span class="badge">{{channel.notifCount}}</span>
                 </a>
+
             </li>
         </ul>
     </div>
@@ -69,7 +71,7 @@
                         </div>
                         <div class="g-members">
                             <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
-                                <img ng-src="static/img/user-def.png" />
+                                <img ng-src="static/img/user-def.png"/>
                                 <label>{{teamMember.full_name}}</label>
                                 <label dir="ltr">(@{{teamMember.username}})</label>
                                 <label class="ws-checkbox">
@@ -109,7 +111,7 @@
                         </div>
                         <div class="g-members">
                             <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
-                                <img ng-src="static/img/user-def.png" />
+                                <img ng-src="static/img/user-def.png"/>
                                 <label>{{teamMember.full_name}}</label>
                                 <label>(@{{teamMember.username}})</label>
                             </a>

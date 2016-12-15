@@ -61,10 +61,17 @@ html, body, ul, li {
     margin: 0;
     padding: 0;
     font-family: 'iransans';
+
 }
 
 * {
     outline: 0 !important;
+}
+.scroller {
+    white-space: pre-line;
+    height: 500px;
+    overflow-y: hidden;
+    position: relative;
 }
 /*
 ::scrollbar {
@@ -263,7 +270,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .right-section {
-    background: #116071;
+    background: #24A772;
     padding: 0;
     width: 100%;
     color: #fff;
@@ -272,7 +279,7 @@ a, a:hover, a:visited, a:focus {
 
 .right-section-header {
     padding: 14px 0 10px;
-    background: rgba(17, 17, 17, 0.1);
+    background: rgba(17, 17, 17, 0.2);
 }
 
 .noti-holder {
@@ -288,7 +295,7 @@ a, a:hover, a:visited, a:focus {
     margin-bottom: -4px;
     margin-top: -8px;
     padding-right: 25px;
-    display: block;
+    /*display: block;*/
 }
 
 .right-section-main {
@@ -300,6 +307,9 @@ a, a:hover, a:visited, a:focus {
 
 .right-section-main * {
     direction: rtl;
+    /*white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;*/
 }
 
 .group-holder-header, .direct-holder-header {
@@ -350,7 +360,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .group-holder ul li.active a {
-    background: #c46964;
+    background: #017446;
     color: #fff;
     border-radius: 4px 0 0 4px;
 }
@@ -628,8 +638,8 @@ a, a:hover, a:visited, a:focus {
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
-    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-    border: 1px solid rgba(81, 203, 238, 1);
+    box-shadow: 0 0 5px rgba(36, 167, 114, 0.6);
+    border: 1px solid rgba(36, 167, 114, 0.6);
 }
 
 .modal-err {
@@ -655,7 +665,7 @@ a, a:hover, a:visited, a:focus {
     color: #fff;
     border: 0;
     border-radius: 4px;
-    background: rgb(17, 96, 113);
+    background: #09945C;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
@@ -696,7 +706,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .modal-body .g-members {
-    height: 30vh;
+  height: 27vh;
     overflow-y: scroll;
     text-align: right;
     margin-bottom: 32px;
@@ -826,7 +836,7 @@ a, a:hover, a:visited, a:focus {
 .modal-header h4 {
     font-size: 30px;
     font-weight: 200;
-    color: #116071;
+    color: #017446;
 }
 
 .modal-header label {
@@ -957,6 +967,12 @@ label {
     font-weight: 200;
 }
 
+.badge {
+    float: left;
+    background: #fff;
+    color: #017446;
+}
+
 /* Large Devices, Wide Screens */
 @media only screen and (max-width: 1200px) {}
 
@@ -1048,5 +1064,23 @@ label {
     }
 
 }
+@media (min-width: 1400px) {
+    .modal-dialog {
+        margin: 30px auto;
+        padding: 0 300px;
+        /*height: 90vh;*/
+        /*overflow: hidden;*/
+    }
 
+    .modal-content {
+        /*margin: 0 175px;*/
+        border-radius: 20px;
+        -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+    }
+    .modal-sm {
+        width: 300px;
+    }
+
+}
 /*Customizing Boostrap Modal End*/

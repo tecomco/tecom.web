@@ -15,6 +15,7 @@
     "ngstorage": "^0.3.11",
     "angular-moment": "^1.0.0",
     "pouchdb-find": "^0.10.3",
-    "pouchdb": "^6.0.7"
+    "pouchdb": "^6.0.7",
+    "angular-perfect-scrollbar": "^0.0.4"
   }
 }
