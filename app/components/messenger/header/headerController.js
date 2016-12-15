@@ -22,8 +22,9 @@ app.controller('headerController', [
       function () {
         return $stateParams.channel;
       },
-      function handleStateParamChange(newValue, oldValue) {
+      function handleStateParamChange() {
         $scope.channel = $stateParams.channel;
+        $log.info("Channel:", $scope.channel);
       }
     );
 
@@ -33,8 +34,6 @@ app.controller('headerController', [
       $localStorage.$reset();
       $log.info('Local storage cleared.');
       db.destroy();
-      // var indexFields = ['id', 'channelId'];
-      // db.createIndex(indexFields);
     };
   }
 ]);

@@ -64,15 +64,17 @@ app.service('messagesService',
       });
     }
 
-    function getNewMessagesFromServer(channelId) {
+    function getNewMessagesFromServer(channel) {
       var dataToBeSend = {
-        channelId: channelId
+        channelId: channel.id
       };
-      getLastMessageFromDb(channelId, function (lastMessage) {
+      getLastMessageFromDb(channel.id, function (lastMessage) {
         if (lastMessage !== null)
           dataToBeSend.lastSavedMessageId = lastMessage.id;
         socket.emit('message:get', dataToBeSend, function (err, res) {
           if (!err) {
+            $log.info("res:" ,res);
+            channel.setSeenStatus(res.channelLastSeen, res.userLastSeen);
             var messages = res.messages;
             messages.forEach(function (msg) {
               var message = new Message(msg.body, msg.senderId, msg.channelId,

@@ -307,9 +307,9 @@ a, a:hover, a:visited, a:focus {
 
 .right-section-main * {
     direction: rtl;
-    white-space: nowrap;
+    /*white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis;*/
 }
 
 .group-holder-header, .direct-holder-header {
@@ -364,7 +364,6 @@ a, a:hover, a:visited, a:focus {
     color: #fff;
     border-radius: 4px 0 0 4px;
 }
-
 
 .direct-holder {
     padding-bottom: 40px;
