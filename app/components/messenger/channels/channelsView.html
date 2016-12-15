@@ -12,7 +12,9 @@
                 <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     <i ng-class="(channel.type == channelType.PRIVATE) ? 'fa fa-lock' : 'fa fa-globe'"></i>
                     <span>{{channel.name}}</span>
+                    <span class="badge">5</span>
                 </a>
+
             </li>
         </ul>
     </div>
