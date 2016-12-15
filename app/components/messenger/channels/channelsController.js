@@ -31,12 +31,11 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.bindNewChannel = function (channel) {
-      $log.info("NewCghannel:", channel);
-      /*var newChannel = new Channel(channel.name, channel.slug,
-        channel.description, channel.type, channel.id, channel.membersCount,
-        null, null, null);
+      $log.info("NewChannel:", channel);
+      var newChannel = new Channel(channel.name, channel.slug,
+        channel.description, channel.type, channel.id, channel.membersCount);
       $scope.channels.push(newChannel);
-      $log.info("Channels: ", $scope.channels);*/
+      $log.info("Channels: ", $scope.channels);
       $scope.newChannelPromise = channelsService.getNewChannel();
     };
 

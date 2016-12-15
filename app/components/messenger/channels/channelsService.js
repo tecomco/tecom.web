@@ -11,14 +11,13 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     socket.on('init', function (data) {
       var channels = [];
-      angular.forEach(data, function (channel) {
+      data.forEach(function (channel) {
         var tmpChannel = new Channel(channel.name, channel.slug,
-          channel.description, channel.type, channel.id, channel.membersCont,
-          null, null, null);
+          channel.description, channel.type, channel.id, channel.membersCount);
         channels.push(tmpChannel);
-        self.deferredInit.resolve(channels);
-        messagesService.getNewMessagesFromServer(tmpChannel);
       });
+      self.deferredInit.resolve(channels);
+      messagesService.getNewMessagesFromServer(channels);
     });
 
     socket.on('channel:new', function (data) {

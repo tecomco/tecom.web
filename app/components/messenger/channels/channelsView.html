@@ -8,10 +8,10 @@
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat="channel in channels | filter: channel.filterByPublicAndPrivate | orderBy : 'notificationCount'" ng-class="{'active': channel.slug == selectedChat()}">
+            <li ng-repeat="channel in channels | filter: channel.filterByPublicAndPrivate | orderBy : '-notifCount'" ng-class="{'active': channel.slug == selectedChat()}">
                 <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     <i ng-class="channel.getCssClass()"></i>
-                    <span>{{channel.name + " (" + channel.membersCount + ")"}}</span>
+                    <span>{{channel.name + " (" + channel.notifCount + ")"}}</span>
                 </a>
             </li>
         </ul>

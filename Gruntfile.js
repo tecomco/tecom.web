@@ -19,7 +19,8 @@ module.exports = function (grunt) {
           'app': true,
           'io': true,
           'document': true,
-          'window': true
+          'window': true,
+          'Promise': true
         }
       }
     },

@@ -2,18 +2,13 @@
 
 app.factory('Channel', ['$log', function ($log) {
 
-  function Channel(name, slug, description, type, id, membersCount,
-                   lastMessageId, channelLastSeenId, userLastSeenId) {
+  function Channel(name, slug, description, type, id, membersCount) {
     this.name = name;
     this.slug = slug;
     this.description = description;
     this.type = type;
     this.id = id;
     this.membersCount = membersCount;
-    this.lastMessage = lastMessageId || null;
-    this.channelLastSeen = channelLastSeenId || null;
-    this.userLastSeen = userLastSeenId || null;
-    this.setSeenStatus();
   }
 
   Channel.prototype.setSeenStatus = function (channelLastSeenId, userLastSeenId) {
@@ -23,6 +18,15 @@ app.factory('Channel', ['$log', function ($log) {
       this.notificationCount = this.channelLastSeenId - userLastSeenId;
     }
   };
+
+  Channel.prototype.containsUnread = function () {
+    return !(this.notifCount || this.notifCount === 0);
+  };
+
+  Channel.prototype.updateNotif = function (notifCount) {
+    this.notifCount = notifCount;
+  };
+
   Channel.prototype.getCssClass = function () {
     return (this.type == Channel.TYPE.PRIVATE) ? 'fa fa-lock' : 'fa fa-globe';
   };
@@ -30,9 +34,11 @@ app.factory('Channel', ['$log', function ($log) {
   Channel.prototype.isPrivate = function () {
     return this.type == Channel.TYPE.PRIVATE;
   };
+
   Channel.prototype.isDirect = function () {
     return this.type == Channel.TYPE.DIRECT;
   };
+
   Channel.prototype.isPublic = function () {
     return this.type == Channel.TYPE.PUBLIC;
   };
