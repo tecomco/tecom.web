@@ -575,8 +575,10 @@ a, a:hover, a:visited, a:focus {
     -o-transition: all 0.3s ease;
 }
 
+
 .modal .modal-btn {
-    padding: 8px 16px;
+    padding: 0;
+    display: inline-block;
     font-size: 16px;
     margin: 0 auto;
 }
@@ -594,6 +596,20 @@ a, a:hover, a:visited, a:focus {
     position: relative;
 }
 
+ .modal-input-details {
+    display: inline-block;
+ }
+
+ .modal-btn-details {
+    width: 25px;
+ }
+ .modal-btn > .fa {
+    color: #fff !important;
+    font-size: 17px !important;
+    border: none !important;
+    position: relative;
+    top: 3px;
+ }
 .modal-body.two-part-modal {
     padding: 20px 2%;
 }
@@ -604,6 +620,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .modal-body.two-part-modal h3 {
+    display: inline-block;
     font-weight: 100;
     color: #888;
 }

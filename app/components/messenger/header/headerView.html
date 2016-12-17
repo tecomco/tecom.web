@@ -76,20 +76,20 @@
                 <div class="col-sm-6">
                     <div class="g-title">
                         <span>{{$ctrl.channel.name}}</span>
+                        <div class="modal-input modal-input-details" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
+                            <button class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="fa fa-pencil"></span></button>
+                        </div>
                     </div>
                     <div class="g-details">
                         <!-- <label>توضیحات گروه :</label> -->
                         <span>{{$ctrl.channel.description}}</span>
                     </div>
-
-                    <div class="modal-input" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
-                        <button class="modal-btn" ng-click="$ctrl.editChannel()">ویرایش اطلاعات
-                        </button>
-                    </div>
-
                 </div>
                 <div class="col-sm-6">
                     <h3>اعضای گروه</h3>
+                    <div class="modal-input modal-input-details">
+                        <button ng-click="$ctrl.addMember()" class="modal-btn modal-btn-details"><span class="fa fa-plus"></span></button>
+                    </div>
                     <div class="modal-input" ng-show="$ctrl.editMode">
                         <input type="text" name="search" ng-model="$ctrl.details.search" placeholder="جستجو">
                     </div>
@@ -100,9 +100,7 @@
                             <label>(@{{channelMember.username}})</label>
                         </div>
                     </div>
-                    <div class="modal-input">
-                        <button ng-click="$ctrl.addMember()" class="modal-btn">اضافه کردن عضو</button>
-                    </div>
+
                 </div>
                 <div class="clearfix"></div>
             </div>
