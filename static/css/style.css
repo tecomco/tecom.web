@@ -232,9 +232,7 @@ a, a:hover, a:visited, a:focus {
 
 .right-section-main * {
     direction: rtl;
-    /*white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;*/
+
 }
 
 .group-holder-header, .direct-holder-header {
@@ -277,6 +275,22 @@ a, a:hover, a:visited, a:focus {
     display: block;
     font-size: 16px;
     font-weight: 100;
+
+}
+
+.group-holder ul li a .channel-name {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 50px);
+    position: relative;
+    top: 5px;
+    right: 1px;
+}
+.group-holder ul li a .badge {
+    position: relative;
+    top: 5px;
 }
 
 .group-holder ul li a:hover {
