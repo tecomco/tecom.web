@@ -7,7 +7,7 @@
  */
 var app = angular.module('tecomApp', [
   'ui.router', 'ngStorage', 'angular-jwt', 'ui.bootstrap', 'config',
-  'angularMoment', 'perfect_scrollbar'
+  'angularMoment'
 ]);
 
 app.config(['$httpProvider', 'jwtOptionsProvider', 'UserProvider',

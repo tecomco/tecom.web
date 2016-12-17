@@ -10,3 +10,4 @@ app/app.config.js
 logs/
 npm-debug.log
 docs
+test.html
