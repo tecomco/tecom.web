@@ -43,7 +43,6 @@ app.service('messagesService',
       }
 
       function getLastMessageFromDb(channelId) {
-        console.log('getLastMessageFromDb called with:', channelId);
         return new Promise(function (resolve) {
           db.getDb().find({
             selector: {
@@ -60,10 +59,8 @@ app.service('messagesService',
             limit: 1
           }).then(function (result) {
             if (result.docs.length === 0) {
-              console.log('Promise rejected.');
               resolve(null);
             } else {
-              console.log('Promise resolved.');
               resolve(result.docs[0]);
             }
           }).catch(function (err) {
@@ -75,16 +72,13 @@ app.service('messagesService',
       function getNewMessagesFromServer(channels) {
         var allMessages = [];
         channels.forEach(function (channel) {
-          console.log('Channel in forEach:', channel);
           var dataToBeSend = {
             channelId: channel.id
           };
           getLastMessageFromDb(channel.id).then(function (lastMessage) {
-            $log.info("last Message:", lastMessage);
             if (lastMessage !== null)
               dataToBeSend.lastSavedMessageId = lastMessage.id;
             socket.emit('message:get', dataToBeSend, function (res) {
-              console.log('Result:', res);
               channel.updateNotif(res.notifCount);
               var channelMessages = res.messages;
               channelMessages.forEach(function (msg) {
@@ -99,7 +93,6 @@ app.service('messagesService',
           });
         });
         allMessages.forEach(function (message) {
-          console.log('In allMessages loop.');
           message.save();
         });
       }

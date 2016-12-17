@@ -17,14 +17,11 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
 
     $scope.bindInitChannels = function (data) {
       $scope.channels = data;
-      if ($stateParams.slug !== null && $stateParams.slug !== undefined) {
+      if ($stateParams.slug) {
         var tmpSlug = $stateParams.slug.replace('@', '');
         var tmpChannel = $scope.channels.find(function (channel) {
           return (channel.slug === tmpSlug);
         });
-        if (tmpSlug === undefined) {
-          // channelsService.checkIfSlugIsValid($stateParams.slug)
-        }
         $stateParams.channel = tmpChannel;
         $scope.initChannelsPromise = channelsService.getInitChannels();
       }

@@ -1,14 +1,15 @@
 'use strict';
 
-app.factory('Channel', ['$log', function ($log) {
+app.factory('Channel', ['$log', 'messagesService' ,function ($log, messagesService) {
 
-  function Channel(name, slug, description, type, id, membersCount) {
+  function Channel(name, slug, description, type, id, membersCount, notifCount) {
     this.name = name;
     this.slug = slug;
     this.description = description;
     this.type = type;
     this.id = id;
     this.membersCount = membersCount;
+    this.notifCount = null || notifCount;
   }
 
   Channel.prototype.setSeenStatus = function (channelLastSeenId, userLastSeenId) {
@@ -19,8 +20,15 @@ app.factory('Channel', ['$log', function ($log) {
     }
   };
 
-  Channel.prototype.containsUnread = function () {
-    return !(this.notifCount || this.notifCount === 0);
+  Channel.prototype.sendSeenStatusToServer = function () {
+    if (this.hasUnread()) {
+      $log.info('UnRead');
+      messagesService.getLastMessageFromDb(this.id).then()
+    }
+  };
+
+  Channel.prototype.hasUnread = function () {
+    return this.notifCount && this.notifCount !== 0;
   };
 
   Channel.prototype.updateNotif = function (notifCount) {

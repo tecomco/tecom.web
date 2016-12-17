@@ -13,7 +13,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       var channels = [];
       data.forEach(function (channel) {
         var tmpChannel = new Channel(channel.name, channel.slug,
-          channel.description, channel.type, channel.id, channel.membersCount);
+          channel.description, channel.type, channel.id, channel.membersCount, null);
         channels.push(tmpChannel);
       });
       self.deferredInit.resolve(channels);

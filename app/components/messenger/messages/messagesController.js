@@ -2,17 +2,9 @@
 
 app.controller('messagesController',
   ['$scope', '$log', '$stateParams', 'User', '$timeout', 'messagesService',
-    'Message',
-    function ($scope, $log, $stateParams, User, $timeout, messagesService, Message) {
-
-      var sendSeenStatusToServer = function (channel) {
-        $log.info("Current Channel: ", channel);
-        /*if (channel.containsUnred()) {
-          messagesService.getLastMessageFromDb(channel.id, function (message) {
-            $log.info("Last Message:", message);
-          });
-        }*/
-      };
+    'Message', 'Channel',
+    function ($scope, $log, $stateParams, User, $timeout, messagesService,
+              Message, Channel) {
 
       $scope.messages = [];
       function loadMessagesFromDb() {
@@ -53,10 +45,9 @@ app.controller('messagesController',
         function () {
           return $stateParams.channel;
         },
-        function (newChannelValue) {
-          if (newChannelValue !== null) {
+        function (channel) {
+          if (channel !== null) {
             loadMessagesFromDb();
-            sendSeenStatusToServer(newChannelValue);
           }
         }
       );

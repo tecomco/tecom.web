@@ -9,12 +9,11 @@
     <div class="group-holder">
         <ul>
             <li ng-repeat="channel in channels | filter: channel.filterByPublicAndPrivate | orderBy : '-notifCount'" ng-class="{'active': channel.slug == selectedChat()}">
-                <a ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
+                <a ng-click="channel.sendSeenStatusToServer()" ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     <i ng-class="channel.getCssClass()"></i>
                     <span>{{channel.name}}</span>
-                    <span class="badge">{{channel.notifCount}}</span>
+                    <span ng-show="channel.hasUnread()" class="badge">{{channel.notifCount}}</span>
                 </a>
-
             </li>
         </ul>
     </div>
