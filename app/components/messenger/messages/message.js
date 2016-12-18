@@ -78,6 +78,17 @@ app.factory('Message', ['$log', 'db', 'User', function ($log, db, User) {
       });
   };
 
+  Message.bulkSave = function (messages) {
+    var messageObjects = [];
+    messages.forEach(function(message){
+        messageObjects.push(message.getJson());
+    });
+    db.getDb().bulkDocs(messageObjects)
+      .catch(function (err) {
+        $log.error('Error bulking messages.', err);
+      });
+  };
+
   Message.STATUS_TYPE = {
     PENDING: 0,
     SENT: 1,

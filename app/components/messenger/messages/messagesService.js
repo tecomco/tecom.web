@@ -70,40 +70,35 @@ app.service('messagesService',
       }
 
       function getNewMessagesFromServer(channels) {
+        var messagePromises = [];
         var allMessages = [];
         channels.forEach(function (channel) {
           var dataToBeSend = {
             channelId: channel.id
           };
-          getLastMessageFromDb(channel.id).then(function (lastMessage) {
-            if (lastMessage !== null)
-              dataToBeSend.lastSavedMessageId = lastMessage.id;
-            socket.emit('message:get', dataToBeSend, function (res) {
-              channel.updateNotif(res.notifCount);
-              var channelMessages = res.messages;
-              channelMessages.forEach(function (msg) {
-                var message = new Message(msg.body, msg.senderId, msg.channelId,
-                  Message.STATUS_TYPE.SENT, msg.id, msg.datetime);
-                if ($stateParams.channel &&
-                  message.channelId === $stateParams.channel.id)
-                  self.ctrlCallback(message);
-                allMessages.push(message);
+          messagePromises.push(new Promise(function (resolve) {
+            getLastMessageFromDb(channel.id).then(function (lastMessage) {
+              if (lastMessage !== null)
+                dataToBeSend.lastSavedMessageId = lastMessage.id;
+              socket.emit('message:get', dataToBeSend, function (res) {
+                channel.updateNotif(res.notifCount);
+                var channelMessagesData = res.messages;
+                channelMessagesData.forEach(function (msg) {
+                  var message = new Message(msg.body, msg.senderId, msg.channelId,
+                    Message.STATUS_TYPE.SENT, msg.id, msg.datetime);
+                  if ($stateParams.channel &&
+                    message.channelId === $stateParams.channel.id)
+                    self.ctrlCallback(message);
+                  allMessages.push(message);
+                });
+                resolve();
               });
             });
-          });
+          }));
         });
-        allMessages.forEach(function (message) {
-          message.save();
+        Promise.all(messagePromises).then(function () {
+          Message.bulkSave(allMessages);
         });
-      }
-
-      function sendSeenNotif(channelId, lastMessageId, senderId) {
-        var data = {
-          channelId: channelId,
-          lastMessageId: lastMessageId,
-          senderId: senderId
-        };
-        socket.emit('message:seen', data);
       }
 
       return {
@@ -111,7 +106,6 @@ app.service('messagesService',
         setCtrlCallback: setCtrlCallback,
         getMessagesFromDb: getMessagesFromDb,
         getLastMessageFromDb: getLastMessageFromDb,
-        getNewMessagesFromServer: getNewMessagesFromServer,
-        sendSeenNotif: sendSeenNotif
+        getNewMessagesFromServer: getNewMessagesFromServer
       };
     }]);
