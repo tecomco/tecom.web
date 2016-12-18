@@ -21,14 +21,17 @@
     </div>
     <div class="input-holder">
         <a href="#">
-            <i class="zmdi zmdi-plus"></i>
-        </a>
-        <input type="text" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage()"/>
-        <a class="send-btn" href="#" ng-click="sendMessage()">
-            <label>ارسال</label>
-        </a>
-        <a href="#">
             <i class="zmdi zmdi-mood"></i>
         </a>
+        <input type="text" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage()" />
+        <a class="send-btn" href="#" ng-click="sendMessage()">
+            <label>
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-paper-plane fa-stack-1x fa-inverse"></i>
+                </span>
+            </label>
+        </a>
+
     </div>
 </div>

@@ -83,9 +83,11 @@ a, a:hover, a:visited, a:focus {
 }
 
 .msg-landing {
-    background: #f1f1f1;
+    background-image: url("../img/landing-bg.png");
+    background-repeat: repeat;
     height: 100vh;
     padding-top: 100px;
+    color: #858585;
 }
 
 .msg-landing img {
@@ -283,7 +285,7 @@ a, a:hover, a:visited, a:focus {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100% - 50px);
+    width: calc(100% - 55px);
     position: relative;
     top: 5px;
     right: 1px;
@@ -299,6 +301,7 @@ a, a:hover, a:visited, a:focus {
 .group-holder ul li a:hover {
     color: rgba(255, 255, 255, 1);
     background: rgba(17, 17, 17, 0.1);
+    border-radius: 4px 0 0 4px;
 }
 
 .group-holder ul li.active a {
@@ -326,7 +329,8 @@ a, a:hover, a:visited, a:focus {
 .chat {
     height: calc(100vh - 121px);
     overflow-y: scroll;
-    background: #f1f1f1;
+    background-image: url("../img/landing-bg.png");
+    background-repeat: repeat;
 }
 
 .main {
@@ -454,7 +458,7 @@ a, a:hover, a:visited, a:focus {
 }
 
 .input-holder {
-    background: #f1f1f1;
+    background: #eee;
     position: relative;
     bottom: 0;
     left: 0;
@@ -494,19 +498,20 @@ a, a:hover, a:visited, a:focus {
 }
 
 .input-holder a:last-of-type {
-    left: 44px;
+    left: 20px;
 }
 
 .input-holder .send-btn {
     position: absolute;
-    left: 68px;
-    font-size: 14px;
+    font-size: 10px;
     padding: 10px 20px;
-    top: 9px;
+    top: 6px;
+    color: #24A772;
 }
 
 .input-holder .send-btn:hover {
-    color: rgb(5, 198, 186)
+    color: #24A772;
+    opacity: 0.8;
 }
 
 .input-holder .send-btn label {
@@ -582,7 +587,9 @@ a, a:hover, a:visited, a:focus {
     font-size: 16px;
     margin: 0 auto;
 }
-
+.modal .modal-btn-details {
+    font-size: 0;
+}
 .modal [type="submit"]:hover, .modal .modal-btn:hover {
     background: rgba(9, 148, 92, 0.8);
 }
@@ -613,6 +620,9 @@ a, a:hover, a:visited, a:focus {
 .modal-body.two-part-modal {
     padding: 20px 2%;
 }
+.modal-body.two-part-modal .zmdi {
+    font-size: 20px;
+}
 
 .modal-body.two-part-modal [type="text"] {
     width: 100%;
@@ -635,24 +645,43 @@ a, a:hover, a:visited, a:focus {
 .modal-body .g-title {
     padding: 5px 0;
     margin: 10px 0;
+    /*border-bottom: 1px solid #999;*/
 }
 
 .modal-body .g-title span {
     font-size: 25px;
     font-weight: 300;
     color: #666;
-    border-bottom: 1px solid #999;
-
+}
+.modal-body .g-title .zmdi {
+    font-size: 20px;
+    color: #fff;
+}
+.modal-input-details .modal-btn-details .zmdi {
+    font-size: 20px;
+    color: #fff;
 }
 
 .modal-body .g-details {
     margin-bottom: 25px;
+    /*border-bottom: 1px solid #999;*/
 }
 
 .modal-body .g-details span {
     font-size: 15px;
     font-weight: 100;
     color: #999;
+}
+.modal-body .g-settings {
+    /*display: block;*/
+}
+
+.modal-body .g-settings h3 {
+    padding-bottom: 0;
+    display: inline-block;
+}
+.modal-body .g-settings label span {
+    display: inline-block;
 }
 
 .modal-body [type="text"]:focus {
@@ -771,6 +800,19 @@ a, a:hover, a:visited, a:focus {
 
 .g-m-one {
     padding: 4px;
+    transition: all 0.1s;
+    -o-transition: all 0.1s;
+    -webkit-transition: all 0.1s;
+    -moz-transition: all 0.1s;
+}
+.g-m-one:hover {
+    padding: 4px;
+    background: rgba(200,200,200,0.2);
+    border-radius: 5px;
+    transition: all 0.1s;
+    -o-transition: all 0.1s;
+    -webkit-transition: all 0.1s;
+    -moz-transition: all 0.1s;
 }
 
 .g-m-one img {
@@ -792,6 +834,7 @@ a, a:hover, a:visited, a:focus {
 .modal .ws-checkbox {
     font-size: 15px;
     margin-top: 10px;
+    display: block;
 }
 
 .modal .g-m-one .ws-checkbox {
