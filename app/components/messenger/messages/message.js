@@ -1,9 +1,9 @@
 'use strict';
 
-app.factory('Message', ['$log', 'db', 'User', function ($log, db, User) {
+app.factory('Message', ['$log', '$sce', 'db', 'textUtil', 'User', function ($log, $sce, db, textUtil, User) {
 
   function Message(body, senderId, channelId, status, _id, datetime) {
-    this.body = body;
+    this.body = Message.generateMessageWellFormedText(body);
     this.senderId = senderId;
     this.channelId = channelId;
     this.status = status || Message.STATUS_TYPE.PENDING;
@@ -20,8 +20,7 @@ app.factory('Message', ['$log', 'db', 'User', function ($log, db, User) {
   };
 
   Message.prototype.isEnglish = function () {
-    var english = /^[A-Za-z0-9]*$/;
-    return english.test(this.body);
+    return textUtil.isEnglish(this.body);
   };
 
   Message.prototype.getStatusIcon = function () {
@@ -76,6 +75,12 @@ app.factory('Message', ['$log', 'db', 'User', function ($log, db, User) {
       .catch(function (err) {
         $log.error('Error saving message.', err);
       });
+  };
+
+  Message.generateMessageWellFormedText = function (text) {
+    var wellFormedText;
+    wellFormedText = textUtil.urlify(text);
+    return $sce.trustAsHtml(wellFormedText);
   };
 
   Message.bulkSave = function (messages) {
