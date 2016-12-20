@@ -14,7 +14,7 @@
                         <i ng-class="message.getStatusIcon()"></i>
                     </label>
                     <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
-                    <label>{{message.body}}</label>
+                    <div ng-bind-html="message.body"></div>
                 </div>
             </div>
         </div>
