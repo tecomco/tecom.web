@@ -49,12 +49,12 @@
                 <div class="container-fluid">
                     <div class="col-sm-10 col-sm-offset-1">
                         <div class="modal-input">
-                            <input type="text" name="name" ng-model="$ctrl.details.name" ng-maxlength="32" required>
+                            <input type="text" name="name" placeholder="نام گروه" ng-model="$ctrl.details.name" ng-maxlength="32" required>
                             <span class="modal-err" ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.detailsForm)">وارد کردن نام گروه الزامی است!</span>
                             <span class="modal-err" ng-show="$ctrl.formNameCheckMax($ctrl.forms.detailsForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
                         </div>
                         <div class="modal-input">
-                            <input type="text" name="description" ng-model="$ctrl.details.description" ng-maxlength="256">
+                            <input type="text" name="description" placeholder="توضیح گروه" ng-model="$ctrl.details.description" ng-maxlength="256">
                             <span class="modal-err" ng-show="$ctrl.forms.detailsForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
                         </div>
                         <label class="ws-checkbox">
