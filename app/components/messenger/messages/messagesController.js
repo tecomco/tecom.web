@@ -2,11 +2,12 @@
 
 app.controller('messagesController',
   ['$scope', '$log', '$stateParams', 'User', '$timeout', 'messagesService',
-    'Message', 'Channel',
+    'Message',
     function ($scope, $log, $stateParams, User, $timeout, messagesService,
-              Message, Channel) {
+              Message) {
 
       $scope.messages = [];
+
       function loadMessagesFromDb() {
         messagesService.getMessagesFromDb($stateParams.channel.id,
           function (messages) {

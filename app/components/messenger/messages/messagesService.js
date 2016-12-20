@@ -78,17 +78,19 @@ app.service('messagesService',
           };
           messagePromises.push(new Promise(function (resolve) {
             getLastMessageFromDb(channel.id).then(function (lastMessage) {
-              if (lastMessage !== null)
+              if (lastMessage !== null) {
                 dataToBeSend.lastSavedMessageId = lastMessage.id;
+                channel.lastMessageDatetime = lastMessage.datetime;
+              }
               socket.emit('message:get', dataToBeSend, function (res) {
                 channel.updateNotif(res.notifCount);
                 var channelMessagesData = res.messages;
                 channelMessagesData.forEach(function (msg) {
                   var message = new Message(msg.body, msg.senderId, msg.channelId,
                     Message.STATUS_TYPE.SENT, msg.id, msg.datetime);
-                  if ($stateParams.channel &&
-                    message.channelId === $stateParams.channel.id)
-                    self.ctrlCallback(message);
+                  // if ($stateParams.channel &&
+                  //   message.channelId === $stateParams.channel.id)
+                  //self.ctrlCallback(message);
                   allMessages.push(message);
                 });
                 resolve();

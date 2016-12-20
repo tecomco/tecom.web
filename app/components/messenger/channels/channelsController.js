@@ -1,11 +1,14 @@
 'use strict';
 
 app.controller('channelsController', ['$scope', '$state', '$stateParams',
-  '$log', '$uibModal', 'channelsService', 'arrayUtil', 'Channel',
-  function ($scope, $state, $stateParams, $log, $uibModal, channelsService,
-            arrayUtil, Channel) {
+  '$log', '$uibModal', '$localStorage', 'channelsService', 'arrayUtil',
+  'Channel',
+  function ($scope, $state, $stateParams, $log, $uibModal, $localStorage
+    ,channelsService, arrayUtil, Channel) {
 
     var $ctrl = this;
+    $scope.channels = [];
+    $scope.directs = [];
 
     $scope.selectedChat = function () {
       return $stateParams.slug;
@@ -15,14 +18,21 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     $scope.newChannelPromise = channelsService.getNewChannel();
     $scope.initChannelsPromise = channelsService.getInitChannels();
 
-    $scope.bindInitChannels = function (data) {
-      $scope.channels = data;
+    $scope.bindInitChannels = function (allChannels) {
+      allChannels.forEach(function(channel){
+        if(channel.isDirect())
+          $scope.directs.push(channel);
+        else
+          $scope.channels.push(channel);
+      });
+      var channelsAndDirects = $scope.channels.concat($scope.directs);
       if ($stateParams.slug) {
         var tmpSlug = $stateParams.slug.replace('@', '');
-        var tmpChannel = $scope.channels.find(function (channel) {
+        var tmpChannel = channelsAndDirects.find(function (channel) {
           return (channel.slug === tmpSlug);
         });
         $stateParams.channel = tmpChannel;
+        $localStorage.currentChannel = tmpChannel;
         $scope.initChannelsPromise = channelsService.getInitChannels();
       }
     };
@@ -32,7 +42,6 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       var newChannel = new Channel(channel.name, channel.slug,
         channel.description, channel.type, channel.id, channel.membersCount);
       $scope.channels.push(newChannel);
-      $log.info("Channels: ", $scope.channels);
       $scope.newChannelPromise = channelsService.getNewChannel();
     };
 
@@ -76,6 +85,12 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       modalInstance.result.then(function () {
       }, function () {
       });
+    };
+
+    $scope.channelClick = function(channel){
+      $localStorage.currentChannel = channel;
+      channel.sendSeenStatusToServer();
+      $log.info('channel:', channel);
     };
 
     $scope.$watch(

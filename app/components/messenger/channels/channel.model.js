@@ -39,6 +39,10 @@ app.factory('Channel', ['$log', 'messagesService', 'socket',
       this.notifCount = notifCount;
     };
 
+    Channel.prototype.updateLastMessageDatetime = function (datetime) {
+      this.lastMessageDatetime = datetime;
+    };
+
     Channel.prototype.getCssClass = function () {
       return (this.type == Channel.TYPE.PRIVATE) ? 'fa fa-lock' : 'fa fa-globe';
     };
@@ -63,14 +67,18 @@ app.factory('Channel', ['$log', 'messagesService', 'socket',
       return this.type === Channel.TYPE.DIRECT;
     };
 
-    Channel.sendSeenNotif = function(channelId, lastMessageId, senderId) {
+    Channel.isCurrentChannel = function () {
+      return ($stateParams.channel.id === this.id);
+    };
+
+    Channel.sendSeenNotif = function (channelId, lastMessageId, senderId) {
       var data = {
         channelId: channelId,
         lastMessageId: lastMessageId,
         senderId: senderId
       };
       socket.emit('message:seen', data);
-    }
+    };
 
     Channel.TYPE = {
       PUBLIC: 0,

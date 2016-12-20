@@ -1,8 +1,8 @@
 'use strict';
 
-app.service('channelsService', ['$http', '$q', '$log', 'socket',
+app.service('channelsService', ['$http', '$stateParams', '$q', '$log', 'socket',
   'messagesService', 'Channel',
-  function ($http, $q, $log, socket, messagesService, Channel) {
+  function ($http, $stateParams, $q, $log, socket, messagesService, Channel) {
 
     var self = this;
     self.deferredInit = $q.defer();
@@ -73,6 +73,10 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       return self.deferredEditedChannel.promise;
     };
 
+    var getCurrentChannel = function () {
+      return $stateParams.channel
+    };
+
     return {
       getInitChannels: getInitChannels,
       sendNewChannel: sendNewChannel,
@@ -80,7 +84,9 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       getTeamMembers: getTeamMembers,
       getChannelMembers: getChannelMembers,
       sendDetailsEditedChannel: sendDetailsEditedChannel,
-      getEditedChannel: getEditedChannel
+      getEditedChannel: getEditedChannel,
+      getCurrentChannel: getCurrentChannel
     };
   }
-]);
+])
+;
