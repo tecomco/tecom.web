@@ -41,5 +41,13 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         channel: null,
         slug: null,
       }
+    })
+    .state('login', {
+      url: '/login',
+      views: {
+        '': {
+          templateUrl: 'app/components/login/login.html'
+        }
+      }
     });
 });

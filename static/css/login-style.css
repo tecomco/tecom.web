@@ -1,0 +1,18 @@
+#loginFormContainer {
+    background: red;
+}
+.login-form {
+    width: 500px;
+}
+.circle {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    background: red;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+}

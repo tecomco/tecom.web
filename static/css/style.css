@@ -228,6 +228,8 @@ a, a:hover, a:visited, a:focus {
 .right-section-main {
     padding-left: 16px;
     height: calc(100vh - 64px);
+    height: -moz-calc(100vh - 64px);
+    height: -webkit-calc(100vh - 64px);
     overflow-y: scroll;
     direction: ltr;
 }
@@ -286,6 +288,8 @@ a, a:hover, a:visited, a:focus {
     overflow: hidden;
     text-overflow: ellipsis;
     width: calc(100% - 55px);
+    width: -moz-calc(100% - 55px);
+    width: -webkit-calc(100% - 55px);
     position: relative;
     top: 5px;
     right: 1px;
@@ -328,6 +332,8 @@ a, a:hover, a:visited, a:focus {
 
 .chat {
     height: calc(100vh - 121px);
+    height: -moz-calc(100vh - 121px);
+    height: -webkit-calc(100vh - 121px);
     overflow-y: scroll;
     background-image: url("../img/landing-bg.png");
     background-repeat: repeat;
@@ -353,7 +359,15 @@ a, a:hover, a:visited, a:focus {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.21);
 }
 .main a {
-  
+    direction: ltr;
+    color: #3232ff;
+}
+.main a:hover {
+    color: #6666ff;
+    text-decoration: underline;
+}
+.main a:visited {
+    color: #8000ff;
 }
 .date-holder {
     text-align: center;
@@ -505,8 +519,8 @@ a, a:hover, a:visited, a:focus {
 
 .input-holder .send-btn {
     position: absolute;
-    font-size: 10px;
-    padding: 10px 20px;
+    font-size: 20px;
+    padding: 11px 25px;
     top: 6px;
     color: #24A772;
 }
