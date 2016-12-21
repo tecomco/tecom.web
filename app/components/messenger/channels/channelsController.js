@@ -2,13 +2,14 @@
 
 app.controller('channelsController', ['$scope', '$state', '$stateParams',
   '$log', '$uibModal', '$localStorage', 'channelsService', 'arrayUtil',
-  'Channel',
-  function ($scope, $state, $stateParams, $log, $uibModal, $localStorage
-    ,channelsService, arrayUtil, Channel) {
+  'Channel', 'messagesService',
+  function ($scope, $state, $stateParams, $log, $uibModal, $localStorage,
+            channelsService, arrayUtil, Channel, messagesService) {
 
     var $ctrl = this;
     $scope.channels = [];
     $scope.directs = [];
+    var channelsAndDirects = [];
 
     $scope.selectedChat = function () {
       return $stateParams.slug;
@@ -19,13 +20,17 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     $scope.initChannelsPromise = channelsService.getInitChannels();
 
     $scope.bindInitChannels = function (allChannels) {
-      allChannels.forEach(function(channel){
-        if(channel.isDirect())
-          $scope.directs.push(channel);
+      var directs = [];
+      var channels = [];
+      allChannels.forEach(function (channel) {
+        if (channel.isDirect())
+          directs.push(channel);
         else
-          $scope.channels.push(channel);
+          channels.push(channel);
       });
-      var channelsAndDirects = $scope.channels.concat($scope.directs);
+      $scope.directs = directs;
+      $scope.channels = channels;
+      channelsAndDirects = $scope.channels.concat($scope.directs);
       if ($stateParams.slug) {
         var tmpSlug = $stateParams.slug.replace('@', '');
         var tmpChannel = channelsAndDirects.find(function (channel) {
@@ -87,11 +92,39 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       });
     };
 
-    $scope.channelClick = function(channel){
-      $localStorage.currentChannel = channel;
-      channel.sendSeenStatusToServer();
-      $log.info('channel:', channel);
+    $scope.channelClick = function (channel) {
+      channelsService.updateNotification(channel.id, 'empty');
+      //$localStorage.currentChannel = channel;
+      //channel.sendSeenStatusToServer();
     };
+
+    var updateNotification = function (channelId, type, notifCount) {
+      var channel = channelsAndDirects.find(function (channel) {
+        return (channel.id === channelId);
+      });
+      switch (type) {
+        case 'empty':
+          channel.notifCount = 0;
+          break;
+        case 'inc':
+          channel.notifCount++;
+          break;
+        case 'num':
+          channel.notifCount = notifCount;
+      }
+    };
+
+    var updateLastDatetime = function (channelId, datetime) {
+      var channel = channelsAndDirects.find(function (channel) {
+        return (channel.id === channelId);
+      });
+      channel.lastDatetime = datetime;
+    };
+
+    channelsService.setUpdateNotificationCallback(updateNotification);
+    messagesService.setUpdateNotificationCallback(updateNotification);
+    channelsService.setUpdateLastDatetimeCallback(updateLastDatetime);
+    messagesService.setUpdateLastDatetimeCallback(updateLastDatetime);
 
     $scope.$watch(
       function () {

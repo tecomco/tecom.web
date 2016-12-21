@@ -19,7 +19,7 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
 
     Message.prototype.getViewWellFormed = function () {
       return Message.generateMessageWellFormedText(this.body);
-    }
+    };
 
     Message.prototype.isFromMe = function () {
       return this.senderId === User.id;
@@ -77,7 +77,6 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     };
 
     Message.prototype.save = function () {
-      $localStorage.currentChannel.updateLastMessageDatetime(new Date(this.datetime));
       db.getDb().put(this.getJson())
         .catch(function (err) {
           $log.error('Error saving message.', err);

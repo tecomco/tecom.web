@@ -2,9 +2,9 @@
 
 app.controller('messagesController',
   ['$scope', '$log', '$stateParams', 'User', '$timeout', 'messagesService',
-    'Message',
+    'Message', 'channelsService',
     function ($scope, $log, $stateParams, User, $timeout, messagesService,
-              Message) {
+              Message, channelsService) {
 
       $scope.messages = [];
 
@@ -39,6 +39,7 @@ app.controller('messagesController',
             message.status = Message.STATUS_TYPE.SENT;
             message.updateIdAndDatetime(data.id, data.datetime);
             message.save();
+            channelsService.updateLastDatetime(message.channelId, message.datetime);
           });
       };
 

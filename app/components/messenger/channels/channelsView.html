@@ -8,7 +8,7 @@
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat="channel in channels | orderBy : '-lastMessageDatetime'" ng-class="{'active': channel.slug == selectedChat()}">
+            <li ng-repeat="channel in channels | orderBy : 'lastDatetime'" ng-class="{'active': channel.slug == selectedChat()}">
                 <a ng-click="channelClick(channel)" ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     <i ng-class="channel.getCssClass()"></i>
                     <span class="channel-name">{{channel.name}}</span>

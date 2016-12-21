@@ -1,8 +1,8 @@
 'use strict';
 
-app.service('channelsService', ['$http', '$stateParams', '$q', '$log', 'socket',
+app.service('channelsService', ['$http', '$q', '$log', 'socket',
   'messagesService', 'Channel',
-  function ($http, $stateParams, $q, $log, socket, messagesService, Channel) {
+  function ($http, $q, $log, socket, messagesService, Channel) {
 
     var self = this;
     self.deferredInit = $q.defer();
@@ -13,7 +13,7 @@ app.service('channelsService', ['$http', '$stateParams', '$q', '$log', 'socket',
       var channels = [];
       data.forEach(function (channel) {
         var tmpChannel = new Channel(channel.name, channel.slug,
-          channel.description, channel.type, channel.id, channel.membersCount, null);
+          channel.description, channel.type, channel.id, channel.membersCount);
         channels.push(tmpChannel);
       });
       self.deferredInit.resolve(channels);
@@ -73,8 +73,20 @@ app.service('channelsService', ['$http', '$stateParams', '$q', '$log', 'socket',
       return self.deferredEditedChannel.promise;
     };
 
-    var getCurrentChannel = function () {
-      return $stateParams.channel
+    var setUpdateNotificationCallback = function(updateFunc){
+      self.updateNotification = updateFunc;
+    };
+
+    var updateNotification = function(channelId, changeType, notifCount){
+      self.updateNotification(channelId, changeType, notifCount);
+    };
+
+    var setUpdateLastDatetimeCallback = function(updateFunc){
+      self.updateLastDatetimeCallback = updateFunc;
+    };
+
+    var updateLastDatetime = function(channelId, datetime){
+      self.updateLastDatetimeCallback(channelId, datetime);
     };
 
     return {
@@ -85,7 +97,10 @@ app.service('channelsService', ['$http', '$stateParams', '$q', '$log', 'socket',
       getChannelMembers: getChannelMembers,
       sendDetailsEditedChannel: sendDetailsEditedChannel,
       getEditedChannel: getEditedChannel,
-      getCurrentChannel: getCurrentChannel
+      setUpdateNotificationCallback: setUpdateNotificationCallback,
+      updateNotification: updateNotification,
+      setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback,
+      updateLastDatetime: updateLastDatetime
     };
   }
 ])

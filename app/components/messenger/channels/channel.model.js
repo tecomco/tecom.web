@@ -1,9 +1,10 @@
 'use strict';
 
-app.factory('Channel', ['$log', 'messagesService', 'socket',
-  function ($log, messagesService, socket) {
+app.factory('Channel', ['$log', '$stateParams', 'messagesService', 'socket',
+  function ($log, $stateParams, messagesService, socket) {
 
-    function Channel(name, slug, description, type, id, membersCount, notifCount) {
+    function Channel(name, slug, description, type, id, membersCount,
+                     notifCount) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -24,9 +25,9 @@ app.factory('Channel', ['$log', 'messagesService', 'socket',
     Channel.prototype.sendSeenStatusToServer = function () {
       var thisChannel = this;
       if (this.hasUnread()) {
-        messagesService.getLastMessageFromDb(this.id).then(function (lastMessage) {
-          Channel.sendSeenNotif(thisChannel.id, lastMessage.id, lastMessage.sender);
-        });
+        //messagesService.getLastMessageFromDb(this.id).then(function (lastMessage) {
+        //  channelsService.sendSeenNotif(thisChannel.id, lastMessage.id, lastMessage.sender);
+        //});
         this.notifCount = 0;
       }
     };
@@ -39,8 +40,8 @@ app.factory('Channel', ['$log', 'messagesService', 'socket',
       this.notifCount = notifCount;
     };
 
-    Channel.prototype.updateLastMessageDatetime = function (datetime) {
-      this.lastMessageDatetime = datetime;
+    Channel.prototype.updateLastDatetimeCallback = function (datetime) {
+      this.lastDatetime = datetime;
     };
 
     Channel.prototype.getCssClass = function () {
@@ -71,14 +72,6 @@ app.factory('Channel', ['$log', 'messagesService', 'socket',
       return ($stateParams.channel.id === this.id);
     };
 
-    Channel.sendSeenNotif = function (channelId, lastMessageId, senderId) {
-      var data = {
-        channelId: channelId,
-        lastMessageId: lastMessageId,
-        senderId: senderId
-      };
-      socket.emit('message:seen', data);
-    };
 
     Channel.TYPE = {
       PUBLIC: 0,
