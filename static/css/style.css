@@ -287,9 +287,21 @@ a, a:hover, a:visited, a:focus {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100% - 55px);
-    width: -moz-calc(100% - 55px);
-    width: -webkit-calc(100% - 55px);
+    width: calc(100% - 60px);
+    width: -moz-calc(100% - 60px);
+    width: -webkit-calc(100% - 60px);
+    position: relative;
+    top: 5px;
+    right: 1px;
+}
+.group-holder ul li a .channel-name-no-notif {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 5px);
+    width: -moz-calc(100% - 5px);
+    width: -webkit-calc(100% - 5px);
     position: relative;
     top: 5px;
     right: 1px;
