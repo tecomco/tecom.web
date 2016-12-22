@@ -2,11 +2,12 @@
 
 app.controller('messagesController',
   ['$scope', '$log', '$stateParams', 'User', '$timeout', 'messagesService',
-    'Message', 'Channel',
+    'Message', 'channelsService',
     function ($scope, $log, $stateParams, User, $timeout, messagesService,
-              Message, Channel) {
+              Message, channelsService) {
 
       $scope.messages = [];
+
       function loadMessagesFromDb() {
         messagesService.getMessagesFromDb($stateParams.channel.id,
           function (messages) {
@@ -38,6 +39,7 @@ app.controller('messagesController',
             message.status = Message.STATUS_TYPE.SENT;
             message.updateIdAndDatetime(data.id, data.datetime);
             message.save();
+            channelsService.updateLastDatetime(message.channelId, message.datetime);
           });
       };
 

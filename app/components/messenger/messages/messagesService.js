@@ -12,6 +12,11 @@ app.service('messagesService',
         message.save();
         if (message.channelId === $stateParams.channel.id) {
           self.ctrlCallback(message);
+          sendSeenNotif(message.channelId, message.id, message.senderId);
+        }
+        else {
+          self.updateNotification(message.channelId, 'inc');
+          self.updateLastDatetimeCallback(message.channelId, message.datetime);
         }
       });
 
@@ -78,17 +83,20 @@ app.service('messagesService',
           };
           messagePromises.push(new Promise(function (resolve) {
             getLastMessageFromDb(channel.id).then(function (lastMessage) {
-              if (lastMessage !== null)
+              if (lastMessage !== null) {
                 dataToBeSend.lastSavedMessageId = lastMessage.id;
+                channel.lastMessageDatetime = lastMessage.datetime;
+              }
               socket.emit('message:get', dataToBeSend, function (res) {
-                channel.updateNotif(res.notifCount);
+                self.updateNotification(channel.id, 'num', res.notifCount);
+                channel.lastDatetime = new Date(res.lastDatetime);
                 var channelMessagesData = res.messages;
                 channelMessagesData.forEach(function (msg) {
                   var message = new Message(msg.body, msg.senderId, msg.channelId,
                     Message.STATUS_TYPE.SENT, msg.id, msg.datetime);
-                  if ($stateParams.channel &&
-                    message.channelId === $stateParams.channel.id)
-                    self.ctrlCallback(message);
+                  // if ($stateParams.channel &&
+                  //   message.channelId === $stateParams.channel.id)
+                  //self.ctrlCallback(message);
                   allMessages.push(message);
                 });
                 resolve();
@@ -101,11 +109,32 @@ app.service('messagesService',
         });
       }
 
+      var sendSeenNotif = function (channelId, lastMessageId, senderId, callback) {
+        var data = {
+          channelId: channelId,
+          messageId: lastMessageId,
+          senderId: senderId
+        };
+        $log.info('Seen');
+        socket.emit('message:seen', data, callback);
+      };
+
+      var setUpdateNotificationCallback = function (updateFunc) {
+        self.updateNotification = updateFunc;
+      };
+
+      var setUpdateLastDatetimeCallback = function (updateFunc) {
+        self.updateLastDatetimeCallback = updateFunc;
+      };
+
       return {
         sendMessage: sendMessage,
         setCtrlCallback: setCtrlCallback,
         getMessagesFromDb: getMessagesFromDb,
         getLastMessageFromDb: getLastMessageFromDb,
-        getNewMessagesFromServer: getNewMessagesFromServer
+        getNewMessagesFromServer: getNewMessagesFromServer,
+        sendSeenNotif: sendSeenNotif,
+        setUpdateNotificationCallback: setUpdateNotificationCallback,
+        setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback
       };
     }]);
