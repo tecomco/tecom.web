@@ -16,7 +16,7 @@ app.service('messagesService',
 
       socket.on('message:send', function (data) {
         var message = new Message(data.body, data.senderId, data.channelId,
-          data.status, data.id, data.datetime);
+          data.id, data.datetime);
         message.save();
         if (message.channelId === $stateParams.channel.id) {
           self.ctrlCallback(message);
@@ -105,10 +105,12 @@ app.service('messagesService',
                   channel.lastDatetime = new Date(res.lastDatetime);
                 if (res.channelLastSeen)
                   channel.channelLastSeen = res.channelLastSeen;
+                if(channel.id === self.requestedChannelReadyId)
+                  self.promissChannelReady.resolve(true);
                 var channelMessagesData = res.messages;
                 channelMessagesData.forEach(function (msg) {
-                  var message = new Message(msg.body, msg.senderId, msg.channelId,
-                    null, msg.id, msg.datetime);
+                  var message = new Message(msg.body, msg.senderId,
+                    msg.channelId, msg.id, msg.datetime);
                   allMessages.push(message);
                 });
                 resolve();
@@ -117,6 +119,7 @@ app.service('messagesService',
           }));
         });
         Promise.all(messagePromises).then(function () {
+          self.allChannelsReady = true;
           Message.bulkSave(allMessages);
         });
       }
@@ -147,6 +150,15 @@ app.service('messagesService',
         self.updateMessageStatusCallback = updateStatusFunc;
       };
 
+      var isChannelReady = function(channelId)
+      {
+        self.requestedChannelReadyId = channelId;
+        self.promissChannelReady = $q.defer();
+        if(self.allChannelsReady === true)
+          self.promissChannelReady.resolve(true);
+        return  self.promissChannelReady.promise;
+      }
+
       return {
         sendMessage: sendMessage,
         setCtrlCallback: setCtrlCallback,
@@ -157,6 +169,7 @@ app.service('messagesService',
         setUpdateNotificationCallback: setUpdateNotificationCallback,
         setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback,
         setFindChannelCallback: setFindChannelCallback,
-        setUpdateMessageStatusCallback: setUpdateMessageStatusCallback
+        setUpdateMessageStatusCallback: setUpdateMessageStatusCallback,
+        isChannelReady: isChannelReady
       };
     }]);

@@ -12,7 +12,7 @@
                 <a ng-click="channelClick(channel)" ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     <i ng-class="channel.getCssClass()"></i>
                     <span class="channel-name">{{channel.name}}</span>
-                    <span ng-show="channel.hasUnread()" class="badge">{{channel.notifCount}}</span>
+                    <span ng-show="channel.hasUnread()" class="badge">{{channel.getNotifInPersian()}}</span>
                 </a>
             </li>
         </ul>

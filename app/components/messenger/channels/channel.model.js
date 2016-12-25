@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('Channel', ['$log', '$stateParams', 'messagesService', 'socket',
-  function ($log, $stateParams, messagesService, socket) {
+app.factory('Channel', ['$log', '$stateParams', 'textUtil',
+  function ($log, $stateParams, textUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
                      notifCount) {
@@ -14,30 +14,14 @@ app.factory('Channel', ['$log', '$stateParams', 'messagesService', 'socket',
       this.notifCount = null || notifCount;
     }
 
-    Channel.prototype.setSeenStatus = function (channelLastSeenId, userLastSeenId) {
-      if (channelLastSeenId !== null && userLastSeenId !== null) {
-        this.channelLastSeen = channelLastSeenId;
-        this.userLastSeenId = userLastSeenId;
-        this.notificationCount = this.channelLastSeenId - userLastSeenId;
-      }
-    };
-
-    Channel.prototype.sendSeenStatusToServer = function () {
-      var thisChannel = this;
-      if (this.hasUnread()) {
-        //messagesService.getLastMessageFromDb(this.id).then(function (lastMessage) {
-        //  channelsService.sendSeenNotif(thisChannel.id, lastMessage.id, lastMessage.sender);
-        //});
-        this.notifCount = 0;
-      }
-    };
-
     Channel.prototype.hasUnread = function () {
       return this.notifCount && this.notifCount !== 0;
     };
 
-    Channel.prototype.updateNotif = function (notifCount) {
-      this.notifCount = notifCount;
+    Channel.prototype.getNotifInPersian = function () {
+      if(this.hasUnread())
+        return textUtil.persianify(this.notifCount.toString())
+      return null;
     };
 
     Channel.prototype.updateLastDatetimeCallback = function (datetime) {
@@ -60,18 +44,9 @@ app.factory('Channel', ['$log', '$stateParams', 'messagesService', 'socket',
       return this.type == Channel.TYPE.PUBLIC;
     };
 
-    Channel.prototype.filterByPublicAndPrivate = function () {
-      return this.isPublic() || this.isPrivate();
-    };
-
-    Channel.prototype.filterByDirect = function () {
-      return this.type === Channel.TYPE.DIRECT;
-    };
-
     Channel.isCurrentChannel = function () {
       return ($stateParams.channel.id === this.id);
     };
-
 
     Channel.TYPE = {
       PUBLIC: 0,
