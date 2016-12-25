@@ -37,7 +37,7 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
           defer.reject();
         }
       });
-      return defer;
+      return defer.promise;
     }
 
     function refreshToken(token) {

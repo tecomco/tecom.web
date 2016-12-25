@@ -1,18 +1,21 @@
 'use strict';
 
 var app = angular.module('LoginApp', ['ngStorage', 'angular-jwt'])
-  .controller('LoginController', ['$scope', '$interval', '$location', 'AuthService',
-    function ($scope, $interval, $location, AuthService) {
+  .controller('LoginController', ['$scope', '$interval', '$window', 'AuthService', 'User',
+    function ($scope, $interval, $window, AuthService, User) {
+
+      if (User.exists()) {
+        $window.location.assign('/messenger');
+      }
 
       $scope.circles = [];
 
-      function login() {
-        console.log('login called...');
+      $scope.login = function () {
         var isFormValid = $scope.forms.login.username.$valid && $scope.forms.login.password.$valid;
         if (isFormValid) {
-          AuthService.login($scope.forms.login.username, $scope.forms.login.password)
+          AuthService.login($scope.username, $scope.password)
             .then(function () {
-              $location.url('/messenger');
+              $window.location.assign('/messenger');
             }).catch(function () {
               // TODO: Handle error or show message to user.
             });
