@@ -18,9 +18,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         'channels@messenger': {
           templateUrl: 'app/components/messenger/channels/channelsView.html'
         }
-        // 'createChannel@messenger': {
-        //   templateUrl: 'app/components/messenger/channels/createChannelView.html'
-        // }
+      },
+      onEnter: function ($window, User) {
+        if (!User.exists()) {
+          $window.location.assign('/login');
+        }
       }
     })
     .state('messenger.home', {
@@ -39,15 +41,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       },
       params: {
         channel: null,
-        slug: null,
-      }
-    })
-    .state('login', {
-      url: '/login',
-      views: {
-        '': {
-          templateUrl: 'app/components/login/login.html'
-        }
+        slug: null
       }
     });
 });

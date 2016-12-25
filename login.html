@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="LoginApp">
+
+    <head>
+        <title>تیکام</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css"/>
+        <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css"/>
+        <link rel="stylesheet" href="static/css/style.css"/>
+        <link rel="stylesheet" href="static/css/login-style.css"/>
+        <script src="static/lib/angular/angular.js"></script>
+    </head>
+
+    <body>
+
+        <div ng-controller="LoginController" style="background-color: #24A772">
+            <div class="container" id="loginFormContainer">
+                <div ng-repeat="circle in circles">
+                    <div ng-show="true" class="circle" ng-style="circle.style"></div>
+                </div>
+                <div class="login-form">
+                    <div class="login-form-heading">
+                        <h3 class="login-form-title">نام کاربری و رمز عبورت رو وارد کن...</h3>
+                    </div>
+                    <div class="login-form-body">
+                        <form name="forms.login" ng-submit="login()" novalidate>
+                            <div class="form-group">
+                                <input ng-model="username" class="form-control" placeholder="نام کاربری" name="username" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="password" class="form-control" placeholder="رمز عبور" name="password" type="password">
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="remember" name="remember" type="checkbox">مرا به خاطر بسپار.
+                                </label>
+                            </div>
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="ورود">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="static/lib/ngstorage/ngStorage.min.js"></script>
+        <script src="static/lib/angular-jwt/dist/angular-jwt.min.js"></script>
+        <script src="app/components/login/login.module.js"></script>
+        <script src="app/shared/auth/auth.service.js"></script>
+        <script src="app/shared/auth/user.model.js"></script>
+        <script src="app/shared/team/team.model.js"></script>
+        <script src="app/shared/utils/arrayUtil.js"></script>
+
+    </body>
+
+</html>
