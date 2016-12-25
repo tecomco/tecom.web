@@ -618,6 +618,13 @@ a, a:hover, a:visited, a:focus {
 .modal .modal-btn-details {
     font-size: 0;
 }
+.modal .modal-btn-details-remove {
+    padding: 3px;
+    height: 24px;
+    float: left;
+    position: relative;
+    top: 5px;
+  }
 .modal [type="submit"]:hover, .modal .modal-btn:hover {
     background: rgba(9, 148, 92, 0.8);
 }
