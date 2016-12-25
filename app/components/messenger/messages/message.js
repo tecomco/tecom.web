@@ -4,11 +4,13 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
   'textUtil', 'User',
   function ($log, $stateParams, $localStorage, $sce, db, textUtil, User) {
 
+    var findChannelCallback;
+
     function Message(body, senderId, channelId, status, _id, datetime) {
       this.body = body;
       this.senderId = senderId;
       this.channelId = channelId;
-      this.status = status || Message.STATUS_TYPE.PENDING;
+      this.isPending = false;
       this.datetime = datetime ? new Date(datetime) : new Date();
       this._id = _id || null;
       if (this._id) {
@@ -29,16 +31,24 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
       return textUtil.isEnglish(this.body);
     };
 
+    Message.prototype.getStatus = function () {
+      var channelLastSeen = findChannelCallback(this.channelId).channelLastSeen;
+      if(this.isPending)
+        return Message.STATUS_TYPE.PENDING;
+      if(this.id <= channelLastSeen)
+        return Message.STATUS_TYPE.SEEN;
+      return Message.STATUS_TYPE.SENT;
+    };
+
     Message.prototype.getStatusIcon = function () {
-      switch (this.status) {
+      var status = this.getStatus();
+      switch (status) {
         case Message.STATUS_TYPE.PENDING:
           return 'zmdi zmdi-time';
         case Message.STATUS_TYPE.SENT:
           return 'zmdi zmdi-check';
-        case Message.STATUS_TYPE.DELIVERED:
-          return 'zmdi zmdi-ckeck-all';
         case Message.STATUS_TYPE.SEEN:
-          return 'zmdi zmdi-eye';
+          return 'zmdi zmdi-check-all';
       }
     };
 
@@ -71,7 +81,6 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
         body: this.body,
         senderId: this.senderId,
         channelId: this.channelId,
-        status: this.status,
         datetime: this.datetime
       };
     };
@@ -100,12 +109,25 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
         });
     };
 
+    Message.findStatus = function (id, channelLastSeen, notifCount) {
+      if (channelLastSeen) {
+        return (id > channelLastSeen) ?
+          Message.STATUS_TYPE.SENT : Message.STATUS_TYPE.SEEN;
+      }
+      else
+        return Message.STATUS_TYPE.SENT;
+    };
+
     Message.STATUS_TYPE = {
       PENDING: 0,
       SENT: 1,
-      DELIVERED: 2,
-      SEEN: 3
+      SEEN: 2
     };
+
+    Message.setFindChannelCallback = function(findChannelFunc){
+      findChannelCallback = findChannelFunc;
+    };
+
 
     return Message;
 
