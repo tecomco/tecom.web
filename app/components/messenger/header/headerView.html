@@ -75,6 +75,7 @@
             <div ng-show="!$ctrl.editMode" class="container-fluid">
                 <div class="col-sm-6">
                     <div class="g-title">
+                        <i class="fa fa-globe"></i>
                         <span>{{$ctrl.channel.name}}</span>
                         <div class="modal-input modal-input-details" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
                             <button class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="zmdi zmdi-edit"></span></button>
@@ -96,7 +97,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-6 modal-left-part">
                     <i class="zmdi zmdi-accounts"></i>
                     <h3>اعضای گروه</h3>
                     <div class="modal-input modal-input-details">
