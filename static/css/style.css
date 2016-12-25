@@ -494,19 +494,30 @@ a, a:hover, a:visited, a:focus {
     padding: 8px 32px;
     z-index: 3;
 }
-
-.input-holder input {
+.input-holder .message-input-wrapper {
     width: 100%;
+    height: 41px;
+    background-color: #fff;
     border: 0;
     border-radius: 4px;
     box-shadow: none;
-    padding: 8px 40px;
+    border: 1px solid #ddd;
+    color: #555;
+    box-sizing: padding-box;
+}
+.input-holder .message-input {
+    width: 100%;
+    height: 39px;
+    overflow: hidden;
+    border: none;
+    background: rgba(0,0,0,0);    padding: 8px 40px;
     font-size: 16px;
     font-weight: 300;
-    border: 1px solid #ddd;
     font-family: "iransans";
     color: #555;
     box-sizing: padding-box;
+    resize: none;
+
 }
 
 .input-holder a {
@@ -562,7 +573,7 @@ a, a:hover, a:visited, a:focus {
     border: 1px solid #DDDDDD;
 }
 
-.modal-body [type="text"]:focus, textarea:focus {
+.modal-body [type="text"]:focus {
     padding: 8px 16px;
     display: block;
     width: 50%;
