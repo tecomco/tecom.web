@@ -8,7 +8,7 @@
     </div>
     <div class="group-holder">
         <ul>
-            <li ng-repeat="channel in channels | orderBy : 'lastDatetime'" ng-class="{'active': channel.slug == selectedChat()}">
+            <li ng-repeat="channel in channels | orderBy : ['!lastDatetime','-lastDatetime']" ng-class="{'active': channel.slug == selectedChat()}">
                 <a ng-click="channelClick(channel)" ui-sref=".messages({slug: '{{channel.slug}}', channel: {{channel}} })">
                     <i ng-class="channel.getCssClass()"></i>
                     <span class="channel-name">{{channel.name}}</span>
@@ -64,7 +64,7 @@
                             </div>
                         </label>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 modal-left-part">
                         <h3>اعضای گروه</h3>
                         <div class="modal-input">
                             <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">

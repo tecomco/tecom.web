@@ -652,6 +652,10 @@ a, a:hover, a:visited, a:focus {
     font-size: 20px;
 }
 
+.modal-body.two-part-modal .g-title .fa {
+    font-size: 20px;
+}
+
 .modal-body.two-part-modal [type="text"] {
     width: 100%;
     margin: 16px 0;
@@ -662,12 +666,16 @@ a, a:hover, a:visited, a:focus {
     font-weight: 100;
     color: #888;
 }
-
+.modal-left-part {
+    border-right: 1px solid rgba(100,100,100,0.4);
+    /*padding: 20px;*/
+}
 .modal-body .g-members {
-  height: 27vh;
+    height: 27vh;
     overflow-y: scroll;
+    overflow-x: hidden;
     text-align: right;
-    margin-bottom: 32px;
+    margin-bottom: 15px;
 }
 
 .modal-body .g-title {

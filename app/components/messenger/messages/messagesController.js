@@ -9,17 +9,37 @@ app.controller('messagesController',
       $scope.messages = [];
 
       function loadMessagesFromDb() {
+        var channel = channelsService.findChannel($stateParams.channel.id);
+        $log.info("last seen", channel.channelLastSeen);
+
         messagesService.getMessagesFromDb($stateParams.channel.id,
           function (messages) {
             messages.forEach(function (msg) {
+              var messageStatus = Message.findStatus(msg.id,
+                channel.channelLastSeen, channel.notifCount);
               var message = new Message(msg.body, msg.senderId, msg.channelId,
-                msg.status, msg._id, msg.datetime);
+                messageStatus, msg._id, msg.datetime);
               addMessageToArray(message);
             });
             $scope.$apply();
           });
+        messagesService.getLastMessageFromDb($stateParams.channel.id)
+          .then(function (lastMessage) {
+            if (lastMessage && channel.notifCount && channel.notifCount > 0) {
+              messagesService.sendSeenNotif(lastMessage.channelId, lastMessage.id,
+                lastMessage.senderId);
+              channelsService.updateNotification(channel.id, 'empty');
+            }
+            $scope.$apply();
+          });
       }
 
+      function updateMessageStatus(messageId, status){
+        var message = $scope.messages.find(function (message) {
+          return (message.id === messageId);
+        });
+        message.status = status;
+      }
       function addMessageToArray(message) {
         $scope.messages.push(message);
         $timeout(function () {
@@ -47,13 +67,14 @@ app.controller('messagesController',
         function () {
           return $stateParams.channel;
         },
-        function (channel) {
-          if (channel !== null) {
+        function (oldChannel, newChannel) {
+          if (oldChannel && newChannel) {
             loadMessagesFromDb();
           }
         }
       );
 
       messagesService.setCtrlCallback(addMessageToArray);
+      messagesService.setUpdateMessageStatusCallback(updateMessageStatus);
     }
   ]);

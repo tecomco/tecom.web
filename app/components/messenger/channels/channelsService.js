@@ -89,6 +89,18 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       self.updateLastDatetimeCallback(channelId, datetime);
     };
 
+    var setUpdateLastDatetimeCallback = function(updateFunc){
+      self.updateLastDatetimeCallback = updateFunc;
+    };
+
+    var setFindChannelCallback = function (findChannelFunc) {
+      self.findChannelCallback = findChannelFunc;
+    };
+
+    var findChannel = function(channelId){
+      return self.findChannelCallback(channelId);
+    };
+
     return {
       getInitChannels: getInitChannels,
       sendNewChannel: sendNewChannel,
@@ -100,7 +112,9 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       setUpdateNotificationCallback: setUpdateNotificationCallback,
       updateNotification: updateNotification,
       setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback,
-      updateLastDatetime: updateLastDatetime
+      updateLastDatetime: updateLastDatetime,
+      setFindChannelCallback: setFindChannelCallback,
+      findChannel: findChannel,
     };
   }
 ])

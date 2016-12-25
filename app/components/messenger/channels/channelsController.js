@@ -2,9 +2,9 @@
 
 app.controller('channelsController', ['$scope', '$state', '$stateParams',
   '$log', '$uibModal', '$localStorage', 'channelsService', 'arrayUtil',
-  'Channel', 'messagesService',
+  'Channel', 'messagesService', 'Message',
   function ($scope, $state, $stateParams, $log, $uibModal, $localStorage,
-            channelsService, arrayUtil, Channel, messagesService) {
+            channelsService, arrayUtil, Channel, messagesService, Message) {
 
     var $ctrl = this;
     $scope.channels = [];
@@ -93,7 +93,6 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.channelClick = function (channel) {
-      channelsService.updateNotification(channel.id, 'empty');
       //$localStorage.currentChannel = channel;
       //channel.sendSeenStatusToServer();
     };
@@ -121,10 +120,22 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       channel.lastDatetime = datetime;
     };
 
+    var findChannel = function(channelId){
+      return channelsAndDirects.find(function (channel) {
+        return (channel.id === channelId);
+      });
+    };
+
     channelsService.setUpdateNotificationCallback(updateNotification);
-    messagesService.setUpdateNotificationCallback(updateNotification);
+    channelsService.setFindChannelCallback(findChannel);
     channelsService.setUpdateLastDatetimeCallback(updateLastDatetime);
+
+    messagesService.setUpdateNotificationCallback(updateNotification);
+    messagesService.setFindChannelCallback(findChannel);
     messagesService.setUpdateLastDatetimeCallback(updateLastDatetime);
+
+    Message.setFindChannelCallback(findChannel);
+
 
     $scope.$watch(
       function () {
