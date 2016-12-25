@@ -6,38 +6,6 @@ app.factory('socket', [
 
     var self = this;
 
-    if (!User.exists()) {
-      var modalInstance = $uibModal.open({
-        templateUrl: 'login.html',
-        controller: 'loginController',
-        controllerAs: '$ctrl'
-      });
-      modalInstance.result.then(function (username) {
-        AuthService.login(username + '@gmail.com', 'test123', function (res) {
-          if (res) {
-            window.location.reload();
-          }
-        });
-      }, function () {
-      });
-      return {
-        on: function () {
-        },
-        emit: function () {
-        }
-      };
-    }
-
-    // TODO: Choose a better approach :/
-    if (ENV.name === 'ui') {
-      return {
-        on: function () {
-        },
-        emit: function () {
-        }
-      };
-    }
-
     self.socket = io.connect(ENV.socketUri, {
       path: '/ws/',
       query: {
@@ -55,6 +23,7 @@ app.factory('socket', [
     self.socket.on('err', function (err) {
       $log.info('Error On Socket :', err);
       if (err.name === 'TokenExpiredError' && User.exists()) {
+        $log.info('Token refresh started.');
         AuthService.refreshToken(User.token);
       }
     });
@@ -81,18 +50,3 @@ app.factory('socket', [
     };
   }
 ]);
-
-app.controller('loginController', function ($uibModalInstance) {
-
-  var $ctrl = this;
-
-  $ctrl.login = function () {
-    if ($ctrl.forms.login.username.$valid) {
-      $uibModalInstance.close($ctrl.username);
-    }
-  };
-
-  $ctrl.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
-});
