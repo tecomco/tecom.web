@@ -27,20 +27,18 @@
                     </div>
                     <div class="login-form-body">
                         <form name="forms.login" ng-submit="login()" novalidate>
-                            <fieldset>
-                                <div class="form-group">
-                                    <input ng-model="username" class="form-control" placeholder="نام کاربری" name="username" type="text">
-                                </div>
-                                <div class="form-group">
-                                    <input ng-model="password" class="form-control" placeholder="رمز عبور" name="password" type="password">
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input ng-model="remember" name="remember" type="checkbox">مرا به خاطر بسپار.
-                                    </label>
-                                </div>
-                                <input class="btn btn-lg btn-success btn-block" type="submit" value="ورود">
-                            </fieldset>
+                            <div class="form-group">
+                                <input ng-model="username" class="form-control" placeholder="نام کاربری" name="username" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="password" class="form-control" placeholder="رمز عبور" name="password" type="password">
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="remember" name="remember" type="checkbox">مرا به خاطر بسپار.
+                                </label>
+                            </div>
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="ورود">
                         </form>
                     </div>
                 </div>

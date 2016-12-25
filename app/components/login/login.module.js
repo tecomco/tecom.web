@@ -7,6 +7,7 @@ var app = angular.module('LoginApp', ['ngStorage', 'angular-jwt'])
       $scope.circles = [];
 
       function login() {
+        console.log('login called...');
         var isFormValid = $scope.forms.login.username.$valid && $scope.forms.login.password.$valid;
         if (isFormValid) {
           AuthService.login($scope.forms.login.username, $scope.forms.login.password)
@@ -40,7 +41,7 @@ var app = angular.module('LoginApp', ['ngStorage', 'angular-jwt'])
             "filter": "blur(" + blur + "px)"
           }
         };
-      };
+      }
 
       var counter = 0;
 
@@ -56,7 +57,7 @@ var app = angular.module('LoginApp', ['ngStorage', 'angular-jwt'])
             $scope.circles[i].blur, $scope.circles[i].speedX, $scope.circles[i].speedY,
             $scope.circles[i].speedBlur);
         }
-      };
+      }
 
       $interval(updateScreen, 100);
 

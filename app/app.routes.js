@@ -19,9 +19,9 @@ app.config(function ($stateProvider, $urlRouterProvider) {
           templateUrl: 'app/components/messenger/channels/channelsView.html'
         }
       },
-      onEnter: function ($location, User) {
+      onEnter: function ($window, User) {
         if (!User.exists()) {
-          $location.url('/login');
+          $window.location.assign('/login');
         }
       }
     })

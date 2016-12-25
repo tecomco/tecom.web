@@ -10,7 +10,7 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
       var user = new User(currentMembership.id, currentMembership.username,
         decodedToken.username, currentMembership.team_id, null, token);
       return user.save();
-    };
+    }
 
     function login(username, password) {
       var defer = $q.defer();
@@ -38,7 +38,7 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
         }
       });
       return defer;
-    };
+    }
 
     function refreshToken(token) {
       var data = {
@@ -54,7 +54,7 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
           createUser(token);
         }
       });
-    };
+    }
 
     return {
       login: login,
