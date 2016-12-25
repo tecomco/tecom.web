@@ -662,12 +662,15 @@ a, a:hover, a:visited, a:focus {
     font-weight: 100;
     color: #888;
 }
-
+.modal-left-part {
+    border-right: 1px solid rgba(100,100,100,0.4);
+    /*padding: 20px;*/
+}
 .modal-body .g-members {
-  height: 27vh;
+    height: 27vh;
     overflow-y: scroll;
     text-align: right;
-    margin-bottom: 32px;
+    margin-bottom: 15px;
 }
 
 .modal-body .g-title {
