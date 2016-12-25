@@ -85,6 +85,7 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
     };
 
     channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
+      $log.info('channel MEMbers:', event);
       $ctrl.channel = event;
     }, function (status) {
       $log.info('error getting channel members :', status);
