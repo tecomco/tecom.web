@@ -41,7 +41,8 @@ var app = angular.module('LoginApp', ['ngStorage', 'angular-jwt'])
             "border-radius": 2 * r + "px",
             "background-color": "white",
             "opacity": opacity,
-            "filter": "blur(" + blur + "px)"
+            "filter": "blur(" + blur + "px)",
+            "z-index": "1"
           }
         };
       }

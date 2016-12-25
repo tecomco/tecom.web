@@ -4,9 +4,17 @@
 }
 .login-form {
     width: 500px;
+    background: rgba(255, 255, 255, 1);
+    border: none;
+    border-radius: 20px;
+    padding: 50px 40px;
+    z-index: 9999;
+
+}
+.animated-background {
+    z-index: 1;
 }
 .circle {
-    /*display:none;*/
     width: 50px;
     height: 50px;
     border-radius: 25px;
@@ -19,4 +27,5 @@
     -o-filter: blur(5px);
     -ms-filter: blur(5px);
     filter: blur(5px);
+
 }

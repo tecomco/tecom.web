@@ -347,6 +347,7 @@ a, a:hover, a:visited, a:focus {
     height: -moz-calc(100vh - 121px);
     height: -webkit-calc(100vh - 121px);
     overflow-y: scroll;
+    overflow-x: hidden;
     background-image: url("../img/landing-bg.png");
     background-repeat: repeat;
 }
