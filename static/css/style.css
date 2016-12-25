@@ -624,7 +624,12 @@ a, a:hover, a:visited, a:focus {
     float: left;
     position: relative;
     top: 5px;
+    background: rgba(0,0,0,0);
+    color: #D94A0D;
   }
+.modal .modal-btn-details-remove:hover, .modal .modal-btn-details-remove:focus {
+    color: rgba(217,74,13, 0.8);
+}
 .modal [type="submit"]:hover, .modal .modal-btn:hover {
     background: rgba(9, 148, 92, 0.8);
 }
