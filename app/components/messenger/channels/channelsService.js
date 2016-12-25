@@ -13,7 +13,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       var channels = [];
       data.forEach(function (channel) {
         var tmpChannel = new Channel(channel.name, channel.slug,
-          channel.description, channel.type, channel.id, channel.membersCount, null);
+          channel.description, channel.type, channel.id, channel.membersCount);
         channels.push(tmpChannel);
       });
       self.deferredInit.resolve(channels);
@@ -73,6 +73,22 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       return self.deferredEditedChannel.promise;
     };
 
+    var setUpdateNotificationCallback = function(updateFunc){
+      self.updateNotification = updateFunc;
+    };
+
+    var updateNotification = function(channelId, changeType, notifCount){
+      self.updateNotification(channelId, changeType, notifCount);
+    };
+
+    var setUpdateLastDatetimeCallback = function(updateFunc){
+      self.updateLastDatetimeCallback = updateFunc;
+    };
+
+    var updateLastDatetime = function(channelId, datetime){
+      self.updateLastDatetimeCallback(channelId, datetime);
+    };
+
     return {
       getInitChannels: getInitChannels,
       sendNewChannel: sendNewChannel,
@@ -80,7 +96,12 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       getTeamMembers: getTeamMembers,
       getChannelMembers: getChannelMembers,
       sendDetailsEditedChannel: sendDetailsEditedChannel,
-      getEditedChannel: getEditedChannel
+      getEditedChannel: getEditedChannel,
+      setUpdateNotificationCallback: setUpdateNotificationCallback,
+      updateNotification: updateNotification,
+      setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback,
+      updateLastDatetime: updateLastDatetime
     };
   }
-]);
+])
+;

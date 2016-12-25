@@ -1,5 +1,6 @@
 #loginFormContainer {
-    background: ;
+    width: 100vh;
+    height: 100vh;
 }
 .login-form {
     width: 500px;
