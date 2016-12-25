@@ -6,7 +6,7 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
 
     var findChannelCallback;
 
-    function Message(body, senderId, channelId, status, _id, datetime) {
+    function Message(body, senderId, channelId, _id, datetime) {
       this.body = body;
       this.senderId = senderId;
       this.channelId = channelId;
@@ -127,7 +127,6 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     Message.setFindChannelCallback = function(findChannelFunc){
       findChannelCallback = findChannelFunc;
     };
-
 
     return Message;
 

@@ -7,39 +7,40 @@ app.controller('messagesController',
               Message, channelsService) {
 
       $scope.messages = [];
-
       function loadMessagesFromDb() {
         var channel = channelsService.findChannel($stateParams.channel.id);
-        $log.info("last seen", channel.channelLastSeen);
-
-        messagesService.getMessagesFromDb($stateParams.channel.id,
-          function (messages) {
-            messages.forEach(function (msg) {
-              var messageStatus = Message.findStatus(msg.id,
-                channel.channelLastSeen, channel.notifCount);
-              var message = new Message(msg.body, msg.senderId, msg.channelId,
-                messageStatus, msg._id, msg.datetime);
-              addMessageToArray(message);
-            });
-            $scope.$apply();
-          });
-        messagesService.getLastMessageFromDb($stateParams.channel.id)
-          .then(function (lastMessage) {
-            if (lastMessage && channel.notifCount && channel.notifCount > 0) {
-              messagesService.sendSeenNotif(lastMessage.channelId, lastMessage.id,
-                lastMessage.senderId);
-              channelsService.updateNotification(channel.id, 'empty');
-            }
-            $scope.$apply();
+        $log.info("last seen before", channel.channelLastSeen);
+        messagesService.isChannelReady(channel.id)
+          .then(function () {
+            $log.info("last seen after", channel.channelLastSeen);
+            messagesService.getMessagesFromDb($stateParams.channel.id,
+              function (messages) {
+                messages.forEach(function (msg) {
+                  var message = new Message(msg.body, msg.senderId, msg.channelId,
+                    msg._id, msg.datetime);
+                  addMessageToArray(message);
+                });
+                $scope.$apply();
+              });
+            messagesService.getLastMessageFromDb($stateParams.channel.id)
+              .then(function (lastMessage) {
+                if (lastMessage && channel.notifCount && channel.notifCount > 0) {
+                  messagesService.sendSeenNotif(lastMessage.channelId, lastMessage.id,
+                    lastMessage.senderId);
+                  channelsService.updateNotification(channel.id, 'empty');
+                }
+                $scope.$apply();
+              });
           });
       }
 
-      function updateMessageStatus(messageId, status){
+      function updateMessageStatus(messageId, status) {
         var message = $scope.messages.find(function (message) {
           return (message.id === messageId);
         });
         message.status = status;
       }
+
       function addMessageToArray(message) {
         $scope.messages.push(message);
         $timeout(function () {
@@ -63,12 +64,23 @@ app.controller('messagesController',
           });
       };
 
+      $scope.isTyping = function(){
+        // var o = document.getElementById("inputPlaceHolder");
+        // o.style.height = "1px";
+        // o.style.height = (25+o.scrollHeight)+"px";
+
+        // var a = document.getElementById("inputWrapper");
+        // a.style.height = "1px";
+        // a.style.height = (25+a.scrollHeight)+"px";
+      };
+
       $scope.$watch(
         function () {
           return $stateParams.channel;
         },
-        function (oldChannel, newChannel) {
-          if (oldChannel && newChannel) {
+        function (newChannel, oldChannel) {
+          if (newChannel) {
+            $log.info('New:', newChannel);
             loadMessagesFromDb();
           }
         }
