@@ -1,8 +1,8 @@
 'use strict';
 
 app.service('channelsService', ['$http', '$q', '$log', 'socket',
-  'messagesService', 'Channel',
-  function ($http, $q, $log, socket, messagesService, Channel) {
+  'messagesService', 'Channel', 'User', 'arrayUtil',
+  function ($http, $q, $log, socket, messagesService, Channel, User, arrayUtil) {
 
     var self = this;
     self.deferredInit = $q.defer();
@@ -42,16 +42,21 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       return self.deferredNewChannel.promise;
     };
     var getTeamMembers = function (teamId) {
-      self.defferedTeamMembers = $q.defer();
+      var deferredTeamMembers = $q.defer();
       $http({
         method: 'GET',
         url: '/api/v1/teams/' + teamId + '/members/'
-      }).success(function (data, status, headers, config) {
-        self.defferedTeamMembers.resolve(data);
-      }).error(function (data, status, headers, config) {
-        self.defferedTeamMembers.reject(status);
+      }).success(function (data) {
+        var members = data;
+        var ownIndex = arrayUtil.getIndexByKeyValue(members, 'id', User.id);
+        if (ownIndex > -1) {
+          members.splice(ownIndex, 1);
+        }
+        deferredTeamMembers.resolve(members);
+      }).error(function (err) {
+        $log.info('Error Getting team members:', err);
       });
-      return self.defferedTeamMembers.promise;
+      return deferredTeamMembers.promise;
     };
     var getChannelMembers = function (channelId) {
       self.defferedChannelMembers = $q.defer();
@@ -73,23 +78,23 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       return self.deferredEditedChannel.promise;
     };
 
-    var setUpdateNotificationCallback = function(updateFunc){
+    var setUpdateNotificationCallback = function (updateFunc) {
       self.updateNotification = updateFunc;
     };
 
-    var updateNotification = function(channelId, changeType, notifCount){
+    var updateNotification = function (channelId, changeType, notifCount) {
       self.updateNotification(channelId, changeType, notifCount);
     };
 
-    var setUpdateLastDatetimeCallback = function(updateFunc){
+    var setUpdateLastDatetimeCallback = function (updateFunc) {
       self.updateLastDatetimeCallback = updateFunc;
     };
 
-    var updateLastDatetime = function(channelId, datetime){
+    var updateLastDatetime = function (channelId, datetime) {
       self.updateLastDatetimeCallback(channelId, datetime);
     };
 
-    var setUpdateLastDatetimeCallback = function(updateFunc){
+    var setUpdateLastDatetimeCallback = function (updateFunc) {
       self.updateLastDatetimeCallback = updateFunc;
     };
 
@@ -97,7 +102,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       self.findChannelCallback = findChannelFunc;
     };
 
-    var findChannel = function(channelId){
+    var findChannel = function (channelId) {
       return self.findChannelCallback(channelId);
     };
 

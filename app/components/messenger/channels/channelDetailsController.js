@@ -1,11 +1,13 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channelInfo', 'channelsService',
-  function ($uibModalInstance, $log, channelInfo, channelsService) {
+app.controller('channelDetailsController', ['$uibModalInstance', '$log',
+  'channelInfo', 'channelsService', 'User', 'arrayUtil',
+  function ($uibModalInstance, $log, channelInfo, channelsService, User,
+            arrayUtil) {
 
     var $ctrl = this;
     $ctrl.channel = channelInfo;
-    console.log("channel: ",$ctrl.channel);
+    var selectedChannelMember;
 
     $ctrl.channelType = {
       PUBLIC: 0,
@@ -24,9 +26,6 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
       $ctrl.details.isPrivate = ($ctrl.channel.type === $ctrl.channelType.PRIVATE) ? true : false;
       $ctrl.details.dublicateError = false;
       $ctrl.details.serverError = false;
-    };
-
-    $ctrl.addMember = function () {
     };
 
     $ctrl.formNameCheckEmpty = function (form) {
@@ -81,16 +80,48 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log', 'channe
       $ctrl.details.serverError = false;
       $ctrl.forms.detailsForm.$setPristine();
       $ctrl.forms.detailsForm.$submitted = false;
+      $ctrl.AddingMemberActive = false;
       $log.info($ctrl.forms.detailsForm);
     };
 
     channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
-      $log.info('channel MEMbers:', event);
       $ctrl.channel = event;
     }, function (status) {
       $log.info('error getting channel members :', status);
     });
 
+    $ctrl.hoverIn = function(channelMember){
+      selectedChannelMember = channelMember;
+    };
+
+    $ctrl.hoverOut = function(){
+      selectedChannelMember = null;
+    };
+
+    $ctrl.deleteMember = function(member){
+
+    };
+
+    $ctrl.addMember = function(){
+      $ctrl.AddingMemberActive = true;
+      channelsService.getTeamMembers(User.team.id).then(function (teamMembers) {
+        var members = teamMembers;
+        $log.info('Team1:',members);
+        $log.info('channelMEM:',$ctrl.channel.members);
+        angular.forEach($ctrl.channel.members, function(channelMember){
+          var index = arrayUtil.getIndexByKeyValue(members, 'id', channelMember.member_id);
+          if (index > -1) {
+            members.splice(index, 1);
+          }
+        });
+        $ctrl.teamMembers = members;
+        $log.info('Team2:',$ctrl.teamMembers);
+      });
+    };
+
+    $ctrl.isChannelMemberSelected = function(channelMember){
+      return selectedChannelMember === channelMember;
+    };
   }
 ])
 ;
