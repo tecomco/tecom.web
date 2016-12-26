@@ -24,6 +24,10 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
       return null;
     };
 
+    Channel.prototype.getLocaleMembersCount = function () {
+      return textUtil.persianify(this.membersCount.toString())
+    };
+
     Channel.prototype.updateLastDatetimeCallback = function (datetime) {
       this.lastDatetime = datetime;
     };
