@@ -65,13 +65,13 @@ app.controller('messagesController',
       };
 
       $scope.isTyping = function(){
-        // var o = document.getElementById("inputPlaceHolder");
-        // o.style.height = "1px";
-        // o.style.height = (25+o.scrollHeight)+"px";
+        var o = document.getElementById("inputPlaceHolder");
+        o.style.height = "1px";
+        o.style.height = (25+o.scrollHeight)+"px";
 
-        // var a = document.getElementById("inputWrapper");
-        // a.style.height = "1px";
-        // a.style.height = (25+a.scrollHeight)+"px";
+        var a = document.getElementById("inputWrapper");
+        a.style.height = "1px";
+        a.style.height = (25+a.scrollHeight)+"px";
       };
 
       $scope.$watch(

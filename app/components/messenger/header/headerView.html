@@ -104,16 +104,7 @@
                         <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
                     </div>
                     <div ng-show="$ctrl.AddingMemberActive" class="modal-input">
-                        <input type="text" name="search" ng-model="$ctrl.searchBox" placeholder="جستجو">
 
-                        <div class="g-members">
-                            <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one">
-                                <img ng-src="static/img/user-def.png"/>
-                                <label>{{teamMember.full_name}}</label>
-                                <label>(@{{teamMember.username}})</label>
-                                <button class="btn modal-btn-details-remove" ng-click="$ctrl.pushMember(teamMember)"><span class="zmdi zmdi-plus"></span></button>
-                            </a>
-                        </div>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.editMode">
                         <input type="text" name="search" ng-model="$ctrl.details.search" placeholder="جستجو">
@@ -134,6 +125,13 @@
             </div>
 
         </div>
+    </script>
+
+    <script type="text/ng-template" id="customTemplate.html">
+      <a>
+          <img ng-src="http://upload.wikimedia.org/wikipedia/commons/thumb/{{match.model.flag}}" width="16">
+          <span ng-bind-html="match.label | uibTypeaheadHighlight:query"></span>
+      </a>
     </script>
 
 </div>
