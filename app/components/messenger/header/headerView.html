@@ -104,15 +104,8 @@
                         <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMember()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
                     </div>
                     <div ng-show="$ctrl.AddingMemberActive" class="modal-input">
-                        <input type="text" name="search" ng-model="$ctrl.searchBox" placeholder="جستجو">
+                        <input type="text" ng-model="selectedTeamMember" placeholder="جستجو" uib-typeahead="teamMember as teamMember.full_name for teamMember in $ctrl.teamMembers | filter:{full_name:$viewValue}" typeahead-template-url="customTemplate.html" class="form-control" typeahead-show-hint="true" typeahead-min-length="0">
 
-                        <div class="g-members">
-                            <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one">
-                                <img ng-src="static/img/user-def.png"/>
-                                <label>{{teamMember.full_name}}</label>
-                                <label>(@{{teamMember.username}})</label>
-                            </a>
-                        </div>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.editMode">
                         <input type="text" name="search" ng-model="$ctrl.details.search" placeholder="جستجو">
@@ -133,6 +126,13 @@
             </div>
 
         </div>
+    </script>
+
+    <script type="text/ng-template" id="customTemplate.html">
+      <a>
+          <img ng-src="http://upload.wikimedia.org/wikipedia/commons/thumb/{{match.model.flag}}" width="16">
+          <span ng-bind-html="match.label | uibTypeaheadHighlight:query"></span>
+      </a>
     </script>
 
 </div>
