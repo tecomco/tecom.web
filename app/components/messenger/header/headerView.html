@@ -101,7 +101,7 @@
                     <i class="zmdi zmdi-accounts"></i>
                     <h3>اعضای گروه</h3>
                     <div class="modal-input modal-input-details">
-                        <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMember()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
+                        <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
                     </div>
                     <div ng-show="$ctrl.AddingMemberActive" class="modal-input">
                         <input type="text" name="search" ng-model="$ctrl.searchBox" placeholder="جستجو">
@@ -111,6 +111,7 @@
                                 <img ng-src="static/img/user-def.png"/>
                                 <label>{{teamMember.full_name}}</label>
                                 <label>(@{{teamMember.username}})</label>
+                                <button class="btn modal-btn-details-remove" ng-click="$ctrl.pushMember(teamMember)"><span class="zmdi zmdi-plus"></span></button>
                             </a>
                         </div>
                     </div>

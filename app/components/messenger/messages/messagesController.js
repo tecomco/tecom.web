@@ -78,7 +78,7 @@ app.controller('messagesController',
         function () {
           return $stateParams.channel;
         },
-        function (newChannel, oldChannel) {
+        function (newChannel) {
           if (newChannel) {
             $log.info('New:', newChannel);
             loadMessagesFromDb();

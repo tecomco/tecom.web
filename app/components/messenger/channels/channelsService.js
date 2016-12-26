@@ -73,6 +73,10 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
     var sendDetailsEditedChannel = function (channel, callback) {
       socket.emit('channel:edit:details', channel, callback);
     };
+
+    var sendAddeMembersToChannel = function (data, callback) {
+      socket.emit('channel:members:add', data, callback);
+    };
     var getEditedChannel = function () {
       self.deferredEditedChannel = $q.defer();
       return self.deferredEditedChannel.promise;
@@ -113,6 +117,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       getTeamMembers: getTeamMembers,
       getChannelMembers: getChannelMembers,
       sendDetailsEditedChannel: sendDetailsEditedChannel,
+      sendAddeMembersToChannel: sendAddeMembersToChannel,
       getEditedChannel: getEditedChannel,
       setUpdateNotificationCallback: setUpdateNotificationCallback,
       updateNotification: updateNotification,

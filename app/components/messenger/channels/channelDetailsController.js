@@ -1,19 +1,14 @@
 'use strict';
 
 app.controller('channelDetailsController', ['$uibModalInstance', '$log',
-  'channelInfo', 'channelsService', 'User', 'arrayUtil',
+  'channelInfo', 'channelsService', 'User', 'arrayUtil', 'Channel',
   function ($uibModalInstance, $log, channelInfo, channelsService, User,
-            arrayUtil) {
+            arrayUtil, Channel) {
 
     var $ctrl = this;
     $ctrl.channel = channelInfo;
     var selectedChannelMember;
 
-    $ctrl.channelType = {
-      PUBLIC: 0,
-      PRIVATE: 1,
-      DIRECT: 2
-    };
     $ctrl.editMode = false;
     $ctrl.isAdmin = true;
     $ctrl.details = {};
@@ -23,7 +18,7 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $ctrl.editMode = true;
       $ctrl.details.name = $ctrl.channel.name;
       $ctrl.details.description = $ctrl.channel.description;
-      $ctrl.details.isPrivate = ($ctrl.channel.type === $ctrl.channelType.PRIVATE) ? true : false;
+      $ctrl.details.isPrivate = ($ctrl.channel.type === Channel.TYPE.PRIVATE) ? true : false;
       $ctrl.details.dublicateError = false;
       $ctrl.details.serverError = false;
     };
@@ -44,17 +39,22 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $ctrl.forms.detailsForm.$setPristine();
 
       var type = $ctrl.details.isPrivate ?
-        $ctrl.channelType.PRIVATE : $ctrl.channelType.PUBLIC;
+        Channel.TYPE.PRIVATE : Channel.TYPE.PUBLIC;
       var editedData = {
         name: $ctrl.details.name,
         description: $ctrl.details.description,
         type: type,
         id: $ctrl.channel.id
       };
+      var addeMembers = {
+        channelId: $ctrl.channel.id,
+        memberIds: $ctrl.addedMemberIds
+      };
       channelsService.sendDetailsEditedChannel(editedData, function (response) {
           $log.info('Edit channel Details response: ', response);
           if (response.status) {
-            $ctrl.closeDetailsModal();
+            // $ctrl.closeDetailsModal();
+            $log.info('Done Editing Channel');
           }
           else {
             if (response.message.indexOf('Duplicate slug in team.') != -1) {
@@ -68,6 +68,16 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
           }
         }
       );
+      channelsService.sendAddeMembersToChannel(addeMembers, function(response){
+        $log.info('Adding members response: ', response);
+        if (response.status) {
+          // $ctrl.closeDetailsModal();
+          $log.info('Done Adding members');
+        }
+        else {
+          $log.error('Error Adding members');
+        }
+      })
     };
 
     angular.element(document).ready(function () {
@@ -81,7 +91,7 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $ctrl.forms.detailsForm.$setPristine();
       $ctrl.forms.detailsForm.$submitted = false;
       $ctrl.AddingMemberActive = false;
-      $log.info($ctrl.forms.detailsForm);
+      $ctrl.addedMemberIds = [];
     };
 
     channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
@@ -99,15 +109,19 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
     };
 
     $ctrl.deleteMember = function(member){
-
     };
 
-    $ctrl.addMember = function(){
+    $ctrl.pushMember = function(teamMember){
+      if(!$ctrl.addedMemberIds.find(function(member){
+          return member === teamMember.id
+        }))
+        $ctrl.addedMemberIds.push(teamMember.id);
+    };
+
+    $ctrl.addMembersClick = function(){
       $ctrl.AddingMemberActive = true;
       channelsService.getTeamMembers(User.team.id).then(function (teamMembers) {
         var members = teamMembers;
-        $log.info('Team1:',members);
-        $log.info('channelMEM:',$ctrl.channel.members);
         angular.forEach($ctrl.channel.members, function(channelMember){
           var index = arrayUtil.getIndexByKeyValue(members, 'id', channelMember.member_id);
           if (index > -1) {
@@ -115,7 +129,6 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
           }
         });
         $ctrl.teamMembers = members;
-        $log.info('Team2:',$ctrl.teamMembers);
       });
     };
 
