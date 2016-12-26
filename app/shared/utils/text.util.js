@@ -9,9 +9,9 @@ app.factory('textUtil', function () {
 
   function urlify(text) {
     if (typeof text !== 'string') return text.toString();
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    var urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
     return text.replace(urlRegex, function (url) {
-      return '<a href="' + url + '" target="_blank">' + url + '</a>';
+      return '<a href="//' + url + '" target="_blank">' + url + '</a>';
     });
   }
 
