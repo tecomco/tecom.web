@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('createChannelController', ['$uibModalInstance', '$log',
-  'channelsService', 'arrayUtil', 'User', 'Channel',
-  function ($uibModalInstance, $log, channelsService, arrayUtil, User, Channel) {
+  'channelsService', 'arrayUtil', 'User',
+  function ($uibModalInstance, $log, channelsService, arrayUtil, User) {
 
     var $ctrl = this;
 
@@ -35,17 +35,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
       return (form.name.$viewValue && form.name.$invalid);
     };
 
-    channelsService.getTeamMembers(User.team.id).then(function (event) {
-      $ctrl.teamMembers = event;
-      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', User.id);
-      if (ownIndex > -1) {
-        $ctrl.teamMembers.splice(ownIndex, 1);
-      }
-      for (var i = 0; i < $ctrl.teamMembers.length; i++) {
-        $ctrl.teamMembers[i].selected = false;
-      }
-    }, function (status) {
-      $log.info('error getting team members : ', status);
+    channelsService.getTeamMembers(User.team.id).then(function (members) {
+      $ctrl.teamMembers = members;
     });
 
     $ctrl.closeCreateChannel = function () {

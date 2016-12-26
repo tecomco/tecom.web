@@ -100,24 +100,25 @@
                 <div class="col-sm-6 modal-left-part">
                     <i class="zmdi zmdi-accounts"></i>
                     <h3>اعضای گروه</h3>
-                    <div class="modal-input">
-                        <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
-                    </div>
-                    <div class="g-members">
-                        <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
-                            <img ng-src="static/img/user-def.png"/>
-                            <label>{{teamMember.full_name}}</label>
-                            <label>(@{{teamMember.username}})</label>
-                        </a>
-                    </div>
                     <div class="modal-input modal-input-details">
                         <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMember()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
+                    </div>
+                    <div ng-show="$ctrl.AddingMemberActive" class="modal-input">
+                        <input type="text" name="search" ng-model="$ctrl.searchBox" placeholder="جستجو">
+
+                        <div class="g-members">
+                            <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one">
+                                <img ng-src="static/img/user-def.png"/>
+                                <label>{{teamMember.full_name}}</label>
+                                <label>(@{{teamMember.username}})</label>
+                            </a>
+                        </div>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.editMode">
                         <input type="text" name="search" ng-model="$ctrl.details.search" placeholder="جستجو">
                     </div>
                     <div class="g-members">
-                        <div ng-repeat="channelMember in $ctrl.channel.members | orderBy : 'username' | filter : {full_name : $ctrl.details.search}" class="g-m-one" ng-mouseover="$ctrl.hoverIn(channelMember)" ng-mouseleave="$ctrl.hoverOut()">
+                        <div ng-repeat="channelMember in $ctrl.channel.members | orderBy : 'username'" class="g-m-one" ng-mouseover="$ctrl.hoverIn(channelMember)" ng-mouseleave="$ctrl.hoverOut()">
                             <div>
                                 <img ng-src="static/img/user-def.png"/>
                                 <label>{{channelMember.full_name}}</label>

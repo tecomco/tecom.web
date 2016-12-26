@@ -75,7 +75,7 @@
                                 <label>{{teamMember.full_name}}</label>
                                 <label dir="ltr">(@{{teamMember.username}})</label>
                                 <label class="ws-checkbox">
-                                    <input type="checkbox" ng-model="teamMember.selected">
+                                    <input type="checkbox" id="selectCheckbox" ng-model="teamMember.selected">
                                     <div class="checkbox-stat">
                                         <i class="fa fa-check"></i>
                                     </div>
@@ -107,10 +107,10 @@
                     <div class="col-sm-10 col-sm-offset-1">
                         <h3>لطفا مخاطب مورد نظرتان را انتخاب کنید</h3>
                         <div class="modal-input">
-                            <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
+                            <input type="text" name="search" ng-model="$ctrl.searchBox" placeholder="جستجو">
                         </div>
                         <div class="g-members">
-                            <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
+                            <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one">
                                 <img ng-src="static/img/user-def.png"/>
                                 <label>{{teamMember.full_name}}</label>
                                 <label>(@{{teamMember.username}})</label>
