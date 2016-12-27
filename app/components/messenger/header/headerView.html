@@ -1,7 +1,7 @@
 <div ng-controller="headerController as $ctrl">
     <div class="name">
         <label>{{channel.name}}</label>
-        <div class="det">
+        <div class="det" ng-show="!channel.isDirect()">
             <label dir="rtl">{{channel.getLocaleMembersCount()}}
                 عضو</label>
             <label>{{channel.description}}</label>

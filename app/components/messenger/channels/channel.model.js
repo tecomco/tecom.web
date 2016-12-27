@@ -4,7 +4,7 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
   function ($log, $stateParams, textUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
-                     notifCount) {
+      notifCount) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -19,13 +19,14 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
     };
 
     Channel.prototype.getNotifInPersian = function () {
-      if(this.hasUnread())
-        return textUtil.persianify(this.notifCount.toString())
+      if (this.hasUnread())
+        return textUtil.persianify(this.notifCount.toString());
       return null;
     };
 
     Channel.prototype.getLocaleMembersCount = function () {
-      return textUtil.persianify(this.membersCount.toString())
+      if (this.membersCount)
+        return textUtil.persianify(this.membersCount.toString());
     };
 
     Channel.prototype.updateLastDatetimeCallback = function (datetime) {
@@ -33,7 +34,14 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
     };
 
     Channel.prototype.getCssClass = function () {
-      return (this.type == Channel.TYPE.PRIVATE) ? 'fa fa-lock' : 'fa fa-globe';
+      switch (this.type) {
+      case Channel.TYPE.PUBLIC:
+        return 'fa fa-globe';
+      case Channel.TYPE.PRIVATE:
+        return 'fa fa-lock';
+      case Channel.TYPE.DIRECT:
+        return 'fa fa-at';
+      }
     };
 
     Channel.prototype.isPrivate = function () {
@@ -60,4 +68,5 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
 
     return Channel;
 
-  }]);
+  }
+]);
