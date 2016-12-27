@@ -4,7 +4,7 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
   function ($log, $stateParams, textUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
-                     notifCount) {
+      notifCount) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -19,13 +19,13 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
     };
 
     Channel.prototype.getNotifInPersian = function () {
-      if(this.hasUnread())
-        return textUtil.persianify(this.notifCount.toString())
+      if (this.hasUnread())
+        return textUtil.persianify(this.notifCount.toString());
       return null;
     };
 
     Channel.prototype.getLocaleMembersCount = function () {
-      return textUtil.persianify(this.membersCount.toString())
+      return textUtil.persianify(this.membersCount.toString());
     };
 
     Channel.prototype.updateLastDatetimeCallback = function (datetime) {
@@ -60,4 +60,5 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
 
     return Channel;
 
-  }]);
+  }
+]);

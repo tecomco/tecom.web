@@ -20,7 +20,7 @@ var app = angular.module('LoginApp', ['ngStorage', 'angular-jwt'])
               // TODO: Handle error or show message to user.
             });
         }
-      }
+      };
 
       function generateCircle(top, left, r, opacity, blur, speedX, speedY, speedBlur) {
         return {
