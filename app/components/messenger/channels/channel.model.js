@@ -25,7 +25,8 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
     };
 
     Channel.prototype.getLocaleMembersCount = function () {
-      return textUtil.persianify(this.membersCount.toString());
+      if (this.membersCount)
+        return textUtil.persianify(this.membersCount.toString());
     };
 
     Channel.prototype.updateLastDatetimeCallback = function (datetime) {
@@ -33,7 +34,14 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
     };
 
     Channel.prototype.getCssClass = function () {
-      return (this.type == Channel.TYPE.PRIVATE) ? 'fa fa-lock' : 'fa fa-globe';
+      switch (this.type) {
+      case Channel.TYPE.PUBLIC:
+        return 'fa fa-globe';
+      case Channel.TYPE.PRIVATE:
+        return 'fa fa-lock';
+      case Channel.TYPE.DIRECT:
+        return 'fa fa-at';
+      }
     };
 
     Channel.prototype.isPrivate = function () {
