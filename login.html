@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css"/>
         <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css"/>
         <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css"/>
-        <link rel="stylesheet" href="static/css/style.css"/>
+        <!-- <link rel="stylesheet" href="static/css/style.css"/> -->
         <link rel="stylesheet" href="static/css/login-style.css"/>
         <script src="static/lib/angular/angular.js"></script>
     </head>
@@ -17,33 +17,36 @@
     <body>
 
         <div ng-controller="LoginController" style="background-color: #24A772">
-            <div class="container" id="loginFormContainer">
-              <div class="animated-background">
-                <div ng-repeat="circle in circles">
-                    <div ng-show="true" class="circle" ng-style="circle.style"></div>
-                </div>
-              </div>
+            <div class="container">
+
                 <div class="login-form">
                     <div class="login-form-heading">
-                        <h3 class="login-form-title">نام کاربری و رمز عبورت رو وارد کن...</h3>
+                        <h4 class="login-form-title">نام کاربری و رمز عبورت رو وارد کن...</h4>
                     </div>
                     <div class="login-form-body">
                         <form name="forms.login" ng-submit="login()" novalidate>
                             <div class="form-group">
-                                <input ng-model="username" class="form-control" placeholder="نام کاربری" name="username" type="text">
+                                <input ng-model="username" class="input-box" placeholder="نام کاربری" name="username" type="text">
                             </div>
                             <div class="form-group">
-                                <input ng-model="password" class="form-control" placeholder="رمز عبور" name="password" type="password">
+                                <input ng-model="password" class="input-box" placeholder="رمز عبور" name="password" type="password">
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input ng-model="remember" name="remember" type="checkbox">مرا به خاطر بسپار.
-                                </label>
-                            </div>
-                            <input class="btn btn-lg btn-success btn-block" type="submit" value="ورود">
+                            <label class="ws-checkbox">
+                                <span>مرا به خاطر بسپار.</span>
+                                <input ng-model="remember" name="remember" type="checkbox">
+                                <div class="checkbox-stat">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                            </label>
+                            <input class="submit-btn" type="submit" value="ورود">
                         </form>
                     </div>
                 </div>
+            </div>
+            <div class="animated-background">
+              <div ng-repeat="circle in circles">
+                  <div ng-show="true" class="circle" ng-style="circle.style"></div>
+              </div>
             </div>
         </div>
 

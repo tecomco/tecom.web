@@ -64,7 +64,9 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
-
+.wrapper {
+    height: 100vh;
+}
 .brand-name-right-header {
       font-size: 1.8em;
       font-weight: bold;
@@ -590,6 +592,7 @@ a, a:hover, a:visited, a:focus {
     border: 1px solid rgba(36, 167, 114, 0.6);
 }
 
+
 .modal-err {
     border-radius: 4px;
     color: #fff;
@@ -613,13 +616,19 @@ a, a:hover, a:visited, a:focus {
     color: #fff;
     border: 0;
     border-radius: 4px;
+    margin-top: 20px;
     background: #09945C;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
-
+.tooltip {
+    font-family: "iransans";
+    padding: 0 !important;
+    min-width: 70px;
+    z-index: 99999;
+}
 
 .modal .modal-btn {
     padding: 0;
@@ -744,9 +753,6 @@ a, a:hover, a:visited, a:focus {
     display: inline-block;
 }
 
-.modal-body [type="text"]:focus {
-    color: #188c67;
-}
 
 .modal-body br {
     display: none;
@@ -969,7 +975,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 input {
     box-sizing: padding-box;
     direction: rtl;
-    font-family: "iransans"
+    font-family: "iransans";
 }
 
 label {
