@@ -36,6 +36,9 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
         var tmpChannel = channelsAndDirects.find(function (channel) {
           return (channel.slug === tmpSlug);
         });
+        if (!tmpChannel) {
+          $state.go('messenger.home');
+        }
         $stateParams.channel = tmpChannel;
         $localStorage.currentChannel = tmpChannel;
         $scope.initChannelsPromise = channelsService.getInitChannels();
