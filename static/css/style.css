@@ -663,7 +663,15 @@ a, a:hover, a:visited, a:focus {
 .modal-input {
     position: relative;
 }
-
+.search-result {
+    background-color: rgba(225,225,225,0.8);
+    min-height: 46px;
+    width: 23%;
+    position: fixed;
+    top: 218px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
  .modal-input-details {
     display: inline-block;
  }
