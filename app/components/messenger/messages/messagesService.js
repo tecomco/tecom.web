@@ -10,7 +10,7 @@ app.service('messagesService',
         $log.info("SEEN:", data);
         var channel = self.findChannelCallback(data.channelId);
         channel.channelLastSeen = data.messageId;
-        if($stateParams.channel.id && $stateParams.channel.id === data.channelId)
+        if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
           self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
       });
 
@@ -28,7 +28,7 @@ app.service('messagesService',
         }
       });
 
-      function updateMessageStatus(channelId, messageId){
+      function updateMessageStatus(channelId, messageId) {
 
       }
 
@@ -105,7 +105,7 @@ app.service('messagesService',
                   channel.lastDatetime = new Date(res.lastDatetime);
                 if (res.channelLastSeen)
                   channel.channelLastSeen = res.channelLastSeen;
-                if(channel.id === self.requestedChannelReadyId)
+                if (channel.id === self.requestedChannelReadyId)
                   self.promissChannelReady.resolve(true);
                 var channelMessagesData = res.messages;
                 channelMessagesData.forEach(function (msg) {
@@ -150,14 +150,13 @@ app.service('messagesService',
         self.updateMessageStatusCallback = updateStatusFunc;
       };
 
-      var isChannelReady = function(channelId)
-      {
+      var isChannelReady = function (channelId) {
         self.requestedChannelReadyId = channelId;
         self.promissChannelReady = $q.defer();
-        if(self.allChannelsReady === true)
+        if (self.allChannelsReady === true)
           self.promissChannelReady.resolve(true);
-        return  self.promissChannelReady.promise;
-      }
+        return self.promissChannelReady.promise;
+      };
 
       return {
         sendMessage: sendMessage,

@@ -11,9 +11,12 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     socket.on('init', function (data) {
       var channels = [];
+      $log.info('Init channels:', data);
       data.forEach(function (channel) {
         var tmpChannel = new Channel(channel.name, channel.slug,
           channel.description, channel.type, channel.id, channel.membersCount);
+        if (channel.memberId)
+          tmpChannel.memberId = channel.memberId;
         channels.push(tmpChannel);
       });
       self.deferredInit.resolve(channels);
@@ -48,10 +51,7 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
         url: '/api/v1/teams/' + teamId + '/members/'
       }).success(function (data) {
         var members = data;
-        var ownIndex = arrayUtil.getIndexByKeyValue(members, 'id', User.id);
-        if (ownIndex > -1) {
-          members.splice(ownIndex, 1);
-        }
+        arrayUtil.removeElementByKeyValue(members, 'id', User.id);
         deferredTeamMembers.resolve(members);
       }).error(function (err) {
         $log.info('Error Getting team members:', err);
@@ -110,6 +110,15 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       return self.findChannelCallback(channelId);
     };
 
+    var removeMemberFromChannel = function (data, callback) {
+      socket.emit('channel:members:remove', data, callback);
+    };
+
+    var createNewDirectRequest = function (memberId, username, callback) {
+      var data = {memberId: memberId, username: username};
+      socket.emit('channel:direct:create', data, callback);
+    };
+
     return {
       getInitChannels: getInitChannels,
       sendNewChannel: sendNewChannel,
@@ -125,6 +134,8 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       updateLastDatetime: updateLastDatetime,
       setFindChannelCallback: setFindChannelCallback,
       findChannel: findChannel,
+      removeMemberFromChannel: removeMemberFromChannel,
+      createNewDirectRequest: createNewDirectRequest
     };
   }
 ])

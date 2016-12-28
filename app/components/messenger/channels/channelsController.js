@@ -46,7 +46,13 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       $log.info("NewChannel:", channel);
       var newChannel = new Channel(channel.name, channel.slug,
         channel.description, channel.type, channel.id, channel.membersCount);
+      if(channel.memberId)
+        newChannel.memberId = channel.memberId;
+      if(newChannel.isDirect())
+        arrayUtil.removeElementByKeyValue($scope.directs, 'slug', newChannel.slug);
       $scope.channels.push(newChannel);
+      $log.info($scope.channels);
+      $log.info(channelsAndDirects);
       $scope.newChannelPromise = channelsService.getNewChannel();
     };
 
@@ -93,8 +99,21 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.channelClick = function (channel) {
-      //$localStorage.currentChannel = channel;
-      //channel.sendSeenStatusToServer();
+      $log.info('click:', channel);
+      //$log.info('this channel:',channel);
+    };
+
+    $scope.directClick = function (direct) {
+      if (direct.memberId) {
+        channelsService.createNewDirectRequest(direct.memberId, direct.slug,
+          function (res) {
+            if (res.status) {
+              $log.info('New Direct Created');
+            }
+            else
+              $log.info('Error Creating New Direct:', res.message);
+          });
+      }
     };
 
     var updateNotification = function (channelId, type, notifCount) {
@@ -120,7 +139,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       channel.lastDatetime = datetime;
     };
 
-    var findChannel = function(channelId){
+    var findChannel = function (channelId) {
       return channelsAndDirects.find(function (channel) {
         return (channel.id === channelId);
       });

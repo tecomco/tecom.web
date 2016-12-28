@@ -7,6 +7,7 @@ app.controller('messagesController',
               Message, channelsService) {
 
       $scope.messages = [];
+
       function loadMessagesFromDb() {
         var channel = channelsService.findChannel($stateParams.channel.id);
         $log.info("last seen before", channel.channelLastSeen);

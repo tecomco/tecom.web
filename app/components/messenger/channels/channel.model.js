@@ -44,6 +44,9 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
       }
     };
 
+    Channel.prototype.isDirectExist = function(){
+      return !this.memberId;
+    };
     Channel.prototype.isPrivate = function () {
       return this.type == Channel.TYPE.PRIVATE;
     };

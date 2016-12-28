@@ -68,7 +68,7 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
           }
         }
       );
-      channelsService.sendAddeMembersToChannel(addeMembers, function(response){
+      channelsService.sendAddeMembersToChannel(addeMembers, function (response) {
         $log.info('Adding members response: ', response);
         if (response.status) {
           // $ctrl.closeDetailsModal();
@@ -100,40 +100,53 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $log.info('error getting channel members :', status);
     });
 
-    $ctrl.hoverIn = function(channelMember){
+    $ctrl.hoverIn = function (channelMember) {
       selectedChannelMember = channelMember;
     };
 
-    $ctrl.hoverOut = function(){
+    $ctrl.hoverOut = function () {
       selectedChannelMember = null;
     };
 
-    $ctrl.deleteMember = function(member){
+    $ctrl.deleteMember = function (member) {
+      var data = {
+        channelMemberId: member.id,
+        memberId: member.member_id,
+        channelId: $ctrl.channel.id,
+        channelType: $ctrl.channel.type
+      };
+      channelsService.removeMemberFromChannel(data, function (res) {
+        $log.info('Callback', res);
+        if (res.status) {
+          arrayUtil.removeElementByKeyValue($ctrl.channel.members, 'id', member.id);
+          $log.info('Member Removed from Channel');
+        }
+        else
+          $log.info('Error Removing member from channel:', res.message);
+
+      });
     };
 
-    $ctrl.pushMember = function(teamMember){
-      if(!$ctrl.addedMemberIds.find(function(member){
-          return member === teamMember.id
+    $ctrl.pushMember = function (teamMember) {
+      if (!$ctrl.addedMemberIds.find(function (member) {
+          return member === teamMember.id;
         }))
         $ctrl.addedMemberIds.push(teamMember.id);
     };
 
-    $ctrl.addMembersClick = function(){
+    $ctrl.addMembersClick = function () {
       $ctrl.AddingMemberActive = true;
       channelsService.getTeamMembers(User.team.id).then(function (teamMembers) {
         var members = teamMembers;
-        angular.forEach($ctrl.channel.members, function(channelMember){
-          var index = arrayUtil.getIndexByKeyValue(members, 'id', channelMember.member_id);
-          if (index > -1) {
-            members.splice(index, 1);
-          }
+        angular.forEach($ctrl.channel.members, function (channelMember) {
+          arrayUtil.removeElementByKeyValue(members, 'id', channelMember.member_id);
         });
         $ctrl.teamMembers = members;
       });
     };
 
-    $ctrl.isChannelMemberSelected = function(channelMember){
-      return selectedChannelMember === channelMember;
+    $ctrl.isChannelMemberSelected = function (channelMember) {
+        return (selectedChannelMember === channelMember && channelMember.member_id !== User.id);
     };
   }
 ])
