@@ -8,11 +8,15 @@ app.factory('textUtil', function () {
   }
 
   function urlify(text) {
-    if (typeof text !== 'string') return text.toString();
     var urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
     return text.replace(urlRegex, function (url) {
       return '<a href="//' + url + '" target="_blank">' + url + '</a>';
     });
+  }
+
+  function hashtagify(text) {
+    var hashtagRegex = /(^|\W)(#[a-z\d][\w-]*)/ig;
+    return text.replace(hashtagRegex, '$1<a href="/$2">$2</a>');
   }
 
   function persianify(text) {
@@ -40,6 +44,7 @@ app.factory('textUtil', function () {
   return {
     isEnglish: isEnglish,
     urlify: urlify,
+    hashtagify: hashtagify,
     persianify: persianify
   };
 });

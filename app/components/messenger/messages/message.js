@@ -95,6 +95,7 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     Message.generateMessageWellFormedText = function (text) {
       var wellFormedText;
       wellFormedText = textUtil.urlify(text);
+      wellFormedText = textUtil.hashtagify(text);
       return $sce.trustAsHtml(wellFormedText);
     };
 
