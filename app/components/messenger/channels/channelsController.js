@@ -36,6 +36,9 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
         var tmpChannel = channelsAndDirects.find(function (channel) {
           return (channel.slug === tmpSlug);
         });
+        if (!tmpChannel) {
+          $state.go('messenger.home');
+        }
         $stateParams.channel = tmpChannel;
         $localStorage.currentChannel = tmpChannel;
         $scope.initChannelsPromise = channelsService.getInitChannels();
@@ -105,7 +108,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
 
     $scope.directClick = function (direct) {
       if (direct.memberId) {
-        channelsService.createNewDirectRequest(direct.memberId, direct.slug,
+        channelsService.createNewDirectRequest(direct.memberId,
           function (res) {
             if (res.status) {
               $log.info('New Direct Created');

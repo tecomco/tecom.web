@@ -114,8 +114,8 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       socket.emit('channel:members:remove', data, callback);
     };
 
-    var createNewDirectRequest = function (memberId, username, callback) {
-      var data = {memberId: memberId, username: username};
+    var createNewDirectRequest = function (memberId, callback) {
+      var data = {memberId: memberId};
       socket.emit('channel:direct:create', data, callback);
     };
 
