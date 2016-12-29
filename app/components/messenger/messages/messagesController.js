@@ -10,10 +10,8 @@ app.controller('messagesController',
 
       function loadMessagesFromDb() {
         var channel = channelsService.findChannel($stateParams.channel.id);
-        $log.info("last seen before", channel.channelLastSeen);
         messagesService.isChannelReady(channel.id)
           .then(function () {
-            $log.info("last seen after", channel.channelLastSeen);
             messagesService.getMessagesFromDb($stateParams.channel.id,
               function (messages) {
                 messages.forEach(function (msg) {
@@ -81,7 +79,6 @@ app.controller('messagesController',
         },
         function (newChannel) {
           if (newChannel) {
-            $log.info('New:', newChannel);
             loadMessagesFromDb();
           }
         }

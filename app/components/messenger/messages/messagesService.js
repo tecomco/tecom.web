@@ -7,7 +7,6 @@ app.service('messagesService',
       var self = this;
 
       socket.on('message:seen', function (data) {
-        $log.info("SEEN:", data);
         var channel = self.findChannelCallback(data.channelId);
         channel.channelLastSeen = data.messageId;
         if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
@@ -130,7 +129,6 @@ app.service('messagesService',
           messageId: lastMessageId,
           senderId: senderId
         };
-        $log.info('Seen:', data);
         socket.emit('message:seen', data);
       };
 

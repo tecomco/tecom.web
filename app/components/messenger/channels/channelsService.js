@@ -74,7 +74,8 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       socket.emit('channel:edit:details', channel, callback);
     };
 
-    var sendAddeMembersToChannel = function (data, callback) {
+    var sendAddeMembersToChannel = function (memberIds, channelId, callback) {
+      var data = {memberIds: memberIds, channelId: channelId};
       socket.emit('channel:members:add', data, callback);
     };
     var getEditedChannel = function () {
@@ -88,10 +89,6 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     var updateNotification = function (channelId, changeType, notifCount) {
       self.updateNotification(channelId, changeType, notifCount);
-    };
-
-    var setUpdateLastDatetimeCallback = function (updateFunc) {
-      self.updateLastDatetimeCallback = updateFunc;
     };
 
     var updateLastDatetime = function (channelId, datetime) {

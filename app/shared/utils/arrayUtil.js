@@ -12,26 +12,36 @@ app.factory('arrayUtil', function () {
   };
 
   var lastElement = function (array) {
-    if(array.length === 0)
+    if (array.length === 0)
       return null;
-    return array[array.length-1];
+    return array[array.length - 1];
   };
 
-  var removeElement = function(array, index){
+  var removeElement = function (array, index) {
     if (index > -1)
       array.splice(index, 1);
   };
 
-  var removeElementByKeyValue = function(array, key, value){
-    var index = getIndexByKeyValue(array,key,value);
+  var removeElementByKeyValue = function (array, key, value) {
+    var index = getIndexByKeyValue(array, key, value);
     if (index > -1)
       array.splice(index, 1);
+  };
+
+  var contains = function(array, value) {
+    return (array.indexOf(value) > -1);
+  };
+
+  var containsKeyValue = function(array, key, value) {
+    return (getIndexByKeyValue(array, key, value) > -1);
   };
 
   return {
     getIndexByKeyValue: getIndexByKeyValue,
     lastElement: lastElement,
     removeElement: removeElement,
-    removeElementByKeyValue: removeElementByKeyValue
+    removeElementByKeyValue: removeElementByKeyValue,
+    contains: contains,
+    containsKeyValue: containsKeyValue
   };
 });
