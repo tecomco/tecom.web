@@ -28,10 +28,7 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
 
     channelsService.getTeamMembers(User.team.id).then(function (event) {
       $ctrl.teamMembers = event;
-      var ownIndex = arrayUtil.getIndexByKeyValue($ctrl.teamMembers, 'id', window.memberId);
-      if (ownIndex > -1) {
-        $ctrl.teamMembers.splice(ownIndex, 1);
-      }
+      arrayUtil.removeElementByKeyValue($ctrl.teamMembers, 'id', window.memberId);
       for (var i = 0; i < $ctrl.teamMembers.length; i++) {
         $ctrl.teamMembers[i].selected = false;
       }

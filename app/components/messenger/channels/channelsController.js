@@ -9,7 +9,6 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     var $ctrl = this;
     $scope.channels = [];
     $scope.directs = [];
-    var channelsAndDirects = [];
 
     $scope.selectedChat = function () {
       return $stateParams.slug;
@@ -30,7 +29,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       });
       $scope.directs = directs;
       $scope.channels = channels;
-      channelsAndDirects = $scope.channels.concat($scope.directs);
+      var channelsAndDirects = $scope.channels.concat($scope.directs);
       if ($stateParams.slug) {
         var tmpSlug = $stateParams.slug.replace('@', '');
         var tmpChannel = channelsAndDirects.find(function (channel) {
@@ -46,10 +45,14 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.bindNewChannel = function (channel) {
-      $log.info("NewChannel:", channel);
       var newChannel = new Channel(channel.name, channel.slug,
         channel.description, channel.type, channel.id, channel.membersCount);
+      if(channel.memberId)
+        newChannel.memberId = channel.memberId;
+      if(newChannel.isDirect())
+        arrayUtil.removeElementByKeyValue($scope.directs, 'slug', newChannel.slug);
       $scope.channels.push(newChannel);
+      $log.info($scope.channels);
       $scope.newChannelPromise = channelsService.getNewChannel();
     };
 
@@ -96,14 +99,24 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.channelClick = function (channel) {
-      //$localStorage.currentChannel = channel;
-      //channel.sendSeenStatusToServer();
+      //$log.info('this channel:',channel);
+    };
+
+    $scope.directClick = function (direct) {
+      if (direct.memberId) {
+        channelsService.createNewDirectRequest(direct.memberId,
+          function (res) {
+            if (res.status) {
+              $log.info('New Direct Created');
+            }
+            else
+              $log.info('Error Creating New Direct:', res.message);
+          });
+      }
     };
 
     var updateNotification = function (channelId, type, notifCount) {
-      var channel = channelsAndDirects.find(function (channel) {
-        return (channel.id === channelId);
-      });
+      var channel = findChannel(channelId);
       switch (type) {
         case 'empty':
           channel.notifCount = 0;
@@ -117,13 +130,12 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     var updateLastDatetime = function (channelId, datetime) {
-      var channel = channelsAndDirects.find(function (channel) {
-        return (channel.id === channelId);
-      });
+      var channel = findChannel(channelId);
       channel.lastDatetime = datetime;
     };
 
-    var findChannel = function(channelId){
+    var findChannel = function (channelId) {
+      var channelsAndDirects = $scope.channels.concat($scope.directs);
       return channelsAndDirects.find(function (channel) {
         return (channel.id === channelId);
       });

@@ -26,8 +26,10 @@ app.controller('headerController', [
       function () {
         return $stateParams.channel;
       },
-      function () {
-        $scope.channel = channelsService.findChannel($stateParams.channel.id);
+      function (newChannel) {
+        if(newChannel) {
+          $scope.channel = channelsService.findChannel(newChannel.id);
+        }
       }
     );
 

@@ -27,7 +27,7 @@
     <div class="direct-holder group-holder">
         <ul>
             <li ng-repeat="direct in directs | orderBy : ['!lastMessageDatetime','-lastMessageDatetime']" ng-class="{'active': '@' + direct.slug == selectedChat()}">
-                <a ui-sref=".messages({slug: '@{{direct.slug}}', channel: {{direct}} })">
+                <a ng-click="directClick(direct)" ui-sref=".messages({slug: '@{{direct.slug}}', channel: {{direct}} })">
                     <i ng-class="direct.getCssClass()"></i>
                     <span class="channel-name">{{direct.name}}</span>
                     <span class="badge"></span>

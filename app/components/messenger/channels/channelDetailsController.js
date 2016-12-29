@@ -1,19 +1,13 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$uibModalInstance', '$log',
-  'channelInfo', 'channelsService', 'User', 'arrayUtil',
-  function ($uibModalInstance, $log, channelInfo, channelsService, User,
-            arrayUtil) {
+app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log',
+  'channelInfo', 'channelsService', 'User', 'arrayUtil', 'Channel',
+  function ($scope, $uibModalInstance, $log, channelInfo, channelsService, User,
+            arrayUtil, Channel) {
 
     var $ctrl = this;
     $ctrl.channel = channelInfo;
-    var selectedChannelMember;
-
-    $ctrl.channelType = {
-      PUBLIC: 0,
-      PRIVATE: 1,
-      DIRECT: 2
-    };
+    var selectedMember;
     $ctrl.editMode = false;
     $ctrl.isAdmin = true;
     $ctrl.details = {};
@@ -23,7 +17,7 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $ctrl.editMode = true;
       $ctrl.details.name = $ctrl.channel.name;
       $ctrl.details.description = $ctrl.channel.description;
-      $ctrl.details.isPrivate = ($ctrl.channel.type === $ctrl.channelType.PRIVATE) ? true : false;
+      $ctrl.details.isPrivate = ($ctrl.channel.type === Channel.TYPE.PRIVATE) ? true : false;
       $ctrl.details.dublicateError = false;
       $ctrl.details.serverError = false;
     };
@@ -44,17 +38,22 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $ctrl.forms.detailsForm.$setPristine();
 
       var type = $ctrl.details.isPrivate ?
-        $ctrl.channelType.PRIVATE : $ctrl.channelType.PUBLIC;
+        Channel.TYPE.PRIVATE : Channel.TYPE.PUBLIC;
       var editedData = {
         name: $ctrl.details.name,
         description: $ctrl.details.description,
         type: type,
         id: $ctrl.channel.id
       };
+      var addeMembers = {
+        channelId: $ctrl.channel.id,
+        memberIds: $ctrl.addedMemberIds
+      };
       channelsService.sendDetailsEditedChannel(editedData, function (response) {
           $log.info('Edit channel Details response: ', response);
           if (response.status) {
             $ctrl.closeDetailsModal();
+            $log.info('Done Editing Channel');
           }
           else {
             if (response.message.indexOf('Duplicate slug in team.') != -1) {
@@ -80,47 +79,98 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $ctrl.details.serverError = false;
       $ctrl.forms.detailsForm.$setPristine();
       $ctrl.forms.detailsForm.$submitted = false;
-      $ctrl.AddingMemberActive = false;
-      $log.info($ctrl.forms.detailsForm);
+      $ctrl.addingMemberActive = false;
+      $ctrl.addedMemberIds = [];
     };
 
     channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
       $ctrl.channel = event;
+      $ctrl.listItems = $ctrl.channel.members;
     }, function (status) {
       $log.info('error getting channel members :', status);
     });
 
-    $ctrl.hoverIn = function(channelMember){
-      selectedChannelMember = channelMember;
+    $ctrl.hoverIn = function (channelMember) {
+      selectedMember = channelMember;
     };
 
-    $ctrl.hoverOut = function(){
-      selectedChannelMember = null;
+    $ctrl.hoverOut = function () {
+      selectedMember = null;
     };
 
-    $ctrl.deleteMember = function(member){
+    $ctrl.deleteMember = function (member) {
+      var data = {
+        channelMemberId: member.id,
+        memberId: member.member_id,
+        channelId: $ctrl.channel.id,
+        channelType: $ctrl.channel.type
+      };
+      channelsService.removeMemberFromChannel(data, function (res) {
+        if (res.status) {
+          arrayUtil.removeElementByKeyValue($ctrl.channel.members, 'id', member.id);
+          $log.info('Member Removed from Channel');
+        }
+        else
+          $log.info('Error Removing member from channel:', res.message);
 
-    };
-
-    $ctrl.addMember = function(){
-      $ctrl.AddingMemberActive = true;
-      channelsService.getTeamMembers(User.team.id).then(function (teamMembers) {
-        var members = teamMembers;
-        $log.info('Team1:',members);
-        $log.info('channelMEM:',$ctrl.channel.members);
-        angular.forEach($ctrl.channel.members, function(channelMember){
-          var index = arrayUtil.getIndexByKeyValue(members, 'id', channelMember.member_id);
-          if (index > -1) {
-            members.splice(index, 1);
-          }
-        });
-        $ctrl.teamMembers = members;
-        $log.info('Team2:',$ctrl.teamMembers);
       });
     };
 
-    $ctrl.isChannelMemberSelected = function(channelMember){
-      return selectedChannelMember === channelMember;
+    $ctrl.pushMember = function (teamMember) {
+      if (!teamMember.member_id) {
+        if (!$ctrl.addedMemberIds.find(function (member) {
+            return member === teamMember.id;
+          }))
+          $ctrl.addedMemberIds.push(teamMember.id);
+        else
+          arrayUtil.removeElement($ctrl.addedMemberIds, $ctrl.addedMemberIds.indexOf(teamMember.id));
+      }
+    };
+
+    $ctrl.addMembersClick = function () {
+      $ctrl.addingMemberActive = true;
+      channelsService.getTeamMembers(User.team.id).then(function (teamMembers) {
+        $ctrl.teamMembers = teamMembers;
+        angular.forEach(teamMembers, function (member) {
+          if (!arrayUtil.containsKeyValue($ctrl.listItems, 'member_id', member.id))
+            $ctrl.listItems.push(member);
+        });
+      });
+    };
+
+    $ctrl.addMembersSubmit = function () {
+      if ($ctrl.addedMemberIds.length > 0) {
+        channelsService.sendAddeMembersToChannel($ctrl.addedMemberIds,
+          $ctrl.channel.id, function (response) {
+            $log.info('Adding members response: ', response);
+            if (response.status) {
+              $ctrl.addingMemberActive = false;
+              $log.info('Done Adding members');
+            }
+            else {
+              $log.error('Error Adding members');
+            }
+          });
+      }
+      else
+        $ctrl.addingMemberActive = false;
+    };
+
+    $ctrl.getListItemCSS = function (listMember) {
+      if($ctrl.addingMemberActive) {
+        if (listMember.member_id)
+          return {'background-color': '#CFE0F3'};
+        else if (arrayUtil.contains($ctrl.addedMemberIds, listMember.id))
+          return {'background-color': '#C4F3AB'};
+        else
+          return {'background-color': 'white'};
+      }
+      else
+        return {'background-color': 'white'};
+    };
+
+    $ctrl.showRemoveIcon = function (member) {
+      return (member.member_id) && (selectedMember === member && member.member_id !== User.id);
     };
   }
 ])
