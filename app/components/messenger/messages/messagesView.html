@@ -1,7 +1,7 @@
 <div class="header clearfix">
     <div ui-view="header"></div>
 </div>
-<div ng-controller="messagesController">
+<div ng-controller="messagesController" id="messageSection">
     <div id="messagesHolder" class="chat">
         <div class="main">
             <!--<div class="date-holder">-->
@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <div class="input-holder">
+    <div class="input-holder" id="inputHolder">
         <a href="#">
             <i class="zmdi zmdi-mood"></i>
         </a>

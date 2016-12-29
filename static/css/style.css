@@ -510,7 +510,9 @@ a, a:hover, a:visited, a:focus {
 }
 .input-holder .message-input {
     width: 100%;
-    height: 39px;
+    overflow: hidden;
+    min-height: 39px;
+    max-height: 100px;
     overflow: hidden;
     border: none;
     background: rgba(0,0,0,0);    padding: 8px 40px;
@@ -651,6 +653,14 @@ a, a:hover, a:visited, a:focus {
 .modal .modal-btn-details-remove:hover, .modal .modal-btn-details-remove:focus {
     color: rgba(217,74,13, 0.8);
 }
+.modal .modal-btn-details-remove:active {
+    -webkit-box-shadow:none;
+    box-shadow:none;
+    color: rgba(217,74,13, 1);
+}
+
+
+
 .modal [type="submit"]:hover, .modal .modal-btn:hover {
     background: rgba(9, 148, 92, 0.8);
 }
@@ -664,7 +674,7 @@ a, a:hover, a:visited, a:focus {
     position: relative;
 }
 .search-result {
-    background-color: rgba(225,225,225,0.8);
+    background-color: rgba(245,245,245,0.8);
     min-height: 46px;
     width: 23%;
     position: fixed;

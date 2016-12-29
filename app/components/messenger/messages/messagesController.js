@@ -66,12 +66,23 @@ app.controller('messagesController',
 
       $scope.isTyping = function(){
         var o = document.getElementById("inputPlaceHolder");
-        o.style.height = "1px";
-        o.style.height = (25+o.scrollHeight)+"px";
+        o.style.height = "0px";
+        o.style.height = (o.scrollHeight)+"px";
 
         var a = document.getElementById("inputWrapper");
-        a.style.height = "1px";
-        a.style.height = (25+a.scrollHeight)+"px";
+        a.style.height = "0px";
+        a.style.height = (o.scrollHeight)+"px";
+
+        var b = document.getElementById("inputHolder");
+        // b.style.bottom = "0px";
+        // b.style.top = (o.scrollHeight)+"px";
+
+        var d = document.getElementById("messageSection");
+
+        var c = document.getElementById("messagesHolder");
+        c.style.height = (d.scrollHeight - b.scrollHeight)+"px";
+        console.log(a.scrollHeight);
+
       };
 
       $scope.$watch(
