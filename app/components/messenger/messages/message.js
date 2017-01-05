@@ -31,6 +31,17 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
       return textUtil.isEnglish(this.body);
     };
 
+    Message.prototype.getStyle = function () {
+      if (this.isEnglish()) {
+        return {
+          'text-align': 'left',
+          'direction': 'ltr'
+        };
+      } else {
+        return {};
+      }
+    };
+
     Message.prototype.getStatus = function () {
       var channelLastSeen = findChannelCallback(this.channelId).channelLastSeen;
       if(this.isPending)

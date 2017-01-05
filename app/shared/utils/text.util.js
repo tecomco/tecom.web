@@ -4,7 +4,14 @@ app.factory('textUtil', function () {
 
   function isEnglish(text) {
     var english = /^[A-Za-z0-9]*$/;
-    return english.test(text);
+    var isEnglish = true;
+    text.split(' ').forEach(function (word) {
+      isEnglish = isEnglish && english.test(word);
+      if (!isEnglish) {
+        return false;
+      }
+    });
+    return true;
   }
 
   function urlify(text) {
