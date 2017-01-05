@@ -1,14 +1,13 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$uibModalInstance', '$log',
+app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log',
   'channelInfo', 'channelsService', 'User', 'arrayUtil', 'Channel',
-  function ($uibModalInstance, $log, channelInfo, channelsService, User,
+  function ($scope, $uibModalInstance, $log, channelInfo, channelsService, User,
             arrayUtil, Channel) {
 
     var $ctrl = this;
     $ctrl.channel = channelInfo;
-    var selectedChannelMember;
-
+    var selectedMember;
     $ctrl.editMode = false;
     $ctrl.isAdmin = true;
     $ctrl.details = {};
@@ -53,7 +52,7 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       channelsService.sendDetailsEditedChannel(editedData, function (response) {
           $log.info('Edit channel Details response: ', response);
           if (response.status) {
-            // $ctrl.closeDetailsModal();
+            $ctrl.closeDetailsModal();
             $log.info('Done Editing Channel');
           }
           else {
@@ -68,16 +67,6 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
           }
         }
       );
-      channelsService.sendAddeMembersToChannel(addeMembers, function (response) {
-        $log.info('Adding members response: ', response);
-        if (response.status) {
-          // $ctrl.closeDetailsModal();
-          $log.info('Done Adding members');
-        }
-        else {
-          $log.error('Error Adding members');
-        }
-      })
     };
 
     angular.element(document).ready(function () {
@@ -90,22 +79,23 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
       $ctrl.details.serverError = false;
       $ctrl.forms.detailsForm.$setPristine();
       $ctrl.forms.detailsForm.$submitted = false;
-      $ctrl.AddingMemberActive = false;
+      $ctrl.addingMemberActive = false;
       $ctrl.addedMemberIds = [];
     };
 
     channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
       $ctrl.channel = event;
+      $ctrl.listItems = $ctrl.channel.members;
     }, function (status) {
       $log.info('error getting channel members :', status);
     });
 
     $ctrl.hoverIn = function (channelMember) {
-      selectedChannelMember = channelMember;
+      selectedMember = channelMember;
     };
 
     $ctrl.hoverOut = function () {
-      selectedChannelMember = null;
+      selectedMember = null;
     };
 
     $ctrl.deleteMember = function (member) {
@@ -116,7 +106,6 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
         channelType: $ctrl.channel.type
       };
       channelsService.removeMemberFromChannel(data, function (res) {
-        $log.info('Callback', res);
         if (res.status) {
           arrayUtil.removeElementByKeyValue($ctrl.channel.members, 'id', member.id);
           $log.info('Member Removed from Channel');
@@ -128,25 +117,60 @@ app.controller('channelDetailsController', ['$uibModalInstance', '$log',
     };
 
     $ctrl.pushMember = function (teamMember) {
-      if (!$ctrl.addedMemberIds.find(function (member) {
-          return member === teamMember.id;
-        }))
-        $ctrl.addedMemberIds.push(teamMember.id);
+      if (!teamMember.member_id) {
+        if (!$ctrl.addedMemberIds.find(function (member) {
+            return member === teamMember.id;
+          }))
+          $ctrl.addedMemberIds.push(teamMember.id);
+        else
+          arrayUtil.removeElement($ctrl.addedMemberIds, $ctrl.addedMemberIds.indexOf(teamMember.id));
+      }
     };
 
     $ctrl.addMembersClick = function () {
-      $ctrl.AddingMemberActive = true;
+      $ctrl.addingMemberActive = true;
       channelsService.getTeamMembers(User.team.id).then(function (teamMembers) {
-        var members = teamMembers;
-        angular.forEach($ctrl.channel.members, function (channelMember) {
-          arrayUtil.removeElementByKeyValue(members, 'id', channelMember.member_id);
+        $ctrl.teamMembers = teamMembers;
+        angular.forEach(teamMembers, function (member) {
+          if (!arrayUtil.containsKeyValue($ctrl.listItems, 'member_id', member.id))
+            $ctrl.listItems.push(member);
         });
-        $ctrl.teamMembers = members;
       });
     };
 
-    $ctrl.isChannelMemberSelected = function (channelMember) {
-        return (selectedChannelMember === channelMember && channelMember.member_id !== User.id);
+    $ctrl.addMembersSubmit = function () {
+      if ($ctrl.addedMemberIds.length > 0) {
+        channelsService.sendAddeMembersToChannel($ctrl.addedMemberIds,
+          $ctrl.channel.id, function (response) {
+            $log.info('Adding members response: ', response);
+            if (response.status) {
+              $ctrl.addingMemberActive = false;
+              $log.info('Done Adding members');
+            }
+            else {
+              $log.error('Error Adding members');
+            }
+          });
+      }
+      else
+        $ctrl.addingMemberActive = false;
+    };
+
+    $ctrl.getListItemCSS = function (listMember) {
+      if($ctrl.addingMemberActive) {
+        if (listMember.member_id)
+          return {'background-color': '#CFE0F3'};
+        else if (arrayUtil.contains($ctrl.addedMemberIds, listMember.id))
+          return {'background-color': '#C4F3AB'};
+        else
+          return {'background-color': 'white'};
+      }
+      else
+        return {'background-color': 'white'};
+    };
+
+    $ctrl.showRemoveIcon = function (member) {
+      return (member.member_id) && (selectedMember === member && member.member_id !== User.id);
     };
   }
 ])

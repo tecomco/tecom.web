@@ -29,7 +29,6 @@ app.controller('headerController', [
       function (newChannel) {
         if(newChannel) {
           $scope.channel = channelsService.findChannel(newChannel.id);
-          $log.info('$scope.channel:', newChannel);
         }
       }
     );
