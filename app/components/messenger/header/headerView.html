@@ -2,8 +2,7 @@
     <div class="name">
         <label>{{channel.name}}</label>
         <div class="det" ng-show="!channel.isDirect()">
-            <label dir="rtl">{{channel.getLocaleMembersCount()}}
-                عضو</label>
+            <label dir="rtl">{{channel.getLocaleMembersCount()}} عضو</label>
             <label>{{channel.description}}</label>
         </div>
     </div>
@@ -103,34 +102,9 @@
                     <div class="modal-input modal-input-details">
                         <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
                     </div>
-<<<<<<< HEAD
-                    <div ng-show="$ctrl.AddingMemberActive" class="modal-input">
-                        <input type="text" ng-model="selectedTeamMember" placeholder="جستجو" class="form-control">
-                        <!-- <div class="search-result">
-                            <div class="g-m-one">
-                                <img ng-src="static/img/user-def.png"/>
-                                <label>وحید علوی</label>
-                                <label>@وحید</label>
-                            </div>
-                            <div class="g-m-one">
-                                <img ng-src="static/img/user-def.png"/>
-                                <label>وحید علوی</label>
-                                <label>@وحید</label>
-                            </div>
-                            <div class="g-m-one">
-                                <img ng-src="static/img/user-def.png"/>
-                                <label>وحید علوی</label>
-                                <label>@وحید</label>
-                            </div>
-                        </div> -->
-                    </div>
-                    <div class="modal-input" ng-show="$ctrl.editMode">
-                        <input type="text" name="search" ng-model="$ctrl.details.search" placeholder="جستجو">
-=======
                     <div class="modal-input" ng-show="$ctrl.addingMemberActive">
                         <button data-toggle="tooltip" title="تایید اعضا" ng-click="$ctrl.addMembersSubmit()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-save" ></span></button>
                         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="$ctrl.searchBox">
->>>>>>> 492efb9a68742b58421f990b56fcde8fad9ead23
                     </div>
                     <div class="g-members">
                         <div ng-repeat="member in $ctrl.listItems | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one" ng-mouseover="$ctrl.hoverIn(member)" ng-mouseleave="$ctrl.hoverOut()" ng-style="$ctrl.getListItemCSS(member)" ng-click="$ctrl.pushMember(member)">
