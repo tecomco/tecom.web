@@ -6,10 +6,10 @@ app.factory('socket', [
 
     var self = this;
 
-    console.log('subdomain:', domainUtil.getSubdomain());
-    console.log('ENV.socketUri:', ENV.socketUri);
+    var socketUri = domainUtil.getSubdomain() ?
+      domainUtil.getSubdomain() + '.' + ENV.socketUri : ENV.socketUri;
 
-    self.socket = io.connect(domainUtil.getSubdomain() + '.' + ENV.socketUri, {
+    self.socket = io.connect(socketUri, {
       path: '/ws/',
       query: {
         token: User.token

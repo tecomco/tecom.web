@@ -80,7 +80,6 @@ app.controller('messagesController',
 
         var c = document.getElementById("messagesHolder");
         c.style.height = (d.scrollHeight - b.scrollHeight)+"px";
-        console.log(a.scrollHeight);
 
       };
 
