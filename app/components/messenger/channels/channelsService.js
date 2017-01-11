@@ -17,6 +17,8 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
           channel.description, channel.type, channel.id, channel.membersCount);
         if (channel.memberId)
           tmpChannel.memberId = channel.memberId;
+        if(tmpChannel.isDirect() && !tmpChannel.memberId)
+          tmpChannel.changeNameAndSlugFromId();
         channels.push(tmpChannel);
       });
       self.deferredInit.resolve(channels);

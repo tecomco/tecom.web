@@ -1,10 +1,10 @@
 'use strict';
 
-app.factory('Channel', ['$log', '$stateParams', 'textUtil',
-  function ($log, $stateParams, textUtil) {
+app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
+  function ($log, $stateParams, textUtil, Team, User) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount) {
+                     notifCount) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -35,16 +35,16 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
 
     Channel.prototype.getCssClass = function () {
       switch (this.type) {
-      case Channel.TYPE.PUBLIC:
-        return 'fa fa-globe';
-      case Channel.TYPE.PRIVATE:
-        return 'fa fa-lock';
-      case Channel.TYPE.DIRECT:
-        return 'fa fa-at';
+        case Channel.TYPE.PUBLIC:
+          return 'fa fa-globe';
+        case Channel.TYPE.PRIVATE:
+          return 'fa fa-lock';
+        case Channel.TYPE.DIRECT:
+          return 'fa fa-at';
       }
     };
 
-    Channel.prototype.isDirectExist = function(){
+    Channel.prototype.isDirectExist = function () {
       return !this.memberId;
     };
     Channel.prototype.isPrivate = function () {
@@ -57,6 +57,26 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil',
 
     Channel.prototype.isPublic = function () {
       return this.type == Channel.TYPE.PUBLIC;
+    };
+
+    Channel.prototype.changeNameAndSlugFromId = function () {
+      var ids = [];
+      ids.push(parseInt(this.slug.slice(0, this.slug.indexOf(':'))));
+      ids.push(parseInt(this.slug.slice(this.slug.indexOf(':') + 1,
+        this.slug.length)));
+      $log.info("ids", ids);
+      $log.info('My_ID:', User.id);
+      ids.forEach(function (id) {
+        if (id !== User.id) {
+          $log.info('OtherID:', id);
+          /*var name = User.team.getNameById(id);
+          $log.info('NAMEEE:', name);
+          this.name = name;
+          this.slug = name;
+          textUtil.replaceAll(this.slug, ' ', '_');
+          return;*/
+        }
+      });
     };
 
     Channel.isCurrentChannel = function () {
