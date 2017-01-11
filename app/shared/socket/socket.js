@@ -1,12 +1,15 @@
 'use strict';
 
 app.factory('socket', [
-  '$rootScope', '$log', 'ENV', '$uibModal', 'AuthService', 'User',
-  function ($rootScope, $log, ENV, $uibModal, AuthService, User) {
+  '$rootScope', '$log', 'ENV', '$uibModal', 'domainUtil', 'AuthService', 'User',
+  function ($rootScope, $log, ENV, $uibModal, domainUtil, AuthService, User) {
 
     var self = this;
 
-    self.socket = io.connect(ENV.socketUri, {
+    var socketUri = domainUtil.getSubdomain() ?
+      domainUtil.getSubdomain() + '.' + ENV.socketUri : ENV.socketUri;
+
+    self.socket = io.connect(socketUri, {
       path: '/ws/',
       query: {
         token: User.token

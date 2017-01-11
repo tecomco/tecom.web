@@ -39,7 +39,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'dev',
-            socketUri: '//localhost:8000/'
+            socketUri: 'localhost:8000/'
           }
         }
       },
@@ -50,7 +50,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'stage',
-            socketUri: '//tecom.me/'
+            socketUri: 'tecom.me/'
           }
         }
       },

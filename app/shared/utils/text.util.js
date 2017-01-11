@@ -7,11 +7,9 @@ app.factory('textUtil', function () {
     var isEnglish = true;
     text.split(' ').forEach(function (word) {
       isEnglish = isEnglish && english.test(word);
-      if (!isEnglish) {
-        return false;
-      }
+      if (!isEnglish) return;
     });
-    return true;
+    return isEnglish;
   }
 
   function urlify(text) {
