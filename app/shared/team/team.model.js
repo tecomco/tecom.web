@@ -7,7 +7,9 @@ app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
 
     function Team(id, members, token) {
       this.id = id;
+      $log.info('Team');
       if (!isBusy) {
+        $log.info('NotBusy');
         this.members = Array.isArray(members) ? members :
           this.getMembersFromServer(token);
       }
@@ -17,6 +19,7 @@ app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
       var that = this;
       var defered = $q.defer();
       isBusy = true;
+      $log.info('getMembersFromServer');
       $http({
         method: 'GET',
         url: '/api/v1/teams/' + this.id + '/members/',
@@ -39,7 +42,12 @@ app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
       return (index !== -1) ? this.members[index].username : '';
     };
 
-    return Team;
+    Team.prototype.getNameById = function (userId) {
+      $log.info('Members: ',this.members[index]);
+      var index = arrayUtil.getIndexByKeyValue(this.members, 'id', userId);
+      return (index !== -1) ? this.members[index].name : null;
+    };
 
+    return Team;
   }
 ]);
