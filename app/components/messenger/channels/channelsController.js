@@ -146,8 +146,6 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     var findChannel = function (channelId) {
 
       var channelsAndDirects = $scope.channels.concat($scope.directs);
-      $log.info('Directs: ', $scope.directs);
-      $log.info('All: ', channelsAndDirects);
       return channelsAndDirects.find(function (channel) {
         return (channel.id === channelId);
       });
