@@ -9,6 +9,7 @@ app.controller('messagesController',
       $scope.messages = [];
 
       function loadMessagesFromDb() {
+        $log.info('State PARAMS ID:', $stateParams.channel.id);
         var channel = channelsService.findChannel($stateParams.channel.id);
         messagesService.isChannelReady(channel.id)
           .then(function () {
@@ -89,6 +90,7 @@ app.controller('messagesController',
         },
         function (newChannel) {
           if (newChannel) {
+            $log.info("STATEPARAM: ", newChannel);
             loadMessagesFromDb();
           }
         }

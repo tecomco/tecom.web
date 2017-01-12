@@ -47,6 +47,11 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
     Channel.prototype.isDirectExist = function () {
       return !this.memberId;
     };
+
+    Channel.prototype.setDirectCreatedStatus = function () {
+      this.memberId = null;
+    };
+
     Channel.prototype.isPrivate = function () {
       return this.type == Channel.TYPE.PRIVATE;
     };
@@ -60,23 +65,28 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
     };
 
     Channel.prototype.changeNameAndSlugFromId = function () {
+      var that  = this;
       var ids = [];
       ids.push(parseInt(this.slug.slice(0, this.slug.indexOf(':'))));
       ids.push(parseInt(this.slug.slice(this.slug.indexOf(':') + 1,
         this.slug.length)));
-      $log.info("ids", ids);
-      $log.info('My_ID:', User.id);
       ids.forEach(function (id) {
         if (id !== User.id) {
-          $log.info('OtherID:', id);
-          /*var name = User.team.getNameById(id);
-          $log.info('NAMEEE:', name);
-          this.name = name;
-          this.slug = name;
-          textUtil.replaceAll(this.slug, ' ', '_');
-          return;*/
+          var name = User.team.getUsernameById(id);
+          that.name = name;
+          that.slug = name;
+          textUtil.replaceAll(that.slug, ' ', '_');
+          return;
         }
       });
+    };
+
+    Channel.prototype.updateNewDirectData = function(direct){
+      this.name = direct.name;
+      this.slug = direct.slug;
+      this.memberId = null;
+      this.id = direct.id;
+      this.memberId = null;
     };
 
     Channel.isCurrentChannel = function () {

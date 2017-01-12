@@ -11,7 +11,9 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     $scope.directs = [];
 
     $scope.selectedChat = function () {
-      return $stateParams.slug;
+      if(!$stateParams.channel) return false;
+      return $stateParams.channel.type === Channel.TYPE.DIRECT ?
+      '@' + $stateParams.channel.slug : $stateParams.channel.slug;
     };
 
     $scope.editedPromise = channelsService.getEditedChannel();
@@ -45,14 +47,21 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.bindNewChannel = function (channel) {
+      $log.info('New Channel:', channel);
       var newChannel = new Channel(channel.name, channel.slug,
         channel.description, channel.type, channel.id, channel.membersCount);
-      if(channel.memberId)
+      if (channel.memberId)
         newChannel.memberId = channel.memberId;
-      if(newChannel.isDirect())
-        arrayUtil.removeElementByKeyValue($scope.directs, 'slug', newChannel.slug);
-      $scope.channels.push(newChannel);
-      $log.info($scope.channels);
+      if (newChannel.isDirect()) {
+        newChannel.changeNameAndSlugFromId();
+        var index = arrayUtil.getIndexByKeyValue($scope.directs, 'slug', newChannel.slug);
+        $scope.directs[index].updateNewDirectData(newChannel);
+        newChannel.changeNameAndSlugFromId();
+      }
+      else {
+        $scope.channels.push(newChannel);
+        $log.info($scope.channels);
+      }
       $scope.newChannelPromise = channelsService.getNewChannel();
     };
 
@@ -99,7 +108,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.channelClick = function (channel) {
-      //$log.info('this channel:',channel);
+      // $log.info('this channel:',channel);
     };
 
     $scope.directClick = function (direct) {
@@ -135,7 +144,10 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     var findChannel = function (channelId) {
+
       var channelsAndDirects = $scope.channels.concat($scope.directs);
+      $log.info('Directs: ', $scope.directs);
+      $log.info('All: ', channelsAndDirects);
       return channelsAndDirects.find(function (channel) {
         return (channel.id === channelId);
       });
