@@ -2,7 +2,7 @@
     <div class="group-holder-header">
         <i class="fa fa-users"></i>
         <label>گروه‌ ها</label>
-        <a class="plus-g" tooltip-placement="bottom" uib-tooltip="ایجاد گروه جدید!" ng-click="openCreateChannelModal()">
+        <a class="plus-g" tooltip-placement="right" uib-tooltip="ایجاد گروه جدید!" ng-click="openCreateChannelModal()">
             <i class="zmdi zmdi-plus"></i>
         </a>
     </div>
@@ -20,7 +20,7 @@
     <div class="direct-holder-header">
         <i class="fa fa-user"></i>
         <label>پیام خصوصی</label>
-        <a class="plus-d" tooltip-placement="bottom" uib-tooltip="شروع مکالمه خصوصی جدید!" ng-click="openNewDirectModal()">
+        <a class="plus-d" tooltip-placement="right" uib-tooltip="شروع مکالمه خصوصی جدید!" ng-click="openNewDirectModal()">
             <i class="zmdi zmdi-plus"></i>
         </a>
     </div>
@@ -51,6 +51,7 @@
                             <input type="text" name="name" ng-model="$ctrl.newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
                             <span class="modal-err" ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
                             <span class="modal-err" ng-show="$ctrl.formNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+                            <span class="modal-err" ng-show="$ctrl.newChannel.dublicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
                         </div>
                         <div class="modal-input">
                             <input type="text" name="description" ng-model="$ctrl.newChannel.description" ng-maxlength="256" placeholder="توضیح گروه">
@@ -87,7 +88,6 @@
                     <div class="modal-input">
                         <input type="submit" value="ایجاد گروه" class="btn btn-default">
                         <span class="modal-err" ng-show="$ctrl.newChannel.serverError">خطا در اتصال به سرور</span>
-                        <span class="modal-err" ng-show="$ctrl.newChannel.dublicateError">نام انتخابی تداخل با نام یکی از گروه های دیگر دارد، لطفا نامی دیگر انتخاب کنید.</span>
                     </div>
                 </div>
             </form>

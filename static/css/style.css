@@ -83,7 +83,52 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
+.loading {
+    background-color: rgba(250, 250, 250, 1);
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
 
+.loading .loading-right {
+    background-color: #4C9A7B;
+    position: absolute;
+    height: 100%;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    filter: blur(5px);
+}
+
+.loading .loading-left {
+    background-color: rgba(248, 248, 248, 1);
+    position: absolute;
+    left: 0;
+    height: 100%;
+    padding: 0;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    filter: blur(5px);
+}
+
+.loading .loading-left .loading-header {
+    background-color: rgba(238, 238, 238, 1);
+    height: 68px;
+    width: 100%;
+}
+
+.loading-img {
+    width: 150px;
+    position: absolute;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    z-index: 3;
+}
 .msg-landing {
     background-image: url("../img/landing-bg.png");
     background-repeat: repeat;
@@ -495,7 +540,7 @@ a, a:hover, a:visited, a:focus {
     left: 0;
     right: 0;
     padding: 8px 32px;
-    z-index: 3;
+    /*z-index: 3;*/
 }
 .input-holder .message-input-wrapper {
     width: 100%;
@@ -627,9 +672,8 @@ a, a:hover, a:visited, a:focus {
 }
 .tooltip {
     font-family: "iransans";
-    padding: 0 !important;
+    /*padding: 0 !important;*/
     min-width: 70px;
-    z-index: 99999;
 }
 
 .modal .modal-btn {
