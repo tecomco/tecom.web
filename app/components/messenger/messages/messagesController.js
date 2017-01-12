@@ -64,24 +64,16 @@ app.controller('messagesController',
           });
       };
 
-      $scope.isTyping = function(){
-        var o = document.getElementById("inputPlaceHolder");
-        o.style.height = "0px";
-        o.style.height = (o.scrollHeight)+"px";
+      $scope.isTyping = function() {
+        var inputPlaceHolder = document.getElementById('inputPlaceHolder');
+        inputPlaceHolder.style.height = '0px';
+        inputPlaceHolder.style.height = (inputPlaceHolder.scrollHeight) + 'px';
 
-        var a = document.getElementById("inputWrapper");
-        a.style.height = "0px";
-        a.style.height = (o.scrollHeight)+"px";
-
-        var b = document.getElementById("inputHolder");
-        // b.style.bottom = "0px";
-        // b.style.top = (o.scrollHeight)+"px";
-
-        var d = document.getElementById("messageSection");
-
-        var c = document.getElementById("messagesHolder");
-        c.style.height = (d.scrollHeight - b.scrollHeight)+"px";
-
+        var inputHolder = document.getElementById('inputHolder');
+        var messagesHolder = document.getElementById('messagesHolder');
+        var messageSection = document.getElementById('messageSection');
+        messagesHolder.style.height = '-webkit-calc(' + messageSection.scrollHeight + 'px -' + inputHolder.scrollHeight + 'px)';
+        console.log(messagesHolder.scrollHeight);
       };
 
       $scope.$watch(
@@ -90,7 +82,7 @@ app.controller('messagesController',
         },
         function (newChannel) {
           if (newChannel) {
-            $log.info("STATEPARAM: ", newChannel);
+            $log.info('STATEPARAM: ', newChannel);
             loadMessagesFromDb();
           }
         }
