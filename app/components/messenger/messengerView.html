@@ -1,21 +1,31 @@
 <div class="wrapper">
-<div class="col-sm-3 col-lg-2 no-padding">
-    <div class="right-section">
-        <div class="right-section-header">
-            <a href="/">
-                <img src="static/img/tecom2.png" />
-                <span class="brand-name-right-header">تیکام</span>
-            </a>
-        </div>
-        <div class="right-section-main">
-            <div ui-view="channels"></div>
+    <div class="col-sm-3 col-lg-2 no-padding">
+        <div class="right-section">
+            <div class="right-section-header">
+                <a href="/">
+                    <img src="static/img/tecom2.png" />
+                    <span class="brand-name-right-header">تیکام</span>
+                </a>
+            </div>
+            <div class="right-section-main">
+                <div ui-view="channels"></div>
+            </div>
         </div>
     </div>
-</div>
-<div class="col-sm-9 col-lg-10 no-padding">
-    <div ui-view></div>
-</div>
+    <div class="col-sm-9 col-lg-10 no-padding">
+        <div ui-view></div>
+    </div>
+    <div class="loading" style="display:block">
+        <img class="loading-img" src="static/img/tecom-loading.gif">
+        <div class="col-sm-3 col-lg-2 loading-right">
+        </div>
+        <div class="col-sm-9 col-lg-10 loading-left">
+            <div class="loading-header"></div>
+            <div class="loading-footer"></div>
+        </div>
+    </div>
 </div class="wrapper">
+
 <!-- TODO the above div changes to col-sm-5 col-lg-6  -->
 <!-- <div class="col-sm-4 col-lg-4 no-padding">
     This is where the magic is going to happen...
