@@ -101,7 +101,7 @@
                     <i class="zmdi zmdi-accounts"></i>
                     <h3>اعضای گروه</h3>
                     <div class="modal-input modal-input-details">
-                        <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
+                        <button data-toggle="tooltip" title="اضافه کردن عضو" ng-click="$ctrl.addMembersClick()" ng-show="!$ctrl.addingMemberActive" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.addingMemberActive">
                         <button data-toggle="tooltip" title="تایید اعضا" ng-click="$ctrl.addMembersSubmit()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-save" ></span></button>

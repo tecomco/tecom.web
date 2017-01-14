@@ -11,7 +11,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     $scope.directs = [];
 
     $scope.selectedChat = function () {
-      if(!$stateParams.channel) return false;
+      if (!$stateParams.channel) return false;
       return $stateParams.channel.type === Channel.TYPE.DIRECT ?
       '@' + $stateParams.channel.slug : $stateParams.channel.slug;
     };
@@ -47,34 +47,33 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.bindNewChannel = function (channel) {
-      $log.info('New Channel:', channel);
       var newChannel = new Channel(channel.name, channel.slug,
         channel.description, channel.type, channel.id, channel.membersCount);
       if (channel.memberId)
         newChannel.memberId = channel.memberId;
       if (newChannel.isDirect()) {
         newChannel.changeNameAndSlugFromId();
-        var index = arrayUtil.getIndexByKeyValue($scope.directs, 'slug', newChannel.slug);
-        $scope.directs[index].updateNewDirectData(newChannel);
-        newChannel.changeNameAndSlugFromId();
+        var direct = findFakeDirect(newChannel.slug);
+        direct.updateNewDirectData(newChannel);
+        $state.go("messenger.messages", {
+          slug: '@' + direct.slug,
+          channel: direct
+        });
       }
       else {
         $scope.channels.push(newChannel);
-        $log.info($scope.channels);
       }
       $scope.newChannelPromise = channelsService.getNewChannel();
     };
 
-    $scope.bindEditedChannel = function (channel) {
-      $log.info('Edit channel then()');
-      var index = arrayUtil.getIndexByKeyValue($scope.channels, 'id', channel.id);
-      $scope.channels[index] = channel;
+    $scope.bindEditedChannel = function (editedChannel) {
+      var channel = findChannel(editedChannel.id);
+      channel.updateFromJson(editedChannel);
       if ($stateParams.channel.id === channel.id) {
         $state.go('messenger.messages', {
           slug: channel.slug,
           channel: channel
         });
-        $log.info('Update URL');
       }
       $scope.editedPromise = channelsService.getEditedChannel();
     };
@@ -108,20 +107,11 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.channelClick = function (channel) {
-      // $log.info('this channel:',channel);
     };
 
     $scope.directClick = function (direct) {
-      if (direct.memberId) {
-        channelsService.createNewDirectRequest(direct.memberId,
-          function (res) {
-            if (res.status) {
-              $log.info('New Direct Created');
-            }
-            else
-              $log.info('Error Creating New Direct:', res.message);
-          });
-      }
+      $stateParams.channel = direct;
+      $stateParams.slug = direct.slug;
     };
 
     var updateNotification = function (channelId, type, notifCount) {
@@ -149,6 +139,11 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       return channelsAndDirects.find(function (channel) {
         return (channel.id === channelId);
       });
+    };
+
+    var findFakeDirect = function (directSlug) {
+      var index = arrayUtil.getIndexByKeyValue($scope.directs, 'slug', directSlug);
+      return $scope.directs[index];
     };
 
     channelsService.setUpdateNotificationCallback(updateNotification);
@@ -186,5 +181,36 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
         $scope.promiseThenFunction($scope.initChannelsPromise, $scope.bindInitChannels);
       }
     );
+
+    function handleDirectCreating() {
+      $scope.$watch(
+        function () {
+          return $stateParams.channel;
+        },
+        function (channel) {
+          if (channel) {
+            if (channel.type === Channel.TYPE.DIRECT) {
+              var direct = findFakeDirect(channel.slug);
+              if (direct.memberId) {
+                channelsService.createNewDirectRequest(direct.memberId,
+                  function (res) {
+                    if (res.status) {
+                      $log.info('New Direct Created');
+                    }
+                    else
+                      $log.info('Error Creating New Direct:', res.message);
+                  });
+              }
+              else
+                $state.go('messenger.messages', {
+                  slug: '@' + direct.slug,
+                  channel: direct
+                });
+            }
+          }
+        }
+      );
+    };
+    handleDirectCreating();
   }
 ]);

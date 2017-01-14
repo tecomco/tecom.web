@@ -10,6 +10,7 @@
             <div class="form-group">
                 <input ng-model="password" class="input-box" placeholder="رمز عبور" name="password" type="password">
             </div>
+            <span class="modal-err" ng-show="$ctrl.loginError">خطا در اتصال به سرور</span>
             <label class="ws-checkbox">
                 <span>مرا به خاطر بسپار.</span>
                 <input ng-model="remember" name="remember" type="checkbox">

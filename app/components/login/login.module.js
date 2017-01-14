@@ -30,6 +30,11 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
   .controller('LoginController', ['$scope', '$state', '$interval', '$window', '$http', 'domainUtil', 'AuthService', 'User',
     function ($scope, $state, $interval, $window, $http, domainUtil, AuthService, User) {
 
+      $scope.loginError = false;
+      var setLoginError = function(){
+         AuthService.setLoginError($scope.loginError);
+      };
+      // setLoginError();
       var teamName = domainUtil.getSubdomain();
       $http.get('/api/v1/teams/' + teamName + '/exists/')
         .success(function (res) {

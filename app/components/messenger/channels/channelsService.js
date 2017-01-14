@@ -11,7 +11,6 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     socket.on('init', function (data) {
       var channels = [];
-      $log.info('Init channels:', data);
       data.forEach(function (channel) {
         var tmpChannel = new Channel(channel.name, channel.slug,
           channel.description, channel.type, channel.id, channel.membersCount);

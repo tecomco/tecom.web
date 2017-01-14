@@ -18,6 +18,16 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
       return this.notifCount && this.notifCount !== 0;
     };
 
+    Channel.prototype.updateFromJson = function (channel) {
+      this.name = null || channel.name;
+      this.slug = null || channel.slug;
+      this.description = null || channel.description;
+      this.type = null || channel.type;
+      this.id = null || channel.id;
+      this.membersCount = null || channel.membersCount;
+      this.notifCount = null || channel.notifCount;
+    };
+
     Channel.prototype.getNotifInPersian = function () {
       if (this.hasUnread())
         return textUtil.persianify(this.notifCount.toString());
@@ -65,7 +75,7 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
     };
 
     Channel.prototype.changeNameAndSlugFromId = function () {
-      var that  = this;
+      var that = this;
       var ids = [];
       ids.push(parseInt(this.slug.slice(0, this.slug.indexOf(':'))));
       ids.push(parseInt(this.slug.slice(this.slug.indexOf(':') + 1,
@@ -81,12 +91,11 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
       });
     };
 
-    Channel.prototype.updateNewDirectData = function(direct){
+    Channel.prototype.updateNewDirectData = function (direct) {
       this.name = direct.name;
       this.slug = direct.slug;
       this.memberId = null;
       this.id = direct.id;
-      this.memberId = null;
     };
 
     Channel.isCurrentChannel = function () {
