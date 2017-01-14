@@ -541,18 +541,22 @@ a, a:hover, a:visited, a:focus {
 .input-holder .message-input {
     width: 100%;
     overflow: hidden;
-    min-height: 39px;
+    height: 38px;
     max-height: 100px;
     overflow: hidden;
-    border: none;
-    background: rgba(0,0,0,0);    padding: 8px 40px;
+    background: rgba(0,0,0,0);
+    padding: 8px 40px;
     font-size: 16px;
     font-weight: 300;
     font-family: "iransans";
     color: #555;
     box-sizing: padding-box;
     resize: none;
-
+    background-color: #fff;
+    border: 0;
+    border-radius: 4px;
+    box-shadow: none;
+    border: 1px solid #ddd;
 }
 
 .input-holder a {
