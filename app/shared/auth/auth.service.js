@@ -12,12 +12,11 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
       return user.save();
     }
 
-    function login(username, password, teamName) {
+    function login(username, password) {
       var defer = $q.defer();
       var data = {
         username: username,
-        password: password,
-        team: teamName
+        password: password
       };
       $http({
         method: 'POST',

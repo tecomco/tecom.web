@@ -40,14 +40,6 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
       };
       AuthService.setLoginErrorCallback(setLoginError);
 
-      var teamName = domainUtil.getSubdomain();
-      $http.get('/api/v1/teams/' + teamName + '/exists/')
-        .success(function (res) {
-          if (!res) {
-            $state.go('login.teamNotFound');
-          }
-        });
-
       if (User.exists()) {
         $window.location.assign('/messenger');
       }
@@ -56,7 +48,7 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         var isFormValid = $scope.forms.login.username.$valid && $scope.forms.login.password.$valid;
         $log.info('isValid:', isFormValid);
         if (isFormValid) {
-          AuthService.login($scope.username, $scope.password, teamName)
+          AuthService.login($scope.username, $scope.password)
             .then(function () {
               $window.location.assign('/messenger');
             }).catch(function () {
