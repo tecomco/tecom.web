@@ -107,6 +107,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.channelClick = function (channel) {
+      $log.info('$scope.channels:',$scope.channels);
     };
 
     $scope.directClick = function (direct) {
@@ -126,6 +127,9 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
         case 'num':
           channel.notifCount = notifCount;
       }
+      if(!$scope.$$phase){
+        $scope.$apply();
+      }
     };
 
     var updateLastDatetime = function (channelId, datetime) {
@@ -134,7 +138,6 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     var findChannel = function (channelId) {
-
       var channelsAndDirects = $scope.channels.concat($scope.directs);
       return channelsAndDirects.find(function (channel) {
         return (channel.id === channelId);
