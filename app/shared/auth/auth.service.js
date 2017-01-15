@@ -45,6 +45,20 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
       return defer.promise;
     }
 
+    function logout() {
+      var defer = $q.defer();
+      $http.post('/api/v1/auth/logout/')
+        .then(function (res) {
+          $log.info(res);
+          defer.resolve();
+        })
+        .catch(function (err) {
+          $log.info('Logout error.', err);
+          defer.reject();
+        });
+        return defer.promise;
+    }
+
     function refreshToken(token) {
       var data = {
         token: token
@@ -68,6 +82,7 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
 
     return {
       login: login,
+      logout: logout,
       refreshToken: refreshToken,
       setLoginError: setLoginError
     };

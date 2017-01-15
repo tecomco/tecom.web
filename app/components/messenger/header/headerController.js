@@ -1,10 +1,10 @@
 'use strict';
 
 app.controller('headerController', [
-  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', 'db',
-  'channelsService',
-  function ($scope, $log, $stateParams, $localStorage, $uibModal, db,
-            channelsService) {
+  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', 'AuthService',
+  'db', 'channelsService',
+  function ($scope, $log, $stateParams, $localStorage, $uibModal, AuthService,
+    db, channelsService) {
 
     $scope.openChannelDetailsModal = function () {
       var modalInstance = $uibModal.open({
@@ -40,6 +40,7 @@ app.controller('headerController', [
       $localStorage.$reset();
       $log.info('Local storage cleared.');
       db.destroy();
+      AuthService.logout();
     };
   }
 ]);
