@@ -1,16 +1,18 @@
 'use strict';
 
 app.service('messagesService',
-  ['$log', '$q', 'socket', 'Message', '$stateParams', 'db',
-    function ($log, $q, socket, Message, $stateParams, db) {
+  ['$log', '$q', 'socket', 'Message', '$stateParams', 'db', 'User',
+    function ($log, $q, socket, Message, $stateParams, db, User) {
 
       var self = this;
 
       socket.on('message:seen', function (data) {
+        $log.info('seen:', data);
         var channel = self.findChannelCallback(data.channelId);
         channel.channelLastSeen = data.messageId;
-        if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
+        if ($stateParams.channel && $stateParams.channel.id === data.channelId)
           self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
+        var sender
       });
 
       socket.on('message:send', function (data) {
@@ -21,9 +23,11 @@ app.service('messagesService',
           self.ctrlCallback(message);
           sendSeenNotif(message.channelId, message.id, message.senderId);
         }
-        else {
-          self.updateNotification(message.channelId, 'inc');
+        else{
           self.updateLastDatetimeCallback(message.channelId, message.datetime);
+          if (message.senderId !== User.id) {
+            self.updateNotification(message.channelId, 'inc');
+          }
         }
       });
 

@@ -2,7 +2,7 @@
 
 app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
   function ($log, $http, $q, jwtHelper, User) {
-    var loginError = false;
+    var self = this;
     function createUser(token) {
       var decodedToken = jwtHelper.decodeToken(token);
       // TODO: Get current membership properly.
@@ -38,8 +38,8 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
           defer.reject();
         }
       }).catch(function(e){
-        $log.err('Login Error:', e);
-        loginError = true;
+        $log.error('Login Error:', e);
+        self.callbackLoginError(true);
       });
 
       return defer.promise;
@@ -76,15 +76,15 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
       });
     }
 
-    var setLoginError = function (errorFlag) {
-      loginError = errorFlag;
-    }
+    var setLoginErrorCallback = function (setLoginFunc) {
+      self.callbackLoginError = setLoginFunc;
+    };
 
     return {
       login: login,
       logout: logout,
       refreshToken: refreshToken,
-      setLoginError: setLoginError
+      setLoginErrorCallback: setLoginErrorCallback
     };
   }
 ]);

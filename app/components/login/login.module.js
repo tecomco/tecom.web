@@ -27,14 +27,19 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         });
     }
   ])
-  .controller('LoginController', ['$scope', '$state', '$interval', '$window', '$http', 'domainUtil', 'AuthService', 'User',
-    function ($scope, $state, $interval, $window, $http, domainUtil, AuthService, User) {
+  .controller('LoginController', ['$scope', '$state', '$interval', '$window',
+    '$http', 'domainUtil', 'AuthService', 'User', '$log',
+    function ($scope, $state, $interval, $window, $http, domainUtil,
+              AuthService, User, $log) {
 
       $scope.loginError = false;
-      var setLoginError = function(){
-         AuthService.setLoginError($scope.loginError);
+      var setLoginError = function (bool) {
+        $scope.loginError = bool;
+        if($scope.loginError)
+          initializeLoginForm();
       };
-      // setLoginError();
+      AuthService.setLoginErrorCallback(setLoginError);
+
       var teamName = domainUtil.getSubdomain();
       $http.get('/api/v1/teams/' + teamName + '/exists/')
         .success(function (res) {
@@ -47,20 +52,32 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         $window.location.assign('/messenger');
       }
 
-      // $scope.circles = [];
-
       $scope.login = function () {
         var isFormValid = $scope.forms.login.username.$valid && $scope.forms.login.password.$valid;
+        $log.info('isValid:', isFormValid);
         if (isFormValid) {
           AuthService.login($scope.username, $scope.password, teamName)
             .then(function () {
               $window.location.assign('/messenger');
             }).catch(function () {
-              // TODO: Handle error or show message to user.
-            });
+            // TODO: Handle error or show message to user.
+          });
         }
       };
 
+      angular.element(document).ready(function () {
+        initializeLoginForm();
+      });
+
+      var initializeLoginForm = function () {
+        $log.info('start');
+        $scope.forms.login.$setPristine();
+        $scope.password = '';
+        $scope.remember = false;
+        $log.info('end');
+      };
+
+      // $scope.circles = [];
       // function generateCircle(top, left, r, opacity, blur, speedX, speedY, speedBlur) {
       //   return {
       //     top: top,
