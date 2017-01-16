@@ -20,6 +20,7 @@ app.service('messagesService',
       });
 
       socket.on('message:send', function (data) {
+        $log.info('message:send', data);
         var message = new Message(data.body, data.senderId, data.channelId,
           data.id, data.datetime);
         message.save();
@@ -27,12 +28,11 @@ app.service('messagesService',
           self.ctrlCallback(message);
           sendSeenNotif(message.channelId, message.id, message.senderId);
         }
-        else {
-          self.updateLastDatetimeCallback(message.channelId, message.datetime);
-          if (message.senderId !== User.id) {
-            self.updateNotification(message.channelId, 'inc');
-          }
+        else if (message.senderId !== User.id) {
+          self.updateNotification(message.channelId, 'inc');
         }
+        self.updateLastDatetimeCallback(message.channelId, message.datetime);
+
       });
 
       function updateMessageStatus(channelId, messageId) {

@@ -2,11 +2,12 @@
 
 app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log',
   'channelInfo', 'channelsService', 'User', 'arrayUtil', 'Channel',
-  function ($scope, $uibModalInstance, $log, channelInfo, channelsService, User,
+  function ($scope, $uibModalInstance, $log, scopeChannel, channelsService, User,
             arrayUtil, Channel) {
 
     var $ctrl = this;
-    $ctrl.channel = channelInfo;
+    $ctrl.channel = scopeChannel;
+    $log.info($ctrl.channel);
     var selectedMember;
     $ctrl.editMode = false;
     $ctrl.isAdmin = true;
@@ -31,7 +32,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
     };
 
     $ctrl.closeDetailsModal = function () {
-      $uibModalInstance.close();
+      $uibModalInstance.close($ctrl.channel);
     };
 
     $ctrl.editChannelDetailsSubmit = function () {
@@ -86,8 +87,9 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
 
     var getChannelMembers = function () {
       channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
-        $ctrl.channel = event;
-        $ctrl.listItems = $ctrl.channel.members;
+        $ctrl.listItems = event.members;
+        $ctrl.channel.members = $ctrl.listItems;
+        $ctrl.addingMemberActive = false;
       }, function (status) {
         $log.info('error getting channel members :', status);
       });
@@ -112,6 +114,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
       channelsService.removeMemberFromChannel(data, function (res) {
         if (res.status) {
           arrayUtil.removeElementByKeyValue($ctrl.channel.members, 'id', member.id);
+          $ctrl.channel.members--;
           $log.info('Member Removed from Channel');
         }
         else
@@ -149,6 +152,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
             $log.info('Adding members response: ', response);
             if (response.status) {
               $ctrl.addingMemberActive = false;
+              $ctrl.channel.membersCount = $ctrl.channel.membersCount + $ctrl.addedMemberIds.length;
               $log.info('Done Adding members');
             }
             else {
@@ -157,7 +161,6 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
           });
       }
       else
-        $ctrl.addingMemberActive = false;
       getChannelMembers();
     };
 

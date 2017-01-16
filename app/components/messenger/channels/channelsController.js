@@ -107,7 +107,6 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     };
 
     $scope.channelClick = function (channel) {
-      $log.info('$scope.channels:',$scope.channels);
     };
 
     $scope.directClick = function (direct) {

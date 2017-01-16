@@ -4,22 +4,23 @@ app.controller('headerController', [
   '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', 'AuthService',
   'db', 'channelsService',
   function ($scope, $log, $stateParams, $localStorage, $uibModal, AuthService,
-    db, channelsService) {
+            db, channelsService) {
 
     $scope.openChannelDetailsModal = function () {
-      var modalInstance = $uibModal.open({
-        templateUrl: 'channelDetailsModal.html',
-        controller: 'channelDetailsController',
-        controllerAs: '$ctrl',
-        resolve: {
-          channelInfo: function () {
-            return $scope.channel;
+      if ($scope.channel) {
+        var modalInstance = $uibModal.open({
+          templateUrl: 'channelDetailsModal.html',
+          controller: 'channelDetailsController',
+          controllerAs: '$ctrl',
+          resolve: {
+            channelInfo: function () {
+              return $scope.channel;
+            }
           }
-        }
-      });
-      modalInstance.result.then(function () {
-      }, function () {
-      });
+        });
+        modalInstance.result.then(function () {}, function () {
+        });
+      }
     };
 
     $scope.$watch(
@@ -27,7 +28,7 @@ app.controller('headerController', [
         return $stateParams.channel;
       },
       function (newChannel) {
-        if(newChannel) {
+        if (newChannel) {
           $scope.channel = channelsService.findChannel(newChannel.id);
         }
       }
