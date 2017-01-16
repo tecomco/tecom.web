@@ -3,7 +3,7 @@
 app.factory('textUtil', function () {
 
   function isEnglish(text) {
-    var english = /^[A-Za-z0-9]*$/;
+    var english = /^[a-zA-Z0-9.?></\\:;,{}[\]\-_+=!@#$%\^&*|']*$/;
     var isEnglish = true;
     text.split(' ').forEach(function (word) {
       isEnglish = isEnglish && english.test(word);
@@ -19,6 +19,10 @@ app.factory('textUtil', function () {
     });
   }
 
+
+  /**
+   * @todo Fix this function.
+   */
   function hashtagify(text) {
     var hashtagRegex = /(^|\W)(#[a-z\d][\w-]*)/ig;
     return text.replace(hashtagRegex, '$1<a href="/$2">$2</a>');
