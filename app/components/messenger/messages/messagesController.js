@@ -1,10 +1,18 @@
 'use strict';
 
 app.controller('messagesController',
-  ['$scope', '$log', '$stateParams', 'User', '$timeout', 'messagesService',
-    'Message', 'channelsService',
-    function ($scope, $log, $stateParams, User, $timeout, messagesService,
-              Message, channelsService) {
+  ['$scope', '$state', '$log', '$stateParams', 'User', '$timeout',
+    'messagesService', 'Message', 'channelsService',
+    function ($scope, $state, $log, $stateParams, User, $timeout,
+      messagesService, Message, channelsService) {
+
+      document.getElementById('inputPlaceHolder').focus();
+      document.onkeydown = function (evt) {
+        evt = evt || window.event;
+        if (evt.keyCode == 27) {
+          $state.go('messenger.home');
+        }
+      };
 
       $scope.messages = [];
 
@@ -48,7 +56,8 @@ app.controller('messagesController',
         }, 0, false);
       }
 
-      $scope.sendMessage = function () {
+      $scope.sendMessage = function ($event) {
+        $event.preventDefault();
         var messageBody = $scope.inputMessage.trim();
         if (!messageBody) return;
         var message = new Message(messageBody, User.id, $stateParams.channel.id);

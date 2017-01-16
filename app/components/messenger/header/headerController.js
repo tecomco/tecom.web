@@ -1,10 +1,10 @@
 'use strict';
 
 app.controller('headerController', [
-  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', 'AuthService',
-  'db', 'channelsService',
-  function ($scope, $log, $stateParams, $localStorage, $uibModal, AuthService,
-            db, channelsService) {
+  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', '$window',
+    'AuthService', 'db', 'channelsService',
+  function ($scope, $log, $stateParams, $localStorage, $uibModal, $window,
+    AuthService, db, channelsService) {
 
     $scope.openChannelDetailsModal = function () {
       if ($scope.channel) {
@@ -39,9 +39,11 @@ app.controller('headerController', [
 
     $scope.clearCache = function () {
       $localStorage.$reset();
-      $log.info('Local storage cleared.');
       db.destroy();
-      AuthService.logout();
+      AuthService.logout()
+        .then(function () {
+          $window.location.href = '/login';
+        });
     };
   }
 ]);
