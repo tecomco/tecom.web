@@ -6,17 +6,15 @@ app.service('messagesService',
 
       var self = this;
 
-      socket.on('message:seen', function (data) {
-        $log.info('seen:', data);
+      socket.on('message:type:start', function (data) {
         var channel = self.findChannelCallback(data.channelId);
-        channel.channelLastSeen = data.messageId;
-        if ($stateParams.channel && $stateParams.channel.id === data.channelId)
-          self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
-        getMessageFromDbWithChannelAndId(data.channelId, data.messageId)
-          .then(function (message) {
-            if (message.senderId !== User.id)
-              self.updateNotification(message.channelId, 'empty');
-          });
+        $log.info('channel:', channel);
+        channel.updateIsTypingMemberIds(data.memberId, 'add');
+      });
+
+      socket.on('message:type:end', function (data) {
+        var channel = self.findChannelCallback(data.channelId);
+        channel.updateIsTypingMemberIds(data.memberId, 'remove');
       });
 
       socket.on('message:send', function (data) {
@@ -190,6 +188,18 @@ app.service('messagesService',
         return self.promissChannelReady.promise;
       };
 
+      var sendIsTyping = function (channelId, mode) {
+        var data = {channelId: channelId};
+        switch (mode) {
+          case 'start':
+            socket.emit('message:type:start', data);
+            break;
+          case 'end':
+            socket.emit('message:type:end', data);
+            break;
+        }
+      };
+
       return {
         sendMessage: sendMessage,
         setCtrlCallback: setCtrlCallback,
@@ -203,5 +213,6 @@ app.service('messagesService',
         setUpdateMessageStatusCallback: setUpdateMessageStatusCallback,
         isChannelReady: isChannelReady,
         getMessageFromDbWithChannelAndId: getMessageFromDbWithChannelAndId,
+        sendIsTyping: sendIsTyping
       };
     }]);

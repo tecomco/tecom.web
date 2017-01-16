@@ -1,7 +1,8 @@
 'use strict';
 
 app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
-  function ($log, $stateParams, textUtil, Team, User) {
+  'arrayUtil',
+  function ($log, $stateParams, textUtil, Team, User, arrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
                      notifCount) {
@@ -12,6 +13,7 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
       this.id = id;
       this.membersCount = membersCount;
       this.notifCount = null || notifCount;
+      this.isTypingMemberIds = [];
     }
 
     Channel.prototype.hasUnread = function () {
@@ -41,6 +43,30 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
 
     Channel.prototype.updateLastDatetimeCallback = function (datetime) {
       this.lastDatetime = datetime;
+    };
+
+    Channel.prototype.updateIsTypingMemberIds = function (memberId, mode) {
+      switch (mode) {
+        case 'add':
+          this.isTypingMemberIds.push(memberId);
+          break;
+        case 'remove':
+          arrayUtil.removeElementByValue(this.isTypingMemberIds, memberId);
+          break;
+      }
+    };
+
+    Channel.prototype.getIsTypingStringFromMemberIds = function () {
+      var isTypingStr = '';
+      angular.forEach(this.isTypingMemberIds, function (memberId) {
+        isTypingStr += User.team.getNameById(memberId);
+        isTypingStr += ' و ';
+      });
+      return isTypingStr.slice(0, isTypingStr.length - 3);
+    };
+
+    Channel.prototype.anyoneTyping = function(){
+      return (this.isTypingMemberIds.length > 0);
     };
 
     Channel.prototype.getCssClass = function () {
