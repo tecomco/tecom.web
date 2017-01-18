@@ -24,8 +24,9 @@ app.controller('messagesController',
             messagesService.getMessagesFromDb($stateParams.channel.id,
               function (messages) {
                 messages.forEach(function (msg) {
-                  var message = new Message(msg.body, msg.senderId, msg.channelId,
-                    msg._id, msg.datetime);
+                  var message = new Message(msg.body, msg.type, msg.senderId, msg.channelId,
+                    msg._id, msg.datetime, msg.additionalData);
+                  $log.info('channelMessage', message);
                   addMessageToArray(message);
                 });
                 $scope.$apply();
@@ -61,9 +62,12 @@ app.controller('messagesController',
         $event.preventDefault();
         var messageBody = $scope.inputMessage.trim();
         if (!messageBody) return;
-        var message = new Message(messageBody, User.id, $stateParams.channel.id);
+        var message = new Message(messageBody, Message.TYPE.TEXT, User.id,
+          $stateParams.channel.id);
         addMessageToArray(message);
         $scope.inputMessage = '';
+        flagIsTyping = false;
+        messagesService.sendIsTyping($scope.channel.id, 'end');
         messagesService.sendMessage(message.getServerWellFormed(),
           function (data) {
             message.status = Message.STATUS_TYPE.SENT;

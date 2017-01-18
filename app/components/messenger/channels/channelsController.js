@@ -9,6 +9,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     var $ctrl = this;
     $scope.channels = [];
     $scope.directs = [];
+    var isTabFocused = true;
 
     $scope.selectedChat = function () {
       if (!$stateParams.channel) return false;
@@ -126,7 +127,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
         case 'num':
           channel.notifCount = notifCount;
       }
-      if(!$scope.$$phase){
+      if (!$scope.$$phase) {
         $scope.$apply();
       }
     };

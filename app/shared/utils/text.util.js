@@ -3,6 +3,8 @@
 app.factory('textUtil', function () {
 
   function isEnglish(text) {
+    if(!text)
+      return false;
     var english = /^[a-zA-Z0-9.?></\\:;,{}[\]\-_+=!@#$%\^&*|']*$/;
     var isEnglish = true;
     text.split(' ').forEach(function (word) {

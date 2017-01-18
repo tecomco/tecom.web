@@ -1,14 +1,15 @@
 'use strict';
 
 app.service('messagesService',
-  ['$log', '$q', 'socket', 'Message', '$stateParams', 'db', 'User',
-    function ($log, $q, socket, Message, $stateParams, db, User) {
+  ['$log', '$q', 'socket', 'Message', '$stateParams', 'db', 'User', '$window',
+    function ($log, $q, socket, Message, $stateParams, db, User, $window) {
 
       var self = this;
+      var isTabfocused = true;
+      var seenNotifDataOnFocus;
 
       socket.on('message:type:start', function (data) {
         var channel = self.findChannelCallback(data.channelId);
-        $log.info('channel:', channel);
         channel.updateIsTypingMemberIds(data.memberId, 'add');
       });
 
@@ -17,10 +18,16 @@ app.service('messagesService',
         channel.updateIsTypingMemberIds(data.memberId, 'remove');
       });
 
+      socket.on('message:seen', function (data) {
+        var channel = self.findChannelCallback(data.channelId);
+        channel.channelLastSeen = data.messageId;
+        if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
+          self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
+      });
+
       socket.on('message:send', function (data) {
-        $log.info('message:send', data);
-        var message = new Message(data.body, data.senderId, data.channelId,
-          data.id, data.datetime);
+        var message = new Message(data.body, data.type, data.senderId, data.channelId,
+          data.id, data.datetime, data.additionalData);
         message.save();
         if ($stateParams.channel && message.channelId === $stateParams.channel.id) {
           self.ctrlCallback(message);
@@ -30,12 +37,7 @@ app.service('messagesService',
           self.updateNotification(message.channelId, 'inc');
         }
         self.updateLastDatetimeCallback(message.channelId, message.datetime);
-
       });
-
-      function updateMessageStatus(channelId, messageId) {
-
-      }
 
       function sendMessage(data, callback) {
         socket.emit('message:send', data, callback);
@@ -138,8 +140,8 @@ app.service('messagesService',
                   self.promissChannelReady.resolve(true);
                 var channelMessagesData = res.messages;
                 channelMessagesData.forEach(function (msg) {
-                  var message = new Message(msg.body, msg.senderId,
-                    msg.channelId, msg.id, msg.datetime);
+                  var message = new Message(msg.body, msg.type ,msg.senderId,
+                    msg.channelId, msg.id, msg.datetime, msg.additionalData);
                   allMessages.push(message);
                 });
                 resolve();
@@ -154,13 +156,26 @@ app.service('messagesService',
       }
 
       var sendSeenNotif = function (channelId, lastMessageId, senderId) {
-        if (senderId !== User.id) {
-          var data = {
-            channelId: channelId,
-            messageId: lastMessageId,
-            senderId: senderId
-          };
-          socket.emit('message:seen', data);
+        var data = {
+          channelId: channelId,
+          messageId: lastMessageId,
+          senderId: senderId
+        };
+        $log.info('focus:', isTabfocused);
+        if (isTabfocused) {
+          if (senderId !== User.id) {
+            socket.emit('message:seen', data);
+            $log.info('emmited');
+          }
+        }
+        else
+          seenNotifDataOnFocus = data;
+      };
+
+      var sendSeenOnTabFocus = function () {
+        if (seenNotifDataOnFocus) {
+          socket.emit('message:seen', seenNotifDataOnFocus);
+          $log.info('emmited on focus');
         }
       };
 
@@ -199,6 +214,16 @@ app.service('messagesService',
             break;
         }
       };
+
+      function handleTab() {
+        angular.element($window).bind('focus', function () {
+          isTabfocused = true;
+          sendSeenOnTabFocus();
+        }).bind('blur', function () {
+          isTabfocused = false;
+        });
+      };
+      handleTab();
 
       return {
         sendMessage: sendMessage,

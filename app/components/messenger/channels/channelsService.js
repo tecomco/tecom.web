@@ -32,6 +32,16 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       self.deferredEditedChannel.resolve(data);
     });
 
+    socket.on('channel:members:add', function(data)
+    {
+      $log.info('Channel:members:add', data);
+    });
+
+    socket.on('channel:members:remove', function(data)
+    {
+      $log.info('Channel:members:remove', data);
+    });
+
     var getInitChannels = function () {
       self.deferredInit = $q.defer();
       return self.deferredInit.promise;
@@ -117,6 +127,13 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       socket.emit('channel:direct:create', data, callback);
     };
 
+    var addUserToChannel= function(channelId){
+      $log.info('User:', User);
+    };
+    var removeUserFromChannel= function(channelId){
+
+    };
+
     return {
       getInitChannels: getInitChannels,
       sendNewChannel: sendNewChannel,
@@ -133,7 +150,9 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       setFindChannelCallback: setFindChannelCallback,
       findChannel: findChannel,
       removeMemberFromChannel: removeMemberFromChannel,
-      createNewDirectRequest: createNewDirectRequest
+      createNewDirectRequest: createNewDirectRequest,
+      addUserToChannel: addUserToChannel,
+      removeUserFromChannel: removeUserFromChannel
     };
   }
 ])
