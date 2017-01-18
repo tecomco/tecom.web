@@ -1,59 +1,30 @@
 'use strict';
 
-var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
-  .config(['$locationProvider', function ($locationProvider) {
-    $locationProvider.html5Mode(true);
-  }])
-  .config(['$stateProvider', '$urlRouterProvider',
-    function ($stateProvider, $urlRouterProvider) {
-      $urlRouterProvider.otherwise('/login');
-      $stateProvider
-        .state('login', {
-          abstract: true,
-          url: '/login',
-          views: {
-            '': {
-              templateUrl: 'app/components/login/login.html'
-            }
-          }
-        })
-        .state('login.form', {
-          url: '',
-          templateUrl: 'app/components/login/login-form.html'
-        })
-        .state('login.teamNotFound', {
-          url: '/not-found',
-          templateUrl: 'app/components/login/team-not-found.html'
-        });
-    }
-  ])
-  .controller('LoginController', ['$scope', '$state', '$interval', '$window',
-    '$http', 'domainUtil', 'AuthService', 'User', '$log',
-    function ($scope, $state, $interval, $window, $http, domainUtil,
-              AuthService, User, $log) {
+var app = angular.module('LoginApp', ['ngStorage', 'angular-jwt'])
+  .controller('LoginController',
+    ['$scope', '$log', '$window', '$http', 'AuthService',
+    function ($scope, $log, $window, $http, AuthService) {
 
       $scope.loginError = false;
+
       var setLoginError = function (bool) {
         $scope.loginError = bool;
-        if($scope.loginError)
+        if ($scope.loginError)
           initializeLoginForm();
       };
+
       AuthService.setLoginErrorCallback(setLoginError);
 
-      if (User.exists()) {
-        $window.location.assign('/messenger');
-      }
-
       $scope.login = function () {
-        var isFormValid = $scope.forms.login.username.$valid && $scope.forms.login.password.$valid;
-        $log.info('isValid:', isFormValid);
+        var isFormValid = $scope.forms.login.username.$valid &&
+          $scope.forms.login.password.$valid;
         if (isFormValid) {
           AuthService.login($scope.username, $scope.password)
             .then(function () {
               $window.location.assign('/messenger');
             }).catch(function () {
-            // TODO: Handle error or show message to user.
-          });
+              // TODO: Handle error or show message to user.
+            });
         }
       };
 
@@ -62,11 +33,9 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
       });
 
       var initializeLoginForm = function () {
-        $log.info('start');
         $scope.forms.login.$setPristine();
         $scope.password = '';
         $scope.remember = false;
-        $log.info('end');
       };
 
       // $scope.circles = [];
