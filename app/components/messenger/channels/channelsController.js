@@ -144,6 +144,18 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       });
     };
 
+    var addChannel = function(channel)
+    {
+      $scope.channels.push(channel);
+    };
+
+    var removeChannel = function(channelId)
+    {
+      arrayUtil.removeElementByKeyValue($scope.channels, 'id', channelId);
+      if($stateParams.channel && $stateParams.channel.id === channelId)
+        $stateParams.removed = true;
+    };
+
     var findFakeDirect = function (directSlug) {
       var index = arrayUtil.getIndexByKeyValue($scope.directs, 'slug', directSlug);
       return $scope.directs[index];
@@ -152,6 +164,8 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
     channelsService.setUpdateNotificationCallback(updateNotification);
     channelsService.setFindChannelCallback(findChannel);
     channelsService.setUpdateLastDatetimeCallback(updateLastDatetime);
+    channelsService.setAddChannelCallback(addChannel);
+    channelsService.setRemoveChannelCallback(removeChannel);
 
     messagesService.setUpdateNotificationCallback(updateNotification);
     messagesService.setFindChannelCallback(findChannel);
@@ -213,7 +227,7 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
           }
         }
       );
-    };
+    }
     handleDirectCreating();
   }
 ]);

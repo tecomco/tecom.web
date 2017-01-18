@@ -165,7 +165,6 @@ app.service('messagesService',
         if (isTabfocused) {
           if (senderId !== User.id) {
             socket.emit('message:seen', data);
-            $log.info('emmited');
           }
         }
         else
@@ -175,7 +174,6 @@ app.service('messagesService',
       var sendSeenOnTabFocus = function () {
         if (seenNotifDataOnFocus) {
           socket.emit('message:seen', seenNotifDataOnFocus);
-          $log.info('emmited on focus');
         }
       };
 
@@ -222,7 +220,7 @@ app.service('messagesService',
         }).bind('blur', function () {
           isTabfocused = false;
         });
-      };
+      }
       handleTab();
 
       return {

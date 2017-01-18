@@ -89,16 +89,12 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
       switch (this.type) {
         case Message.TYPE.TEXT :
           return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
-          break;
         case Message.TYPE.NOTIF.USER_ADDED :
           return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
-          break;
         case Message.TYPE.NOTIF.USER_REMOVED :
           return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
-          break;
         case Message.TYPE.NOTIF.FILE_LIVED :
           return 'msg msg-file';
-          break;
       }
     };
 

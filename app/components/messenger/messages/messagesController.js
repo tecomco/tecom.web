@@ -6,6 +6,8 @@ app.controller('messagesController',
     function ($scope, $state, $log, $stateParams, User, $timeout,
               messagesService, Message, channelsService) {
 
+      $scope.removedChannel = false;
+
       document.getElementById('inputPlaceHolder').focus();
       document.onkeydown = function (evt) {
         evt = evt || window.event;
@@ -18,6 +20,7 @@ app.controller('messagesController',
       var timeout;
 
       function loadMessagesFromDb() {
+        $scope.messages = [];
         var channel = $scope.channel;
         messagesService.isChannelReady(channel.id)
           .then(function () {
@@ -41,6 +44,11 @@ app.controller('messagesController',
                 $scope.$apply();
               });
           });
+      }
+
+      function handleRemovedChannel(){
+        $scope.removedChannel = true;
+        $scope.inputMessage = 'شما از این گروه حذف شده اید :(';
       }
 
       function updateMessageStatus(messageId, status) {
@@ -107,10 +115,19 @@ app.controller('messagesController',
         },
         function (newChannel) {
           if (newChannel) {
-            if (newChannel) {
-              $scope.channel = channelsService.findChannel($stateParams.channel.id);
-              loadMessagesFromDb();
-            }
+            $scope.channel = channelsService.findChannel($stateParams.channel.id);
+            loadMessagesFromDb();
+          }
+        }
+      );
+
+      $scope.$watch(
+        function () {
+          return $stateParams.removed;
+        },
+        function (removed) {
+          if (removed) {
+            handleRemovedChannel();
           }
         }
       );
