@@ -32,7 +32,7 @@
               <input ng-model="password" class="input-box" placeholder="رمز عبور" name="password" type="password" required>
             </div>
             <span ng-show="forms.login.password.$invalid && !forms.login.password.$pristine">وارد کردن رمز عبور ضروری می باشد.</span>
-            <span ng-show="loginError">نام کاربری یا رمز عبور صحیح نمی باشد.</span>
+            <span ng-show="hasLoginError">{{$scope.loginErrorString}}</span>
             <label class="ws-checkbox">
                 <span>مرا به خاطر بسپار.</span>
                 <input ng-model="remember" name="remember" type="checkbox">
