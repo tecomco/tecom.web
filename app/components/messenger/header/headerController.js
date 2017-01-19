@@ -1,25 +1,26 @@
 'use strict';
 
 app.controller('headerController', [
-  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', 'db',
-  'channelsService',
-  function ($scope, $log, $stateParams, $localStorage, $uibModal, db,
-            channelsService) {
+  '$scope', '$log', '$stateParams', '$localStorage', '$uibModal', '$window',
+    'AuthService', 'db', 'channelsService',
+  function ($scope, $log, $stateParams, $localStorage, $uibModal, $window,
+    AuthService, db, channelsService) {
 
     $scope.openChannelDetailsModal = function () {
-      var modalInstance = $uibModal.open({
-        templateUrl: 'channelDetailsModal.html',
-        controller: 'channelDetailsController',
-        controllerAs: '$ctrl',
-        resolve: {
-          channelInfo: function () {
-            return $scope.channel;
+      if ($scope.channel) {
+        var modalInstance = $uibModal.open({
+          templateUrl: 'channelDetailsModal.html',
+          controller: 'channelDetailsController',
+          controllerAs: '$ctrl',
+          resolve: {
+            channelInfo: function () {
+              return $scope.channel;
+            }
           }
-        }
-      });
-      modalInstance.result.then(function () {
-      }, function () {
-      });
+        });
+        modalInstance.result.then(function () {}, function () {
+        });
+      }
     };
 
     $scope.$watch(
@@ -27,7 +28,7 @@ app.controller('headerController', [
         return $stateParams.channel;
       },
       function (newChannel) {
-        if(newChannel) {
+        if (newChannel) {
           $scope.channel = channelsService.findChannel(newChannel.id);
         }
       }
@@ -38,8 +39,11 @@ app.controller('headerController', [
 
     $scope.clearCache = function () {
       $localStorage.$reset();
-      $log.info('Local storage cleared.');
       db.destroy();
+      AuthService.logout()
+        .then(function () {
+          $window.location.href = '/login';
+        });
     };
   }
 ]);

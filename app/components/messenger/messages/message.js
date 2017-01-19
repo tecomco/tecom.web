@@ -6,8 +6,9 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
 
     var findChannelCallback;
 
-    function Message(body, senderId, channelId, _id, datetime) {
+    function Message(body, type, senderId, channelId, _id, datetime, additionalData) {
       this.body = body;
+      this.type = type;
       this.senderId = senderId;
       this.channelId = channelId;
       this.isPending = false;
@@ -17,10 +18,29 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
         this.id = Message.generateIntegerId(_id);
       }
       this.username = User.team.getUsernameById(this.senderId);
+      this.additionalData = additionalData || null;
     }
 
     Message.prototype.getViewWellFormed = function () {
-      return Message.generateMessageWellFormedText(this.body);
+      if (this.type === Message.TYPE.TEXT) {
+        return Message.generateMessageWellFormedText(this.body);
+      }
+      else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
+        this.type === Message.TYPE.NOTIF.USER_REMOVED) {
+        var body = '';
+        var addedMemberIds = this.additionalData;
+        angular.forEach(addedMemberIds, function (memberId) {
+          body += '@' + User.team.getUsernameById(memberId) + ' و ';
+        });
+        body = body.slice(0, body.length - 3);
+        if (this.type === Message.TYPE.NOTIF.USER_ADDED)
+          body += (addedMemberIds.length > 1) ?
+            ' به گروه اضافه شدند.' : ' به گروه اضافه شد';
+        else
+          body += (addedMemberIds.length > 1) ?
+            ' از گروه حذف شدند.' : ' از گروه حذف شد';
+        return body;
+      }
     };
 
     Message.prototype.isFromMe = function () {
@@ -28,7 +48,9 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     };
 
     Message.prototype.isEnglish = function () {
-      return textUtil.isEnglish(this.body);
+      if (this.body)
+        return textUtil.isEnglish(this.body);
+      return false;
     };
 
     Message.prototype.getStyle = function () {
@@ -44,9 +66,9 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
 
     Message.prototype.getStatus = function () {
       var channelLastSeen = findChannelCallback(this.channelId).channelLastSeen;
-      if(this.isPending)
+      if (this.isPending)
         return Message.STATUS_TYPE.PENDING;
-      if(this.id <= channelLastSeen)
+      if (this.id <= channelLastSeen)
         return Message.STATUS_TYPE.SEEN;
       return Message.STATUS_TYPE.SENT;
     };
@@ -64,7 +86,16 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     };
 
     Message.prototype.getCssClass = function () {
-      return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+      switch (this.type) {
+        case Message.TYPE.TEXT :
+          return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+        case Message.TYPE.NOTIF.USER_ADDED :
+          return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+        case Message.TYPE.NOTIF.USER_REMOVED :
+          return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+        case Message.TYPE.NOTIF.FILE_LIVED :
+          return 'msg msg-file';
+      }
     };
 
     Message.prototype.updateIdAndDatetime = function (_id, datetime) {
@@ -86,14 +117,18 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     };
 
     Message.prototype.getJson = function () {
-      return {
+      var json = {
         _id: this._id,
         id: this.id,
         body: this.body,
         senderId: this.senderId,
         channelId: this.channelId,
-        datetime: this.datetime
+        datetime: this.datetime,
+        type: this.type
       };
+      if (this.additionalData)
+        json.additionalData = this.additionalData;
+      return json;
     };
 
     Message.prototype.save = function () {
@@ -106,7 +141,7 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     Message.generateMessageWellFormedText = function (text) {
       var wellFormedText;
       wellFormedText = textUtil.urlify(text);
-      wellFormedText = textUtil.hashtagify(text);
+      // wellFormedText = textUtil.hashtagify(text);
       return $sce.trustAsHtml(wellFormedText);
     };
 
@@ -130,14 +165,20 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
         return Message.STATUS_TYPE.SENT;
     };
 
+    Message.setFindChannelCallback = function (findChannelFunc) {
+      findChannelCallback = findChannelFunc;
+    };
+
+    Message.TYPE = {
+      TEXT: 0,
+      FILE: 1,
+      NOTIF: {USER_ADDED: 2, USER_REMOVED: 3, FILE_LIVED: 4}
+    };
+
     Message.STATUS_TYPE = {
       PENDING: 0,
       SENT: 1,
       SEEN: 2
-    };
-
-    Message.setFindChannelCallback = function(findChannelFunc){
-      findChannelCallback = findChannelFunc;
     };
 
     return Message;

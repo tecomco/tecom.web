@@ -1,10 +1,36 @@
-<div style="background-color: #24A772">
+<!DOCTYPE html>
+<html ng-app="LoginApp">
+
+<head>
+  <title>تیکام</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width">
+  <base href="/">
+  <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css" />
+  <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
+  <link rel="stylesheet" href="static/css/login-style.css" />
+  <script src="static/lib/angular/angular.js"></script>
+</head>
+
+<body>
+  <div style="background-color: #24A772">
     <div class="container">
-      <div ui-view></div>
+      <ui-view></ui-view>
     </div>
-    <!-- <div class="animated-background">
-      <div ng-repeat="circle in circles">
-          <div ng-show="true" class="circle" ng-style="circle.style"></div>
-      </div>
-    </div> -->
-</div>
+  </div>
+
+  <script src="static/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script src="static/lib/ngstorage/ngStorage.min.js"></script>
+  <script src="static/lib/angular-jwt/dist/angular-jwt.min.js"></script>
+  <script src="app/components/login/login.module.js"></script>
+  <script src="app/shared/auth/auth.service.js"></script>
+  <script src="app/shared/auth/user.model.js"></script>
+  <script src="app/shared/team/team.model.js"></script>
+  <script src="app/shared/utils/arrayUtil.js"></script>
+  <script src="app/shared/utils/domain.util.js"></script>
+
+</body>
+
+</html>

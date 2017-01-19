@@ -2,7 +2,6 @@
 
 app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
   function ($log, $http, $q, jwtHelper, User) {
-
     function createUser(token) {
       var decodedToken = jwtHelper.decodeToken(token);
       // TODO: Get current membership properly.
@@ -12,12 +11,11 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
       return user.save();
     }
 
-    function login(username, password, teamName) {
+    function login(username, password) {
       var defer = $q.defer();
       var data = {
         username: username,
-        password: password,
-        team: teamName
+        password: password
       };
       $http({
         method: 'POST',
@@ -37,8 +35,25 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
         } else {
           defer.reject();
         }
+      }).catch(function(err){
+        defer.reject(err);
       });
+
       return defer.promise;
+    }
+
+    function logout() {
+      var defer = $q.defer();
+      $http.post('/api/v1/auth/logout/')
+        .then(function (res) {
+          $log.info(res);
+          defer.resolve();
+        })
+        .catch(function (err) {
+          $log.info('Logout error.', err);
+          defer.reject();
+        });
+        return defer.promise;
     }
 
     function refreshToken(token) {
@@ -50,6 +65,7 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
         url: '/api/v1/auth/token/refresh/',
         data: data
       }).then(function (response) {
+        $log.info('Response:', response);
         var token = response.data.token;
         if (token) {
           createUser(token);
@@ -59,7 +75,8 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
 
     return {
       login: login,
-      refreshToken: refreshToken
+      logout: logout,
+      refreshToken: refreshToken,
     };
   }
 ]);

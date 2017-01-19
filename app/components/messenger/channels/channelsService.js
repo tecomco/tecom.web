@@ -11,13 +11,12 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     socket.on('init', function (data) {
       var channels = [];
-      $log.info('Init channels:', data);
       data.forEach(function (channel) {
         var tmpChannel = new Channel(channel.name, channel.slug,
           channel.description, channel.type, channel.id, channel.membersCount);
         if (channel.memberId)
           tmpChannel.memberId = channel.memberId;
-        if(tmpChannel.isDirect() && tmpChannel.isDirectExist())
+        if (tmpChannel.isDirect() && tmpChannel.isDirectExist())
           tmpChannel.changeNameAndSlugFromId();
         channels.push(tmpChannel);
       });
@@ -31,6 +30,19 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
 
     socket.on('channel:edit', function (data) {
       self.deferredEditedChannel.resolve(data);
+    });
+
+    socket.on('channel:members:add', function (data) {
+      $log.info('Channel:members:add', data);
+      var channel = new Channel();
+      channel.updateFromJson(data.channel);
+      self.addChannelCallback(channel);
+    });
+
+    socket.on('channel:members:remove', function (data) {
+      $log.info('Channel:members:remove', data);
+      if (data.channel.type === Channel.TYPE.PRIVATE)
+        self.removeChannelCallback(data.channel.id);
     });
 
     var getInitChannels = function () {
@@ -101,6 +113,14 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       self.updateLastDatetimeCallback = updateFunc;
     };
 
+    var setAddChannelCallback = function (addChannelFunc) {
+      self.addChannelCallback = addChannelFunc;
+    };
+
+    var setRemoveChannelCallback = function (removeChannelFunc) {
+      self.removeChannelCallback = removeChannelFunc;
+    };
+
     var setFindChannelCallback = function (findChannelFunc) {
       self.findChannelCallback = findChannelFunc;
     };
@@ -118,6 +138,13 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       socket.emit('channel:direct:create', data, callback);
     };
 
+    var addUserToChannel = function (channelId) {
+      $log.info('User:', User);
+    };
+    var removeUserFromChannel = function (channelId) {
+
+    };
+
     return {
       getInitChannels: getInitChannels,
       sendNewChannel: sendNewChannel,
@@ -130,11 +157,15 @@ app.service('channelsService', ['$http', '$q', '$log', 'socket',
       setUpdateNotificationCallback: setUpdateNotificationCallback,
       updateNotification: updateNotification,
       setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback,
+      setAddChannelCallback: setAddChannelCallback,
+      setRemoveChannelCallback: setRemoveChannelCallback,
       updateLastDatetime: updateLastDatetime,
       setFindChannelCallback: setFindChannelCallback,
       findChannel: findChannel,
       removeMemberFromChannel: removeMemberFromChannel,
-      createNewDirectRequest: createNewDirectRequest
+      createNewDirectRequest: createNewDirectRequest,
+      addUserToChannel: addUserToChannel,
+      removeUserFromChannel: removeUserFromChannel
     };
   }
 ])

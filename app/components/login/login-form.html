@@ -5,11 +5,13 @@
     <div class="login-form-body">
         <form name="forms.login" ng-submit="login()" novalidate>
             <div class="form-group">
-                <input ng-model="username" class="input-box" placeholder="نام کاربری" name="username" type="text">
+                <input ng-model="username" class="input-box" placeholder="نام کاربری" name="username" type="text" required>
             </div>
+            <span ng-show="forms.login.username.$invalid && !forms.login.username.$pristine">وارد کردن نام کاربری ضروری می باشد.</span>
             <div class="form-group">
-                <input ng-model="password" class="input-box" placeholder="رمز عبور" name="password" type="password">
+                <input ng-model="password" class="input-box" placeholder="رمز عبور" name="password" type="password" required>
             </div>
+            <span ng-show="forms.login.password.$invalid && !forms.login.password.$pristine">وارد کردن رمز عبور ضروری می باشد.</span>
             <label class="ws-checkbox">
                 <span>مرا به خاطر بسپار.</span>
                 <input ng-model="remember" name="remember" type="checkbox">
@@ -17,6 +19,7 @@
                     <i class="fa fa-check"></i>
                 </div>
             </label>
+            <label ng-show="hasLoginError">{{loginErrorString}}</label>
             <input class="submit-btn" type="submit" value="ورود">
         </form>
     </div>

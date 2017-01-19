@@ -2,11 +2,12 @@
 
 app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log',
   'channelInfo', 'channelsService', 'User', 'arrayUtil', 'Channel',
-  function ($scope, $uibModalInstance, $log, channelInfo, channelsService, User,
+  function ($scope, $uibModalInstance, $log, scopeChannel, channelsService, User,
             arrayUtil, Channel) {
 
     var $ctrl = this;
-    $ctrl.channel = channelInfo;
+    $ctrl.channel = scopeChannel;
+    $log.info($ctrl.channel);
     var selectedMember;
     $ctrl.editMode = false;
     $ctrl.isAdmin = true;
@@ -31,7 +32,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
     };
 
     $ctrl.closeDetailsModal = function () {
-      $uibModalInstance.close();
+      $uibModalInstance.close($ctrl.channel);
     };
 
     $ctrl.editChannelDetailsSubmit = function () {
@@ -45,6 +46,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
         type: type,
         id: $ctrl.channel.id
       };
+      $log.info('edited data:', editedData);
       var addeMembers = {
         channelId: $ctrl.channel.id,
         memberIds: $ctrl.addedMemberIds
@@ -83,13 +85,16 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
       $ctrl.addedMemberIds = [];
     };
 
-    channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
-      $ctrl.channel = event;
-      $ctrl.listItems = $ctrl.channel.members;
-      $log.info('List:', $ctrl.listItems);
-    }, function (status) {
-      $log.info('error getting channel members :', status);
-    });
+    var getChannelMembers = function () {
+      channelsService.getChannelMembers($ctrl.channel.id).then(function (event) {
+        $ctrl.listItems = event.members;
+        $ctrl.channel.members = $ctrl.listItems;
+        $ctrl.addingMemberActive = false;
+      }, function (status) {
+        $log.info('error getting channel members :', status);
+      });
+    };
+    getChannelMembers();
 
     $ctrl.hoverIn = function (channelMember) {
       selectedMember = channelMember;
@@ -109,6 +114,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
       channelsService.removeMemberFromChannel(data, function (res) {
         if (res.status) {
           arrayUtil.removeElementByKeyValue($ctrl.channel.members, 'id', member.id);
+          $ctrl.channel.members--;
           $log.info('Member Removed from Channel');
         }
         else
@@ -146,6 +152,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
             $log.info('Adding members response: ', response);
             if (response.status) {
               $ctrl.addingMemberActive = false;
+              $ctrl.channel.membersCount = $ctrl.channel.membersCount + $ctrl.addedMemberIds.length;
               $log.info('Done Adding members');
             }
             else {
@@ -154,11 +161,11 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
           });
       }
       else
-        $ctrl.addingMemberActive = false;
+      getChannelMembers();
     };
 
     $ctrl.getListItemCSS = function (listMember) {
-      if($ctrl.addingMemberActive) {
+      if ($ctrl.addingMemberActive) {
         if (listMember.member_id)
           return {'background-color': '#CFE0F3'};
         else if (arrayUtil.contains($ctrl.addedMemberIds, listMember.id))

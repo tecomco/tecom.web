@@ -1,23 +1,35 @@
 'use strict';
 
 app.controller('messagesController',
-  ['$scope', '$log', '$stateParams', 'User', '$timeout', 'messagesService',
-    'Message', 'channelsService',
-    function ($scope, $log, $stateParams, User, $timeout, messagesService,
-              Message, channelsService) {
+  ['$scope', '$state', '$log', '$stateParams', 'User', '$timeout',
+    'messagesService', 'Message', 'channelsService',
+    function ($scope, $state, $log, $stateParams, User, $timeout,
+              messagesService, Message, channelsService) {
 
+      $scope.removedChannel = false;
+
+      document.getElementById('inputPlaceHolder').focus();
+      document.onkeydown = function (evt) {
+        evt = evt || window.event;
+        if (evt.keyCode == 27) {
+          $state.go('messenger.home');
+        }
+      };
       $scope.messages = [];
+      var flagIsTyping = false;
+      var timeout;
 
       function loadMessagesFromDb() {
-        $log.info('State PARAMS ID:', $stateParams.channel.id);
-        var channel = channelsService.findChannel($stateParams.channel.id);
+        $scope.messages = [];
+        var channel = $scope.channel;
         messagesService.isChannelReady(channel.id)
           .then(function () {
             messagesService.getMessagesFromDb($stateParams.channel.id,
               function (messages) {
                 messages.forEach(function (msg) {
-                  var message = new Message(msg.body, msg.senderId, msg.channelId,
-                    msg._id, msg.datetime);
+                  var message = new Message(msg.body, msg.type, msg.senderId, msg.channelId,
+                    msg._id, msg.datetime, msg.additionalData);
+                  $log.info('channelMessage', message);
                   addMessageToArray(message);
                 });
                 $scope.$apply();
@@ -32,6 +44,11 @@ app.controller('messagesController',
                 $scope.$apply();
               });
           });
+      }
+
+      function handleRemovedChannel(){
+        $scope.removedChannel = true;
+        $scope.inputMessage = 'شما از این گروه حذف شده اید :(';
       }
 
       function updateMessageStatus(messageId, status) {
@@ -49,12 +66,16 @@ app.controller('messagesController',
         }, 0, false);
       }
 
-      $scope.sendMessage = function () {
+      $scope.sendMessage = function ($event) {
+        $event.preventDefault();
         var messageBody = $scope.inputMessage.trim();
         if (!messageBody) return;
-        var message = new Message(messageBody, User.id, $stateParams.channel.id);
+        var message = new Message(messageBody, Message.TYPE.TEXT, User.id,
+          $stateParams.channel.id);
         addMessageToArray(message);
         $scope.inputMessage = '';
+        flagIsTyping = false;
+        messagesService.sendIsTyping($scope.channel.id, 'end');
         messagesService.sendMessage(message.getServerWellFormed(),
           function (data) {
             message.status = Message.STATUS_TYPE.SENT;
@@ -64,16 +85,28 @@ app.controller('messagesController',
           });
       };
 
-      $scope.isTyping = function() {
-        var inputPlaceHolder = document.getElementById('inputPlaceHolder');
-        inputPlaceHolder.style.height = '0px';
-        inputPlaceHolder.style.height = (inputPlaceHolder.scrollHeight) + 'px';
+      $scope.isTyping = function () {
+        if (timeout)
+          $timeout.cancel(timeout);
+        if (flagIsTyping === false) {
+          flagIsTyping = true;
+          messagesService.sendIsTyping($scope.channel.id, 'start');
+        }
 
-        var inputHolder = document.getElementById('inputHolder');
-        var messagesHolder = document.getElementById('messagesHolder');
-        var messageSection = document.getElementById('messageSection');
-        messagesHolder.style.height = '-webkit-calc(' + messageSection.scrollHeight + 'px -' + inputHolder.scrollHeight + 'px)';
-        console.log(messagesHolder.scrollHeight);
+        timeout = $timeout(function () {
+          flagIsTyping = false;
+          messagesService.sendIsTyping($scope.channel.id, 'end');
+        }, 2000);
+
+        /*var inputPlaceHolder = document.getElementById('inputPlaceHolder');
+         inputPlaceHolder.style.height = '0px';
+         inputPlaceHolder.style.height = (inputPlaceHolder.scrollHeight) + 'px';
+
+         var inputHolder = document.getElementById('inputHolder');
+         var messagesHolder = document.getElementById('messagesHolder');
+         var messageSection = document.getElementById('messageSection');
+         messagesHolder.style.height = '-webkit-calc(' + messageSection.scrollHeight + 'px -' + inputHolder.scrollHeight + 'px)';
+         console.log(messagesHolder.scrollHeight);*/
       };
 
       $scope.$watch(
@@ -82,8 +115,19 @@ app.controller('messagesController',
         },
         function (newChannel) {
           if (newChannel) {
-            $log.info('STATEPARAM: ', newChannel);
+            $scope.channel = channelsService.findChannel($stateParams.channel.id);
             loadMessagesFromDb();
+          }
+        }
+      );
+
+      $scope.$watch(
+        function () {
+          return $stateParams.removed;
+        },
+        function (removed) {
+          if (removed) {
+            handleRemovedChannel();
           }
         }
       );

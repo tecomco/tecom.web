@@ -9,7 +9,7 @@ app.service('db', ['$window', '$log', 'User', function ($window, $log, User) {
   createDb();
 
   function createDb() {
-    self.db = new $window.PouchDB('tecom:' + User.team.id);
+    self.db = new $window.PouchDB('tecom:' + User.team.id + ':' + User.id);
     $log.info('PouchDB created successfuly.');
     self.db.createIndex({
       index: {
