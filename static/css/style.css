@@ -384,6 +384,12 @@ a, a:hover, a:visited, a:focus {
     background-repeat: repeat;
 }
 
+.is-typing-img {
+    position: relative;
+    width: 30px;
+    right: 41%;
+}
+
 .main {
     padding: 32px;
     display: flex;
