@@ -51,7 +51,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
         channelId: $ctrl.channel.id,
         memberIds: $ctrl.addedMemberIds
       };
-      channelsService.sendDetailsEditedChannel(editedData, function (response) {
+      channelsService.sendEditedChannel(editedData, function (response) {
           $log.info('Edit channel Details response: ', response);
           if (response.status) {
             $ctrl.closeDetailsModal();
@@ -147,7 +147,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance', '$log
 
     $ctrl.addMembersSubmit = function () {
       if ($ctrl.addedMemberIds.length > 0) {
-        channelsService.sendAddeMembersToChannel($ctrl.addedMemberIds,
+        channelsService.sendAddedMembersToChannel($ctrl.addedMemberIds,
           $ctrl.channel.id, function (response) {
             $log.info('Adding members response: ', response);
             if (response.status) {

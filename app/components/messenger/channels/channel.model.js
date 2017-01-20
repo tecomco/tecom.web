@@ -1,20 +1,25 @@
 'use strict';
 
-app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
-  'arrayUtil',
+app.factory('Channel',
+  ['$log', '$stateParams', 'textUtil', 'Team', 'User', 'arrayUtil',
   function ($log, $stateParams, textUtil, Team, User, arrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
-                     notifCount) {
-      this.name = name;
-      this.slug = slug;
-      this.description = description;
-      this.type = type;
-      this.id = id;
-      this.membersCount = membersCount;
-      this.notifCount = null || notifCount;
+      notifCount) {
+      this.setValues(name, slug, description, type, id, membersCount, notifCount);
       this.isTypingMemberIds = [];
     }
+
+    Channel.prototype.setValues = function (name, slug, description, type, id,
+      membersCount, notifCount) {
+        this.name = name;
+        this.slug = slug;
+        this.description = description;
+        this.type = type;
+        this.id = id;
+        this.membersCount = membersCount;
+        this.notifCount = notifCount || null;
+    };
 
     Channel.prototype.hasUnread = function () {
       return this.notifCount && this.notifCount !== 0;
@@ -47,12 +52,12 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
 
     Channel.prototype.updateIsTypingMemberIds = function (memberId, mode) {
       switch (mode) {
-        case 'add':
-          this.isTypingMemberIds.push(memberId);
-          break;
-        case 'remove':
-          arrayUtil.removeElementByValue(this.isTypingMemberIds, memberId);
-          break;
+      case 'add':
+        this.isTypingMemberIds.push(memberId);
+        break;
+      case 'remove':
+        arrayUtil.removeElementByValue(this.isTypingMemberIds, memberId);
+        break;
       }
     };
 
@@ -65,7 +70,7 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
       return isTypingStr.slice(0, isTypingStr.length - 3);
     };
 
-    Channel.prototype.anyoneTyping = function(){
+    Channel.prototype.anyoneTyping = function () {
       return (this.isTypingMemberIds.length > 0);
     };
 
@@ -124,8 +129,8 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
       this.id = direct.id;
     };
 
-    Channel.isCurrentChannel = function () {
-      return ($stateParams.channel.id === this.id);
+    Channel.isSelected = function () {
+      return $stateParams.channel.id === this.id;
     };
 
     Channel.prototype.setIsRemoved = function () {
@@ -133,7 +138,7 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
     };
 
     Channel.prototype.isRemoved = function () {
-      return isRemoved || false;
+      return this.isRemoved || false;
     };
 
     Channel.TYPE = {

@@ -1,172 +1,188 @@
 'use strict';
 
-app.service('channelsService', ['$http', '$q', '$log', 'socket',
-  'messagesService', 'Channel', 'User', 'arrayUtil',
-  function ($http, $q, $log, socket, messagesService, Channel, User, arrayUtil) {
+app.service('channelsService',
+  ['$rootScope', '$http', '$q', '$log', 'socket', 'messagesService', 'Channel', 'User', 'arrayUtil',
+  function ($rootScope, $http, $q, $log, socket, messagesService, Channel, User, arrayUtil) {
 
     var self = this;
-    self.deferredInit = $q.defer();
-    self.deferredNewChannel = $q.defer();
-    self.deferredEditedChannel = $q.defer();
 
-    socket.on('init', function (data) {
-      var channels = [];
-      data.forEach(function (channel) {
-        var tmpChannel = new Channel(channel.name, channel.slug,
-          channel.description, channel.type, channel.id, channel.membersCount);
-        if (channel.memberId)
-          tmpChannel.memberId = channel.memberId;
-        if (tmpChannel.isDirect() && tmpChannel.isDirectExist())
-          tmpChannel.changeNameAndSlugFromId();
-        channels.push(tmpChannel);
+    self.channels = [];
+
+    /**
+     * @todo Call `MessagesService` method for each channel.
+     */
+    socket.on('init', function (results) {
+      results.forEach(function (result) {
+        createAndPushChannel(result);
       });
-      self.deferredInit.resolve(channels);
-      messagesService.getNewMessagesFromServer(channels);
+      messagesService.getNewMessagesFromServer(self.channels);
+      $rootScope.$broadcast('channel');
     });
 
-    socket.on('channel:new', function (data) {
-      self.deferredNewChannel.resolve(data);
+    socket.on('channel:new', function (result) {
+      createAndPushChannel(result);
+      $rootScope.$broadcast('channel');
     });
 
-    socket.on('channel:edit', function (data) {
-      self.deferredEditedChannel.resolve(data);
+    socket.on('channel:edit', function (result) {
+      var channel = findChannelById(result.id);
+      channel.setValues(result.name, result.slug, result.description,
+        result.type, result.id, result.membersCount);
+      $rootScope.$broadcast('channel');
     });
 
-    socket.on('channel:members:add', function (data) {
-      $log.info('Channel:members:add', data);
-      var channel = new Channel();
-      channel.updateFromJson(data.channel);
-      self.addChannelCallback(channel);
+    socket.on('channel:members:add', function (result) {
+      createAndPushChannel(result);
+      $rootScope.$broadcast('channel');
     });
 
-    socket.on('channel:members:remove', function (data) {
-      $log.info('Channel:members:remove', data);
-      if (data.channel.type === Channel.TYPE.PRIVATE)
-        self.removeChannelCallback(data.channel.id);
+    socket.on('channel:members:remove', function (result) {
+      if (result.channel.type === Channel.TYPE.PRIVATE) {
+        var channel = findChannelById(result.id);
+        channel.setIsRemoved();
+        $rootScope.$broadcast('channel');
+      }
     });
 
-    var getInitChannels = function () {
-      self.deferredInit = $q.defer();
-      return self.deferredInit.promise;
-    };
+    function createAndPushChannel(data) {
+      var channel = new Channel(data.name, data.slug,
+        data.description, data.type, data.id, data.membersCount);
+      channel.memberId = data.memberId;
+      if (channel.isDirect() && channel.isDirectExist()) {
+        channel.changeNameAndSlugFromId();
+        var fakeDirect = findChannelBySlug(channel.slug);
+        if (fakeDirect) {
+          fakeDirect = channel;
+          return;
+        }
+      }
+      self.channels.push(channel);
+    }
 
-    var sendNewChannel = function (data, callback) {
-      socket.emit('channel:create', data, callback);
-    };
+    function findChannelById(id) {
+      return self.channels.find(function (channel) {
+        return channel.id === id;
+      });
+    }
 
-    var getNewChannel = function () {
-      self.deferredNewChannel = $q.defer();
-      return self.deferredNewChannel.promise;
-    };
-    var getTeamMembers = function (teamId) {
-      var deferredTeamMembers = $q.defer();
+    function findChannelBySlug(slug) {
+      return self.channels.find(function (channel) {
+        return channel.slug === slug;
+      });
+    }
+
+    function createChannel(channel) {
+      socket.emit('channel:create', channel);
+    }
+
+    function editChannel(channel) {
+      socket.emit('channel:edit:details', channel);
+    }
+
+    function addMembersToChannel(memberIds, channelId) {
+      var data = {
+        memberIds: memberIds,
+        channelId: channelId
+      };
+      socket.emit('channel:members:add', data);
+    }
+
+    function removeMembersFromChannel(data) {
+      socket.emit('channel:members:remove', data);
+    }
+
+    function createNewDirect(memberId) {
+      var data = {
+        memberId: memberId
+      };
+      socket.emit('channel:direct:create', data);
+    }
+
+    function updateChannelNotification(channelId, type, notifCount) {
+      var channel = findChannelById(channelId);
+      switch (type) {
+        case 'empty':
+          channel.notifCount = 0;
+          break;
+        case 'inc':
+          channel.notifCount++;
+          break;
+        case 'num':
+          channel.notifCount = notifCount;
+          break;
+      }
+      $rootScope.$broadcast('channel');
+    }
+
+    function updateChannelLastDatetime(channelId, datetime) {
+      var channel = findChannelById(channelId);
+      channel.lastDatetime = datetime;
+      $rootScope.$broadcast('channel');
+    }
+
+    /**
+     * @todo Put this method in correct module.
+     */
+    function getTeamMembers(teamId) {
+      var deferred = $q.defer();
       $http({
         method: 'GET',
         url: '/api/v1/teams/' + teamId + '/members/'
       }).success(function (data) {
         var members = data;
         arrayUtil.removeElementByKeyValue(members, 'id', User.id);
-        deferredTeamMembers.resolve(members);
+        deferred.resolve(members);
       }).error(function (err) {
-        $log.info('Error Getting team members:', err);
+        $log.info('Error Getting team members.', err);
+        deferred.reject(err);
       });
-      return deferredTeamMembers.promise;
-    };
-    var getChannelMembers = function (channelId) {
-      self.defferedChannelMembers = $q.defer();
+      return deferred.promise;
+    }
+
+    function getChannelMembers(channelId) {
+      var deferred = $q.defer();
       $http({
         method: 'GET',
         url: '/api/v1/messenger/channels/' + channelId + '/details/'
-      }).success(function (data, status, headers, config) {
-        self.defferedChannelMembers.resolve(data);
-      }).error(function (data, status, headers, config) {
-        self.defferedChannelMembers.reject(status);
+      }).success(function (data) {
+        deferred.resolve(data);
+      }).error(function (err) {
+        $log.info('Error Getting channel members.', err);
+        deferred.reject(err);
       });
-      return self.defferedChannelMembers.promise;
-    };
-    var sendDetailsEditedChannel = function (channel, callback) {
-      socket.emit('channel:edit:details', channel, callback);
-    };
+      return deferred.promise;
+    }
 
-    var sendAddeMembersToChannel = function (memberIds, channelId, callback) {
-      var data = {memberIds: memberIds, channelId: channelId};
-      socket.emit('channel:members:add', data, callback);
-    };
-    var getEditedChannel = function () {
-      self.deferredEditedChannel = $q.defer();
-      return self.deferredEditedChannel.promise;
-    };
+    function isPublicOrPrivate(value) {
+      return value.isPublic() || value.isPrivate();
+    }
 
-    var setUpdateNotificationCallback = function (updateFunc) {
-      self.updateNotification = updateFunc;
-    };
+    function isDirect(value) {
+      return value.isDirect();
+    }
 
-    var updateNotification = function (channelId, changeType, notifCount) {
-      self.updateNotification(channelId, changeType, notifCount);
-    };
+    function getChannels() {
+      return self.channels;
+    }
 
-    var updateLastDatetime = function (channelId, datetime) {
-      self.updateLastDatetimeCallback(channelId, datetime);
-    };
+    function getPublicsAndPrivates() {
+      return self.channel.filter(isPublicOrPrivate);
+    }
 
-    var setUpdateLastDatetimeCallback = function (updateFunc) {
-      self.updateLastDatetimeCallback = updateFunc;
-    };
-
-    var setAddChannelCallback = function (addChannelFunc) {
-      self.addChannelCallback = addChannelFunc;
-    };
-
-    var setRemoveChannelCallback = function (removeChannelFunc) {
-      self.removeChannelCallback = removeChannelFunc;
-    };
-
-    var setFindChannelCallback = function (findChannelFunc) {
-      self.findChannelCallback = findChannelFunc;
-    };
-
-    var findChannel = function (channelId) {
-      return self.findChannelCallback(channelId);
-    };
-
-    var removeMemberFromChannel = function (data, callback) {
-      socket.emit('channel:members:remove', data, callback);
-    };
-
-    var createNewDirectRequest = function (memberId, callback) {
-      var data = {memberId: memberId};
-      socket.emit('channel:direct:create', data, callback);
-    };
-
-    var addUserToChannel = function (channelId) {
-      $log.info('User:', User);
-    };
-    var removeUserFromChannel = function (channelId) {
-
-    };
+    function getDirects() {
+      return self.channel.filter(isDirect);
+    }
 
     return {
-      getInitChannels: getInitChannels,
-      sendNewChannel: sendNewChannel,
-      getNewChannel: getNewChannel,
+      getPublicsAndPrivates: getPublicsAndPrivates,
+      getDirects: getDirects,
+      createChannel: createChannel,
+      editChannel: editChannel,
+      addMembersToChannel: addMembersToChannel,
+      removeMembersFromChannel: removeMembersFromChannel,
+      createNewDirect: createNewDirect,
       getTeamMembers: getTeamMembers,
-      getChannelMembers: getChannelMembers,
-      sendDetailsEditedChannel: sendDetailsEditedChannel,
-      sendAddeMembersToChannel: sendAddeMembersToChannel,
-      getEditedChannel: getEditedChannel,
-      setUpdateNotificationCallback: setUpdateNotificationCallback,
-      updateNotification: updateNotification,
-      setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback,
-      setAddChannelCallback: setAddChannelCallback,
-      setRemoveChannelCallback: setRemoveChannelCallback,
-      updateLastDatetime: updateLastDatetime,
-      setFindChannelCallback: setFindChannelCallback,
-      findChannel: findChannel,
-      removeMemberFromChannel: removeMemberFromChannel,
-      createNewDirectRequest: createNewDirectRequest,
-      addUserToChannel: addUserToChannel,
-      removeUserFromChannel: removeUserFromChannel
+      getChannelMembers: getChannelMembers
     };
   }
-])
-;
+]);
