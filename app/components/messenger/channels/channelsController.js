@@ -115,6 +115,10 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
       $stateParams.slug = direct.slug;
     };
 
+    $scope.removeChannelFromList = function () {
+
+    }
+
     var updateNotification = function (channelId, type, notifCount) {
       var channel = findChannel(channelId);
       switch (type) {
@@ -151,6 +155,9 @@ app.controller('channelsController', ['$scope', '$state', '$stateParams',
 
     var removeChannel = function(channelId)
     {
+      var channel = findChannel(channelId);
+      channel.setIsRemoved();
+      // TODO: Change this process.
       arrayUtil.removeElementByKeyValue($scope.channels, 'id', channelId);
       if($stateParams.channel && $stateParams.channel.id === channelId)
         $stateParams.removed = true;

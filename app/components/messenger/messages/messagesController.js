@@ -29,7 +29,6 @@ app.controller('messagesController',
                 messages.forEach(function (msg) {
                   var message = new Message(msg.body, msg.type, msg.senderId, msg.channelId,
                     msg._id, msg.datetime, msg.additionalData);
-                  $log.info('channelMessage', message);
                   addMessageToArray(message);
                 });
                 $scope.$apply();
