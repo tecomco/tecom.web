@@ -35,10 +35,10 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
         body = body.slice(0, body.length - 3);
         if (this.type === Message.TYPE.NOTIF.USER_ADDED)
           body += (addedMemberIds.length > 1) ?
-            ' به گروه اضافه شدند.' : ' به گروه اضافه شد';
+            '.به گروه اضافه شدند.' : ' به گروه اضافه شد';
         else
           body += (addedMemberIds.length > 1) ?
-            ' از گروه حذف شدند.' : ' از گروه حذف شد';
+            '.از گروه حذف شدند.' : ' از گروه حذف شد';
         return body;
       }
     };
@@ -65,7 +65,11 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     };
 
     Message.prototype.getStatus = function () {
-      var channelLastSeen = findChannelCallback(this.channelId).channelLastSeen;
+      var channel = findChannelCallback(this.channelId);
+      if (!channel) {
+        return Message.STATUS_TYPE.SEEN;
+      }
+      var channelLastSeen = channel.channelLastSeen;
       if (this.isPending)
         return Message.STATUS_TYPE.PENDING;
       if (this.id <= channelLastSeen)

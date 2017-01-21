@@ -128,6 +128,14 @@ app.factory('Channel', ['$log', '$stateParams', 'textUtil', 'Team', 'User',
       return ($stateParams.channel.id === this.id);
     };
 
+    Channel.prototype.setIsRemoved = function () {
+      this.isRemoved = true;
+    };
+
+    Channel.prototype.isRemoved = function () {
+      return isRemoved || false;
+    };
+
     Channel.TYPE = {
       PUBLIC: 0,
       PRIVATE: 1,
