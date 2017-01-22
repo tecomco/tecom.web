@@ -74,9 +74,15 @@ app.service('channelsService',
     }
 
     function setCurrentChannelBySlug(slug) {
-      var channel = findChannelBySlug(slug);
-      self.currentChannel = channel || null;
-      $rootScope.$broadcast('channel:changed');
+      if (!slug) {
+        self.currentChannel = null;
+      } else {
+        var channel = findChannelBySlug(slug);
+        if (channel) {
+          self.currentChannel = channel;
+          $rootScope.$broadcast('channel:changed');
+        }
+      }
     }
 
     function getCurrentChannel() {

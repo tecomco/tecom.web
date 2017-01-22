@@ -6,7 +6,10 @@ app.controller('messagesController',
   function ($scope, $state, $stateParams, $timeout, messagesService,
     channelsService) {
 
-    if (!$stateParams.slug) return;
+    if (!$stateParams.slug) {
+      channelsService.setCurrentChannelBySlug(null);
+      return;
+    }
 
     var self = this;
 

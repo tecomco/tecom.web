@@ -8,17 +8,15 @@ app.controller('channelsController',
     $scope.channels.publicsAndPrivates = [];
     $scope.channels.directs = [];
 
-    $scope.$on('channels:updated', function (event, data) {
+    $scope.$on('channels:updated', function () {
       $scope.channels.publicsAndPrivates =
         channelsService.getPublicsAndPrivates();
       $scope.channels.directs = channelsService.getDirects();
-      if (data === 'init') {
-        validateUrlChannel();
-      }
     });
 
     $scope.$on('channel:changed', function () {
       $scope.channels.current = channelsService.getCurrentChannel();
+      validateUrlChannel();
     });
 
     $scope.$on('message', function (event, message) {
