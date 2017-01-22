@@ -1,0 +1,124 @@
+<div ng-controller="channelsController">
+  <div class="group-holder-header">
+    <i class="fa fa-users"></i>
+    <label>گروه‌ ها</label>
+    <a class="plus-g" tooltip-placement="right" uib-tooltip="ایجاد گروه جدید!" ng-click="openModal('createChannel')">
+      <i class="zmdi zmdi-plus"></i>
+    </a>
+  </div>
+  <div class="group-holder">
+    <ul>
+      <li ng-repeat="channel in channels.publicsAndPrivates | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="channel.getCssClass()">
+        <a ui-sref=".messages({slug: '{{channel.getUrlifiedSlug()}}'})">
+          <i ng-class="channel.getIconClass()"></i>
+          <span class="channel-name">{{channel.name}}</span>
+          <span ng-show="channel.hasUnread()" class="badge">{{channel.getLocaleNotifCount()}}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="direct-holder-header">
+    <i class="fa fa-user"></i>
+    <label>پیام خصوصی</label>
+    <a class="plus-d" tooltip-placement="right" uib-tooltip="شروع مکالمه خصوصی جدید!" ng-click="openModal('newDirect')">
+      <i class="zmdi zmdi-plus"></i>
+    </a>
+  </div>
+  <div class="direct-holder group-holder">
+    <ul>
+      <li ng-repeat="direct in channels.directs | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="direct.getCssClass()">
+        <a ui-sref=".messages({slug: '{{direct.getUrlifiedSlug()}}'})">
+          <i ng-class="direct.getIconClass()"></i>
+          <span class="channel-name">{{direct.name}}</span>
+          <span ng-show="direct.hasUnread()" class="badge">{{direct.getLocaleNotifCount()}}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Channel Create Modal -->
+  <script type="text/ng-template" id="createChannelModal.html">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeCreateChannel()">&times;</button>
+      <h4 class="modal-title">ایجاد گروه جدید</h4>
+    </div>
+    <div class="modal-body two-part-modal">
+      <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
+        <div class="container-fluid">
+          <div class="col-sm-6">
+            <h3>مشخصات گروه</h3>
+            <div class="modal-input">
+              <input type="text" name="name" ng-model="$ctrl.newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
+              <span class="modal-err" ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
+              <span class="modal-err" ng-show="$ctrl.formNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+              <span class="modal-err" ng-show="$ctrl.newChannel.dublicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
+            </div>
+            <div class="modal-input">
+              <input type="text" name="description" ng-model="$ctrl.newChannel.description" ng-maxlength="256" placeholder="توضیح گروه">
+              <span class="modal-err" ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+            </div>
+            <label class="ws-checkbox">
+                            <span>این گروه خصوصی است.</span>
+                            <input type="checkbox" ng-model="$ctrl.newChannel.isPrivate">
+                            <div class="checkbox-stat">
+                                <i class="fa fa-check"></i>
+                            </div>
+                        </label>
+          </div>
+          <div class="col-sm-6 modal-left-part">
+            <h3>اعضای گروه</h3>
+            <div class="modal-input">
+              <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
+            </div>
+            <div class="g-members">
+              <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.newChannel.search}" class="g-m-one">
+                <img ng-src="static/img/user-def.png" />
+                <label>{{teamMember.full_name}}</label>
+                <label dir="ltr">(@{{teamMember.username}})</label>
+                <label class="ws-checkbox">
+                  <input type="checkbox" id="selectCheckbox" ng-model="teamMember.selected"/>
+                  <div class="checkbox-stat">
+                    <i class="fa fa-check"></i>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="modal-input">
+            <input type="submit" value="ایجاد گروه" class="btn btn-default">
+            <span class="modal-err" ng-show="$ctrl.newChannel.serverError">خطا در اتصال به سرور</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="newDirectModal.html">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeCreateChannel()">&times;</button>
+      <h4 class="modal-title">مکالمه مستقیم</h4>
+    </div>
+    <div class="modal-body two-part-modal">
+      <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
+        <div class="container-fluid">
+          <div class="col-sm-10 col-sm-offset-1">
+            <h3>لطفا مخاطب مورد نظرتان را انتخاب کنید</h3>
+            <div class="modal-input">
+              <input type="text" name="search" ng-model="$ctrl.searchBox" placeholder="جستجو">
+            </div>
+            <div class="g-members">
+              <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one">
+                <img ng-src="static/img/user-def.png" />
+                <label>{{teamMember.full_name}}</label>
+                <label>(@{{teamMember.username}})</label>
+              </a>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </form>
+    </div>
+  </script>
+
+</div>

@@ -62,23 +62,17 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
         creator: User.id,
         team: User.team.id
       };
-
-      channelsService.sendNewChannel(newChannelData, function (response) {
-        $log.info('New channel response: ', response);
-        if (response.status) {
+      channelsService.createChannel(newChannelData)
+        .then(function () {
           $ctrl.closeCreateChannel();
-        }
-        else {
-          if (response.message.indexOf('Duplicate slug in team.') != -1) {
-            $log.error('Error : Dublicate Slug');
+        })
+        .catch(function (err) {
+          if (err.indexOf('Duplicate slug in team.') != -1) {
             $ctrl.newChannel.dublicateError = true;
-          }
-          else {
+          } else {
             $ctrl.newChannel.serverError = true;
-            $log.error('Error sending new channel form to server :', response.message);
           }
-        }
-      });
+        });
     };
 
     angular.element(document).ready(function () {
