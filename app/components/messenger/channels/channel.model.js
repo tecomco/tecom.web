@@ -1,8 +1,8 @@
 'use strict';
 
 app.factory('Channel',
-  ['$log', '$stateParams', 'textUtil', 'Team', 'User', 'arrayUtil',
-  function ($log, $stateParams, textUtil, Team, User, arrayUtil) {
+  ['$stateParams', 'textUtil', 'User', 'arrayUtil',
+  function ($stateParams, textUtil, User, arrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
       notifCount) {
@@ -12,56 +12,46 @@ app.factory('Channel',
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
       membersCount, notifCount) {
-        this.name = name;
-        this.slug = slug;
-        this.description = description;
-        this.type = type;
-        this.id = id;
-        this.membersCount = membersCount;
-        this.notifCount = notifCount || null;
+      this.name = name;
+      this.slug = slug;
+      this.description = description;
+      this.type = type;
+      this.id = id;
+      this.membersCount = membersCount;
+      this.notifCount = notifCount || null;
     };
 
     Channel.prototype.hasUnread = function () {
       return this.notifCount && this.notifCount !== 0;
     };
 
-    Channel.prototype.updateFromJson = function (channel) {
-      this.name = null || channel.name;
-      this.slug = null || channel.slug;
-      this.description = null || channel.description;
-      this.type = null || channel.type;
-      this.id = null || channel.id;
-      this.membersCount = null || channel.membersCount;
-      this.notifCount = null || channel.notifCount;
-    };
-
-    Channel.prototype.getNotifInPersian = function () {
-      if (this.hasUnread())
-        return textUtil.persianify(this.notifCount.toString());
-      return null;
+    Channel.prototype.getLocaleNotifCount = function () {
+      return this.hasUnread() ?
+        textUtil.persianify(this.notifCount.toString()) : null;
     };
 
     Channel.prototype.getLocaleMembersCount = function () {
-      if (this.membersCount)
-        return textUtil.persianify(this.membersCount.toString());
+      return this.membersCount ?
+        textUtil.persianify(this.membersCount.toString()) : null;
     };
 
-    Channel.prototype.updateLastDatetimeCallback = function (datetime) {
+    Channel.prototype.setLastDatetime = function (datetime) {
       this.lastDatetime = datetime;
     };
 
-    Channel.prototype.updateIsTypingMemberIds = function (memberId, mode) {
-      switch (mode) {
-      case 'add':
-        this.isTypingMemberIds.push(memberId);
-        break;
-      case 'remove':
-        arrayUtil.removeElementByValue(this.isTypingMemberIds, memberId);
-        break;
-      }
+    Channel.prototype.setLastSeen = function (lastSeenMessageId) {
+      this.lastSeen = lastSeenMessageId;
     };
 
-    Channel.prototype.getIsTypingStringFromMemberIds = function () {
+    Channel.prototype.addIsTypingMemberId = function (memberId) {
+      this.isTypingMemberIds.push(memberId);
+    };
+
+    Channel.prototype.removeIsTypingMemberId = function (memberId) {
+      arrayUtil.removeElementByValue(this.isTypingMemberIds, memberId);
+    };
+
+    Channel.prototype.getIsTypingString = function () {
       var isTypingStr = '';
       angular.forEach(this.isTypingMemberIds, function (memberId) {
         isTypingStr += User.team.getNameById(memberId);
@@ -71,10 +61,15 @@ app.factory('Channel',
     };
 
     Channel.prototype.anyoneTyping = function () {
-      return (this.isTypingMemberIds.length > 0);
+      return this.isTypingMemberIds.length > 0;
     };
 
-    Channel.prototype.getCssClass = function () {
+    Channel.prototype.isSelected = function () {
+      var slug = this.isDirect() ? '@' + this.slug : this.slug;
+      return $stateParams.slug === slug;
+    };
+
+    Channel.prototype.getIconClass = function () {
       switch (this.type) {
         case Channel.TYPE.PUBLIC:
           return 'fa fa-globe';
@@ -85,24 +80,24 @@ app.factory('Channel',
       }
     };
 
+    Channel.prototype.getCssClass = function () {
+      return this.isSelected() ? 'active' : '';
+    };
+
     Channel.prototype.isDirectExist = function () {
       return !this.memberId;
     };
 
-    Channel.prototype.setDirectCreatedStatus = function () {
-      this.memberId = null;
-    };
-
     Channel.prototype.isPrivate = function () {
-      return this.type == Channel.TYPE.PRIVATE;
+      return this.type === Channel.TYPE.PRIVATE;
     };
 
     Channel.prototype.isDirect = function () {
-      return this.type == Channel.TYPE.DIRECT;
+      return this.type === Channel.TYPE.DIRECT;
     };
 
     Channel.prototype.isPublic = function () {
-      return this.type == Channel.TYPE.PUBLIC;
+      return this.type === Channel.TYPE.PUBLIC;
     };
 
     Channel.prototype.changeNameAndSlugFromId = function () {
@@ -116,21 +111,13 @@ app.factory('Channel',
           var name = User.team.getUsernameById(id);
           that.name = name;
           that.slug = name;
-          textUtil.replaceAll(that.slug, ' ', '_');
           return;
         }
       });
     };
 
-    Channel.prototype.updateNewDirectData = function (direct) {
-      this.name = direct.name;
-      this.slug = direct.slug;
-      this.memberId = null;
-      this.id = direct.id;
-    };
-
-    Channel.isSelected = function () {
-      return $stateParams.channel.id === this.id;
+    Channel.prototype.getUrlifiedSlug = function () {
+      return this.isDirect() ? '@' + this.slug : this.slug;
     };
 
     Channel.prototype.setIsRemoved = function () {
@@ -148,6 +135,5 @@ app.factory('Channel',
     };
 
     return Channel;
-
   }
 ]);

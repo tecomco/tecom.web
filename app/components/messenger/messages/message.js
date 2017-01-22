@@ -1,31 +1,30 @@
 'use strict';
 
-app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
-  'textUtil', 'User',
-  function ($log, $stateParams, $localStorage, $sce, db, textUtil, User) {
+app.factory('Message',
+  ['$log', '$sce', 'db', 'textUtil', 'channelsService', 'User',
+  function ($log, $sce, db, textUtil, channelsService, User) {
 
-    var findChannelCallback;
-
-    function Message(body, type, senderId, channelId, _id, datetime, additionalData) {
+    function Message(body, type, senderId, channelId, _id, datetime,
+      additionalData, isPending) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
       this.channelId = channelId;
-      this.isPending = false;
-      this.datetime = datetime ? new Date(datetime) : new Date();
       this._id = _id || null;
+      this.datetime = datetime ? new Date(datetime) : new Date();
+      this.additionalData = additionalData || null;
       if (this._id) {
         this.id = Message.generateIntegerId(_id);
       }
+      this.isPending = isPending || false;
       this.username = User.team.getUsernameById(this.senderId);
-      this.additionalData = additionalData || null;
+      this.status = this.getStatus();
     }
 
     Message.prototype.getViewWellFormed = function () {
       if (this.type === Message.TYPE.TEXT) {
         return Message.generateMessageWellFormedText(this.body);
-      }
-      else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
+      } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
         var body = '';
         var addedMemberIds = this.additionalData;
@@ -33,12 +32,13 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
           body += '@' + User.team.getUsernameById(memberId) + ' و ';
         });
         body = body.slice(0, body.length - 3);
-        if (this.type === Message.TYPE.NOTIF.USER_ADDED)
+        if (this.type === Message.TYPE.NOTIF.USER_ADDED) {
           body += (addedMemberIds.length > 1) ?
             '.به گروه اضافه شدند.' : ' به گروه اضافه شد';
-        else
+        } else {
           body += (addedMemberIds.length > 1) ?
             '.از گروه حذف شدند.' : ' از گروه حذف شد';
+        }
         return body;
       }
     };
@@ -48,9 +48,7 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
     };
 
     Message.prototype.isEnglish = function () {
-      if (this.body)
-        return textUtil.isEnglish(this.body);
-      return false;
+      return this.body ? textUtil.isEnglish(this.body) : false;
     };
 
     Message.prototype.getStyle = function () {
@@ -64,22 +62,25 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
       }
     };
 
+    /**
+     * @todo Implement this!
+     */
     Message.prototype.getStatus = function () {
-      var channel = findChannelCallback(this.channelId);
+      var channel = channelsService.findChannelById(this.channelId);
       if (!channel) {
         return Message.STATUS_TYPE.SEEN;
       }
-      var channelLastSeen = channel.channelLastSeen;
-      if (this.isPending)
+      if (this.isPending) {
         return Message.STATUS_TYPE.PENDING;
-      if (this.id <= channelLastSeen)
+      }
+      if (this.id <= channel.channelLastSeen) {
         return Message.STATUS_TYPE.SEEN;
+      }
       return Message.STATUS_TYPE.SENT;
     };
 
     Message.prototype.getStatusIcon = function () {
-      var status = this.getStatus();
-      switch (status) {
+      switch (this.status) {
         case Message.STATUS_TYPE.PENDING:
           return 'zmdi zmdi-time';
         case Message.STATUS_TYPE.SENT:
@@ -91,18 +92,18 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
 
     Message.prototype.getCssClass = function () {
       switch (this.type) {
-        case Message.TYPE.TEXT :
+        case Message.TYPE.TEXT:
           return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
-        case Message.TYPE.NOTIF.USER_ADDED :
+        case Message.TYPE.NOTIF.USER_ADDED:
           return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
-        case Message.TYPE.NOTIF.USER_REMOVED :
+        case Message.TYPE.NOTIF.USER_REMOVED:
           return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
-        case Message.TYPE.NOTIF.FILE_LIVED :
+        case Message.TYPE.NOTIF.FILE_LIVED:
           return 'msg msg-file';
       }
     };
 
-    Message.prototype.updateIdAndDatetime = function (_id, datetime) {
+    Message.prototype.setIdAndDatetime = function (_id, datetime) {
       this._id = _id;
       this.id = Message.generateIntegerId(_id);
       this.datetime = new Date(datetime);
@@ -120,8 +121,8 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
       };
     };
 
-    Message.prototype.getJson = function () {
-      var json = {
+    Message.prototype.getDbWellFormed = function () {
+      var data = {
         _id: this._id,
         id: this.id,
         body: this.body,
@@ -130,15 +131,16 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
         datetime: this.datetime,
         type: this.type
       };
-      if (this.additionalData)
-        json.additionalData = this.additionalData;
-      return json;
+      if (this.additionalData) {
+        data.additionalData = this.additionalData;
+      }
+      return data;
     };
 
     Message.prototype.save = function () {
-      db.getDb().put(this.getJson())
+      db.getDb().put(this.getDbWellFormed())
         .catch(function (err) {
-          $log.error('Error saving message.', err);
+          $log.error('Saving message failed.', err);
         });
     };
 
@@ -149,34 +151,14 @@ app.factory('Message', ['$log', '$stateParams', '$localStorage', '$sce', 'db',
       return $sce.trustAsHtml(wellFormedText);
     };
 
-    Message.bulkSave = function (messages) {
-      var messageObjects = [];
-      messages.forEach(function (message) {
-        messageObjects.push(message.getJson());
-      });
-      db.getDb().bulkDocs(messageObjects)
-        .catch(function (err) {
-          $log.error('Error bulking messages.', err);
-        });
-    };
-
-    Message.findStatus = function (id, channelLastSeen, notifCount) {
-      if (channelLastSeen) {
-        return (id > channelLastSeen) ?
-          Message.STATUS_TYPE.SENT : Message.STATUS_TYPE.SEEN;
-      }
-      else
-        return Message.STATUS_TYPE.SENT;
-    };
-
-    Message.setFindChannelCallback = function (findChannelFunc) {
-      findChannelCallback = findChannelFunc;
-    };
-
     Message.TYPE = {
       TEXT: 0,
       FILE: 1,
-      NOTIF: {USER_ADDED: 2, USER_REMOVED: 3, FILE_LIVED: 4}
+      NOTIF: {
+        USER_ADDED: 2,
+        USER_REMOVED: 3,
+        FILE_LIVED: 4
+      }
     };
 
     Message.STATUS_TYPE = {

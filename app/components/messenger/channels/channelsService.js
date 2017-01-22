@@ -1,8 +1,8 @@
 'use strict';
 
 app.service('channelsService',
-  ['$rootScope', '$http', '$q', '$log', 'socket', 'messagesService', 'Channel', 'User', 'arrayUtil',
-  function ($rootScope, $http, $q, $log, socket, messagesService, Channel, User, arrayUtil) {
+  ['$rootScope', '$http', '$q', '$log', 'socket', 'Channel', 'User', 'arrayUtil',
+  function ($rootScope, $http, $q, $log, socket, Channel, User, arrayUtil) {
 
     var self = this;
 
@@ -13,34 +13,35 @@ app.service('channelsService',
      */
     socket.on('init', function (results) {
       results.forEach(function (result) {
-        createAndPushChannel(result);
+        var channel = createAndPushChannel(result);
+        $rootScope.$emit('channel:new', channel);
       });
-      messagesService.getNewMessagesFromServer(self.channels);
-      $rootScope.$broadcast('channel');
+      $rootScope.$broadcast('channels:updated', 'init');
     });
 
     socket.on('channel:new', function (result) {
-      createAndPushChannel(result);
-      $rootScope.$broadcast('channel');
+      createAndPushChannel(result.channel);
+      $rootScope.$broadcast('channels:updated');
     });
 
     socket.on('channel:edit', function (result) {
-      var channel = findChannelById(result.id);
-      channel.setValues(result.name, result.slug, result.description,
-        result.type, result.id, result.membersCount);
-      $rootScope.$broadcast('channel');
+      var channel = findChannelById(result.channel.id);
+      channel.setValues(result.channel.name, result.channel.slug,
+        result.channel.description, result.channel.type, result.channel.id,
+        result.channel.membersCount);
+      $rootScope.$broadcast('channels:updated');
     });
 
     socket.on('channel:members:add', function (result) {
       createAndPushChannel(result);
-      $rootScope.$broadcast('channel');
+      $rootScope.$broadcast('channels:updated');
     });
 
     socket.on('channel:members:remove', function (result) {
       if (result.channel.type === Channel.TYPE.PRIVATE) {
         var channel = findChannelById(result.id);
         channel.setIsRemoved();
-        $rootScope.$broadcast('channel');
+        $rootScope.$broadcast('channels:updated');
       }
     });
 
@@ -53,10 +54,11 @@ app.service('channelsService',
         var fakeDirect = findChannelBySlug(channel.slug);
         if (fakeDirect) {
           fakeDirect = channel;
-          return;
+          return channel;
         }
       }
       self.channels.push(channel);
+      return channel;
     }
 
     function findChannelById(id) {
@@ -72,7 +74,16 @@ app.service('channelsService',
     }
 
     function createChannel(channel) {
-      socket.emit('channel:create', channel);
+      var deferred = $q.defer();
+      socket.emit('channel:create', channel, function (status, message) {
+        if (status) {
+          deferred.resolve();
+        } else {
+          deferred.reject(message);
+          $log.error('Create channel failed.', message);
+        }
+      });
+      return deferred.promise;
     }
 
     function editChannel(channel) {
@@ -111,13 +122,31 @@ app.service('channelsService',
           channel.notifCount = notifCount;
           break;
       }
-      $rootScope.$broadcast('channel');
+      $rootScope.$broadcast('channels:updated');
     }
 
     function updateChannelLastDatetime(channelId, datetime) {
       var channel = findChannelById(channelId);
-      channel.lastDatetime = datetime;
-      $rootScope.$broadcast('channel');
+      channel.setLastDatetime(datetime);
+      $rootScope.$broadcast('channels:updated');
+    }
+
+    function updateChannelLastSeen(channelId, lastSeenMessageId) {
+      var channel = findChannelById(channelId);
+      channel.setLastSeen(lastSeenMessageId);
+      $rootScope.$broadcast('channels:updated');
+    }
+
+    function addIsTypingMemberByChannelId(channelId, memberId) {
+      var channel = findChannelById(channelId);
+      channel.addIsTypingMemberId(memberId);
+      $rootScope.$broadcast('channels:updated');
+    }
+
+    function removeIsTypingMemberByChannelId(channelId, memberId) {
+      var channel = findChannelById(channelId);
+      channel.removeIsTypingMemberId(memberId);
+      $rootScope.$broadcast('channels:updated');
     }
 
     /**
@@ -166,21 +195,28 @@ app.service('channelsService',
     }
 
     function getPublicsAndPrivates() {
-      return self.channel.filter(isPublicOrPrivate);
+      return self.channels.filter(isPublicOrPrivate);
     }
 
     function getDirects() {
-      return self.channel.filter(isDirect);
+      return self.channels.filter(isDirect);
     }
 
     return {
       getPublicsAndPrivates: getPublicsAndPrivates,
       getDirects: getDirects,
+      findChannelById: findChannelById,
+      findChannelBySlug: findChannelBySlug,
       createChannel: createChannel,
       editChannel: editChannel,
       addMembersToChannel: addMembersToChannel,
       removeMembersFromChannel: removeMembersFromChannel,
       createNewDirect: createNewDirect,
+      updateChannelNotification: updateChannelNotification,
+      updateChannelLastDatetime: updateChannelLastDatetime,
+      updateChannelLastSeen: updateChannelLastSeen,
+      addIsTypingMemberByChannelId: addIsTypingMemberByChannelId,
+      removeIsTypingMemberByChannelId: removeIsTypingMemberByChannelId,
       getTeamMembers: getTeamMembers,
       getChannelMembers: getChannelMembers
     };

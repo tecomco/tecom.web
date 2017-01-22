@@ -1,241 +1,208 @@
 'use strict';
 
 app.service('messagesService',
-  ['$log', '$q', 'socket', 'Message', '$stateParams', 'db', 'User', '$window',
-    function ($log, $q, socket, Message, $stateParams, db, User, $window) {
+  ['$rootScope', '$log', '$q', 'socket', 'channelsService', 'Message', 'db', 'User',
+  function ($rootScope, $log, $q, socket, channelsService, Message, db, User) {
 
-      var self = this;
-      var isTabfocused = true;
-      var seenNotifDataOnFocus;
+    var self = this;
 
-      socket.on('message:type:start', function (data) {
-        var channel = self.findChannelCallback(data.channelId);
-        channel.updateIsTypingMemberIds(data.memberId, 'add');
-      });
+    socket.on('message:send', function (data) {
+      var message = new Message(data.body, data.type, data.senderId,
+        data.channelId, data.id, data.datetime, data.additionalData);
+      message.save();
+      $rootScope.$broadcast('message', message);
+      channelsService.updateChannelLastDatetime(message.channelId,
+        message.datetime);
+    });
 
-      socket.on('message:type:end', function (data) {
-        var channel = self.findChannelCallback(data.channelId);
-        channel.updateIsTypingMemberIds(data.memberId, 'remove');
-      });
+    socket.on('message:type:start', function (data) {
+      channelsService.addIsTypingMemberByChannelId(data.channelId,
+        data.memberId);
+    });
 
-      socket.on('message:seen', function (data) {
-        var channel = self.findChannelCallback(data.channelId);
-        channel.channelLastSeen = data.messageId;
-        if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
-          self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
-      });
+    socket.on('message:type:end', function (data) {
+      channelsService.removeIsTypingMemberByChannelId(data.channelId,
+        data.memberId);
+    });
 
-      socket.on('message:send', function (data) {
-        var message = new Message(data.body, data.type, data.senderId, data.channelId,
-          data.id, data.datetime, data.additionalData);
-        message.save();
-        if ($stateParams.channel && message.channelId === $stateParams.channel.id) {
-          self.ctrlCallback(message);
-          sendSeenNotif(message.channelId, message.id, message.senderId);
-        }
-        else if (message.senderId !== User.id) {
-          self.updateNotification(message.channelId, 'inc');
-        }
-        self.updateLastDatetimeCallback(message.channelId, message.datetime);
-      });
+    /**
+     * @todo Find out what's the purpose of the commented part?
+     */
+    socket.on('message:seen', function (data) {
+      console.log('on seen');
+      channelsService.updateChannelLastSeen(data.channelId, data.messageId);
+      // if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
+      //   self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
+    });
 
-      function sendMessage(data, callback) {
-        socket.emit('message:send', data, callback);
-      }
+    $rootScope.$on('channel:new', function (event, channel) {
+      getAndSaveNewMessagesByChannelFromServer(channel);
+    });
 
-      function setCtrlCallback(callback) {
-        self.ctrlCallback = callback;
-      }
-
-      function getMessagesFromDb(channelId, callback) {
-        db.getDb().find({
-          selector: {
-            id: {
-              $gt: null
-            },
-            channelId: {
-              $eq: channelId
+    function getAndSaveNewMessagesByChannelFromServer(channel) {
+      var messagePromises = [];
+      var messages = [];
+      var dataToBeSend = {
+        channelId: channel.id
+      };
+      messagePromises.push(new Promise(function (resolve) {
+        getLastMessageByChannelIdFromDb(channel.id)
+          .then(function (lastMessage) {
+            if (lastMessage) {
+              dataToBeSend.lastSavedMessageId = lastMessage.id;
             }
-          },
-          sort: [{
-            id: 'desc'
-          }],
-          limit: 50
-        }).then(function (result) {
-          callback(result.docs);
-        });
-      }
-
-      function getLastMessageFromDb(channelId) {
-        return new Promise(function (resolve) {
-          db.getDb().find({
-            selector: {
-              id: {
-                $gt: null
-              },
-              channelId: {
-                $eq: channelId
+            socket.emit('message:get', dataToBeSend, function (res) {
+              channelsService.updateChannelNotification(channel.id, 'num',
+                res.notifCount);
+              if (res.lastDatetime) {
+                channelsService.updateChannelLastDatetime(channel.id,
+                  new Date(res.lastDatetime));
               }
-            },
-            sort: [{
-              id: 'desc'
-            }],
-            limit: 1
-          }).then(function (result) {
-            if (result.docs.length === 0) {
-              resolve(null);
-            } else {
-              resolve(result.docs[0]);
-            }
-          }).catch(function (err) {
-            $log.error('Error getting last message from db.', err);
-          });
-        });
-      }
-
-      function getMessageFromDbWithChannelAndId(channelId, messageId) {
-        return new Promise(function (resolve) {
-          db.getDb().find({
-            selector: {
-              id: {
-                $eq: messageId
-              },
-              channelId: {
-                $eq: channelId
+              if (res.channelLastSeen) {
+                channelsService.updateChannelLastSeen(channel.id,
+                  res.channelLastSeen);
               }
-            },
-            limit: 1
-          }).then(function (result) {
-            if (result.docs.length === 0) {
-              resolve(null);
-            } else {
-              resolve(result.docs[0]);
-            }
-          }).catch(function (err) {
-            $log.error('Error getting message with channel and id', err);
-          });
-        });
-      }
-
-      function getNewMessagesFromServer(channels) {
-        var messagePromises = [];
-        var allMessages = [];
-        channels.forEach(function (channel) {
-          var dataToBeSend = {
-            channelId: channel.id
-          };
-          messagePromises.push(new Promise(function (resolve) {
-            getLastMessageFromDb(channel.id).then(function (lastMessage) {
-              if (lastMessage !== null) {
-                dataToBeSend.lastSavedMessageId = lastMessage.id;
-                channel.lastMessageDatetime = lastMessage.datetime;
-              }
-              socket.emit('message:get', dataToBeSend, function (res) {
-                self.updateNotification(channel.id, 'num', res.notifCount);
-                if (res.lastDatetime)
-                  channel.lastDatetime = new Date(res.lastDatetime);
-                if (res.channelLastSeen)
-                  channel.channelLastSeen = res.channelLastSeen;
-                if (channel.id === self.requestedChannelReadyId)
-                  self.promissChannelReady.resolve(true);
-                var channelMessagesData = res.messages;
-                channelMessagesData.forEach(function (msg) {
-                  var message = new Message(msg.body, msg.type ,msg.senderId,
-                    msg.channelId, msg.id, msg.datetime, msg.additionalData);
-                  allMessages.push(message);
-                });
-                resolve();
+              res.messages.forEach(function (msg) {
+                var message = new Message(msg.body, msg.type, msg.senderId,
+                  msg.channelId, msg.id, msg.datetime, msg.additionalData);
+                messages.push(message.getDbWellFormed());
               });
+              resolve();
             });
-          }));
-        });
-        Promise.all(messagePromises).then(function () {
-          self.allChannelsReady = true;
-          Message.bulkSave(allMessages);
-        });
-      }
+          });
+      }));
+      Promise.all(messagePromises).then(function () {
+        bulkSaveMessage(messages);
+      });
+    }
 
-      var sendSeenNotif = function (channelId, lastMessageId, senderId) {
-        var data = {
-          channelId: channelId,
-          messageId: lastMessageId,
-          senderId: senderId
-        };
-        $log.info('focus:', isTabfocused);
-        if (isTabfocused) {
-          if (senderId !== User.id) {
-            socket.emit('message:seen', data);
+    function bulkSaveMessage(messages) {
+      db.getDb().bulkDocs(messages)
+        .catch(function (err) {
+          $log.error('Bulk saving messages failed.', err);
+        });
+    }
+
+    function getMessagesByChannelId(channelId) {
+      var deferred = $q.defer();
+      getMessagesByChannelIdFromDb(channelId)
+        .then(function (res) {
+          var messages = [];
+          res.docs.forEach(function (doc) {
+            var message = new Message(doc.body, doc.type, doc.senderId,
+              doc.channelId, doc._id, doc.datetime, doc.additionalData);
+            messages.push(message);
+          });
+          deferred.resolve(messages);
+        });
+      return deferred.promise;
+    }
+
+    /**
+     * @todo Create a static variable for limit count.
+     */
+    function getMessagesByChannelIdFromDb(channelId) {
+      return db.getDb().find({
+        selector: {
+          id: {
+            $gt: null
+          },
+          channelId: {
+            $eq: channelId
           }
+        },
+        sort: [{
+          id: 'desc'
+        }],
+        limit: 50
+      });
+    }
+
+    function getLastMessageByChannelIdFromDb(channelId) {
+      var deferred = $q.defer();
+      db.getDb().find({
+        selector: {
+          id: {
+            $gt: null
+          },
+          channelId: {
+            $eq: channelId
+          }
+        },
+        sort: [{
+          id: 'desc'
+        }],
+        limit: 1
+      }).then(function (result) {
+        if (result.docs.length === 0) {
+          deferred.resolve(null);
+        } else {
+          deferred.resolve(result.docs[0]);
         }
-        else
-          seenNotifDataOnFocus = data;
-      };
+      }).catch(function (err) {
+        $log.error('Getting last message from db failed.', err);
+        deferred.reject();
+      });
+      return deferred.promise;
+    }
 
-      var sendSeenOnTabFocus = function () {
-        if (seenNotifDataOnFocus) {
-          socket.emit('message:seen', seenNotifDataOnFocus);
-        }
-      };
-
-      var setUpdateNotificationCallback = function (updateFunc) {
-        self.updateNotification = updateFunc;
-      };
-
-      var setUpdateLastDatetimeCallback = function (updateFunc) {
-        self.updateLastDatetimeCallback = updateFunc;
-      };
-
-      var setFindChannelCallback = function (findChannelFunc) {
-        self.findChannelCallback = findChannelFunc;
-      };
-
-      var setUpdateMessageStatusCallback = function (updateStatusFunc) {
-        self.updateMessageStatusCallback = updateStatusFunc;
-      };
-
-      var isChannelReady = function (channelId) {
-        self.requestedChannelReadyId = channelId;
-        self.promissChannelReady = $q.defer();
-        if (self.allChannelsReady === true)
-          self.promissChannelReady.resolve(true);
-        return self.promissChannelReady.promise;
-      };
-
-      var sendIsTyping = function (channelId, mode) {
-        var data = {channelId: channelId};
-        switch (mode) {
-          case 'start':
-            socket.emit('message:type:start', data);
-            break;
-          case 'end':
-            socket.emit('message:type:end', data);
-            break;
-        }
-      };
-
-      function handleTab() {
-        angular.element($window).bind('focus', function () {
-          isTabfocused = true;
-          sendSeenOnTabFocus();
-        }).bind('blur', function () {
-          isTabfocused = false;
+    function sendAndGetMessage(channelId, messageBody) {
+      var message = new Message(messageBody, Message.TYPE.TEXT, User.id,
+        channelId, null, null, null, true);
+      socket.emit('message:send', message.getServerWellFormed(),
+        function (data) {
+          message.status = Message.STATUS_TYPE.SENT;
+          message.setIdAndDatetime(data.id, data.datetime);
+          message.save();
+          channelsService.updateChannelLastDatetime(message.channelId,
+            message.datetime);
         });
-      }
-      handleTab();
+      return message;
+    }
 
-      return {
-        sendMessage: sendMessage,
-        setCtrlCallback: setCtrlCallback,
-        getMessagesFromDb: getMessagesFromDb,
-        getLastMessageFromDb: getLastMessageFromDb,
-        getNewMessagesFromServer: getNewMessagesFromServer,
-        sendSeenNotif: sendSeenNotif,
-        setUpdateNotificationCallback: setUpdateNotificationCallback,
-        setUpdateLastDatetimeCallback: setUpdateLastDatetimeCallback,
-        setFindChannelCallback: setFindChannelCallback,
-        setUpdateMessageStatusCallback: setUpdateMessageStatusCallback,
-        isChannelReady: isChannelReady,
-        getMessageFromDbWithChannelAndId: getMessageFromDbWithChannelAndId,
-        sendIsTyping: sendIsTyping
+    function seenMessage(channelId, messageId, senderId) {
+      console.log('emit seen');
+      var data = {
+        channelId: channelId,
+        messageId: messageId,
+        senderId: senderId
       };
-    }]);
+      socket.emit('message:seen', data);
+      channelsService.updateChannelNotification(channelId, 'empty');
+    }
+
+    function seenLastMessageByChannelId(channelId) {
+      getLastMessageByChannelIdFromDb(channelId)
+        .then(function (lastMessage) {
+          if (lastMessage) {
+            seenMessage(channelId, lastMessage.id, lastMessage.senderId);
+          }
+        });
+    }
+
+    function startTyping(channelId) {
+      var data = {
+        channelId: channelId
+      };
+      socket.emit('message:type:start', data);
+    }
+
+    function endTyping(channelId) {
+      var data = {
+        channelId: channelId
+      };
+      socket.emit('message:type:end', data);
+    }
+
+    return {
+      getMessagesByChannelId: getMessagesByChannelId,
+      sendAndGetMessage: sendAndGetMessage,
+      seenMessage: seenMessage,
+      seenLastMessageByChannelId: seenLastMessageByChannelId,
+      startTyping: startTyping,
+      endTyping: endTyping
+    };
+  }
+]);
+
+app.run(['messagesService', function (messagesService) {}]);

@@ -1,70 +1,39 @@
 <div class="header clearfix">
-    <div ui-view="header"></div>
+  <div ui-view="header"></div>
 </div>
-<div ng-controller="messagesController" id="messageSection">
-    <div id="messagesHolder" class="chat">
-        <div class="main">
-            <!--<div class="date-holder">-->
-            <!--<label>۱۵ مرداد</label>-->
-            <!--</div>-->
-            <div ng-repeat="message in messages | orderBy : 'datetime'" class="msg-holder">
-                <div ng-class="message.getCssClass()">
-                    <label class="name">{{message.username}}</label>
-                    <label class="status" ng-show="message.isFromMe()">
-                        <i ng-class="message.getStatusIcon()"></i>
-                    </label>
-                    <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
-                    <div ng-bind-html="message.getViewWellFormed()" ng-style="message.getStyle()"></div>
-                </div>
-            </div>
-
-            <div ng-show="channel.anyoneTyping()" class="msg-holder">
-                <div class="msg msg-recieve">
-                    <label class="name">{{channel.getIsTypingStringFromMemberIds()}}</label>
-                    <div ng-bind-html="message.getViewWellFormed()" ng-style="message.getStyle()"></div>
-                    <img class="is-typing-img" src="http://jobsonsight.org/ellipsis.gif" >
-                    <!-- <svg class="is-typing-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="25" height="25" fill="#666">
-                        <circle transform="translate(24 0)" cx="0" cy="16" r="0">
-                            <animate attributeName="r" values="0; 4; 0; 0" dur="1.2s" repeatCount="indefinite" begin="0.6" keytimes="0;0.2;0.7;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.6 0.4 0.8" calcMode="spline"></animate>
-                        </circle>
-                        <circle transform="translate(16 0)" cx="0" cy="16" r="0">
-                            <animate attributeName="r" values="0; 4; 0; 0" dur="1.2s" repeatCount="indefinite" begin="0.3" keytimes="0;0.2;0.7;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.6 0.4 0.8" calcMode="spline"></animate>
-                        </circle>
-                        <circle transform="translate(8 0)" cx="0" cy="16" r="0">
-                            <animate attributeName="r" values="0; 4; 0; 0" dur="1.2s" repeatCount="indefinite" begin="0" keytimes="0;0.2;0.7;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.6 0.4 0.8" calcMode="spline"></animate>
-                        </circle>
-                    </svg> -->
-                </div>
-            </div>
+<div ng-controller="messagesController">
+  <div id="messagesHolder" class="chat">
+    <div class="main">
+      <!--<div class="date-holder">-->
+      <!--<label>۱۵ مرداد</label>-->
+      <!--</div>-->
+      <div ng-repeat="message in messages | orderBy : 'datetime'" class="msg-holder">
+        <div ng-class="message.getCssClass()">
+          <label class="name">{{message.username}}</label>
+          <label class="status" ng-show="message.isFromMe()">
+            <i ng-class="message.getStatusIcon()"></i>
+          </label>
+          <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
+          <div ng-bind-html="message.getViewWellFormed()" ng-style="message.getStyle()"></div>
         </div>
-
+      </div>
+      <div ng-show="channel.anyoneTyping()" class="msg-holder">
+        <div class="msg msg-recieve">
+          <label class="name">{{channel.getIsTypingString()}}</label>
+          <div ng-bind-html="message.getViewWellFormed()" ng-style="message.getStyle()"></div>
+          <img class="is-typing-img" src="http://jobsonsight.org/ellipsis.gif">
+        </div>
+      </div>
     </div>
-
-    <!-- <div ng-show="channel.anyoneTyping()">
-        <span>{{channel.getIsTypingStringFromMemberIds()}}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="25" height="25" fill="#666">
-            <circle transform="translate(24 0)" cx="0" cy="16" r="0">
-                <animate attributeName="r" values="0; 4; 0; 0" dur="1.2s" repeatCount="indefinite" begin="0.6" keytimes="0;0.2;0.7;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.6 0.4 0.8" calcMode="spline"></animate>
-            </circle>
-            <circle transform="translate(16 0)" cx="0" cy="16" r="0">
-                <animate attributeName="r" values="0; 4; 0; 0" dur="1.2s" repeatCount="indefinite" begin="0.3" keytimes="0;0.2;0.7;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.6 0.4 0.8" calcMode="spline"></animate>
-            </circle>
-            <circle transform="translate(8 0)" cx="0" cy="16" r="0">
-                <animate attributeName="r" values="0; 4; 0; 0" dur="1.2s" repeatCount="indefinite" begin="0" keytimes="0;0.2;0.7;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.6 0.4 0.8" calcMode="spline"></animate>
-            </circle>
-        </svg>
-    </div> -->
-
-    <div class="input-holder" id="inputHolder">
-        <a href="#">
-            <i class="zmdi zmdi-mood"></i>
-        </a>
-        <textarea ng-disabled="removedChannel" class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="isTyping()"></textarea>
-        <a class="send-btn" href="#" ng-click="sendMessage()">
-            <i class="fa fa-paper-plane"></i>
-        </a>
-        <a ng-show="removedChannel" class="send-btn" href="#" ng-click="removeChannel()">
-            از جلوی چشمم دورش کن.
-        </a>
-    </div>
+  </div>
+  <div class="input-holder" id="inputHolder">
+    <a href="#">
+      <i class="zmdi zmdi-mood"></i>
+    </a>
+    <textarea ng-disabled="removedChannel" class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="isTyping()"></textarea>
+    <a class="send-btn" href="#" ng-click="sendMessage()">
+      <i class="fa fa-paper-plane"></i>
+    </a>
+    <a ng-show="removedChannel" class="send-btn" href="#" ng-click="removeChannel()">از جلوی چشمم دورش کن.</a>
+  </div>
 </div>
