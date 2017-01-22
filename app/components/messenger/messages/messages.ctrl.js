@@ -6,19 +6,17 @@ app.controller('messagesController',
   function ($scope, $state, $stateParams, $timeout, messagesService,
     channelsService) {
 
+    if (!$stateParams.slug) return;
+
     var self = this;
 
     $scope.messages = [];
 
-    $scope.channel = getCurrentChannel();
-    if ($scope.channel) {
-      bindMessages();
-    }
+    initialize();
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
-        $scope.channel = getCurrentChannel();
-        bindMessages();
+        initialize();
       }
     });
 
@@ -41,25 +39,34 @@ app.controller('messagesController',
       scrollBottom();
       clearMessageInput();
       messagesService.endTyping($scope.channel.id);
+      $timeout.cancel(self.isTypingTimeout);
     };
 
     $scope.startTyping = function () {
       if (self.isTypingTimeout) {
         $timeout.cancel(self.isTypingTimeout);
       }
-      if (!this.isTyping) {
-        this.isTyping = true;
+      if (!self.isTyping) {
+        self.isTyping = true;
         messagesService.startTyping($scope.channel.id);
       }
       self.isTypingTimeout = $timeout(function () {
-        this.isTyping = false;
+        self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
     };
 
-    function getCurrentChannel() {
+    function initialize() {
+      setCurrentChannel();
+      if ($scope.channel) {
+        bindMessages();
+      }
+    }
+
+    function setCurrentChannel() {
       var slug = $stateParams.slug.replace('@', '');
-      return channelsService.findChannelBySlug(slug);
+      channelsService.setCurrentChannelBySlug(slug);
+      $scope.channel = channelsService.getCurrentChannel();
     }
 
     function bindMessages() {
@@ -67,7 +74,9 @@ app.controller('messagesController',
         .then(function (messages) {
           $scope.messages = messages;
           scrollBottom();
-          messagesService.seenLastMessageByChannelId($scope.channel.id);
+          if ($scope.channel.hasUnread()) {
+            messagesService.seenLastMessageByChannelId($scope.channel.id);
+          }
         });
     }
 

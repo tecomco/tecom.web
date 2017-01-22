@@ -73,6 +73,16 @@ app.service('channelsService',
       });
     }
 
+    function setCurrentChannelBySlug(slug) {
+      var channel = findChannelBySlug(slug);
+      self.currentChannel = channel || null;
+      $rootScope.$broadcast('channel:changed');
+    }
+
+    function getCurrentChannel() {
+      return self.currentChannel;
+    }
+
     function createChannel(channel) {
       var deferred = $q.defer();
       socket.emit('channel:create', channel, function (status, message) {
@@ -207,6 +217,8 @@ app.service('channelsService',
       getDirects: getDirects,
       findChannelById: findChannelById,
       findChannelBySlug: findChannelBySlug,
+      setCurrentChannelBySlug: setCurrentChannelBySlug,
+      getCurrentChannel: getCurrentChannel,
       createChannel: createChannel,
       editChannel: editChannel,
       addMembersToChannel: addMembersToChannel,

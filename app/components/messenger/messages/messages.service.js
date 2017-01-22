@@ -18,18 +18,19 @@ app.service('messagesService',
     socket.on('message:type:start', function (data) {
       channelsService.addIsTypingMemberByChannelId(data.channelId,
         data.memberId);
+      $rootScope.$broadcast('channels:updated');
     });
 
     socket.on('message:type:end', function (data) {
       channelsService.removeIsTypingMemberByChannelId(data.channelId,
         data.memberId);
+      $rootScope.$broadcast('channels:updated');
     });
 
     /**
      * @todo Find out what's the purpose of the commented part?
      */
     socket.on('message:seen', function (data) {
-      console.log('on seen');
       channelsService.updateChannelLastSeen(data.channelId, data.messageId);
       // if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
       //   self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
@@ -77,10 +78,12 @@ app.service('messagesService',
     }
 
     function bulkSaveMessage(messages) {
-      db.getDb().bulkDocs(messages)
-        .catch(function (err) {
-          $log.error('Bulk saving messages failed.', err);
-        });
+      db.getDb().then(function (database) {
+        database.bulkDocs(messages)
+          .catch(function (err) {
+            $log.error('Bulk saving messages failed.', err);
+          });
+      });
     }
 
     function getMessagesByChannelId(channelId) {
@@ -102,46 +105,54 @@ app.service('messagesService',
      * @todo Create a static variable for limit count.
      */
     function getMessagesByChannelIdFromDb(channelId) {
-      return db.getDb().find({
-        selector: {
-          id: {
-            $gt: null
+      var deferred = $q.defer();
+      db.getDb().then(function (database) {
+        database.find({
+          selector: {
+            id: {
+              $gt: null
+            },
+            channelId: {
+              $eq: channelId
+            }
           },
-          channelId: {
-            $eq: channelId
-          }
-        },
-        sort: [{
-          id: 'desc'
-        }],
-        limit: 50
+          sort: [{
+            id: 'desc'
+          }],
+          limit: 50
+        }).then(function (docs) {
+          deferred.resolve(docs);
+        });
       });
+      return deferred.promise;
     }
 
     function getLastMessageByChannelIdFromDb(channelId) {
       var deferred = $q.defer();
-      db.getDb().find({
-        selector: {
-          id: {
-            $gt: null
+      db.getDb().then(function (database) {
+        database.find({
+          selector: {
+            id: {
+              $gt: null
+            },
+            channelId: {
+              $eq: channelId
+            }
           },
-          channelId: {
-            $eq: channelId
+          sort: [{
+            id: 'desc'
+          }],
+          limit: 1
+        }).then(function (result) {
+          if (result.docs.length === 0) {
+            deferred.resolve(null);
+          } else {
+            deferred.resolve(result.docs[0]);
           }
-        },
-        sort: [{
-          id: 'desc'
-        }],
-        limit: 1
-      }).then(function (result) {
-        if (result.docs.length === 0) {
-          deferred.resolve(null);
-        } else {
-          deferred.resolve(result.docs[0]);
-        }
-      }).catch(function (err) {
-        $log.error('Getting last message from db failed.', err);
-        deferred.reject();
+        }).catch(function (err) {
+          $log.error('Getting last message from db failed.', err);
+          deferred.reject();
+        });
       });
       return deferred.promise;
     }
@@ -151,7 +162,7 @@ app.service('messagesService',
         channelId, null, null, null, true);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
-          message.status = Message.STATUS_TYPE.SENT;
+          message.isPending = false;
           message.setIdAndDatetime(data.id, data.datetime);
           message.save();
           channelsService.updateChannelLastDatetime(message.channelId,
@@ -161,7 +172,6 @@ app.service('messagesService',
     }
 
     function seenMessage(channelId, messageId, senderId) {
-      console.log('emit seen');
       var data = {
         channelId: channelId,
         messageId: messageId,

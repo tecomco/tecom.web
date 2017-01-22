@@ -30,10 +30,9 @@
     <a href="#">
       <i class="zmdi zmdi-mood"></i>
     </a>
-    <textarea ng-disabled="removedChannel" class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="isTyping()"></textarea>
+    <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="startTyping()"></textarea>
     <a class="send-btn" href="#" ng-click="sendMessage()">
       <i class="fa fa-paper-plane"></i>
     </a>
-    <a ng-show="removedChannel" class="send-btn" href="#" ng-click="removeChannel()">از جلوی چشمم دورش کن.</a>
   </div>
 </div>

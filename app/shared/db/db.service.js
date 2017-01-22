@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.service('db', ['$window', '$log', 'User', function ($window, $log, User) {
+app.service('db', ['$window', '$q', '$log', 'User', function ($window, $q, $log, User) {
 
   var self = this;
 
@@ -10,8 +10,8 @@ app.service('db', ['$window', '$log', 'User', function ($window, $log, User) {
 
   function createDb() {
     self.db = new $window.PouchDB('tecom:' + User.team.id + ':' + User.id);
-    $log.info('PouchDB created successfuly.');
-    self.db.createIndex({
+    $log.info('PouchDB connected successfuly.');
+    self.createIndexPromise = self.db.createIndex({
       index: {
         fields: ['id', 'channelId']
       }
@@ -19,7 +19,16 @@ app.service('db', ['$window', '$log', 'User', function ($window, $log, User) {
   }
 
   function getDb() {
-    return self.db;
+    var deferred = $q.defer();
+    if (self.isIndexReady) {
+      deferred.resolve(self.db);
+    } else {
+      self.createIndexPromise.then(function () {
+        deferred.resolve(self.db);
+        self.isIndexReady = true;
+      });
+    }
+    return deferred.promise;
   }
 
   function destroy() {

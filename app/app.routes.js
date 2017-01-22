@@ -13,10 +13,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/messenger',
       views: {
         '': {
-          templateUrl: 'app/components/messenger/messengerView.html'
+          templateUrl: 'app/components/messenger/messenger.view.html'
         },
         'channels@messenger': {
-          templateUrl: 'app/components/messenger/channels/channelsView.html'
+          templateUrl: 'app/components/messenger/channels/channels.view.html'
         }
       },
       onEnter: function ($window, User) {
@@ -27,20 +27,19 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     })
     .state('messenger.home', {
       url: '/',
-      template: '<div class="msg-landing"><div class="col-sm-4"></div><div class="col-sm-4"><img src="static/img/tecom-bw.png" class="img-responsive" /><h1>لطفا یک گروه را انتخاب کنید.</h1></div></div>'
+      template: '<div ng-controller="messagesController" class="msg-landing"><div class="col-sm-4"></div><div class="col-sm-4"><img src="static/img/tecom-bw.png" class="img-responsive" /><h1>لطفا یک گروه را انتخاب کنید.</h1></div></div>'
     })
     .state('messenger.messages', {
       url: '/:slug',
       views: {
         '': {
-          templateUrl: 'app/components/messenger/messages/messagesView.html'
+          templateUrl: 'app/components/messenger/messages/messages.view.html'
         },
         'header@messenger.messages': {
-          templateUrl: 'app/components/messenger/header/headerView.html'
+          templateUrl: 'app/components/messenger/header/header.view.html'
         }
       },
       params: {
-        channel: null,
         slug: null
       }
     });

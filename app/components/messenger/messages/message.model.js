@@ -18,7 +18,6 @@ app.factory('Message',
       }
       this.isPending = isPending || false;
       this.username = User.team.getUsernameById(this.senderId);
-      this.status = this.getStatus();
     }
 
     Message.prototype.getViewWellFormed = function () {
@@ -62,25 +61,25 @@ app.factory('Message',
       }
     };
 
-    /**
-     * @todo Implement this!
-     */
     Message.prototype.getStatus = function () {
-      var channel = channelsService.findChannelById(this.channelId);
-      if (!channel) {
-        return Message.STATUS_TYPE.SEEN;
+      if (!this.channel) {
+        this.channel = channelsService.findChannelById(this.channelId);
+        if (!this.channel) {
+          return Message.STATUS_TYPE.SEEN;
+        }
       }
       if (this.isPending) {
         return Message.STATUS_TYPE.PENDING;
       }
-      if (this.id <= channel.channelLastSeen) {
+      if (this.id <= this.channel.lastSeen) {
         return Message.STATUS_TYPE.SEEN;
       }
       return Message.STATUS_TYPE.SENT;
     };
 
     Message.prototype.getStatusIcon = function () {
-      switch (this.status) {
+      var status = this.getStatus();
+      switch (status) {
         case Message.STATUS_TYPE.PENDING:
           return 'zmdi zmdi-time';
         case Message.STATUS_TYPE.SENT:
@@ -138,10 +137,13 @@ app.factory('Message',
     };
 
     Message.prototype.save = function () {
-      db.getDb().put(this.getDbWellFormed())
-        .catch(function (err) {
-          $log.error('Saving message failed.', err);
-        });
+      var that = this;
+      db.getDb().then(function (database) {
+        database.put(that.getDbWellFormed())
+          .catch(function (err) {
+            $log.error('Saving message failed.', err);
+          });
+      });
     };
 
     Message.generateMessageWellFormedText = function (text) {
