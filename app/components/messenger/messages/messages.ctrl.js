@@ -1,0 +1,107 @@
+'use strict';
+
+app.controller('messagesController',
+  ['$scope', '$state', '$stateParams', '$timeout', 'messagesService',
+    'channelsService',
+  function ($scope, $state, $stateParams, $timeout, messagesService,
+    channelsService) {
+
+    if (!$stateParams.slug) {
+      channelsService.setCurrentChannelBySlug(null);
+      return;
+    }
+
+    var self = this;
+
+    $scope.messages = [];
+
+    initialize();
+
+    $scope.$on('channels:updated', function (event, data) {
+      if (data === 'init') {
+        initialize();
+      }
+    });
+
+    $scope.$on('message', function (event, message) {
+      if ($scope.channel.id == message.channelId) {
+        $scope.messages.push(message);
+        scrollBottom();
+        messagesService.seenMessage($scope.channel.id, message.id,
+          message.senderId);
+      }
+    });
+
+    $scope.sendMessage = function ($event) {
+      $event.preventDefault();
+      var messageBody = $scope.inputMessage.trim();
+      if (!messageBody) return;
+      var message = messagesService.sendAndGetMessage($scope.channel.id,
+        messageBody);
+      $scope.messages.push(message);
+      scrollBottom();
+      clearMessageInput();
+      messagesService.endTyping($scope.channel.id);
+      $timeout.cancel(self.isTypingTimeout);
+    };
+
+    $scope.startTyping = function () {
+      if (self.isTypingTimeout) {
+        $timeout.cancel(self.isTypingTimeout);
+      }
+      if (!self.isTyping) {
+        self.isTyping = true;
+        messagesService.startTyping($scope.channel.id);
+      }
+      self.isTypingTimeout = $timeout(function () {
+        self.isTyping = false;
+        messagesService.endTyping($scope.channel.id);
+      }, 2000);
+    };
+
+    function initialize() {
+      setCurrentChannel();
+      if ($scope.channel) {
+        bindMessages();
+      }
+    }
+
+    function setCurrentChannel() {
+      var slug = $stateParams.slug.replace('@', '');
+      channelsService.setCurrentChannelBySlug(slug);
+      $scope.channel = channelsService.getCurrentChannel();
+    }
+
+    function bindMessages() {
+      messagesService.getMessagesByChannelId($scope.channel.id)
+        .then(function (messages) {
+          $scope.messages = messages;
+          scrollBottom();
+          if ($scope.channel.hasUnread()) {
+            messagesService.seenLastMessageByChannelId($scope.channel.id);
+          }
+        });
+    }
+
+    function scrollBottom() {
+      $timeout(function () {
+        var holder = document.getElementById('messagesHolder');
+        holder.scrollTop = holder.scrollHeight;
+      }, 0, false);
+    }
+
+    function clearMessageInput() {
+      $scope.inputMessage = '';
+    }
+
+    document.getElementById('inputPlaceHolder').focus();
+
+    document.onkeydown = function (evt) {
+      evt = evt || window.event;
+      if (evt.keyCode == 27) {
+        $state.go('messenger.home');
+      }
+    };
+
+  }
+]);
