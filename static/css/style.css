@@ -383,7 +383,16 @@ a, a:hover, a:visited, a:focus {
     background-image: url("../img/landing-bg.png");
     background-repeat: repeat;
 }
-
+.server-msg {
+    width: 100%;
+    height: 30px;
+    background-color: rgba(234, 234, 13, 0.48);
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    padding-top: 5px;
+    text-align: center;
+}
 .is-typing-img {
     position: relative;
     width: 30px;
