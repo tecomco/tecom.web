@@ -5,13 +5,14 @@ app.factory('Channel',
   function ($stateParams, textUtil, User, arrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount) {
-      this.setValues(name, slug, description, type, id, membersCount, notifCount);
+      notifCount, memberId) {
+      this.setValues(name, slug, description, type, id, membersCount,
+        notifCount, memberId);
       this.isTypingMemberIds = [];
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
-      membersCount, notifCount) {
+      membersCount, notifCount, memberId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -19,6 +20,7 @@ app.factory('Channel',
       this.id = id;
       this.membersCount = membersCount;
       this.notifCount = notifCount || null;
+      this.memberId = memberId || null;
     };
 
     Channel.prototype.hasUnread = function () {

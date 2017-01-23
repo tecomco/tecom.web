@@ -24,6 +24,10 @@ app.config(['$httpProvider', 'jwtInterceptorProvider',
   }
 ]);
 
-app.run(function (amMoment) {
+app.run(['amMoment', function (amMoment) {
   amMoment.changeLocale('fa');
-});
+}]);
+
+app.run(['$rootScope', function ($rootScope) {
+  $rootScope.isLoading = true;
+}]);
