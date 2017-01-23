@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('messagesController',
-  ['$scope', '$state', '$stateParams', '$timeout', 'messagesService',
+  ['$scope', '$state', '$stateParams', '$window', '$timeout', 'messagesService',
     'channelsService',
-  function ($scope, $state, $stateParams, $timeout, messagesService,
+  function ($scope, $state, $stateParams, $window, $timeout, messagesService,
     channelsService) {
 
     if (!$stateParams.slug) {
@@ -27,8 +27,12 @@ app.controller('messagesController',
       if ($scope.channel.id == message.channelId) {
         $scope.messages.push(message);
         scrollBottom();
-        messagesService.seenMessage($scope.channel.id, message.id,
-          message.senderId);
+        if (self.isTabfocused) {
+          messagesService.seenMessage($scope.channel.id, message.id,
+            message.senderId);
+        } else {
+          self.lastUnSeenMessage = message;
+        }
       }
     });
 
@@ -63,6 +67,7 @@ app.controller('messagesController',
       setCurrentChannel();
       if ($scope.channel) {
         bindMessages();
+        self.isTabfocused = true;
       }
     }
 
@@ -81,6 +86,14 @@ app.controller('messagesController',
             messagesService.seenLastMessageByChannelId($scope.channel.id);
           }
         });
+    }
+
+    function seenLastUnSeenMessage() {
+      if (self.lastUnSeenMessage) {
+        messagesService.seenMessage($scope.channel.id,
+          self.lastUnSeenMessage.id, self.lastUnSeenMessage.senderId);
+        self.lastUnSeenMessage = null;
+      }
     }
 
     function scrollBottom() {
@@ -102,6 +115,14 @@ app.controller('messagesController',
         $state.go('messenger.home');
       }
     };
+
+    angular.element($window)
+      .bind('focus', function () {
+        self.isTabfocused = true;
+        seenLastUnSeenMessage();
+      }).bind('blur', function () {
+        self.isTabfocused = false;
+      });
 
   }
 ]);

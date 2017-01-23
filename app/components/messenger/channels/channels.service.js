@@ -8,10 +8,9 @@ app.service('channelsService',
 
     self.channels = [];
 
-    /**
-     * @todo Call `MessagesService` method for each channel.
-     */
     socket.on('init', function (results) {
+      self.channels = [];
+      self.initChannelsCount = results.length;
       results.forEach(function (result) {
         var channel = createAndPushChannel(result);
         $rootScope.$emit('channel:new', channel);
@@ -24,6 +23,9 @@ app.service('channelsService',
       $rootScope.$broadcast('channels:updated');
     });
 
+    /**
+     * @todo If the edited channel is the current one, change url.
+     */
     socket.on('channel:edit', function (result) {
       var channel = findChannelById(result.channel.id);
       channel.setValues(result.channel.name, result.channel.slug,
@@ -33,8 +35,10 @@ app.service('channelsService',
     });
 
     socket.on('channel:members:add', function (result) {
-      createAndPushChannel(result);
-      $rootScope.$broadcast('channels:updated');
+      if (result.channel.type === Channel.TYPE.PRIVATE) {
+        createAndPushChannel(result.channel);
+        $rootScope.$broadcast('channels:updated');
+      }
     });
 
     socket.on('channel:members:remove', function (result) {
@@ -46,15 +50,18 @@ app.service('channelsService',
     });
 
     function createAndPushChannel(data) {
-      var channel = new Channel(data.name, data.slug,
-        data.description, data.type, data.id, data.membersCount);
-      channel.memberId = data.memberId;
+      var channel = new Channel(data.name, data.slug, data.description,
+        data.type, data.id, data.membersCount, null, data.memberId);
+      // console.log('channel.isDirect()', channel.isDirect());
+      // console.log('channel.isDirectExist()', channel.isDirectExist());
       if (channel.isDirect() && channel.isDirectExist()) {
+        // console.log('direct', channel);
         channel.changeNameAndSlugFromId();
         var fakeDirect = findChannelBySlug(channel.slug);
         if (fakeDirect) {
-          fakeDirect = channel;
-          return channel;
+          fakeDirect.setValues(channel.name, channel.slug, channel.description,
+            channel.type, channel.id, channel.membersCount, null, channel.memberId);
+          return fakeDirect;
         }
       }
       self.channels.push(channel);
@@ -78,11 +85,21 @@ app.service('channelsService',
         self.currentChannel = null;
       } else {
         var channel = findChannelBySlug(slug);
-        if (channel) {
-          self.currentChannel = channel;
-          $rootScope.$broadcast('channel:changed');
+        if (!channel) return;
+        if (channel.isDirect() && !channel.isDirectExist()) {
+          createDirect(channel.memberId)
+            .then(function () {
+              setCurrentChannel(channel);
+            });
+        } else {
+          setCurrentChannel(channel);
         }
       }
+    }
+
+    function setCurrentChannel(channel) {
+      self.currentChannel = channel;
+      $rootScope.$broadcast('channel:changed');
     }
 
     function getCurrentChannel() {
@@ -118,11 +135,20 @@ app.service('channelsService',
       socket.emit('channel:members:remove', data);
     }
 
-    function createNewDirect(memberId) {
+    function createDirect(memberId) {
+      var deferred = $q.defer();
       var data = {
         memberId: memberId
       };
-      socket.emit('channel:direct:create', data);
+      socket.emit('channel:direct:create', data, function (res) {
+        if (res.status) {
+          deferred.resolve();
+        } else {
+          deferred.reject();
+          $log.error('Creating direct channel failed.', res.message);
+        }
+      });
+      return deferred.promise;
     }
 
     function updateChannelNotification(channelId, type, notifCount) {
@@ -163,6 +189,18 @@ app.service('channelsService',
       var channel = findChannelById(channelId);
       channel.removeIsTypingMemberId(memberId);
       $rootScope.$broadcast('channels:updated');
+    }
+
+    function addMessagesPromise(promise) {
+      if (!self.messagesPromise) {
+        self.messagesPromise = [];
+      }
+      self.messagesPromise.push(promise);
+      if (self.messagesPromise.length == self.initChannelsCount) {
+        $q.all(self.messagesPromise).then(function () {
+          $rootScope.isLoading = false;
+        });
+      }
     }
 
     /**
@@ -229,12 +267,12 @@ app.service('channelsService',
       editChannel: editChannel,
       addMembersToChannel: addMembersToChannel,
       removeMembersFromChannel: removeMembersFromChannel,
-      createNewDirect: createNewDirect,
       updateChannelNotification: updateChannelNotification,
       updateChannelLastDatetime: updateChannelLastDatetime,
       updateChannelLastSeen: updateChannelLastSeen,
       addIsTypingMemberByChannelId: addIsTypingMemberByChannelId,
       removeIsTypingMemberByChannelId: removeIsTypingMemberByChannelId,
+      addMessagesPromise: addMessagesPromise,
       getTeamMembers: getTeamMembers,
       getChannelMembers: getChannelMembers
     };

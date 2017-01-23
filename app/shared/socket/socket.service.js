@@ -21,6 +21,12 @@ app.factory('socket', [
 
     self.socket.on('connect', function () {
       $log.info('Socket opened and connection established successfuly.');
+      $rootScope.socketConnected = true;
+    });
+
+    self.socket.on('disconnect', function () {
+      $log.error('Socket disconnected.');
+      $rootScope.socketConnected = false;
     });
 
     self.socket.on('err', function (err) {
