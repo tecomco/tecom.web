@@ -27,20 +27,17 @@ app.service('messagesService',
       $rootScope.$broadcast('channels:updated');
     });
 
-    /**
-     * @todo Find out what's the purpose of the commented part?
-     */
     socket.on('message:seen', function (data) {
       channelsService.updateChannelLastSeen(data.channelId, data.messageId);
-      // if ($stateParams.channel.id && $stateParams.channel.id === data.channelId)
-      //   self.updateMessageStatusCallback(data.messageId, Message.STATUS_TYPE.SEEN);
     });
 
     $rootScope.$on('channel:new', function (event, channel) {
-      getAndSaveNewMessagesByChannelFromServer(channel);
+      var promise = getAndSaveNewMessagesByChannelFromServer(channel);
+      channelsService.addMessagesPromise(promise);
     });
 
     function getAndSaveNewMessagesByChannelFromServer(channel) {
+      var deferred = $q.defer();
       var messagePromises = [];
       var messages = [];
       var dataToBeSend = {
@@ -73,17 +70,26 @@ app.service('messagesService',
           });
       }));
       Promise.all(messagePromises).then(function () {
-        bulkSaveMessage(messages);
+        bulkSaveMessage(messages).then(function () {
+          deferred.resolve();
+        });
       });
+      return deferred.promise;
     }
 
     function bulkSaveMessage(messages) {
+      var deferred = $q.defer();
       db.getDb().then(function (database) {
         database.bulkDocs(messages)
+          .then(function () {
+            deferred.resolve();
+          })
           .catch(function (err) {
+            deferred.reject();
             $log.error('Bulk saving messages failed.', err);
           });
       });
+      return deferred.promise;
     }
 
     function getMessagesByChannelId(channelId) {
