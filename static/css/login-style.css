@@ -85,6 +85,19 @@ a, a:hover, a:visited, a:focus {
     text-align: center;
     margin-bottom: 40px;
 }
+.login-err {
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 100;
+    padding: 4px 10px;
+    font-size: 12px;
+    background: rgb(226, 89, 89);
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    font-weight: 100;
+}
 .animated-background {
     /*z-index: -1;*/
 }
