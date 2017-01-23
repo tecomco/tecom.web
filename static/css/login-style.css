@@ -85,6 +85,9 @@ a, a:hover, a:visited, a:focus {
     text-align: center;
     margin-bottom: 40px;
 }
+.login-form-body {
+    padding: 0 50px;
+}
 .animated-background {
     /*z-index: -1;*/
 }
