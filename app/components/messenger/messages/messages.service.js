@@ -6,6 +6,10 @@ app.service('messagesService',
 
     var self = this;
 
+    //////////////////////////////////////////////////////////////////////////
+    /////////////////////////// HANDLE SOCKET ////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+
     socket.on('message:send', function (data) {
       var message = new Message(data.body, data.type, data.senderId,
         data.channelId, data.id, data.datetime, data.additionalData);
@@ -31,10 +35,19 @@ app.service('messagesService',
       channelsService.updateChannelLastSeen(data.channelId, data.messageId);
     });
 
+    //////////////////////////////////////////////////////////////////////////
+    ///////////////////// HANDLE ROOTSCOPE CHANGES ///////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+
     $rootScope.$on('channel:new', function (event, channel) {
       var promise = getAndSaveNewMessagesByChannelFromServer(channel);
       channelsService.addMessagesPromise(promise);
     });
+
+
+    //////////////////////////////////////////////////////////////////////////
+    ///////////////////// MESSAGES SERVICE FUNCTIONS /////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
     function getAndSaveNewMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
@@ -210,6 +223,10 @@ app.service('messagesService',
       socket.emit('message:type:end', data);
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    ////////////////////////////// PUBLIC API ////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+
     return {
       getMessagesByChannelId: getMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
@@ -220,5 +237,3 @@ app.service('messagesService',
     };
   }
 ]);
-
-app.run(['messagesService', function (messagesService) {}]);

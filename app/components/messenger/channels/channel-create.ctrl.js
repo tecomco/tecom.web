@@ -1,62 +1,56 @@
 'use strict';
 
 app.controller('createChannelController', ['$uibModalInstance', '$log',
-  'channelsService', 'arrayUtil', 'User',
-  function ($uibModalInstance, $log, channelsService, arrayUtil, User) {
+  'channelsService', 'arrayUtil', 'User', 'Channel',
+  function ($uibModalInstance, $log, channelsService, arrayUtil, User, Channel) {
 
-    var $ctrl = this;
+    var self = this;
 
-    $ctrl.channelType = {
-      PUBLIC: 0,
-      PRIVATE: 1,
-      DIRECT: 2
-    };
+    self.forms = {};
+    self.newChannel = {};
 
-    $ctrl.forms = {};
-    $ctrl.newChannel = {};
-
-    $ctrl.teamMembers = [];
+    self.teamMembers = [];
     var selectedMembers = [];
 
     var makeSelectedMembersArray = function () {
       selectedMembers = [];
       selectedMembers.push(User.id.toString());
-      for (var i = 0; i < $ctrl.teamMembers.length; i++) {
-        if ($ctrl.teamMembers[i].selected === true)
-          selectedMembers.push($ctrl.teamMembers[i].id.toString());
+      for (var i = 0; i < self.teamMembers.length; i++) {
+        if (self.teamMembers[i].selected === true)
+          selectedMembers.push(self.teamMembers[i].id.toString());
       }
     };
 
-    $ctrl.formNameCheckEmpty = function (form) {
+    self.formNameCheckEmpty = function (form) {
       return ((form.name.$touched || form.$submitted) && (!form.name.$viewValue));
     };
 
-    $ctrl.formNameCheckMax = function (form) {
+    self.formNameCheckMax = function (form) {
       return (form.name.$viewValue && form.name.$invalid);
     };
 
-    channelsService.getTeamMembers(User.team.id).then(function (members) {
-      $ctrl.teamMembers = members;
+    User.team.getTeamMembers(User.team.id).then(function (members) {
+      self.teamMembers = members;
     });
 
-    $ctrl.closeCreateChannel = function () {
+    self.closeCreateChannel = function () {
       $uibModalInstance.close();
     };
 
-    $ctrl.createChannelSubmit = function () {
-      $ctrl.newChannel.serverError = false;
-      if ($ctrl.forms.newChannelForm.$valid === true) {
+    self.createChannelSubmit = function () {
+      self.newChannel.serverError = false;
+      if (self.forms.newChannelForm.$valid === true) {
         sendNewChannelData();
       }
     };
 
     var sendNewChannelData = function () {
       makeSelectedMembersArray();
-      var newChannelType = $ctrl.newChannel.isPrivate ?
-        $ctrl.channelType.PRIVATE : $ctrl.channelType.PUBLIC;
+      var newChannelType = self.newChannel.isPrivate ?
+        Channel.TYPE.PRIVATE : Channel.TYPE.PUBLIC;
       var newChannelData = {
-        name: $ctrl.newChannel.name,
-        description: $ctrl.newChannel.description,
+        name: self.newChannel.name,
+        description: self.newChannel.description,
         type: newChannelType,
         member_ids: selectedMembers,
         creator: User.id,
@@ -64,13 +58,13 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
       };
       channelsService.createChannel(newChannelData)
         .then(function () {
-          $ctrl.closeCreateChannel();
+          self.closeCreateChannel();
         })
         .catch(function (err) {
           if (err.indexOf('Duplicate slug in team.') != -1) {
-            $ctrl.newChannel.dublicateError = true;
+            self.newChannel.dublicateError = true;
           } else {
-            $ctrl.newChannel.serverError = true;
+            self.newChannel.serverError = true;
           }
         });
     };
@@ -80,12 +74,12 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
     });
 
     var initializeNewChannelForm = function () {
-      $ctrl.newChannel.name = '';
-      $ctrl.newChannel.description = '';
-      $ctrl.newChannel.isPrivate = false;
-      $ctrl.newChannel.dublicateError = false;
-      $ctrl.newChannel.serverError = false;
-      $ctrl.forms.newChannelForm.$setPristine();
+      self.newChannel.name = '';
+      self.newChannel.description = '';
+      self.newChannel.isPrivate = false;
+      self.newChannel.dublicateError = false;
+      self.newChannel.serverError = false;
+      self.forms.newChannelForm.$setPristine();
     };
   }
 ]);

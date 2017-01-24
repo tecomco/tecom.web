@@ -2,46 +2,40 @@
 
 app.controller('newDirectController', ['$uibModalInstance', '$log',
   'channelsService', 'arrayUtil', 'User',
-  function ($uibModalInstance, $log, channelsService, arrayUtil, User) {
+  function ($uibModalInstance, $log, channelsService, arrayUtil, User, Channel) {
 
-    var $ctrl = this;
+    var self = this;
 
-    $ctrl.channelType = {
-      PUBLIC: 0,
-      PRIVATE: 1,
-      DIRECT: 2
-    };
-
-    $ctrl.forms = {};
-    $ctrl.newChannel = {};
-    $ctrl.teamMembers = [];
+    self.forms = {};
+    self.newChannel = {};
+    self.teamMembers = [];
     var selectedMembers = [];
 
     var makeSelectedMembersArray = function () {
       selectedMembers = [];
       selectedMembers.push(window.memberId.toString());
-      for (var i = 0; i < $ctrl.teamMembers.length; i++) {
-        if ($ctrl.teamMembers[i].selected === true)
-          selectedMembers.push($ctrl.teamMembers[i].id.toString());
+      for (var i = 0; i < self.teamMembers.length; i++) {
+        if (self.teamMembers[i].selected === true)
+          selectedMembers.push(self.teamMembers[i].id.toString());
       }
     };
 
-    channelsService.getTeamMembers(User.team.id).then(function (event) {
-      $ctrl.teamMembers = event;
-      arrayUtil.removeElementByKeyValue($ctrl.teamMembers, 'id', window.memberId);
-      for (var i = 0; i < $ctrl.teamMembers.length; i++) {
-        $ctrl.teamMembers[i].selected = false;
+    User.team.getTeamMembers(User.team.id).then(function (event) {
+      self.teamMembers = event;
+      arrayUtil.removeElementByKeyValue(self.teamMembers, 'id', window.memberId);
+      for (var i = 0; i < self.teamMembers.length; i++) {
+        self.teamMembers[i].selected = false;
       }
     }, function (status) {
       $log.info('error getting team members : ', status);
     });
 
-    $ctrl.closeCreateChannel = function () {
+    self.closeCreateChannel = function () {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.createChannelSubmit = function () {
-      if ($ctrl.forms.newChannelForm.$valid === true) {
+    self.createChannelSubmit = function () {
+      if (self.forms.newChannelForm.$valid === true) {
         sendNewChannelData();
         $uibModalInstance.close();
       }
@@ -49,12 +43,10 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
 
     var sendNewChannelData = function () {
       makeSelectedMembersArray();
-      var newChannelType = $ctrl.newChannel.isPrivate ?
-        $ctrl.channelType.PRIVATE : $ctrl.channelType.PUBLIC;
       var newChannelData = {
-        name: $ctrl.newChannel.name,
-        description: $ctrl.newChannel.description,
-        type: newChannelType,
+        name: self.newChannel.name,
+        description: self.newChannel.description,
+        type: Channel.TYPE.DIRECT,
         member_ids: selectedMembers,
         creator: window.memberId
       };
@@ -62,10 +54,10 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
       channelsService.sendNewChannel(newChannelData, function (response) {
         $log.info('New channel response: ' + response);
         if (response.status) {
-          $ctrl.closeCreateChannel();
+          self.closeCreateChannel();
         } else {
           $log.error('Error sending new channel form to server : ', response.message);
-          $ctrl.newChannel.serverError = true;
+          self.newChannel.serverError = true;
         }
       });
     };
@@ -75,7 +67,7 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
     });
 
     var initializeNewDirect = function () {
-      $ctrl.newChannel.serverError = false;
+      self.newChannel.serverError = false;
     };
   }
 ]);

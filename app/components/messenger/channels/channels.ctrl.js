@@ -1,17 +1,15 @@
 'use strict';
 
 app.controller('channelsController',
-  ['$scope', '$state', '$stateParams', '$uibModal', 'channelsService',
-  function ($scope, $state, $stateParams, $uibModal, channelsService) {
+  ['$scope', '$state', '$uibModal', 'channelsService',
+  function ($scope, $state, $uibModal, channelsService) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
     $scope.channels.directs = [];
 
     $scope.$on('channels:updated', function () {
-      $scope.channels.publicsAndPrivates =
-        channelsService.getPublicsAndPrivates();
-      $scope.channels.directs = channelsService.getDirects();
+      updateChannels();
     });
 
     $scope.$on('channel:changed', function () {
@@ -45,6 +43,12 @@ app.controller('channelsController',
       if (!$scope.channels.current) {
         $state.go('messenger.home');
       }
+    }
+
+    function updateChannels(){
+      $scope.channels.publicsAndPrivates =
+        channelsService.getPublicsAndPrivates();
+      $scope.channels.directs = channelsService.getDirects();
     }
 
     function incrementChannelNotification(channelId) {
