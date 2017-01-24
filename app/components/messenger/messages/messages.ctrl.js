@@ -63,6 +63,15 @@ app.controller('messagesController',
       }, 2000);
     };
 
+    $scope.$watch(function () {
+      return $scope.file;
+    }, function () {
+      if ($scope.file) {
+        // var message = messagesService.sendAndGetMessage($scope.channel.id,
+        //   null, );
+      }
+    });
+
     function initialize() {
       setCurrentChannel();
       if ($scope.channel) {

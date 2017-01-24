@@ -102,10 +102,12 @@ app.factory('Message',
       }
     };
 
-    Message.prototype.setIdAndDatetime = function (_id, datetime) {
+    Message.prototype.setIdAndDatetimeAndAdditionalData = function (_id,
+      datetime, additionalData) {
       this._id = _id;
       this.id = Message.generateIntegerId(_id);
       this.datetime = new Date(datetime);
+      this.additionalData = additionalData;
     };
 
     Message.generateIntegerId = function (stringId) {
@@ -114,10 +116,15 @@ app.factory('Message',
     };
 
     Message.prototype.getServerWellFormed = function () {
-      return {
+      var data = {
         channelId: this.channelId,
-        messageBody: this.body
+        messageBody: this.body,
+        type: this.type
       };
+      if (this.additionalData) {
+        data.additionalData = this.additionalData;
+      }
+      return data;
     };
 
     Message.prototype.getDbWellFormed = function () {

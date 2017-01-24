@@ -176,13 +176,21 @@ app.service('messagesService',
       return deferred.promise;
     }
 
-    function sendAndGetMessage(channelId, messageBody) {
-      var message = new Message(messageBody, Message.TYPE.TEXT, User.id,
-        channelId, null, null, null, true);
+    function sendAndGetMessage(channelId, messageBody, type, file, fileName) {
+      var additionalData = null;
+      if (file) {
+        additionalData = {
+          name: fileName,
+          file: file
+        };
+      }
+      var message = new Message(messageBody, type || Message.TYPE.TEXT, User.id,
+        channelId, null, null, additionalData, true);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;
-          message.setIdAndDatetime(data.id, data.datetime);
+          message.setIdAndDatetimeAndAdditionalData(data.id, data.datetime,
+            data.additionalData);
           message.save();
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
