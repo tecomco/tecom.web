@@ -1,3 +1,5 @@
+{% verbatim %}
+
 <!DOCTYPE html>
 <html ng-app="tecomApp">
 
@@ -11,7 +13,7 @@
     <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="static/lib/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
     <link rel="stylesheet" href="static/css/style.css" />
-    <link rel="shortcut icon" href="favicon.png" type="image/png" />
+    <link rel="shortcut icon" ng-href="{{hasUnread ? 'favicon-notif.png' : 'favicon.png'}}" type="image/png" />
 
     <script src="static/lib/angular/angular.js"></script>
 
@@ -58,3 +60,5 @@
 </body>
 
 </html>
+
+{% endverbatim %}

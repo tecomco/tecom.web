@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('channelsController',
-  ['$scope', '$state', '$uibModal', 'channelsService',
-  function ($scope, $state, $uibModal, channelsService) {
+  ['$rootScope', '$scope', '$state', '$uibModal', 'channelsService',
+  function ($rootScope, $scope, $state, $uibModal, channelsService) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
@@ -10,6 +10,7 @@ app.controller('channelsController',
 
     $scope.$on('channels:updated', function () {
       updateChannels();
+      updateFavicon();
     });
 
     $scope.$on('channel:changed', function () {
@@ -49,6 +50,10 @@ app.controller('channelsController',
       $scope.channels.publicsAndPrivates =
         channelsService.getPublicsAndPrivates();
       $scope.channels.directs = channelsService.getDirects();
+    }
+
+    function updateFavicon() {
+      $rootScope.hasUnread = channelsService.anyChannelHasUnread();
     }
 
     function incrementChannelNotification(channelId) {

@@ -222,6 +222,15 @@ app.service('channelsService',
         return deferred.promise;
       }
 
+      function anyChannelHasUnread() {
+        for (var i = 0; i < self.channels.length; i++) {
+          if (self.channels[i].hasUnread()) {
+            return true;
+          }
+        }
+        return false;
+      }
+
       function getChannels() {
         return self.channels;
       }
@@ -246,6 +255,7 @@ app.service('channelsService',
         getPublicsAndPrivates: getPublicsAndPrivates,
         getDirects: getDirects,
         getChannels: getChannels,
+        anyChannelHasUnread: anyChannelHasUnread,
         findChannelById: findChannelById,
         findChannelBySlug: findChannelBySlug,
         setCurrentChannelBySlug: setCurrentChannelBySlug,

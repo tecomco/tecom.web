@@ -31,4 +31,5 @@ app.run(['amMoment', function (amMoment) {
 app.run(['$rootScope', function ($rootScope) {
   $rootScope.isLoading = true;
   $rootScope.socketConnected = true;
+  $rootScope.hasUnread = false;
 }]);
