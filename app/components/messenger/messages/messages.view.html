@@ -3,7 +3,7 @@
 </div>
 <div ng-controller="messagesController">
   <div id="messagesHolder" class="chat">
-    <div class="server-msg">
+    <div class="server-msg" ng-hide="socketConnected">
         <i class="fa fa-spinner fa-spin fa-fw"></i>
         <span>در حال وصل شدن به سرور...</span>
     </div>
