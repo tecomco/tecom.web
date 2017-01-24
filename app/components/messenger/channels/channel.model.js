@@ -27,6 +27,17 @@ app.factory('Channel',
       return this.notifCount && this.notifCount !== 0;
     };
 
+    Channel.prototype.updateFromJson = function(json){
+      this.name = json.name || null;
+      this.slug = json.slug || null;
+      this.description = json.description || null;
+      this.type = json.type;
+      this.id = json.id || null;
+      this.membersCount = json.membersCount || null;
+      this.notifCount = json.notifCount || null;
+      this.memberId = json.memberId || null;
+    };
+
     Channel.prototype.getLocaleNotifCount = function () {
       return this.hasUnread() ?
         textUtil.persianify(this.notifCount.toString()) : null;

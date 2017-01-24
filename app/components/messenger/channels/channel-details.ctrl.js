@@ -6,9 +6,9 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
             arrayUtil, Channel) {
 
     var self = this;
-    self.channel = channelsService.getCurrentChannel();
     var selectedMember;
     self.editMode = false;
+    self.channel = channelsService.getCurrentChannel();
     self.isAdmin = true;
     self.details = {};
     self.forms = {};
@@ -32,12 +32,11 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     self.closeDetailsModal = function () {
-      $uibModalInstance.close(self.channel);
+      $uibModalInstance.close();
     };
 
     self.editChannelDetailsSubmit = function () {
       self.forms.detailsForm.$setPristine();
-
       var type = self.details.isPrivate ?
         Channel.TYPE.PRIVATE : Channel.TYPE.PUBLIC;
       var editedData = {
@@ -47,12 +46,8 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         id: self.channel.id
       };
       $log.info('edited data:', editedData);
-      var addeMembers = {
-        channelId: self.channel.id,
-        memberIds: self.addedMemberIds
-      };
       channelsService.sendEditedChannel(editedData, function (response) {
-          $log.info('Edit channel Details response: ', response);
+          $log.info(response);
           if (response.status) {
             self.closeDetailsModal();
             $log.info('Done Editing Channel');
@@ -85,7 +80,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
       self.addedMemberIds = [];
     };
 
-    var getChannelMembers = function() {
+    var getChannelMembers = function () {
       channelsService.getChannelMembers(self.channel.id).then(function (event) {
         self.listItems = event.members;
         self.channel.members = self.listItems;
@@ -130,24 +125,28 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
           }))
           self.addedMemberIds.push(teamMember.id);
         else
-          arrayUtil.removeElement(self.addedMemberIds, self.addedMemberIds.indexOf(teamMember.id));
+          arrayUtil.removeElementByValue(self.addedMemberIds, teamMember.id);
       }
     };
 
     self.addMembersClick = function () {
-      self.addingMemberActive = true;
-      User.team.getTeamMembers(User.team.id).then(function (teamMembers) {
-        self.teamMembers = teamMembers;
-        angular.forEach(teamMembers, function (member) {
-          if (!arrayUtil.containsKeyValue(self.listItems, 'member_id', member.id))
-            self.listItems.push(member);
+      $log.info('added members');
+      if (self.addingMemberActive === false) {
+        User.team.getTeamMembers(User.team.id).then(function (teamMembers) {
+          self.teamMembers = teamMembers;
+          angular.forEach(teamMembers, function (member) {
+            if (!arrayUtil.containsKeyValue(self.listItems, 'member_id', member.id))
+              self.listItems.push(member);
+          });
         });
-      });
+      }
+      self.addingMemberActive = true;
     };
 
     self.addMembersSubmit = function () {
+      $log.info('submit');
       if (self.addedMemberIds.length > 0) {
-        channelsService.sendAddedMembersToChannel(self.addedMemberIds,
+        channelsService.addMembersToChannel(self.addedMemberIds,
           self.channel.id, function (response) {
             $log.info('Adding members response: ', response);
             if (response.status) {

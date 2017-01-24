@@ -1,8 +1,8 @@
 'use strict';
 
 app.service('channelsService',
-  ['$rootScope', '$http', '$q', '$log', 'socket', 'Channel',
-    function ($rootScope, $http, $q, $log, socket, Channel) {
+  ['$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state',
+    function ($rootScope, $http, $q, $log, socket, Channel, $state) {
 
       var self = this;
 
@@ -13,6 +13,7 @@ app.service('channelsService',
       //////////////////////////////////////////////////////////////////////////
 
       socket.on('init', function (results) {
+        $log.info(results);
         self.channels = [];
         self.initChannelsCount = results.length;
         results.forEach(function (result) {
@@ -31,10 +32,13 @@ app.service('channelsService',
        * @todo If the edited channel is the current one, change url.
        */
       socket.on('channel:edit', function (result) {
+        $log.info('channel:edit', result);
         var channel = findChannelById(result.channel.id);
-        channel.setValues(result.channel.name, result.channel.slug,
-          result.channel.description, result.channel.type, result.channel.id,
-          result.channel.membersCount);
+        channel.updateFromJson(result.channel);
+        if(isCurrentChannel(channel)) {
+          $state.transitionTo('messenger.messages',{slug: channel.slug});
+        }
+        $log.info('channels:', self.channels);
         $rootScope.$broadcast('channels:updated');
       });
 
@@ -124,16 +128,16 @@ app.service('channelsService',
         return deferred.promise;
       }
 
-      function editChannel(channel) {
-        socket.emit('channel:edit:details', channel);
+      function sendEditedChannel(channel, callback) {
+        socket.emit('channel:edit:details', channel, callback);
       }
 
-      function addMembersToChannel(memberIds, channelId) {
+      function addMembersToChannel(memberIds, channelId, callback) {
         var data = {
           memberIds: memberIds,
           channelId: channelId
         };
-        socket.emit('channel:members:add', data);
+        socket.emit('channel:members:add', data, callback);
       }
 
       function removeMemberFromChannel(data, callback) {
@@ -222,6 +226,10 @@ app.service('channelsService',
         return deferred.promise;
       }
 
+      function isCurrentChannel(channel){
+        return (self.currentChannel.id === channel.id)
+      }
+
       function anyChannelHasUnread() {
         for (var i = 0; i < self.channels.length; i++) {
           if (self.channels[i].hasUnread()) {
@@ -261,7 +269,7 @@ app.service('channelsService',
         setCurrentChannelBySlug: setCurrentChannelBySlug,
         getCurrentChannel: getCurrentChannel,
         createChannel: createChannel,
-        editChannel: editChannel,
+        sendEditedChannel: sendEditedChannel,
         addMembersToChannel: addMembersToChannel,
         removeMemberFromChannel: removeMemberFromChannel,
         updateChannelNotification: updateChannelNotification,

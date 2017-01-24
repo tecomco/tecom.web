@@ -9,7 +9,8 @@
   <div class="group-holder">
     <ul>
       <li ng-repeat="channel in channels.publicsAndPrivates | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="channel.getCssClass()">
-        <a ui-sref=".messages({slug: '{{channel.getUrlifiedSlug()}}'})">
+        <!--<a ui-sref=".messages({slug: '{{channel.getUrlifiedSlug()}}'})">-->
+        <a ng-click="channelClick(channel)">
           <i ng-class="channel.getIconClass()"></i>
           <span class="channel-name">{{channel.name}}</span>
           <span ng-show="channel.hasUnread()" class="badge">{{channel.getLocaleNotifCount()}}</span>
