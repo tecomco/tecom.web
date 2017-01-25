@@ -13,7 +13,6 @@ app.service('channelsService',
       //////////////////////////////////////////////////////////////////////////
 
       socket.on('init', function (results) {
-        $log.info(results);
         self.channels = [];
         self.initChannelsCount = results.length;
         results.forEach(function (result) {
@@ -35,14 +34,15 @@ app.service('channelsService',
         $log.info('channel:edit', result);
         var channel = findChannelById(result.channel.id);
         channel.updateFromJson(result.channel);
-        if(isCurrentChannel(channel)) {
-          $state.transitionTo('messenger.messages',{slug: channel.slug});
+        if (isCurrentChannel(channel)) {
+          $state.transitionTo('messenger.messages', {slug: channel.slug});
         }
         $log.info('channels:', self.channels);
         $rootScope.$broadcast('channels:updated');
       });
 
       socket.on('channel:members:add', function (result) {
+        $log.info('add member:', result);
         if (result.channel.type === Channel.TYPE.PRIVATE) {
           createAndPushChannel(result.channel);
           $rootScope.$broadcast('channels:updated');
@@ -51,7 +51,7 @@ app.service('channelsService',
 
       socket.on('channel:members:remove', function (result) {
         if (result.channel.type === Channel.TYPE.PRIVATE) {
-          var channel = findChannelById(result.id);
+          var channel = findChannelById(result.channel.id);
           channel.setIsRemoved();
           $rootScope.$broadcast('channels:updated');
         }
@@ -226,7 +226,7 @@ app.service('channelsService',
         return deferred.promise;
       }
 
-      function isCurrentChannel(channel){
+      function isCurrentChannel(channel) {
         return (self.currentChannel.id === channel.id)
       }
 

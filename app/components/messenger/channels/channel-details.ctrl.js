@@ -13,6 +13,8 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     self.details = {};
     self.forms = {};
 
+    $log.info('channel:', self.channel);
+
     self.editChannel = function () {
       self.editMode = true;
       self.details.name = self.channel.name;
@@ -45,9 +47,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         type: type,
         id: self.channel.id
       };
-      $log.info('edited data:', editedData);
       channelsService.sendEditedChannel(editedData, function (response) {
-          $log.info(response);
           if (response.status) {
             self.closeDetailsModal();
             $log.info('Done Editing Channel');
@@ -130,7 +130,6 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     self.addMembersClick = function () {
-      $log.info('added members');
       if (self.addingMemberActive === false) {
         User.team.getTeamMembers(User.team.id).then(function (teamMembers) {
           self.teamMembers = teamMembers;
@@ -144,11 +143,9 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     self.addMembersSubmit = function () {
-      $log.info('submit');
       if (self.addedMemberIds.length > 0) {
         channelsService.addMembersToChannel(self.addedMemberIds,
           self.channel.id, function (response) {
-            $log.info('Adding members response: ', response);
             if (response.status) {
               self.addingMemberActive = false;
               self.channel.membersCount = self.channel.membersCount + self.addedMemberIds.length;
