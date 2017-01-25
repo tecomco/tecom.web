@@ -64,18 +64,6 @@ app.controller('messagesController', [
       }, 2000);
     };
 
-    $scope.$watch(function () {
-      return $scope.file;
-    }, function () {
-      if ($scope.file.data) {
-        var message = messagesService.sendFileAndGetMessage($scope.channel.id,
-          $scope.file.data, $scope.file.name);
-        $scope.messages.push(message);
-        scrollBottom();
-        $scope.file = {};
-      }
-    });
-
     $scope.upload = function (file, errFiles) {
       if (file) {
         var message = messagesService.sendFileAndGetMessage($scope.channel.id,
