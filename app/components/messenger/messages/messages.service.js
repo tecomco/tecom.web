@@ -216,6 +216,7 @@ app.service('messagesService', [
         method: 'PUT'
       }).then(function (res) {
         message.additionalData.url = res.data.file;
+        message.additionalData.fileId = res.data.id;
         socket.emit('message:send', message.getServerWellFormed(),
           function (data) {
             message.isPending = false;
@@ -263,6 +264,13 @@ app.service('messagesService', [
       socket.emit('message:type:end', data);
     }
 
+    function makeFileLive(channelId, fileId){
+      var data = {channelId: channelId, fileId: fileId};
+      socket.emit('file:lived', data, function(res){
+
+      });
+    }
+
     //////////////////////////////////////////////////////////////////////////
     ////////////////////////////// PUBLIC API ////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
@@ -274,7 +282,8 @@ app.service('messagesService', [
       seenMessage: seenMessage,
       seenLastMessageByChannelId: seenLastMessageByChannelId,
       startTyping: startTyping,
-      endTyping: endTyping
+      endTyping: endTyping,
+      makeFileLive: makeFileLive
     };
   }
 ]);

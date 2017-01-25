@@ -73,6 +73,11 @@ app.controller('messagesController', [
       }
     };
 
+    $scope.goLive = function() {
+      console.log('goLive !!');
+      messagesService.makeFileLive(channelId, fileId);
+    };
+
     function initialize() {
       setCurrentChannel();
       if ($scope.channel) {

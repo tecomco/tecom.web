@@ -9,7 +9,6 @@
   <div class="group-holder">
     <ul>
       <li ng-repeat="channel in channels.publicsAndPrivates | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="channel.getCssClass()">
-        <!--<a ui-sref=".messages({slug: '{{channel.getUrlifiedSlug()}}'})">-->
         <a ng-click="channelClick(channel)">
           <i ng-class="channel.getIconClass()"></i>
           <span class="channel-name">{{channel.name}}</span>
@@ -28,7 +27,7 @@
   <div class="direct-holder group-holder">
     <ul>
       <li ng-repeat="direct in channels.directs | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="direct.getCssClass()">
-        <a ui-sref=".messages({slug: '{{direct.getUrlifiedSlug()}}'})">
+        <a ng-click="channelClick(channel)">
           <i ng-class="direct.getIconClass()"></i>
           <span class="channel-name">{{direct.name}}</span>
           <span ng-show="direct.hasUnread()" class="badge">{{direct.getLocaleNotifCount()}}</span>
