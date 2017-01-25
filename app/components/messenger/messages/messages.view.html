@@ -31,10 +31,9 @@
     </div>
   </div>
   <div class="input-holder" id="inputHolder">
-    <a onclick="document.getElementById('fileUpload').click();">
+    <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
       <i class="zmdi zmdi-plus"></i>
     </a>
-    <input id="fileUpload" type="file" fileread="file" style="display: none" />
     <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="startTyping()"></textarea>
     <a class="send-btn" href="#" ng-click="sendMessage()">
       <i class="fa fa-paper-plane"></i>

@@ -1,8 +1,10 @@
 'use strict';
 
-app.service('messagesService',
-  ['$rootScope', '$log', '$q', 'socket', 'channelsService', 'Message', 'db', 'User',
-  function ($rootScope, $log, $q, socket, channelsService, Message, db, User) {
+app.service('messagesService', [
+  '$rootScope', '$http', '$log', '$q', 'Upload', 'socket', 'channelsService',
+  'Message', 'db', 'User',
+  function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
+    Message, db, User) {
 
     var self = this;
 
@@ -176,12 +178,12 @@ app.service('messagesService',
       return deferred.promise;
     }
 
-    function sendAndGetMessage(channelId, messageBody, type, file, fileName) {
+    function sendAndGetMessage(channelId, messageBody, type, fileName, fileUrl) {
       var additionalData = null;
-      if (file) {
+      if (fileName) {
         additionalData = {
           name: fileName,
-          file: file
+          url: fileUrl
         };
       }
       var message = new Message(messageBody, type || Message.TYPE.TEXT, User.id,
@@ -189,12 +191,42 @@ app.service('messagesService',
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;
-          message.setIdAndDatetimeAndAdditionalData(data.id, data.datetime,
-            data.additionalData);
+          message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
           message.save();
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
         });
+      return message;
+    }
+
+    function sendFileAndGetMessage(channelId, fileData, fileName) {
+      var additionalData = {
+        name: fileName
+      };
+      var message = new Message(null, Message.TYPE.FILE, User.id,
+        channelId, null, null, additionalData, true);
+      Upload.upload({
+        url: 'api/v1/files/upload/' + fileName,
+        data: {
+          name: fileName,
+          channel: channelId,
+          sender: User.id,
+          file: fileData
+        },
+        method: 'PUT'
+      }).then(function (res) {
+        message.additionalData.url = res.data.file;
+        socket.emit('message:send', message.getServerWellFormed(),
+          function (data) {
+            message.isPending = false;
+            message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
+            message.save();
+            channelsService.updateChannelLastDatetime(message.channelId,
+              message.datetime);
+          });
+      }).catch(function (err) {
+        // TODO: Handle upload errors properly.
+      });
       return message;
     }
 
@@ -238,6 +270,7 @@ app.service('messagesService',
     return {
       getMessagesByChannelId: getMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
+      sendFileAndGetMessage: sendFileAndGetMessage,
       seenMessage: seenMessage,
       seenLastMessageByChannelId: seenLastMessageByChannelId,
       startTyping: startTyping,

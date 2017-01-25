@@ -2,7 +2,7 @@
 
 var app = angular.module('tecomApp', [
   'ui.router', 'ngStorage', 'angular-jwt', 'ui.bootstrap', 'config',
-  'angularMoment', 'ngSanitize',
+  'angularMoment', 'ngSanitize', 'ngFileUpload'
 ]);
 
 app.config(['$httpProvider', 'jwtOptionsProvider', 'UserProvider',

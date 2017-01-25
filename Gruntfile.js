@@ -20,7 +20,8 @@ module.exports = function (grunt) {
           'io': true,
           'document': true,
           'window': true,
-          'Promise': true
+          'Promise': true,
+          'FileReader': true
         }
       }
     },

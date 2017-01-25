@@ -1,11 +1,16 @@
 'use strict';
 
-app.factory('Message',
-  ['$log', '$sce', 'db', 'textUtil', 'channelsService', 'User',
+app.factory('Message', ['$log', '$sce', 'db', 'textUtil', 'channelsService', 'User',
   function ($log, $sce, db, textUtil, channelsService, User) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
       additionalData, isPending) {
+      this.setValues(body, type, senderId, channelId, _id, datetime,
+        additionalData, isPending);
+    }
+
+    Message.prototype.setValues = function (body, type, senderId, channelId,
+      _id, datetime, additionalData, isPending) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -18,14 +23,23 @@ app.factory('Message',
       }
       this.isPending = isPending || false;
       this.username = User.team.getUsernameById(this.senderId);
-    }
+    };
 
     Message.prototype.getViewWellFormed = function () {
+      var body;
       if (this.type === Message.TYPE.TEXT) {
-        return Message.generateMessageWellFormedText(this.body);
+        body = Message.generateMessageWellFormedText(this.body);
+      } else if (this.type === Message.TYPE.FILE) {
+        body = '<label>' + this.additionalData.name + '</label>';
+        body += '<br/>';
+        body += '<a href=\"' + this.additionalData.url + '\">Go LIVE!</a>';
+        body += '<br/>';
+        body += '<form method=\"get\" action=\"' + this.additionalData.url + '\">';
+        body += '<a href=\"' + this.additionalData.url + '\" download=\"' + this.additionalData.name + '\">دانلود</a>';
+        return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
-        var body = '';
+        body = '';
         var addedMemberIds = this.additionalData;
         angular.forEach(addedMemberIds, function (memberId) {
           body += '@' + User.team.getUsernameById(memberId) + ' و ';
@@ -38,8 +52,8 @@ app.factory('Message',
           body += (addedMemberIds.length > 1) ?
             '.از گروه حذف شدند.' : ' از گروه حذف شد';
         }
-        return body;
       }
+      return body;
     };
 
     Message.prototype.isFromMe = function () {
@@ -92,22 +106,22 @@ app.factory('Message',
     Message.prototype.getCssClass = function () {
       switch (this.type) {
         case Message.TYPE.TEXT:
-          return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+        case Message.TYPE.FILE:
+          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
         case Message.TYPE.NOTIF.USER_ADDED:
-          return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
         case Message.TYPE.NOTIF.USER_REMOVED:
-          return User.id === this.senderId ? 'msg msg-send' : 'msg msg-recieve';
+          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
         case Message.TYPE.NOTIF.FILE_LIVED:
           return 'msg msg-file';
       }
     };
 
-    Message.prototype.setIdAndDatetimeAndAdditionalData = function (_id,
-      datetime, additionalData) {
+    Message.prototype.setIdAndDatetime = function (_id, datetime) {
       this._id = _id;
       this.id = Message.generateIntegerId(_id);
       this.datetime = new Date(datetime);
-      this.additionalData = additionalData;
     };
 
     Message.generateIntegerId = function (stringId) {
