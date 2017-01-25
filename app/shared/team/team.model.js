@@ -51,7 +51,6 @@ app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
         url: '/api/v1/teams/' + teamId + '/members/'
       }).success(function (data) {
         var members = data;
-        arrayUtil.removeElementByKeyValue(members, 'id', User.id);
         deferred.resolve(members);
       }).error(function (err) {
         $log.info('Error Getting team members.', err);
