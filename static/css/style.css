@@ -105,7 +105,7 @@ a, a:hover, a:visited, a:focus {
     width: 200px;
     position: absolute;
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
@@ -113,6 +113,36 @@ a, a:hover, a:visited, a:focus {
     -moz-transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     z-index: 3;
+}
+.loading-txt {
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 200;
+    position: absolute;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    z-index: 3;
+}
+.notif {
+    display: inline-block;
+    min-width: 200px;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    right: 30%;
+    max-width: 80%;
+    padding: 8px 12px;
+    background: rgba(85, 85, 85, 0.52);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-weight: 100;
+    font-size: 15px;
 }
 .msg-landing {
     background-image: url("../img/landing-bg.png");
@@ -431,8 +461,52 @@ a, a:hover, a:visited, a:focus {
 }
 .doc-section {
     height: 100%;
-    overflow: scroll;
-
+}
+.doc-section-header {
+    background: #f7f7f7;
+    color: #555;
+    height: 58px;
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+.doc-section-body {
+    overflow-y: scroll;
+}
+.doc-tabs {
+    direction: ltr;
+    display: block;
+    float: left;
+    height: 100%;
+}
+.doc-tab {
+    list-style: none;
+    display: table-cell;
+    border-right: 1px #eee solid;
+    cursor: default;
+    height: 100%;
+    padding: 20px 20px;
+}
+.doc-tab:hover {
+    background: rgba(0,0,0,0.1);
+}
+.doc-tab > i {
+    padding-left: 8px;
+}
+.doc-tab-active {
+    background: #fff;
+}
+.doc-tab-active:hover {
+    /*background: #fff;*/
+}
+.doc-file-ex {
+    border-left: 1px #eee solid;
+    cursor: default;
+    float: right;
+    height: 100%;
+    padding: 20px 20px;
+}
+.doc-file-ex:hover {
+    background: rgba(0,0,0,0.1);
 }
 .date-holder {
     text-align: center;
