@@ -113,9 +113,9 @@ app.factory('Message', ['$log', '$sce', 'db', 'textUtil', 'channelsService', 'Us
         case Message.TYPE.FILE:
           return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
         case Message.TYPE.NOTIF.USER_ADDED:
-          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+          return 'notif';
         case Message.TYPE.NOTIF.USER_REMOVED:
-          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+          return 'notif';
         case Message.TYPE.NOTIF.FILE_LIVED:
           return 'msg msg-file';
       }
