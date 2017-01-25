@@ -1,10 +1,10 @@
 'use strict';
 
-app.controller('messagesController',
-  ['$scope', '$state', '$stateParams', '$window', '$timeout', 'messagesService',
-    'channelsService',
-  function ($scope, $state, $stateParams, $window, $timeout, messagesService,
-    channelsService) {
+app.controller('messagesController', [
+  '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
+  'messagesService', 'channelsService',
+  function ($scope, $state, $stateParams, $window, $timeout, Upload,
+    messagesService, channelsService) {
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -14,6 +14,7 @@ app.controller('messagesController',
     var self = this;
 
     $scope.messages = [];
+    $scope.file = {};
 
     initialize();
 
@@ -66,11 +67,23 @@ app.controller('messagesController',
     $scope.$watch(function () {
       return $scope.file;
     }, function () {
-      if ($scope.file) {
-        // var message = messagesService.sendAndGetMessage($scope.channel.id,
-        //   null, );
+      if ($scope.file.data) {
+        var message = messagesService.sendFileAndGetMessage($scope.channel.id,
+          $scope.file.data, $scope.file.name);
+        $scope.messages.push(message);
+        scrollBottom();
+        $scope.file = {};
       }
     });
+
+    $scope.upload = function (file, errFiles) {
+      if (file) {
+        var message = messagesService.sendFileAndGetMessage($scope.channel.id,
+          file, file.name);
+        $scope.messages.push(message);
+        scrollBottom();
+      }
+    };
 
     function initialize() {
       setCurrentChannel();
