@@ -1,109 +1,23 @@
 <div class="wrapper">
-    <div class="col-sm-3 col-lg-2 no-padding channel-section">
-        <div class="right-section">
-            <div class="right-section-header">
-                <a href="/">
-                    <img src="static/img/tecom2.png" />
-                    <span class="brand-name-right-header">تیکام</span>
-                </a>
-            </div>
-            <div class="right-section-main">
-                <div ui-view="channels"></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-5 col-lg-5 no-padding chat-section">
-        <div ui-view></div>
-        <!-- TODO: File viewer should be here. -->
-    </div>
-    <div class="col-sm-4 col-lg-5 no-padding doc-section">
-      <div class="doc-section-header">
-          <ul class="doc-tabs">
-              <li class="doc-tab doc-tab-active">
-                  Doc 1
-                  <i class="fa fa-times"></i>
-              </li>
-              <li class="doc-tab">
-                  Doc 1
-                  <i class="fa fa-times"></i>
-              </li>
-              <li class="doc-tab">
-                  Doc 1
-                  <i class="fa fa-times"></i>
-              </li>
-          </ul>
-          <div class="doc-file-ex">
-              <i class="fa fa-folder-open"></i>
-          </div>
+  <div class="col-sm-3 col-lg-2 no-padding channel-section">
+    <div class="right-section">
+      <div class="right-section-header">
+        <a href="/">
+          <img src="static/img/tecom2.png" />
+          <span class="brand-name-right-header">تیکام</span>
+        </a>
       </div>
-      <div class="doc-section-body">
-        <pre class="prettyprint" dir="ltr">
-  'use strict';
-
-  app.controller('channelsController',
-    ['$scope', '$state', '$stateParams', '$uibModal', 'channelsService',
-    function ($scope, $state, $stateParams, $uibModal, channelsService) {
-
-      $scope.channels = {};
-      $scope.channels.publicsAndPrivates = [];
-      $scope.channels.directs = [];
-
-      $scope.$on('channels:updated', function () {
-        $scope.channels.publicsAndPrivates =
-          channelsService.getPublicsAndPrivates();
-        $scope.channels.directs = channelsService.getDirects();
-      });
-
-      $scope.$on('channel:changed', function () {
-        $scope.channels.current = channelsService.getCurrentChannel();
-        validateUrlChannel();
-      });
-
-      $scope.$on('message', function (event, message) {
-        if (!$scope.channels.current) {
-          incrementChannelNotification(message.channelId);
-        } else {
-          var belongsToCurrentChannel =
-            message.channelId === $scope.channels.current.id;
-          if (!belongsToCurrentChannel && !message.isFromMe()) {
-            incrementChannelNotification(message.channelId);
-          }
-        }
-      });
-
-      $scope.openModal = function (name) {
-        var modalInstance = $uibModal.open({
-          animation: true,
-          templateUrl: name + 'Modal.html',
-          controller: name + 'Controller',
-          controllerAs: '$ctrl'
-        });
-        modalInstance.result.then(function () {}, function () {});
-      };
-
-      function validateUrlChannel() {
-        if (!$scope.channels.current) {
-          $state.go('messenger.home');
-        }
-      }
-
-      function incrementChannelNotification(channelId) {
-        channelsService.updateChannelNotification(channelId, 'inc');
-      }
-
-    }
-  ]);
-        </pre>
+      <div class="right-section-main">
+        <div ui-view="channels"></div>
       </div>
     </div>
-    <div class="loading" ng-show="isLoading">
-        <img class="loading-img" src="static/img/loading.gif">
-        <div class="loading-txt">در اینجا یک سخن انگیزشی می‌آید در آینده.</div>
-    </div>
+  </div>
+  <div class="col-sm-9 col-lg-10 no-padding chat-section">
+    <div ui-view></div>
+  </div>
+  <div class="loading" ng-show="isLoading">
+    <img class="loading-img" src="static/img/loading.gif">
+    <div class="loading-txt">در اینجا یک سخن انگیزشی می‌آید در آینده.</div>
+  </div>
 </div>
-
-<!-- TODO the above div changes to col-sm-5 col-lg-6  -->
-<!-- <div class="col-sm-4 col-lg-4 no-padding">
-    This is where the magic is going to happen...
-</div> -->
 <div class="clearfix"></div>

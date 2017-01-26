@@ -1,16 +1,17 @@
 'use strict';
 
-app.factory('Message', ['$log', '$sce', 'db', 'textUtil', 'channelsService', 'User',
+app.factory('Message', [
+  '$log', '$sce', 'db', 'textUtil', 'channelsService', 'User',
   function ($log, $sce, db, textUtil, channelsService, User) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-                     additionalData, isPending) {
+      additionalData, isPending) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
         additionalData, isPending);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-                                            _id, datetime, additionalData, isPending) {
+      _id, datetime, additionalData, isPending) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -32,14 +33,14 @@ app.factory('Message', ['$log', '$sce', 'db', 'textUtil', 'channelsService', 'Us
       } else if (this.type === Message.TYPE.FILE) {
         body = '<label>' + this.additionalData.name + '</label>';
         body += '<br/>';
-        body += '<a href=\"' + this.additionalData.url + '\" ng-click=\"goLive()\" >Go Live</a>';
+        body += '<a ng-click=\"goLive(' + this.additionalData.fileId + ')\">Go Live</a>';
         body += '<br/>';
-        body += '<a>hello</a>'
-        body += '<br/>';
-        body += '<form method=\"get\" action=\"' + this.additionalData.url + '\">';
-        body += '<a href=\"' + this.additionalData.url + '\" download=\"'
-          + this.additionalData.name + '\" target=\"_blank\">دانلود</a>';
-        return $sce.trustAsHtml(body);
+        body += '<a href=\"' + this.additionalData.url + '\" download=\"' +
+          this.additionalData.name + '\" target=\"_blank\">دانلود</a>';
+        body = $sce.trustAsHtml(body);
+        // TODO: Use a directive.
+        // return $compile(body)(scope.scope);
+        return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
         body = '';

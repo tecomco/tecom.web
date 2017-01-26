@@ -27,7 +27,7 @@
   <div class="direct-holder group-holder">
     <ul>
       <li ng-repeat="direct in channels.directs | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="direct.getCssClass()">
-        <a ng-click="channelClick(channel)">
+        <a ng-click="channelClick(direct)">
           <i ng-class="direct.getIconClass()"></i>
           <span class="channel-name">{{direct.name}}</span>
           <span ng-show="direct.hasUnread()" class="badge">{{direct.getLocaleNotifCount()}}</span>

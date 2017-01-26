@@ -37,6 +37,9 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         },
         'header@messenger.messages': {
           templateUrl: 'app/components/messenger/header/header.view.html'
+        },
+        'files@messenger.messages': {
+          templateUrl: 'app/components/files/files.view.html'
         }
       },
       params: {
