@@ -861,6 +861,7 @@ button.list-group-item > .fa {
     border-right: 1px solid rgba(100,100,100,0.4);
     /*padding: 20px;*/
 }
+
 .modal-body .g-members {
     height: 27vh;
     overflow-y: scroll;

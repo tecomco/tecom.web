@@ -36,7 +36,7 @@ app.factory('Message', [
         body += '<a ng-click=\"goLive(' + this.additionalData.fileId + ')\">Go Live</a>';
         body += '<br>';
         body += '<a href=\"' + this.additionalData.url + '\" download=\"' +
-          this.additionalData.name + '\" target=\"_blank\">دانلود</a>';
+          this.additionalData.name + '\" target=\"_blank\"><i class=\"fa fa-download\"></i></a>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {

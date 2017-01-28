@@ -12,7 +12,7 @@ app.factory('Channel',
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
-      membersCount, notifCount, memberId) {
+      membersCount, notifCount, memberId, liveFileId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -21,6 +21,7 @@ app.factory('Channel',
       this.membersCount = membersCount;
       this.notifCount = notifCount || null;
       this.memberId = memberId || null;
+      this.liveFileId = liveFileId || null;
     };
 
     Channel.prototype.hasUnread = function () {
