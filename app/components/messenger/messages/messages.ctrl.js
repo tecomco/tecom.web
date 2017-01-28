@@ -2,9 +2,9 @@
 
 app.controller('messagesController', [
   '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
-  'messagesService', 'channelsService',
+  'messagesService', 'channelsService', 'filesService',
   function ($scope, $state, $stateParams, $window, $timeout, Upload,
-    messagesService, channelsService) {
+    messagesService, channelsService, filesService) {
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -74,7 +74,8 @@ app.controller('messagesController', [
     };
 
     $scope.goLive = function (fileId) {
-      messagesService.makeFileLive($scope.channel.id, fileId);
+      console.log('goLive:', fileId);
+      filesService.makeFileLive($scope.channel.id, fileId);
     };
 
     function initialize() {

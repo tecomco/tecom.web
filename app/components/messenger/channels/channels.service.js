@@ -59,13 +59,20 @@ app.service('channelsService', [
       }
     });
 
+    socket.on('file:lived', function (data) {
+      var channel = findChannelById(data.channelId);
+      channel.liveFileId = data.fileId;
+      $rootScope.$broadcast('channels:updated');
+    });
+
     /**
      * @summary Methods
      */
 
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
-        data.type, data.id, data.membersCount, null, data.memberId);
+        data.type, data.id, data.membersCount, null, data.memberId,
+        data.liveFileId);
       if (channel.isDirect() && channel.isDirectExist()) {
         channel.changeNameAndSlugFromId();
         var fakeDirect = findChannelBySlug(channel.slug);
@@ -165,15 +172,15 @@ app.service('channelsService', [
     function updateChannelNotification(channelId, type, notifCount) {
       var channel = findChannelById(channelId);
       switch (type) {
-      case 'empty':
-        channel.notifCount = 0;
-        break;
-      case 'inc':
-        channel.notifCount++;
-        break;
-      case 'num':
-        channel.notifCount = notifCount;
-        break;
+        case 'empty':
+          channel.notifCount = 0;
+          break;
+        case 'inc':
+          channel.notifCount++;
+          break;
+        case 'num':
+          channel.notifCount = notifCount;
+          break;
       }
       $rootScope.$broadcast('channels:updated');
     }

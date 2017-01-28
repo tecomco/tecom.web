@@ -265,14 +265,6 @@ app.service('messagesService', [
       socket.emit('message:type:end', data);
     }
 
-    function makeFileLive(channelId, fileId) {
-      var data = {
-        channelId: channelId,
-        fileId: fileId
-      };
-      socket.emit('file:lived', data);
-    }
-
     /**
      * @summary Public API
      */
@@ -285,7 +277,6 @@ app.service('messagesService', [
       seenLastMessageByChannelId: seenLastMessageByChannelId,
       startTyping: startTyping,
       endTyping: endTyping,
-      makeFileLive: makeFileLive
     };
   }
 ]);
