@@ -8,9 +8,9 @@ app.service('messagesService', [
 
     var self = this;
 
-    //////////////////////////////////////////////////////////////////////////
-    /////////////////////////// HANDLE SOCKET ////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @summary Socket listeners
+     */
 
     socket.on('message:send', function (data) {
       var message = new Message(data.body, data.type, data.senderId,
@@ -37,19 +37,18 @@ app.service('messagesService', [
       channelsService.updateChannelLastSeen(data.channelId, data.messageId);
     });
 
-    //////////////////////////////////////////////////////////////////////////
-    ///////////////////// HANDLE ROOTSCOPE CHANGES ///////////////////////////
-    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @summary RootScope listeners.
+     */
 
     $rootScope.$on('channel:new', function (event, channel) {
       var promise = getAndSaveNewMessagesByChannelFromServer(channel);
       channelsService.addMessagesPromise(promise);
     });
 
-
-    //////////////////////////////////////////////////////////////////////////
-    ///////////////////// MESSAGES SERVICE FUNCTIONS /////////////////////////
-    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @summary Methods
+     */
 
     function getAndSaveNewMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
@@ -226,7 +225,9 @@ app.service('messagesService', [
               message.datetime);
           });
       }).catch(function (err) {
-        // TODO: Handle upload errors properly.
+        /**
+         * @todo Handle upload errors properly.
+         */
       });
       return message;
     }
@@ -264,16 +265,17 @@ app.service('messagesService', [
       socket.emit('message:type:end', data);
     }
 
-    function makeFileLive(channelId, fileId){
-      var data = {channelId: channelId, fileId: fileId};
-      socket.emit('file:lived', data, function(res){
-
-      });
+    function makeFileLive(channelId, fileId) {
+      var data = {
+        channelId: channelId,
+        fileId: fileId
+      };
+      socket.emit('file:lived', data);
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    ////////////////////////////// PUBLIC API ////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @summary Public API
+     */
 
     return {
       getMessagesByChannelId: getMessagesByChannelId,

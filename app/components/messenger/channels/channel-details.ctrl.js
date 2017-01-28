@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
-  '$log', 'channelsService', 'User', 'arrayUtil', 'Channel',
+  '$log', 'channelsService', 'User', 'ArrayUtil', 'Channel',
   function ($scope, $uibModalInstance, $log, channelsService, User,
-            arrayUtil, Channel) {
+            ArrayUtil, Channel) {
 
     var self = this;
     var selectedMember;
@@ -108,7 +108,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
       };
       channelsService.removeMemberFromChannel(data, function (res) {
         if (res.status) {
-          arrayUtil.removeElementByKeyValue(self.channel.members, 'id', member.id);
+          ArrayUtil.removeElementByKeyValue(self.channel.members, 'id', member.id);
           self.channel.members--;
           $log.info('Member Removed from Channel');
         }
@@ -125,7 +125,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
           }))
           self.addedMemberIds.push(teamMember.id);
         else
-          arrayUtil.removeElementByValue(self.addedMemberIds, teamMember.id);
+          ArrayUtil.removeElementByValue(self.addedMemberIds, teamMember.id);
       }
     };
 
@@ -134,7 +134,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         User.team.getTeamMembers(User.team.id).then(function (teamMembers) {
           self.teamMembers = teamMembers;
           angular.forEach(teamMembers, function (member) {
-            if (!arrayUtil.containsKeyValue(self.listItems, 'member_id', member.id))
+            if (!ArrayUtil.containsKeyValue(self.listItems, 'member_id', member.id))
               self.listItems.push(member);
           });
         });
@@ -164,7 +164,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
       if (self.addingMemberActive) {
         if (listMember.member_id)
           return {'background-color': '#CFE0F3'};
-        else if (arrayUtil.contains(self.addedMemberIds, listMember.id))
+        else if (ArrayUtil.contains(self.addedMemberIds, listMember.id))
           return {'background-color': '#C4F3AB'};
         else
           return {'background-color': 'white'};

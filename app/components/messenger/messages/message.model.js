@@ -1,8 +1,8 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', '$sce', 'db', 'textUtil', 'channelsService', 'User',
-  function ($log, $sce, db, textUtil, channelsService, User) {
+  '$log', 'db', 'textUtil', 'channelsService', 'User',
+  function ($log, db, textUtil, channelsService, User) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
       additionalData, isPending) {
@@ -32,14 +32,11 @@ app.factory('Message', [
         body = Message.generateMessageWellFormedText(this.body);
       } else if (this.type === Message.TYPE.FILE) {
         body = '<label>' + this.additionalData.name + '</label>';
-        body += '<br/>';
+        body += '<br>';
         body += '<a ng-click=\"goLive(' + this.additionalData.fileId + ')\">Go Live</a>';
-        body += '<br/>';
+        body += '<br>';
         body += '<a href=\"' + this.additionalData.url + '\" download=\"' +
           this.additionalData.name + '\" target=\"_blank\">دانلود</a>';
-        body = $sce.trustAsHtml(body);
-        // TODO: Use a directive.
-        // return $compile(body)(scope.scope);
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
@@ -175,7 +172,7 @@ app.factory('Message', [
       var wellFormedText;
       wellFormedText = textUtil.urlify(text);
       // wellFormedText = textUtil.hashtagify(text);
-      return $sce.trustAsHtml(wellFormedText);
+      return wellFormedText;
     };
 
     Message.TYPE = {

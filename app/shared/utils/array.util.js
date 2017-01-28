@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('arrayUtil', function () {
+app.factory('ArrayUtil', function () {
 
   var getIndexByKeyValue = function (array, key, value) {
     for (var i = 0; i < array.length; i++) {
@@ -20,7 +20,13 @@ app.factory('arrayUtil', function () {
     return -1;
   };
 
-  var lastElement = function (array) {
+  function getElementByKeyValue(array, key, value) {
+    var index = getIndexByKeyValue(array, key, value);
+    if (index === -1) return null;
+    return array[index];
+  }
+
+  var getLastElement = function (array) {
     if (array.length === 0)
       return null;
     return array[array.length - 1];
@@ -43,23 +49,23 @@ app.factory('arrayUtil', function () {
       array.splice(index, 1);
   };
 
-  var contains = function(array, value) {
+  var contains = function (array, value) {
     return (array.indexOf(value) > -1);
   };
 
-  var containsKeyValue = function(array, key, value) {
+  var containsKeyValue = function (array, key, value) {
     return (getIndexByKeyValue(array, key, value) > -1);
   };
 
   return {
     getIndexByKeyValue: getIndexByKeyValue,
-    lastElement: lastElement,
+    getIndexByValue: getIndexByValue,
+    getElementByKeyValue: getElementByKeyValue,
+    getLastElement: getLastElement,
     removeElementByIndex: removeElementByIndex,
     removeElementByKeyValue: removeElementByKeyValue,
     contains: contains,
     containsKeyValue: containsKeyValue,
-    removeElementByValue: removeElementByValue,
-    getIndexByValue: getIndexByValue
-
+    removeElementByValue: removeElementByValue
   };
 });

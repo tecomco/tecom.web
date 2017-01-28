@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
-  function ($http, $q, $log, arrayUtil) {
+app.factory('Team', ['$http', '$q', '$log', 'ArrayUtil',
+  function ($http, $q, $log, ArrayUtil) {
 
     var isBusy = false;
 
@@ -35,12 +35,12 @@ app.factory('Team', ['$http', '$q', '$log', 'arrayUtil',
     };
 
     Team.prototype.getUsernameById = function (userId) {
-      var index = arrayUtil.getIndexByKeyValue(this.members, 'id', userId);
+      var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', userId);
       return (index !== -1) ? this.members[index].username : '';
     };
 
     Team.prototype.getNameById = function (userId) {
-      var index = arrayUtil.getIndexByKeyValue(this.members, 'id', userId);
+      var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', userId);
       return (index !== -1) ? this.members[index].full_name : null;
     };
 
