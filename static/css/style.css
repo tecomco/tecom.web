@@ -75,8 +75,21 @@ a, a:hover, a:visited, a:focus {
       position: absolute;
       top: 15px;
       right: 85px;
-  }
+}
 
+.user-options {
+    position: absolute;
+    top: 57px;
+    right: 26px;
+    z-index: 3;
+}
+button.list-group-item {
+    width: 100%;
+    text-align: right;
+}
+button.list-group-item > .fa {
+    padding-left: 3px;
+}
 .content .col-sm-5.col-lg-6, .content .col-sm-9.col-lg-10 {
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
