@@ -1,8 +1,8 @@
 'use strict';
 
 app.factory('Channel',
-  ['$stateParams', 'textUtil', 'User', 'arrayUtil',
-  function ($stateParams, textUtil, User, arrayUtil) {
+  ['$stateParams', 'textUtil', 'User', 'ArrayUtil',
+  function ($stateParams, textUtil, User, ArrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
       notifCount, memberId) {
@@ -61,7 +61,7 @@ app.factory('Channel',
     };
 
     Channel.prototype.removeIsTypingMemberId = function (memberId) {
-      arrayUtil.removeElementByValue(this.isTypingMemberIds, memberId);
+      ArrayUtil.removeElementByValue(this.isTypingMemberIds, memberId);
     };
 
     Channel.prototype.getIsTypingString = function () {

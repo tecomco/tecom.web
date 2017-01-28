@@ -74,8 +74,7 @@ app.controller('messagesController', [
     };
 
     $scope.goLive = function (fileId) {
-      console.log('goLive', fileId);
-      // messagesService.makeFileLive($scope.channel.id, fileId);
+      messagesService.makeFileLive($scope.channel.id, fileId);
     };
 
     function initialize() {

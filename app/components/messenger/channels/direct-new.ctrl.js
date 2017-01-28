@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('newDirectController', ['$uibModalInstance', '$log',
-  'channelsService', 'arrayUtil', 'User',
-  function ($uibModalInstance, $log, channelsService, arrayUtil, User, Channel) {
+  'channelsService', 'ArrayUtil', 'User',
+  function ($uibModalInstance, $log, channelsService, ArrayUtil, User, Channel) {
 
     var self = this;
 
@@ -22,7 +22,7 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
 
     User.team.getTeamMembers(User.team.id).then(function (event) {
       self.teamMembers = event;
-      arrayUtil.removeElementByKeyValue(self.teamMembers, 'id', window.memberId);
+      ArrayUtil.removeElementByKeyValue(self.teamMembers, 'id', window.memberId);
       for (var i = 0; i < self.teamMembers.length; i++) {
         self.teamMembers[i].selected = false;
       }

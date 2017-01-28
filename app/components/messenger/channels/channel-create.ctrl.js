@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('createChannelController', ['$uibModalInstance', '$log',
-  'channelsService', 'arrayUtil', 'User', 'Channel',
-  function ($uibModalInstance, $log, channelsService, arrayUtil, User, Channel) {
+  'channelsService', 'User', 'Channel',
+  function ($uibModalInstance, $log, channelsService, User, Channel) {
 
     var self = this;
 

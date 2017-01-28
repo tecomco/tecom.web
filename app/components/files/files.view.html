@@ -1,24 +1,25 @@
-<div class="doc-section-header">
-  <ul class="doc-tabs">
-    <li class="doc-tab doc-tab-active">
-      test.js
-      <i class="fa fa-times"></i>
-    </li>
-    <li class="doc-tab">
-      test.js
-      <i class="fa fa-times"></i>
-    </li>
-    <li class="doc-tab">
-      test.js
-      <i class="fa fa-times"></i>
-    </li>
-  </ul>
-  <div class="doc-file-ex">
-    <i class="fa fa-folder-open"></i>
+<div ng-controller="FilesController">
+  <div class="doc-section-header">
+    <ul class="doc-tabs">
+      <li class="doc-tab doc-tab-active">
+        test.js
+        <i class="fa fa-times"></i>
+      </li>
+      <li class="doc-tab">
+        test.js
+        <i class="fa fa-times"></i>
+      </li>
+      <li class="doc-tab">
+        test.js
+        <i class="fa fa-times"></i>
+      </li>
+    </ul>
+    <div class="doc-file-ex">
+      <i class="fa fa-folder-open"></i>
+    </div>
   </div>
-</div>
-<div class="doc-section-body">
-  <pre class="prettyprint" dir="ltr">
+  <div class="doc-section-body">
+    <pre class="prettyprint" dir="ltr">
 'use strict';
 
 app.controller('channelsController',
@@ -75,4 +76,5 @@ channelsService.updateChannelNotification(channelId, 'inc');
 }
 ]);
   </pre>
+  </div>
 </div>
