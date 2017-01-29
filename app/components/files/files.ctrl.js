@@ -1,20 +1,21 @@
 'use strict';
 
-app.controller('filesController', ['filesService', '$scope', 'channelsService',
-  function (filesService, $scope, channelsService) {
+app.controller('filesController', [
+  '$window', 'filesService', '$scope',
+  function ($window, filesService, $scope) {
 
     $scope.file = {};
 
-    if (channelsService) {
-      var currentChannel = channelsService.getCurrentChannel();
-      if (currentChannel.liveFileId) {
-        filesService.getFileDataById(currentChannel.liveFileId).then(function (fileData) {
-          $scope.file.data = fileData;
-        });
+    filesService.updateLiveFile();
+
+    $scope.$on('channels:updated', function (event, data) {
+      if (data === 'init') {
+        filesService.updateLiveFile();
       }
-    }
+    });
+
     $scope.$on('file:lived', function (event, fileData) {
-      $scope.file.data = fileData;
+      $scope.file.data = $window.PR.prettyPrintOne(fileData, '', true);
     });
 
   }]);
