@@ -33,10 +33,13 @@ app.factory('Message', [
       } else if (this.type === Message.TYPE.FILE) {
         body = '<label>' + this.additionalData.name + '</label>';
         body += '<br>';
-        body += '<a ng-click=\"goLive(' + this.additionalData.fileId + ')\">Go Live</a>';
-        body += '<br>';
-        body += '<a href=\"' + this.additionalData.url + '\" download=\"' +
-          this.additionalData.name + '\" target=\"_blank\"><i class=\"fa fa-download\"></i></a>';
+        body += '<a ng-click="goLive(' + this.additionalData.fileId + ')" tooltip-placement="bottom" uib-tooltip="Go Live!">';
+        body += '<i class="fa fa-eye"></i>';
+        body += '</a>';
+        body += '<a href=\"' + this.additionalData.url + '" download="' +
+          this.additionalData.name + '" target="_blank" tooltip-placement="bottom" uib-tooltip="دانلود">';
+        body += '<i class="fa fa-download"></i>';
+        body += '</a>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
@@ -66,7 +69,7 @@ app.factory('Message', [
     };
 
     Message.prototype.getStyle = function () {
-      if (this.isEnglish()) {
+      if (this.type === Message.TYPE.FILE || this.isEnglish()) {
         return {
           'text-align': 'left',
           'direction': 'ltr'
