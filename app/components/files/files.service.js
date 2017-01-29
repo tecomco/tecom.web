@@ -1,26 +1,35 @@
 'use strict';
 
 app.service('filesService', [
-  '$rootScope', 'socket', 'ArrayUtil', '$http', '$q', 'channelsService',
-  function ($rootScope, socket, ArrayUtil, $http, $q, channelsService) {
+  '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q', 'channelsService',
+  function ($rootScope, $http, $log, socket, ArrayUtil, $q, channelsService) {
 
     var self = this;
 
     self.files = [];
 
     socket.on('file:lived', function (data) {
-      getFileDataById(data.fileId).then(function(fileData){
+      getFileDataById(data.fileId).then(function (fileData) {
         $rootScope.$broadcast('file:lived', fileData);
       });
     });
 
-    function getFileDataById(fileId){
+    function updateLiveFile() {
+      var currentChannel = channelsService.getCurrentChannel();
+      if (currentChannel && currentChannel.liveFileId) {
+        getFileDataById(currentChannel.liveFileId).then(function (fileData) {
+          $rootScope.$broadcast('file:lived', fileData);
+        });
+      }
+    }
+
+    function getFileDataById(fileId) {
       var defer = $q.defer();
-      getUrlById(fileId).then(function(url){
-        getFileDataByUrl(url).success(function(fileData){
-           defer.resolve(fileData);
-        }).error(function(err){
-          console.log('Error Getting File From Server.', err);
+      getUrlById(fileId).then(function (url) {
+        getFileDataByUrl(url).success(function (fileData) {
+          defer.resolve(fileData);
+        }).error(function (err) {
+          $log.error('Error Getting File From Server.', err);
           defer.reject();
         });
       });
@@ -67,7 +76,7 @@ app.service('filesService', [
       getUrlById: getUrlById,
       getFileDataByUrl: getFileDataByUrl,
       getFileDataById: getFileDataById,
-
+      updateLiveFile: updateLiveFile
     };
   }
 ]);

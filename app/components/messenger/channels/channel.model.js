@@ -1,13 +1,13 @@
 'use strict';
 
-app.factory('Channel',
-  ['$stateParams', 'textUtil', 'User', 'ArrayUtil',
+app.factory('Channel', [
+  '$stateParams', 'textUtil', 'User', 'ArrayUtil',
   function ($stateParams, textUtil, User, ArrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount, memberId) {
+      notifCount, memberId, liveFileId) {
       this.setValues(name, slug, description, type, id, membersCount,
-        notifCount, memberId);
+        notifCount, memberId, liveFileId);
       this.isTypingMemberIds = [];
     }
 
@@ -28,7 +28,7 @@ app.factory('Channel',
       return this.notifCount && this.notifCount !== 0;
     };
 
-    Channel.prototype.updateFromJson = function(json){
+    Channel.prototype.updateFromJson = function (json) {
       this.name = json.name || null;
       this.slug = json.slug || null;
       this.description = json.description || null;
