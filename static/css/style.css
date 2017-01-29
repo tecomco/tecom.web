@@ -521,6 +521,10 @@ button.list-group-item > .fa {
 .doc-file-ex:hover {
     background: rgba(0,0,0,0.1);
 }
+.linenums li {
+    list-style-type: decimal;
+    font-family: monospace;
+}
 .date-holder {
     text-align: center;
     position: relative;
