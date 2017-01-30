@@ -6,13 +6,15 @@ app.factory('socket', [
 
     var self = this;
 
-    var socketUri = domainUtil.getSubdomain() ?
-      domainUtil.getSubdomain() + '.' + ENV.socketUri : ENV.socketUri;
+    var teamSlug = domainUtil.getSubdomain();
+
+    var socketUri = teamSlug ? teamSlug + '.' + ENV.socketUri : ENV.socketUri;
 
     self.socket = io.connect(socketUri, {
       path: '/ws/',
       query: {
-        token: User.token
+        token: User.token,
+        teamSlug: teamSlug
       },
       extraHeaders: {
         Connection: 'keep-alive'
