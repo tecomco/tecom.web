@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('createChannelController', ['$uibModalInstance', '$log',
-  'channelsService', 'User', 'Channel',
-  function ($uibModalInstance, $log, channelsService, User, Channel) {
-
+  'channelsService', 'User', 'Channel', 'ArrayUtil',
+  function ($uibModalInstance, $log, channelsService, User, Channel,
+            ArrayUtil) {
     var self = this;
 
     self.forms = {};
@@ -30,6 +30,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
     };
 
     User.team.getTeamMembers(User.team.id).then(function (members) {
+      ArrayUtil.removeElementByKeyValue(members, 'id', User.id);
       self.teamMembers = members;
     });
 
@@ -62,6 +63,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
         })
         .catch(function (err) {
           if (err.indexOf('Duplicate slug in team.') != -1) {
+            $log.error('Error Creating new Channel:', err);
             self.newChannel.dublicateError = true;
           } else {
             self.newChannel.serverError = true;

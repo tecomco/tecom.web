@@ -2,7 +2,7 @@
   <div class="header clearfix">
     <div ui-view="header"></div>
   </div>
-  <div ng-controller="messagesController">
+  <div id=messagesWindow ng-controller="messagesController">
     <div id="messagesHolder" class="chat">
       <div class="server-msg" ng-hide="socketConnected">
         <i class="fa fa-spinner fa-spin fa-fw"></i>
@@ -34,7 +34,7 @@
       <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
         <i class="zmdi zmdi-plus"></i>
       </a>
-      <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="startTyping()"></textarea>
+      <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
       <a class="send-btn" href="#" ng-click="sendMessage()">
         <i class="fa fa-paper-plane"></i>
       </a>

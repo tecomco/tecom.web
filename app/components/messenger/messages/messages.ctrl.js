@@ -50,7 +50,7 @@ app.controller('messagesController', [
       $timeout.cancel(self.isTypingTimeout);
     };
 
-    $scope.startTyping = function () {
+    $scope.typing = function () {
       if (self.isTypingTimeout) {
         $timeout.cancel(self.isTypingTimeout);
       }
@@ -62,7 +62,22 @@ app.controller('messagesController', [
         self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
+
+      // var messagesHolder = document.getElementById('messagesHolder');
+      // var messagesWindow = document.getElementById('messagesWindow');
+      // var inputHolder = document.getElementById('inputHolder');
+      // var inputPlaceHolder = document.getElementById('inputPlaceHolder');
+      // console.log('chat:', inputPlaceHolder.scrollHeight);
+      // var height = messagesWindow.scrollHeight - inputPlaceHolder.scrollHeight;
+      // messagesHolder.style.height = height.toString() + 'px';
     };
+
+    function scrollBottom() {
+      $timeout(function () {
+        var holder = document.getElementById('messagesHolder');
+        holder.scrollTop = holder.scrollHeight;
+      }, 0, false);
+    }
 
     $scope.upload = function (file, errFiles) {
       if (file) {
@@ -109,13 +124,6 @@ app.controller('messagesController', [
           self.lastUnSeenMessage.id, self.lastUnSeenMessage.senderId);
         self.lastUnSeenMessage = null;
       }
-    }
-
-    function scrollBottom() {
-      $timeout(function () {
-        var holder = document.getElementById('messagesHolder');
-        holder.scrollTop = holder.scrollHeight;
-      }, 0, false);
     }
 
     function clearMessageInput() {

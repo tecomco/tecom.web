@@ -1,4 +1,4 @@
-<div ng-controller="LoginController" class="login-form">
+<div ng-controller="loginController" class="login-form">
     <div class="login-form-heading">
         <h4 class="login-form-title">نام کاربری و رمز عبورت رو وارد کن...</h4>
     </div>
@@ -7,12 +7,12 @@
             <div class="form-group">
                 <input ng-model="username" class="input-box" placeholder="نام کاربری" name="username" type="text" required>
             </div>
-            <span ng-show="forms.login.username.$invalid && !forms.login.username.$pristine">وارد کردن نام کاربری ضروری می باشد.</span>
+            <label class="login-err" ng-show="forms.login.username.$invalid && (!forms.login.username.$pristine || forms.login.$submitted)">وارد کردن نام کاربری ضروری می باشد.</label>
             <div class="form-group">
                 <input ng-model="password" class="input-box" placeholder="رمز عبور" name="password" type="password" required>
             </div>
+            <label class="login-err" ng-show="forms.login.password.$invalid && (!forms.login.password.$pristine || forms.login.$submitted)">وارد کردن رمز عبور ضروری می باشد.</label>
             <label class="login-err" ng-show="hasLoginError">{{loginErrorString}}</label>
-            <span ng-show="forms.login.password.$invalid && !forms.login.password.$pristine">وارد کردن رمز عبور ضروری می باشد.</span>
             <label class="ws-checkbox">
                 <span>مرا به خاطر بسپار.</span>
                 <input ng-model="remember" name="remember" type="checkbox">

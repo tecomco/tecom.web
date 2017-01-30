@@ -126,31 +126,56 @@ app.service('channelsService', [
 
     function createChannel(channel) {
       var deferred = $q.defer();
-      socket.emit('channel:create', channel, function (status, message) {
-        if (status) {
+
+      socket.emit('channel:create', channel, function (res) {
+        if (res.status) {
           deferred.resolve();
         } else {
-          deferred.reject(message);
-          $log.error('Create channel failed.', message);
+          deferred.reject(res.message);
+          $log.error('Create channel failed.', res.message);
         }
       });
       return deferred.promise;
     }
 
-    function sendEditedChannel(channel, callback) {
-      socket.emit('channel:edit:details', channel, callback);
+    function sendEditedChannel(channel) {
+      var defer = $q.defer();
+      socket.emit('channel:edit:details', channel, function (response) {
+        if (response.status) {
+          defer.resolve();
+        }
+        else {
+          defer.reject(response.message);
+        }
+      });
+      return defer.promise;
     }
 
-    function addMembersToChannel(memberIds, channelId, callback) {
+    function addMembersToChannel(memberIds, channelId) {
+      var defer = $q.defer();
       var data = {
         memberIds: memberIds,
         channelId: channelId
       };
-      socket.emit('channel:members:add', data, callback);
+      socket.emit('channel:members:add', data, function(response){
+        if (response.status)
+          defer.resolve();
+        else
+          defer.reject();
+      });
+      return defer.promise;
     }
 
-    function removeMemberFromChannel(data, callback) {
-      socket.emit('channel:members:remove', data, callback);
+    function removeMemberFromChannel(data) {
+      var defer = $q.defer();
+      socket.emit('channel:members:remove', data, function(res){
+        if (res.status) {
+          defer.resolve();
+        }
+        else
+          defer.reject(res.message);
+      });
+      return defer.promise;
     }
 
     function createDirect(memberId) {

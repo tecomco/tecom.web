@@ -18,11 +18,12 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         });
     }
   ])
-  .controller('LoginController',
+  .controller('loginController',
     ['$scope', '$log', '$window', '$http', 'AuthService',
       function ($scope, $log, $window, $http, AuthService) {
 
-        $scope.hasLoginError = true;
+        $scope.hasLoginError = false;
+        $scope.submitClicked = false;
 
         $scope.login = function () {
           var isFormValid = $scope.forms.login.username.$valid &&
@@ -33,7 +34,7 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
                 $window.location.assign('/messenger');
               }).catch(function (err) {
               $log.error('Login Error:', err);
-              $scope.loginError = true;
+              $scope.hasloginError = true;
               if (!err.data.non_field_errors)
                 $scope.loginErrorString = 'خطا در اتصال به سرور';
               else if (err.data.non_field_errors[0] ===
