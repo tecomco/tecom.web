@@ -1,17 +1,19 @@
 'use strict';
 
-app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
-  function ($log, $http, $q, jwtHelper, User) {
-    function createUser(token) {
+app.factory('AuthService', [
+  '$log', '$http', '$q', 'jwtHelper', 'ArrayUtil', 'User',
+  function ($log, $http, $q, jwtHelper, ArrayUtil, User) {
+
+    function createUser(token, teamSlug) {
       var decodedToken = jwtHelper.decodeToken(token);
-      // TODO: Get current membership properly.
-      var currentMembership = decodedToken.memberships[0];
+      var currentMembership = ArrayUtil.getElementByKeyValue(
+        decodedToken.memberships, 'team_slug', teamSlug);
       var user = new User(currentMembership.id, currentMembership.username,
         decodedToken.username, currentMembership.team_id, null, token);
       return user.save();
     }
 
-    function login(username, password) {
+    function login(username, password, teamSlug) {
       var defer = $q.defer();
       var data = {
         username: username,
@@ -25,7 +27,7 @@ app.factory('AuthService', ['$log', '$http', '$q', 'jwtHelper', 'User',
       }).then(function (response) {
         var token = response.data.token;
         if (token) {
-          createUser(token)
+          createUser(token, teamSlug)
             .then(function () {
               defer.resolve();
             })

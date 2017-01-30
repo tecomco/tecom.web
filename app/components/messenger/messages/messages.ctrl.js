@@ -97,6 +97,7 @@ app.controller('messagesController', [
       setCurrentChannel();
       if ($scope.channel) {
         bindMessages();
+        $scope.inputMessage = '';
         self.isTabfocused = true;
       }
     }

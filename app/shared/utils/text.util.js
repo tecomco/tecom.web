@@ -3,7 +3,7 @@
 app.factory('textUtil', function () {
 
   function isEnglish(text) {
-    if(!text)
+    if (!text)
       return false;
     var english = /^[a-zA-Z0-9.?></\\:;,{}()$[\]\-_+=!@#$%\^&*|']*$/;
     var isEnglish = true;
@@ -21,13 +21,9 @@ app.factory('textUtil', function () {
     });
   }
 
-
   /**
    * @todo Fix this function.
    */
-
-
-
   function hashtagify(text) {
     var hashtagRegex = /(^|\W)(#[a-z\d][\w-]*)/ig;
     return text.replace(hashtagRegex, '$1<a href="/$2">$2</a>');
@@ -55,10 +51,16 @@ app.factory('textUtil', function () {
     return text;
   }
 
+  function htmlToPlaintext(text) {
+    var plainText = text ? String(text).replace(/<[^>]+>/gm, '') : '';
+    return plainText;
+  }
+
   return {
     isEnglish: isEnglish,
     urlify: urlify,
     hashtagify: hashtagify,
-    persianify: persianify
+    persianify: persianify,
+    htmlToPlaintext: htmlToPlaintext
   };
 });

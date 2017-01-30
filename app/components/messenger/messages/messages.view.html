@@ -35,7 +35,7 @@
         <i class="zmdi zmdi-plus"></i>
       </a>
       <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
-      <a class="send-btn" href="#" ng-click="sendMessage()">
+      <a class="send-btn" href="#" ng-click="sendMessage($event)">
         <i class="fa fa-paper-plane"></i>
       </a>
     </div>
