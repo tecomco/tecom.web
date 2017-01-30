@@ -5,13 +5,13 @@ app.factory('Message', [
   function ($log, db, textUtil, channelsService, User) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-      additionalData, isPending) {
+                     additionalData, isPending) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
         additionalData, isPending);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-      _id, datetime, additionalData, isPending) {
+                                            _id, datetime, additionalData, isPending) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -56,6 +56,10 @@ app.factory('Message', [
           body += (addedMemberIds.length > 1) ?
             '.از گروه حذف شدند.' : ' از گروه حذف شد';
         }
+      } else if (this.type === Message.TYPE.NOTIF.CHANNEL_CREATED) {
+        body = 'گروه ساخته شد.';
+      } else if (this.type === Message.TYPE.NOTIF.CHANNEL_EDITED) {
+        body = 'اطلاعات گروه تغییر کرد.';
       }
       return body;
     };
@@ -69,7 +73,7 @@ app.factory('Message', [
     };
 
     Message.prototype.getStyle = function () {
-      if (this.type === Message.TYPE.FILE || this.isEnglish()) {
+      if ((this.type === Message.TYPE.FILE) || this.isEnglish()) {
         return {
           'text-align': 'left',
           'direction': 'ltr'
@@ -119,6 +123,10 @@ app.factory('Message', [
           return 'notif';
         case Message.TYPE.NOTIF.FILE_LIVED:
           return 'msg msg-file';
+        case Message.TYPE.NOTIF.CHANNEL_CREATED:
+          return 'notif';
+        case Message.TYPE.NOTIF.CHANNEL_EDITED:
+          return 'notif';
       }
     };
 
@@ -185,7 +193,9 @@ app.factory('Message', [
       NOTIF: {
         USER_ADDED: 2,
         USER_REMOVED: 3,
-        FILE_LIVED: 4
+        FILE_LIVED: 4,
+        CHANNEL_CREATED: 5,
+        CHANNEL_EDITED: 6,
       }
     };
 

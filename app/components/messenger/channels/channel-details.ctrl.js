@@ -9,7 +9,6 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     var selectedMember;
     self.editMode = false;
     self.channel = channelsService.getCurrentChannel();
-    $log.info('channel:', self.channel);
     self.isAdmin = true;
     self.details = {};
     self.forms = {};
@@ -77,20 +76,24 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     var updateListItems = function () {
-      self.listItems = [];
       if (!self.addingMemberActive) {
+        self.listItems = [];
+        self.channelMembers = [];
         channelsService.getChannelMembers(self.channel.id).then(function (event) {
           event.members.forEach(function (channelMember) {
             self.listItems.push(makeListItem(channelMember));
+            self.channelMembers.push(makeListItem(channelMember));
           });
         }).catch(function (err) {
-          $log.info('error getting channel members :', err);
         });
       }
       else {
         User.team.getTeamMembers(User.team.id).then(function (teamMembers) {
           teamMembers.forEach(function (teamMember) {
-            self.listItems.push(makeListItem(teamMember));
+            if (!self.channelMembers.find(function (member) {
+                return member.member_id === teamMember.id;
+              }))
+              self.listItems.push(makeListItem(teamMember));
           });
         });
 
@@ -109,7 +112,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
 
     self.deleteMember = function (member) {
       var data = {
-        channelMemberId: member.id,
+        channelMemberId: member.channelMemberId,
         memberId: member.member_id,
         channelId: self.channel.id,
         channelType: self.channel.type
@@ -125,20 +128,25 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     self.pushMember = function (teamMember) {
       if (!teamMember.isChannelMember) {
         if (!self.addedMemberIds.find(function (member) {
-            return member === teamMember.id;
-          }))
-          self.addedMemberIds.push(teamMember.id);
-        else
-          ArrayUtil.removeElementByValue(self.addedMemberIds, teamMember.id);
+            return member === teamMember.member_id;
+          })) {
+          self.addedMemberIds.push(teamMember.member_id);
+          teamMember.isMemberSelected = true;
+        }
+        else {
+          ArrayUtil.removeElementByValue(self.addedMemberIds, teamMember.member_id);
+          teamMember.isMemberSelected = false;
+        }
       }
     };
 
     self.addMembersClick = function () {
       if (self.addingMemberActive === false) {
-        updateListItems();
         self.addingMemberActive = true;
+        updateListItems();
       }
       else {
+        self.addingMemberActive = false;
         submitAddedMembers();
       }
     };
@@ -148,14 +156,13 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         channelsService.addMembersToChannel(self.addedMemberIds,
           self.channel.id).then(function () {
           self.addingMemberActive = false;
-          self.channel.membersCount = self.channel.membersCount + self.addedMemberIds.length;
           $log.info('Done Adding members');
         }).catch(function () {
           $log.error('Error Adding members');
         });
       }
       else
-        getChannelMembers();
+        updateListItems();
     }
 
     self.getListItemCSS = function (listMember) {
@@ -180,9 +187,11 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
       var item = {
         full_name: member.full_name,
         member_id: (member.member_id) ? member.member_id : member.id,
+        channelMemberId: (member.member_id) ? member.id : null,
         image: member.image,
         username: member.username,
-        isChannelMember: (member.member_id) ? true : false
+        isChannelMember: (member.member_id) ? true : false,
+        isMemberSelected: false
       };
       return item;
     }
