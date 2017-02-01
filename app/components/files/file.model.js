@@ -1,11 +1,12 @@
 'use strict';
 
-app.factory('File', ['$http', '$window', '$timeout', 'Line',
-  function ($http, $window, $timeout, Line) {
+app.factory('File', ['$http', '$window', 'Line',
+  function ($http, $window, Line) {
 
-    function File(id, url, fileData) {
+    function File(id, url, fileData, name) {
       this.id = id;
       this.url = url;
+      this.name = name;
       this.lines = getLinesByData(fileData);
     }
 
@@ -55,7 +56,7 @@ app.factory('File', ['$http', '$window', '$timeout', 'Line',
 ]);
 
 
-app.factory('Line', [function () {
+app.factory('Line', ['$timeout', function ($timeout) {
 
   function Line(number, html) {
     this.num = number;

@@ -195,6 +195,7 @@ app.service('messagesService', [
       }
       var message = new Message(messageBody, type || Message.TYPE.TEXT, User.id,
         channelId, null, null, additionalData, about, true);
+      console.log('message:', message);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;

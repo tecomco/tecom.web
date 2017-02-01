@@ -43,14 +43,16 @@ app.service('filesService', [
       }
       else {
         var url;
+        var name;
         $http({
           method: 'GET',
-          url: '/api/v1/files/' + fileId + '/url'
+          url: '/api/v1/files/' + fileId + '/url-name'
         }).then(function (res) {
           url = res.data.file;
+          name = res.data.name;
           return getFileDataByUrl(url);
         }).then(function (res) {
-          var file = new File(fileId, url, res.data);
+          var file = new File(fileId, url, res.data, name);
           self.files.push(file);
           defer.resolve(file);
         }).catch(function (err) {
@@ -61,10 +63,11 @@ app.service('filesService', [
       return defer.promise;
     }
 
-    function makeFileLive(channelId, fileId) {
+    function makeFileLive(channelId, fileId, fileName) {
       var data = {
         channelId: channelId,
-        fileId: fileId
+        fileId: fileId,
+        fileName: fileName
       };
       socket.emit('file:lived', data);
     }
@@ -73,11 +76,17 @@ app.service('filesService', [
       return self.livedFile;
     }
 
+    function showFileLine(fileId, lineNumber){
+      getFileById(fileId).then(function(file){
+        file.selectPermLine(lineNumber);
+      });
+    }
 
     return {
       makeFileLive: makeFileLive,
       updateLiveFile: updateLiveFile,
       getLivedFile: getLivedFile,
+      showFileLine: showFileLine
     };
   }
 ]);
