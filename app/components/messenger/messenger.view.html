@@ -1,21 +1,19 @@
 <div class="wrapper">
   <div class="col-sm-3 col-lg-2 no-padding channel-section">
     <div class="right-section">
-      <div class="right-section-header dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">
+      <div class="right-section-header" uib-dropdown>
+        <a uib-dropdown-toggle>
           <img src="static/img/tecom-logo.png" />
           <span class="brand-name-right-header">تیکام</span>
         </a>
-        <div class="list-group user-options">
-          <ul class="dropdown-menu">
-            <li>
-              <button type="button" class="list-group-item"><i class="fa fa-user"></i>تنظیمات کاربری</button>
-            </li>
-            <li>
-              <button type="button" class="list-group-item"><i class="fa fa-sign-out "></i>خروج</button>
-            </li>
-          </ul>
-        </div>
+        <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
+          <li>
+            <a><i class="fa fa-user"></i>تنظیمات کاربری</a>
+          </li>
+          <li>
+            <a><i class="fa fa-sign-out "></i>خروج</a>
+          </li>
+        </ul>
       </div>
       <div class="right-section-main">
         <div ui-view="channels"></div>

@@ -79,16 +79,12 @@ a, a:hover, a:visited, a:focus {
 
 .user-options {
     position: absolute;
-    top: 57px;
-    right: 26px;
-    z-index: 3;
+    top: 53px;
+    right: 23px;
 }
-button.list-group-item {
-    width: 100%;
-    text-align: right;
-}
-button.list-group-item > .fa {
-    padding-left: 3px;
+
+.user-options a .fa {
+    padding-left: 5px;
 }
 .content .col-sm-5.col-lg-6, .content .col-sm-9.col-lg-10 {
     transition: all 0.3s ease;
@@ -166,7 +162,9 @@ button.list-group-item > .fa {
 }
 
 .msg-landing img {
-    padding: 40px 0;
+    padding: 35px 0;
+    width: 200px;
+    margin: 0 auto;
 }
 
 .msg-landing h1 {
@@ -283,6 +281,16 @@ button.list-group-item > .fa {
 .right-section-header {
     padding: 14px 0 10px;
     background: rgba(17, 17, 17, 0.2);
+}
+
+.dropdown-menu>li>a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    /* font-weight: 400; */
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
 }
 
 .noti-holder {
