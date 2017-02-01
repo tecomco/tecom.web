@@ -19,6 +19,10 @@
     </div>
   </div>
   <div class="doc-section-body">
-    <pre class="prettyprint linenums" dir="ltr" ng-bind-html="file.data"></pre>
+    <pre class="prettyprint linenums" dir="ltr">
+      <ol>
+        <li ng-repeat="line in file.lines track by $index" ng-click="lineClick()" ng-bind-html="line"></li>
+      </ol>
+    </pre>
   </div>
 </div>
