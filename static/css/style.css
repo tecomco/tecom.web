@@ -461,7 +461,7 @@ button.list-group-item > .fa {
     float: right;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.21);
 }
-.main a {
+/*.main a {
     direction: ltr;
     color: #3232ff;
 }
@@ -471,7 +471,7 @@ button.list-group-item > .fa {
 }
 .main a:visited {
     color: #8000ff;
-}
+}*/
 .doc-section {
     height: 100%;
 }
@@ -499,11 +499,15 @@ button.list-group-item > .fa {
     height: 100%;
     padding: 20px 20px;
 }
+
 .doc-tab:hover {
     background: rgba(0,0,0,0.1);
 }
 .doc-tab > i {
     padding-left: 8px;
+}
+.doc-tab > i > .fa , .fa-circle {
+    color: crimson;
 }
 .doc-tab-active {
     background: #fff;
@@ -628,7 +632,44 @@ button.list-group-item > .fa {
     clear: both;
     float: none;
 }
+.file-icon-holder {
+    background: rgba(200,200,200,0.3);
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    padding: 13px 16px;
+    display: inline-block;
+    margin-left: 7px;
+}
 
+.file-icon-holder i {
+}
+.file-name {
+}
+.live-btn {
+    font-weight: bold;
+    background: rgba(200, 200, 200, 0.3);
+    padding: 5px 0px;
+    text-align: center;
+    border-radius: 6px;
+    width: 47%;
+    float: right;
+    margin-top: 10px;
+}
+.live-btn i {
+    /*padding-left: 2px;*/
+    color: crimson;
+}
+.dl-btn {
+    font-weight: bold;
+    background: rgba(200, 200, 200, 0.3);
+    padding: 5px 0px;
+    text-align: center;
+    border-radius: 6px;
+    width: 47%;
+    float: left;
+    margin-top: 10px;
+}
 .input-holder {
     background: #eee;
     position: relative;

@@ -23,24 +23,28 @@
           </div>
         </div>
         <!-- File Testing -->
-        <div ng-class="msg msg-recieve">
-          <label class="name">آرین</label>
-          <label class="status" ng-show="true">
-            <i ng-class="zmdi zmdi-check-all"></i>
-          </label>
-          <label class="time">12:12</label>
-          <div compile template="" ng-style="message.getStyle()">
+        <div class="msg-holder ng-scope">
+            <div ng-class="message.getCssClass()" class="msg msg-recieve">
+              <label class="name ng-binding">محسن</label>
+              <label class="status ng-hide" ng-show="message.isFromMe()">
+                <i ng-class="message.getStatusIcon()" class="zmdi zmdi-check-all"></i>
+              </label>
+              <label class="time ng-binding">۲۲:۵۶</label>
               <div class="ng-scope">
-                  <label>92110227_CV.pdf</label>
-                  <br>
-                  <a ng-click="goLive(8)" tooltip-placement="bottom" uib-tooltip="Go Live!">
-                    <i class="fa fa-eye"></i>
-                  </a>
-                  <a href="/media/2017/01/tecom/abaa1d4566.pdf" download="92110227_CV.pdf" target="_blank" tooltip-placement="bottom" uib-tooltip="دانلود">
-                    <i class="fa fa-download"></i>
-                  </a>
+                <div class="file-icon-holder">
+                  <i class="fa fa-file"></i>
+                </div>
+                <label class="file-name">92110227_CV.pdf</label>
+                <br>
+                <a class="live-btn" ng-click="goLive(8)" tooltip-placement="top" uib-tooltip="Go Live!">
+                  Live
+                  <i class="fa fa-circle"></i>
+                </a>
+                <a class="dl-btn" href="/media/2017/01/tecom/abaa1d4566.pdf" download="92110227_CV.pdf" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">
+                  Download
+                </a>
               </div>
-          </div>
+            </div>
         </div>
         <!-- file testing end -->
         <div ng-show="channel.anyoneTyping()" class="msg-holder">
