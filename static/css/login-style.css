@@ -238,3 +238,10 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
     background: rgba(9, 148, 92, 0.8);
     color: #f3f3f3;
 }
+.login-form-body > .fa {
+    font-size: 150px;
+    /* text-align: center; */
+    margin: 0 auto;
+    position: relative;
+    right: 37%;
+}
