@@ -11,12 +11,13 @@ app.factory('Message', [
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-                                            _id, datetime, additionalData, isPending) {
+        _id, datetime, additionalData, about, isPending) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
       this.channelId = channelId;
       this._id = _id || null;
+      this.about = about || null;
       this.datetime = datetime ? new Date(datetime) : new Date();
       this.additionalData = additionalData || null;
       if (this._id) {
@@ -149,6 +150,9 @@ app.factory('Message', [
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
+      }
+      if(this.about) {
+        data.about = this.about;
       }
       return data;
     };

@@ -1,10 +1,10 @@
 'use strict';
 
-app.controller('filesController', [
-  '$window', 'filesService', '$scope',
-  function ($window, filesService, $scope) {
+app.controller('filesController', ['$window', 'filesService', '$scope',
+  '$rootScope',
+  function ($window, filesService, $scope, $rootScope) {
 
-    $scope.file = {};
+    $scope.vm = {};
 
     filesService.updateLiveFile();
 
@@ -14,24 +14,13 @@ app.controller('filesController', [
       }
     });
 
-    $scope.$on('file:lived', function (event, fileData) {
-      var prettifiedFile = $window.PR.prettyPrintOne(fileData, '', true);
-      var el = document.createElement('html');
-      el.innerHTML = prettifiedFile;
-      var listItems = el.getElementsByTagName('li');
-      for (var i = 0; i < listItems.length; i++) {
-        var listItem = listItems[i];
-        listItem.setAttribute('ng-click', 'lineClick(' + i + ')');
-      }
-      var listItemsArr = [].map.call(listItems, function (node) {
-        return node.innerHTML;
-      });
-      $scope.file.lines = listItemsArr;
+    $scope.$on('file:lived', function (event, file) {
+      $scope.vm.file = file;
     });
 
     $scope.lineClick = function (lineNum) {
-      console.log('bitch', lineNum);
-    }
+      $scope.vm.file.selectTempLine(lineNum);
+    };
 
   }
 ]);

@@ -2,9 +2,9 @@
 
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'Upload', 'socket', 'channelsService',
-  'Message', 'db', 'User',
+  'Message', 'db', 'User', 'filesService',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-    Message, db, User) {
+            Message, db, User, filesService) {
 
     var self = this;
 
@@ -179,14 +179,22 @@ app.service('messagesService', [
 
     function sendAndGetMessage(channelId, messageBody, type, fileName, fileUrl) {
       var additionalData = null;
+      var about = null;
       if (fileName) {
         additionalData = {
           name: fileName,
           url: fileUrl
         };
       }
+      var livedFile = filesService.getLivedFile();
+      if (livedFile) {
+        var selectedLineNumber = livedFile.getSelectedTempLine();
+        if(selectedLineNumber) {
+          about = {fileId: livedFile.id, lineNumber: selectedLineNumber};
+        }
+      }
       var message = new Message(messageBody, type || Message.TYPE.TEXT, User.id,
-        channelId, null, null, additionalData, true);
+        channelId, null, null, additionalData, about, true);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;

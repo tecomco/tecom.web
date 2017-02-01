@@ -525,6 +525,19 @@ button.list-group-item > .fa {
     list-style-type: decimal;
     font-family: monospace;
 }
+
+.linenums li:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.line-temp-selected {
+    background: rgba(255, 102, 0, 0.9);
+}
+
+.line-perm-selected {
+    background: rgba(36,167,114,0.9);
+}
+
 .date-holder {
     text-align: center;
     position: relative;
