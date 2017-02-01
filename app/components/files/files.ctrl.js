@@ -26,7 +26,6 @@ app.controller('filesController', [
       var listItemsArr = [].map.call(listItems, function (node) {
         return node.innerHTML;
       });
-      console.log(listItemsArr);
       $scope.file.lines = listItemsArr;
     });
 
@@ -34,4 +33,5 @@ app.controller('filesController', [
       console.log('bitch', lineNum);
     }
 
-  }]);
+  }
+]);
