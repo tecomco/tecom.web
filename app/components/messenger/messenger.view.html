@@ -1,14 +1,17 @@
 <div class="wrapper">
   <div class="col-sm-3 col-lg-2 no-padding channel-section">
     <div class="right-section">
-      <div class="right-section-header" uib-dropdown>
+      <div ng-controller="MessengerCtrl" class="right-section-header" uib-dropdown>
         <a uib-dropdown-toggle>
           <img src="static/img/tecom-logo.png" />
           <span class="brand-name-right-header">تیکام</span>
         </a>
         <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
           <li>
-            <a><i class="fa fa-user"></i>تنظیمات کاربری</a>
+            <a ng-click="openModal('user-profile')"><i class="fa fa-user"></i>پروفایل من</a>
+          </li>
+          <li>
+            <a ng-click="openModal('team-profile')"><i class="fa fa-users"></i>مدیریت تیم</a>
           </li>
           <li>
             <a><i class="fa fa-sign-out "></i>خروج</a>
@@ -29,3 +32,25 @@
   </div>
 </div>
 <div class="clearfix"></div>
+
+<!-- User profile modal -->
+<script type="text/ng-template" id="user-profile.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.close()">&times;</button>
+    <h4 class="modal-title">USER</h4>
+  </div>
+  <div class="modal-body two-part-modal">
+    BODY
+  </div>
+</script>
+
+<!-- Team profile modal -->
+<script type="text/ng-template" id="team-profile.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.close()">&times;</button>
+    <h4 class="modal-title">TEAM</h4>
+  </div>
+  <div class="modal-body two-part-modal">
+    BODY
+  </div>
+</script>
