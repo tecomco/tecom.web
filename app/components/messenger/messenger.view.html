@@ -37,10 +37,35 @@
 <script type="text/ng-template" id="user-profile.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.close()">&times;</button>
-    <h4 class="modal-title">USER</h4>
+    <h4 class="modal-title">پروفایل من</h4>
   </div>
   <div class="modal-body two-part-modal">
-    BODY
+    <div class="container-fluid u-profile">
+      <div class="col-sm-10  col-sm-offset-1">
+        <img src="static/img/user-def.png">
+        <div class="info">
+          <label>ایمیل:</label>
+          <label class="label">vahid@tecom.me</label>
+          <br>
+          <label>نام کاربری:</label>
+          <label class="label">@وحید</label>
+          <div class="modal-input modal-input-details">
+              <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="zmdi zmdi-edit"></span></button>
+          </div>
+          <br>
+          <label>رمز عبور:</label>
+          <label class="label">**********</label>
+          <div class="modal-input modal-input-details">
+              <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="zmdi zmdi-edit"></span></button>
+          </div>
+        </div>
+        <div class="leave">
+          <div class="modal-input">
+            <input type="submit" value="خروج از گروه" class="btn btn-default">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </script>
 
@@ -48,9 +73,26 @@
 <script type="text/ng-template" id="team-profile.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.close()">&times;</button>
-    <h4 class="modal-title">TEAM</h4>
+    <h4 class="modal-title">مدیریت تیم</h4>
   </div>
   <div class="modal-body two-part-modal">
-    BODY
+    <div class="container-fluid u-profile">
+      <div class="col-sm-10 col-sm-offset-1">
+        <div class="t-info">
+          <label>نام تیم:</label>
+          <label class="label">تیکام</label>
+          <br>
+          <label>اعضای تیم:</label>
+          <div class="g-members">
+            <div class="g-m-one">
+              <img ng-src="static/img/user-def.png"/>
+              <label>آرین رحیمی</label>
+              <label>@آرین</label>
+              <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" class="btn modal-btn-details-remove"><span class="glyphicon glyphicon-remove"></span></button>
+              <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn modal-btn-details-admin"><span class="fa fa-star"></span></button>
+            </div>
+          </div>
+      </div>
+    </div>
   </div>
 </script>

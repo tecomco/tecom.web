@@ -86,6 +86,30 @@ a, a:hover, a:visited, a:focus {
 .user-options a .fa {
     padding-left: 5px;
 }
+
+.u-profile img {
+    width: 120px;
+    display: inline-block;
+}
+
+.u-profile .info {
+    display: inline-block;
+    padding: 20px;
+    position: relative;
+    top: 15px;
+}
+.u-profile .t-info {
+    display: inline-block;
+    width: 100%;
+    padding: 20px;
+    position: relative;
+    top: 15px;
+}
+.u-profile .label {
+    font-size: 25px;
+    color: #777;
+    font-weight: 300;
+}
 .content .col-sm-5.col-lg-6, .content .col-sm-9.col-lg-10 {
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
@@ -864,7 +888,25 @@ a, a:hover, a:visited, a:focus {
     box-shadow:none;
     color: rgba(217,74,13, 1);
 }
-
+.modal .modal-btn-details-admin {
+    padding: 3px;
+    height: 24px;
+    float: left;
+    position: relative;
+    top: 5px;
+    background: rgba(0,0,0,0);
+    color: gold;
+  }
+.modal .modal-btn-details-admin:hover, .modal .modal-btn-details-admin:focus {
+    color: goldenrod;
+    opacity: 0.8;
+}
+.modal .modal-btn-details-admin:active {
+    -webkit-box-shadow:none;
+    box-shadow:none;
+    color: goldenrod;
+    opacity: 1;
+}
 
 
 .modal [type="submit"]:hover, .modal .modal-btn:hover {
@@ -976,11 +1018,6 @@ a, a:hover, a:visited, a:focus {
 }
 .modal-body .g-settings label span {
     display: inline-block;
-}
-
-
-.modal-body br {
-    display: none;
 }
 
 .modal-backdrop.in {
