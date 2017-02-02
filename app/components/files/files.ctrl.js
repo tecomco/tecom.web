@@ -20,7 +20,6 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     });
 
     $scope.$on('file:killed', function (event) {
-      console.log('killed');
       $scope.vm.file = null;
     });
 

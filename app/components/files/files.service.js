@@ -61,7 +61,7 @@ app.service('filesService', [
           self.files.push(file);
           defer.resolve(file);
         }).catch(function (err) {
-          console.log('Error Getting File From Server.', err);
+          $log.error('Error Getting File From Server.', err);
           defer.reject();
         });
       }

@@ -40,7 +40,12 @@ app.factory('File', ['$http', '$window', 'Line',
     };
 
     File.prototype.selectPermLine = function (lineNum) {
-      this.lines[lineNum - 1].setSelected(Line.SELECT_TYPE.PERMENANT, true);
+      this.lines.forEach(function (line) {
+        if (line.num !== lineNum)
+          line.setSelected(Line.SELECT_TYPE.PERMENANT, false);
+        else
+          line.setSelected(Line.SELECT_TYPE.PERMENANT, true);
+      });
     };
 
     File.prototype.getSelectedTempLine = function () {
@@ -86,9 +91,12 @@ app.factory('Line', ['$timeout', function ($timeout) {
       case Line.SELECT_TYPE.PERMENANT:
         this.permSelected = value;
         var that = this;
-        $timeout(function () {
+        if (this.permTimeout) {
+          $timeout.cancel(this.permTimeout);
+        }
+        this.permTimeout = $timeout(function () {
           that.permSelected = false;
-        }, 5000);
+        }, 2000);
         break;
     }
   };

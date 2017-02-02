@@ -32,9 +32,9 @@ app.factory('Message', [
       if (this.type === Message.TYPE.TEXT) {
         body = Message.generateMessageWellFormedText(this.body);
         if (this.about) {
-          body += '<br>';
-          body += '<i class="fa fa-link" ng-click="showFileLine(' +
-            this.about.fileId + ',' + this.about.lineNumber + ')"></i>';
+          body += '<br><a ng-click="showFileLine(' +
+            this.about.fileId + ',' + this.about.lineNumber + ')">';
+          body += '<i class="fa fa-link"></i></a>';
         }
       } else if (this.type === Message.TYPE.FILE) {
         body = '<div class="ng-scope" dir="rtl">';
