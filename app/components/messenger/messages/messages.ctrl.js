@@ -72,7 +72,6 @@ app.controller('messagesController', [
     };
 
     $scope.showFileLine = function (fileId, lineNumber) {
-      console.log('showFile:', fileId, lineNumber);
       filesService.showFileLine(fileId, lineNumber);
     };
 

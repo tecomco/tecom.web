@@ -3,10 +3,11 @@
 app.factory('File', ['$http', '$window', 'Line',
   function ($http, $window, Line) {
 
-    function File(id, url, fileData, name) {
+    function File(id, url, fileData, name, channelId) {
       this.id = id;
       this.url = url;
       this.name = name;
+      this.channelId = channelId;
       this.lines = getLinesByData(fileData);
     }
 
@@ -44,12 +45,21 @@ app.factory('File', ['$http', '$window', 'Line',
 
     File.prototype.getSelectedTempLine = function () {
       var lineNum = null;
-      this.lines.forEach(function(line){
-        if(line.tempSelected)
+      this.lines.forEach(function (line) {
+        if (line.tempSelected)
           lineNum = line.num;
       });
       return lineNum;
     };
+
+    // File.prototype.getTabView = function () {
+    //   var view = '<li class="doc-tab doc-tab-active">';
+    //   view += '<i class="fa fa-circle"></i>';
+    //   view += ' ' + this.name;
+    //   view += '<i class="fa fa-times"></i></li>';
+    //
+    //   return view;
+    // };
 
     return File;
   }
@@ -68,7 +78,7 @@ app.factory('Line', ['$timeout', function ($timeout) {
   Line.prototype.setSelected = function (selectType, value) {
     switch (selectType) {
       case Line.SELECT_TYPE.TEMPORARY:
-        if(this.tempSelected === true && value === true)
+        if (this.tempSelected === true && value === true)
           this.tempSelected = false;
         else
           this.tempSelected = value;

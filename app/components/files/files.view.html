@@ -1,29 +1,31 @@
 <div ng-controller="filesController">
-  <div class="doc-section-header">
-    <ul class="doc-tabs">
-      <li class="doc-tab doc-tab-active">
-        test.js
-        <i class="fa fa-times"></i>
-      </li>
-      <li class="doc-tab">
-        <i class="fa fa-circle"></i>
-        test.js
-        <i class="fa fa-times"></i>
-      </li>
-      <li class="doc-tab">
-        test.js
-        <i class="fa fa-times"></i>
-      </li>
-    </ul>
-    <div class="doc-file-ex">
-      <i class="fa fa-folder-open"></i>
+  <div ng-show="vm.file">
+    <div class="doc-section-header">
+      <ul class="doc-tabs">
+        <!--Tabs View-->
+        <li class="doc-tab doc-tab-active">
+          <i class="fa fa-circle"></i>
+          {{vm.file.name}}
+          <a ng-click="closeFile(vm.file)">
+            <i class="fa fa-times"></i>
+          </a>
+        </li>
+      </ul>
+      <!--<li class="doc-tab">-->
+      <!--c.js-->
+      <!--<i class="fa fa-times"></i>-->
+      <!--</li>-->
+      <!--end Tabs View-->
+      <div class="doc-file-ex">
+        <i class="fa fa-folder-open"></i>
+      </div>
     </div>
-  </div>
-  <div class="doc-section-body">
-    <pre class="prettyprint linenums" dir="ltr">
+    <div class="doc-section-body">
+    <pre id="codeView" class="prettyprint linenums" dir="ltr">
       <ol class="linenums">
         <li ng-repeat="line in vm.file.lines track by $index" ng-click="lineClick(line.num)" ng-bind-html="line.html" ng-class="line.getCssClass()"></li>
       </ol>
     </pre>
+    </div>
   </div>
 </div>

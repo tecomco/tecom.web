@@ -13,12 +13,16 @@ app.service('messagesService', [
      */
 
     socket.on('message:send', function (data) {
+      console.log('about:', data);
       var message = new Message(data.body, data.type, data.senderId,
-        data.channelId, data.id, data.datetime, data.additionalData);
+        data.channelId, data.id, data.datetime, data.additionalData, data.about);
       message.save();
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
+      if (message.about) {
+        filesService.showFileLine(message.about.fileId, message.about.lineNumber);
+      }
     });
 
     socket.on('message:type:start', function (data) {
@@ -189,13 +193,12 @@ app.service('messagesService', [
       var livedFile = filesService.getLivedFile();
       if (livedFile) {
         var selectedLineNumber = livedFile.getSelectedTempLine();
-        if(selectedLineNumber) {
+        if (selectedLineNumber) {
           about = {fileId: livedFile.id, lineNumber: selectedLineNumber};
         }
       }
       var message = new Message(messageBody, type || Message.TYPE.TEXT, User.id,
         channelId, null, null, additionalData, about, true);
-      console.log('message:', message);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;

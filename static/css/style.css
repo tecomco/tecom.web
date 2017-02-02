@@ -557,6 +557,7 @@ a, a:hover, a:visited, a:focus {
 .doc-file-ex:hover {
     background: rgba(0,0,0,0.1);
 }
+
 .linenums li {
     list-style-type: decimal;
     font-family: monospace;
@@ -572,6 +573,12 @@ a, a:hover, a:visited, a:focus {
 
 .line-perm-selected {
     background: rgba(36,167,114,0.9);
+}
+
+pre.prettyprint{
+    width: auto;
+    overflow: auto;
+    max-height: calc(100vh);
 }
 
 .date-holder {

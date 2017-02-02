@@ -37,13 +37,13 @@ app.factory('Message', [
             this.about.fileId + ',' + this.about.lineNumber + ')"></i>';
         }
       } else if (this.type === Message.TYPE.FILE) {
-        body = '<div class="ng-scope">';
-        body +='<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
+        body = '<div class="ng-scope" dir="rtl">';
+        body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
         body += '<label class="file-name">' + this.additionalData.name + '</label>';
         body += '<br>';
-        body += '<a class="live-btn" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
-        body += 'LIVE ! ';
+        body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
         body += '<i class="fa fa-circle"></i>';
+        body += ' Live ! ';
         body += '</a>';
         body += '<a class="dl-btn" href=\"' + this.additionalData.url + '" download="' +
           this.additionalData.name + '" target="_blank">';
@@ -70,9 +70,11 @@ app.factory('Message', [
       } else if (this.type === Message.TYPE.NOTIF.CHANNEL_EDITED) {
         body = 'اطلاعات گروه تغییر کرد.';
       } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
-        console.log(this.additionalData);
         body = 'فایل "' + this.additionalData.fileName + '" ، ' +
-          '<span dir="ltr">LIVE !</span>' + ' شد';
+          '<span dir="ltr">Live!</span>' + ' شد';
+      } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
+        body = 'فایل "' + this.additionalData.fileName + '" از حالت ' +
+          '<span dir="ltr">Live!</span>' + ' خارج شد';
       }
       return body;
     };
@@ -135,6 +137,8 @@ app.factory('Message', [
         case Message.TYPE.NOTIF.USER_REMOVED:
           return 'notif';
         case Message.TYPE.NOTIF.FILE_LIVED:
+          return 'notif';
+        case Message.TYPE.NOTIF.FILE_DIED:
           return 'notif';
         case Message.TYPE.NOTIF.CHANNEL_CREATED:
           return 'notif';
@@ -215,6 +219,7 @@ app.factory('Message', [
         FILE_LIVED: 4,
         CHANNEL_CREATED: 5,
         CHANNEL_EDITED: 6,
+        FILE_DIED: 7
       }
     };
 
