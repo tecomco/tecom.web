@@ -102,7 +102,7 @@
                     <i class="zmdi zmdi-accounts"></i>
                     <h3>اعضای گروه</h3>
                     <div class="modal-input modal-input-details">
-                        <button tooltip-placement="bottom" uib-tooltip="اضافه کردن عضو" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span ng-class="($ctrl.addingMemberActive) ? 'zmdi zmdi-save' : 'zmdi zmdi-account-add'"></span></button>
+                        <button tooltip-placement="bottom" uib-tooltip="ذخیره کردن" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span ng-class="($ctrl.addingMemberActive) ? 'zmdi zmdi-save' : 'zmdi zmdi-account-add'"></span></button>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.addingMemberActive">
                         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="$ctrl.searchBox">
@@ -113,7 +113,7 @@
                                 <img ng-src="static/img/user-def.png"/>
                                 <label>{{member.full_name}}</label>
                                 <label>(@{{member.username}})</label>
-                                <button ng-show="$ctrl.showRemoveIcon(member)" class="btn modal-btn-details-remove"><span class="glyphicon glyphicon-remove" ng-click="$ctrl.deleteMember(member)"></span></button>
+                                <button ng-show="$ctrl.showRemoveIcon(member)" tooltip-placement="bottom" uib-tooltip="اضافه کردن عضو" class="btn modal-btn-details-remove"><span class="glyphicon glyphicon-remove" ng-click="$ctrl.deleteMember(member)"></span></button>
                             </div>
                         </div>
                     </div>
