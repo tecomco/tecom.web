@@ -5,13 +5,13 @@ app.factory('Message', [
   function ($log, db, textUtil, channelsService, User) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-                     additionalData, isPending) {
+                     additionalData, about, isPending) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
-        additionalData, isPending);
+        additionalData, about, isPending);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-        _id, datetime, additionalData, about, isPending) {
+                                            _id, datetime, additionalData, about, isPending) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -31,16 +31,24 @@ app.factory('Message', [
       var body;
       if (this.type === Message.TYPE.TEXT) {
         body = Message.generateMessageWellFormedText(this.body);
+        if (this.about) {
+          body += '<br><a ng-click="showFileLine(' +
+            this.about.fileId + ',' + this.about.lineNumber + ')">';
+          body += '<i class="fa fa-link"></i></a>';
+        }
       } else if (this.type === Message.TYPE.FILE) {
-        body = '<label>' + this.additionalData.name + '</label>';
+        body = '<div class="ng-scope" dir="rtl">';
+        body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
+        body += '<label class="file-name">' + this.additionalData.name + '</label>';
         body += '<br>';
-        body += '<a ng-click="goLive(' + this.additionalData.fileId + ')" tooltip-placement="bottom" uib-tooltip="Go Live!">';
-        body += '<i class="fa fa-eye"></i>';
+        body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
+        body += '<i class="fa fa-circle"></i>';
+        body += ' Live ! ';
         body += '</a>';
-        body += '<a href=\"' + this.additionalData.url + '" download="' +
-          this.additionalData.name + '" target="_blank" tooltip-placement="bottom" uib-tooltip="دانلود">';
-        body += '<i class="fa fa-download"></i>';
-        body += '</a>';
+        body += '<a class="dl-btn" href=\"' + this.additionalData.url + '" download="' +
+          this.additionalData.name + '" target="_blank">';
+        body += 'Download';
+        body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
@@ -61,6 +69,12 @@ app.factory('Message', [
         body = 'گروه ساخته شد.';
       } else if (this.type === Message.TYPE.NOTIF.CHANNEL_EDITED) {
         body = 'اطلاعات گروه تغییر کرد.';
+      } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
+        body = 'فایل "' + this.additionalData.fileName + '" ، ' +
+          '<span dir="ltr">Live!</span>' + ' شد';
+      } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
+        body = 'فایل "' + this.additionalData.fileName + '" از حالت ' +
+          '<span dir="ltr">Live!</span>' + ' خارج شد';
       }
       return body;
     };
@@ -123,7 +137,9 @@ app.factory('Message', [
         case Message.TYPE.NOTIF.USER_REMOVED:
           return 'notif';
         case Message.TYPE.NOTIF.FILE_LIVED:
-          return 'msg msg-file';
+          return 'notif';
+        case Message.TYPE.NOTIF.FILE_DIED:
+          return 'notif';
         case Message.TYPE.NOTIF.CHANNEL_CREATED:
           return 'notif';
         case Message.TYPE.NOTIF.CHANNEL_EDITED:
@@ -151,7 +167,7 @@ app.factory('Message', [
       if (this.additionalData) {
         data.additionalData = this.additionalData;
       }
-      if(this.about) {
+      if (this.about) {
         data.about = this.about;
       }
       return data;
@@ -169,6 +185,9 @@ app.factory('Message', [
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
+      }
+      if (this.about) {
+        data.about = this.about;
       }
       return data;
     };
@@ -200,6 +219,7 @@ app.factory('Message', [
         FILE_LIVED: 4,
         CHANNEL_CREATED: 5,
         CHANNEL_EDITED: 6,
+        FILE_DIED: 7
       }
     };
 

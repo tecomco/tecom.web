@@ -1,11 +1,13 @@
 'use strict';
 
-app.factory('File', ['$http', '$window', '$timeout', 'Line',
-  function ($http, $window, $timeout, Line) {
+app.factory('File', ['$http', '$window', 'Line',
+  function ($http, $window, Line) {
 
-    function File(id, url, fileData) {
+    function File(id, url, fileData, name, channelId) {
       this.id = id;
       this.url = url;
+      this.name = name;
+      this.channelId = channelId;
       this.lines = getLinesByData(fileData);
     }
 
@@ -38,24 +40,38 @@ app.factory('File', ['$http', '$window', '$timeout', 'Line',
     };
 
     File.prototype.selectPermLine = function (lineNum) {
-      this.lines[lineNum - 1].setSelected(Line.SELECT_TYPE.PERMENANT, true);
+      this.lines.forEach(function (line) {
+        if (line.num !== lineNum)
+          line.setSelected(Line.SELECT_TYPE.PERMENANT, false);
+        else
+          line.setSelected(Line.SELECT_TYPE.PERMENANT, true);
+      });
     };
 
     File.prototype.getSelectedTempLine = function () {
       var lineNum = null;
-      this.lines.forEach(function(line){
-        if(line.tempSelected)
+      this.lines.forEach(function (line) {
+        if (line.tempSelected)
           lineNum = line.num;
       });
       return lineNum;
     };
+
+    // File.prototype.getTabView = function () {
+    //   var view = '<li class="doc-tab doc-tab-active">';
+    //   view += '<i class="fa fa-circle"></i>';
+    //   view += ' ' + this.name;
+    //   view += '<i class="fa fa-times"></i></li>';
+    //
+    //   return view;
+    // };
 
     return File;
   }
 ]);
 
 
-app.factory('Line', [function () {
+app.factory('Line', ['$timeout', function ($timeout) {
 
   function Line(number, html) {
     this.num = number;
@@ -67,7 +83,7 @@ app.factory('Line', [function () {
   Line.prototype.setSelected = function (selectType, value) {
     switch (selectType) {
       case Line.SELECT_TYPE.TEMPORARY:
-        if(this.tempSelected === true && value === true)
+        if (this.tempSelected === true && value === true)
           this.tempSelected = false;
         else
           this.tempSelected = value;
@@ -75,9 +91,12 @@ app.factory('Line', [function () {
       case Line.SELECT_TYPE.PERMENANT:
         this.permSelected = value;
         var that = this;
-        $timeout(function () {
+        if (this.permTimeout) {
+          $timeout.cancel(this.permTimeout);
+        }
+        this.permTimeout = $timeout(function () {
           that.permSelected = false;
-        }, 5000);
+        }, 2000);
         break;
     }
   };

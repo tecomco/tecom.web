@@ -100,11 +100,12 @@ app.service('channelsService', [
 
     function setCurrentChannelBySlug(slug) {
       if (!slug) {
-        self.currentChannel = null;
+        setCurrentChannel(null);
       } else {
         var channel = findChannelBySlug(slug);
-        if (!channel) return;
-        if (channel.isDirect() && !channel.isDirectExist()) {
+        if (!channel) {
+          setCurrentChannel(null);
+        } else if (channel.isDirect() && !channel.isDirectExist()) {
           createDirect(channel.memberId)
             .then(function () {
               setCurrentChannel(channel);
@@ -157,7 +158,7 @@ app.service('channelsService', [
         memberIds: memberIds,
         channelId: channelId
       };
-      socket.emit('channel:members:add', data, function(response){
+      socket.emit('channel:members:add', data, function (response) {
         if (response.status)
           defer.resolve();
         else
@@ -168,7 +169,7 @@ app.service('channelsService', [
 
     function removeMemberFromChannel(data) {
       var defer = $q.defer();
-      socket.emit('channel:members:remove', data, function(res){
+      socket.emit('channel:members:remove', data, function (res) {
         if (res.status) {
           defer.resolve();
         }

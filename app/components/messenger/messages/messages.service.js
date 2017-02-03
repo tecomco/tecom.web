@@ -14,11 +14,14 @@ app.service('messagesService', [
 
     socket.on('message:send', function (data) {
       var message = new Message(data.body, data.type, data.senderId,
-        data.channelId, data.id, data.datetime, data.additionalData);
+        data.channelId, data.id, data.datetime, data.additionalData, data.about);
       message.save();
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
+      if (message.about) {
+        filesService.showFileLine(message.about.fileId, message.about.lineNumber);
+      }
     });
 
     socket.on('message:type:start', function (data) {
@@ -76,7 +79,7 @@ app.service('messagesService', [
               }
               res.messages.forEach(function (msg) {
                 var message = new Message(msg.body, msg.type, msg.senderId,
-                  msg.channelId, msg.id, msg.datetime, msg.additionalData);
+                  msg.channelId, msg.id, msg.datetime, msg.additionalData, msg.about);
                 messages.push(message.getDbWellFormed());
               });
               resolve();
@@ -113,7 +116,7 @@ app.service('messagesService', [
           var messages = [];
           res.docs.forEach(function (doc) {
             var message = new Message(doc.body, doc.type, doc.senderId,
-              doc.channelId, doc._id, doc.datetime, doc.additionalData);
+              doc.channelId, doc._id, doc.datetime, doc.additionalData, doc.about);
             messages.push(message);
           });
           deferred.resolve(messages);
@@ -189,7 +192,7 @@ app.service('messagesService', [
       var livedFile = filesService.getLivedFile();
       if (livedFile) {
         var selectedLineNumber = livedFile.getSelectedTempLine();
-        if(selectedLineNumber) {
+        if (selectedLineNumber) {
           about = {fileId: livedFile.id, lineNumber: selectedLineNumber};
         }
       }
@@ -211,7 +214,7 @@ app.service('messagesService', [
         name: fileName
       };
       var message = new Message(null, Message.TYPE.FILE, User.id,
-        channelId, null, null, additionalData, true);
+        channelId, null, null, additionalData, null, true);
       Upload.upload({
         url: 'api/v1/files/upload/' + fileName,
         data: {

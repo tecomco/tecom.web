@@ -4,7 +4,7 @@ app.controller('messagesController', [
   '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
   'messagesService', 'channelsService', 'filesService',
   function ($scope, $state, $stateParams, $window, $timeout, Upload,
-    messagesService, channelsService, filesService) {
+            messagesService, channelsService, filesService) {
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -62,7 +62,6 @@ app.controller('messagesController', [
         self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
-
       // var messagesHolder = document.getElementById('messagesHolder');
       // var messagesWindow = document.getElementById('messagesWindow');
       // var inputHolder = document.getElementById('inputHolder');
@@ -70,6 +69,10 @@ app.controller('messagesController', [
       // console.log('chat:', inputPlaceHolder.scrollHeight);
       // var height = messagesWindow.scrollHeight - inputPlaceHolder.scrollHeight;
       // messagesHolder.style.height = height.toString() + 'px';
+    };
+
+    $scope.showFileLine = function (fileId, lineNumber) {
+      filesService.showFileLine(fileId, lineNumber);
     };
 
     function scrollBottom() {
@@ -88,8 +91,8 @@ app.controller('messagesController', [
       }
     };
 
-    $scope.goLive = function (fileId) {
-      filesService.makeFileLive($scope.channel.id, fileId);
+    $scope.goLive = function (fileId, fileName) {
+      filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
 
     function initialize() {
@@ -144,8 +147,8 @@ app.controller('messagesController', [
         self.isTabfocused = true;
         seenLastUnSeenMessage();
       }).bind('blur', function () {
-        self.isTabfocused = false;
-      });
+      self.isTabfocused = false;
+    });
 
   }
 ]);
