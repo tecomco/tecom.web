@@ -172,19 +172,29 @@ a, a:hover, a:visited, a:focus {
 }
 
 .notif {
-    display: inline-block;
     min-width: 200px;
-    color: #fff;
+    color: #696969;
     text-align: center;
     position: relative;
-    right: 30%;
-    max-width: 80%;
+    max-width: 50%;
     padding: 8px 12px;
-    background: rgba(85, 85, 85, 0.52);
+    background: rgba(226, 226, 226, 0.53);
     border-radius: 8px;
-    margin-bottom: 8px;
     font-weight: 100;
     font-size: 15px;
+    margin: 0 auto;
+    margin-bottom: 8px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.05), 0 4px 4px -2px rgba(0, 0, 0, 0.1)
+}
+
+.notif .time {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 2px 6px;
+    color: #999;
+    background: #f1f1f1;
+    border-radius: 0 8px 0 8px;
 }
 
 .msg-landing {
@@ -429,6 +439,7 @@ a, a:hover, a:visited, a:focus {
     color: #fff;
     position: relative;
     top: 5px;
+    padding: 4px 7px 2px;
 }
 
 .group-holder ul li a:hover {
@@ -467,6 +478,11 @@ a, a:hover, a:visited, a:focus {
     overflow-x: hidden;
     background-image: url("../img/landing-bg.png");
     background-repeat: repeat;
+    direction: ltr;
+}
+
+.chat * {
+    direction: rtl;
 }
 
 .server-msg {
@@ -531,9 +547,7 @@ a, a:hover, a:visited, a:focus {
     border-right: 1px solid #eee;
 }
 
-.doc-section-body {
-    overflow-y: scroll;
-}
+.doc-section-body {}
 
 .doc-tabs {
     direction: ltr;
@@ -550,11 +564,10 @@ a, a:hover, a:visited, a:focus {
     height: 100%;
     cursor: pointer;
     padding: 19px 20px;
-    transition:all 0.3s ease;
-    -o-transition:all 0.3s ease;
-    -moz-transition:all 0.3s ease;
-    -webkit-transition:all 0.3s ease;
-
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 }
 
 .doc-tab:hover {
@@ -589,15 +602,23 @@ a, a:hover, a:visited, a:focus {
     background: rgba(0, 0, 0, 0.1);
 }
 
+#codeView {
+    table-layout: fixed;
+    width: 100%;
+}
+
+#codeView * {
+    direction: ltr;
+}
+
 .linenums li {
     list-style-type: decimal;
     font-family: monospace;
     cursor: pointer;
-    transition:all 0.3s ease;
-    -o-transition:all 0.3s ease;
-    -moz-transition:all 0.3s ease;
-    -webkit-transition:all 0.3s ease;
-
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 }
 
 .linenums li:hover {
@@ -727,44 +748,59 @@ pre.prettyprint {
 }
 
 .file-icon-holder {
-    background: rgba(200, 200, 200, 0.3);
-    width: 45px;
     height: 45px;
     border-radius: 10px;
-    padding: 13px 16px;
+    padding: 13px 8px 13px 0;
     display: inline-block;
     margin-left: 7px;
 }
 
-.file-icon-holder i {}
+.file-icon-holder i {
+    color: #aaa;
+}
 
 .file-name {}
 
 .live-btn {
-    font-weight: bold;
-    background: rgba(200, 200, 200, 0.3);
-    padding: 5px 0px;
     text-align: center;
     border-radius: 6px;
-    width: 47%;
     float: right;
-    margin-top: 10px;
+    margin-left: 6px;
+    border: 1px solid rgb(230, 77, 77);
+    font-size: 10px;
+    color: rgb(230, 77, 77);
+    position: relative;
+    top: 13px;
+    padding: 1px 4px;
+    cursor: pointer;
 }
 
 .live-btn i {
     /*padding-left: 2px;*/
-    color: crimson;
+    font-size: 5px;
+    color: rgb(230, 77, 77);
+}
+
+.live-btn label {
+    cursor: pointer;
+    color: rgb(230, 77, 77);
+    margin-bottom: 0;
+    position: relative;
+    top: 1px;
+    padding-left: 2px;
 }
 
 .dl-btn {
     font-weight: bold;
-    background: rgba(200, 200, 200, 0.3);
     padding: 5px 0px;
     text-align: center;
     border-radius: 6px;
-    width: 47%;
-    float: left;
+    float: right;
     margin-top: 10px;
+}
+
+.dl-btn i {
+    color: #aaa;
 }
 
 .input-holder {

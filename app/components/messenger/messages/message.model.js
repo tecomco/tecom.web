@@ -34,20 +34,19 @@ app.factory('Message', [
         if (this.about) {
           body += '<br><a ng-click="showFileLine(' +
             this.about.fileId + ',' + this.about.lineNumber + ')">';
-          body += '<i class="fa fa-link"></i></a>';
+          body += '<i class="zmdi zmdi-link"></i></a>';
         }
       } else if (this.type === Message.TYPE.FILE) {
         body = '<div class="ng-scope" dir="rtl">';
-        body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
         body += '<label class="file-name">' + this.additionalData.name + '</label>';
-        body += '<br>';
+        body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
         body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
+        body += '<label>LIVE</label>';
         body += '<i class="fa fa-circle"></i>';
-        body += ' Live ! ';
         body += '</a>';
         body += '<a class="dl-btn" href=\"' + this.additionalData.url + '" download="' +
           this.additionalData.name + '" target="_blank">';
-        body += 'Download';
+        body += '<i class="zmdi zmdi-eye"></i>';
         body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
