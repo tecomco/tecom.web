@@ -27,12 +27,11 @@ app.factory('File', ['$http', '$window', 'Line',
     }
 
     File.prototype.selectTempLine = function (lineNum) {
-      this.lines.forEach(function (line) {
-        if (line.num !== lineNum)
-          line.setSelected(Line.SELECT_TYPE.TEMPORARY, false);
-        else
-          line.setSelected(Line.SELECT_TYPE.TEMPORARY, true);
-      });
+      if(this.selectedTemp)
+        this.deselectTempLine(this.selectedTemp);
+      var line = this.getLine(lineNum);
+      line.setSelected(Line.SELECT_TYPE.TEMPORARY, true);
+      this.selectedTemp = lineNum;
     };
 
     File.prototype.deselectTempLine = function (lineNum) {
@@ -48,13 +47,8 @@ app.factory('File', ['$http', '$window', 'Line',
       });
     };
 
-    File.prototype.getSelectedTempLine = function () {
-      var lineNum = null;
-      this.lines.forEach(function (line) {
-        if (line.tempSelected)
-          lineNum = line.num;
-      });
-      return lineNum;
+    File.prototype.getLine = function(lineNum){
+      return this.lines[lineNum - 1];
     };
 
     // File.prototype.getTabView = function () {
