@@ -9,16 +9,6 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
     self.forms = {};
     self.newChannel = {};
     self.teamMembers = [];
-    var selectedMembers = [];
-
-    var makeSelectedMembersArray = function () {
-      selectedMembers = [];
-      selectedMembers.push(window.memberId.toString());
-      for (var i = 0; i < self.teamMembers.length; i++) {
-        if (self.teamMembers[i].selected === true)
-          selectedMembers.push(self.teamMembers[i].id.toString());
-      }
-    };
 
     User.team.getTeamMembers(User.team.id).then(function (event) {
       self.teamMembers = event;
