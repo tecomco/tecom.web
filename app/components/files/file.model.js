@@ -29,9 +29,14 @@ app.factory('File', ['$http', '$window', 'Line',
     File.prototype.selectTempLine = function (lineNum) {
       if(this.selectedTemp)
         this.deselectTempLine(this.selectedTemp);
-      var line = this.getLine(lineNum);
-      line.setSelected(Line.SELECT_TYPE.TEMPORARY, true);
-      this.selectedTemp = lineNum;
+      if(this.selectedTemp !== lineNum) {
+        var line = this.getLine(lineNum);
+        line.setSelected(Line.SELECT_TYPE.TEMPORARY, true);
+        this.selectedTemp = lineNum;
+      }
+      else{
+        this.selectedTemp = null;
+      }
     };
 
     File.prototype.deselectTempLine = function (lineNum) {
