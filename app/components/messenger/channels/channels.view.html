@@ -108,7 +108,7 @@
               <input type="text" name="search" ng-model="$ctrl.searchBox" placeholder="جستجو">
             </div>
             <div class="g-members">
-              <a href="#" ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one">
+              <a ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one" ng-click="$ctrl.directClick(teamMember)">
                 <img ng-src="static/img/user-def.png" />
                 <label>{{teamMember.full_name}}</label>
                 <label>(@{{teamMember.username}})</label>

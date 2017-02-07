@@ -30,6 +30,7 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
 
     $scope.lineClick = function (lineNum) {
       $scope.vm.file.selectTempLine(lineNum);
+      document.getElementById('inputPlaceHolder').focus();
     };
 
     $scope.closeFile = function (file) {

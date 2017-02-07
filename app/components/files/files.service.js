@@ -10,8 +10,7 @@ app.service('filesService', [
     self.files = [];
 
     socket.on('file:lived', function (data) {
-      var channel = channelsService.findChannelById(data.channelId);
-      channel.liveFileId = data.fileId;
+      channelsService.setChannelLivedFileId(data.channelId, data.fileId);
       updateLiveFile();
     });
 

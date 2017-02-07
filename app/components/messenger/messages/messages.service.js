@@ -195,6 +195,7 @@ app.service('messagesService', [
         if (selectedLineNumber) {
           about = {fileId: livedFile.id, lineNumber: selectedLineNumber};
         }
+        livedFile.deselectFilelines();
       }
       var message = new Message(messageBody, type || Message.TYPE.TEXT, User.id,
         channelId, null, null, additionalData, about, true);

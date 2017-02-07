@@ -56,6 +56,21 @@ app.factory('File', ['$http', '$window', 'Line',
       return this.lines[lineNum - 1];
     };
 
+    File.prototype.getSelectedTempLine = function()
+    {
+      return this.selectedTemp;
+    }
+
+    File.prototype.deselectFilelines = function()
+    {
+      if(this.selectedTemp) {
+        this.deselectTempLine(this.selectedTemp);
+        this.selectedTemp = null;
+      }
+    }
+
+
+
     // File.prototype.getTabView = function () {
     //   var view = '<li class="doc-tab doc-tab-active">';
     //   view += '<i class="fa fa-circle"></i>';

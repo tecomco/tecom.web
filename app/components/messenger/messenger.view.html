@@ -8,10 +8,10 @@
         </a>
         <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
           <li>
-            <a ng-click="openModal('user-profile')"><i class="fa fa-user"></i>پروفایل من</a>
+            <a ng-click="openModal('userProfile')"><i class="fa fa-user"></i>پروفایل من</a>
           </li>
           <li>
-            <a ng-click="openModal('team-profile')"><i class="fa fa-users"></i>مدیریت تیم</a>
+            <a ng-click="openModal('teamProfile')"><i class="fa fa-users"></i>مدیریت تیم</a>
           </li>
           <li>
             <a><i class="fa fa-sign-out "></i>خروج</a>
@@ -34,7 +34,7 @@
 <div class="clearfix"></div>
 
 <!-- User profile modal -->
-<script type="text/ng-template" id="user-profile.html">
+<script type="text/ng-template" id="userProfile.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.close()">&times;</button>
     <h4 class="modal-title">پروفایل من</h4>
@@ -45,10 +45,10 @@
         <img src="static/img/user-def.png">
         <div class="info">
           <label>ایمیل:</label>
-          <label class="label">vahid@tecom.me</label>
+          <label class="label">{{$ctrl.user.email}}</label>
           <br>
           <label>نام کاربری:</label>
-          <label class="label">@وحید</label>
+          <label class="label">'@'+{{$ctrl.user.username}}</label>
           <div class="modal-input modal-input-details">
               <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="zmdi zmdi-edit"></span></button>
           </div>
@@ -70,7 +70,7 @@
 </script>
 
 <!-- Team profile modal -->
-<script type="text/ng-template" id="team-profile.html">
+<script type="text/ng-template" id="teamProfile.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.close()">&times;</button>
     <h4 class="modal-title">مدیریت تیم</h4>

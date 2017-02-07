@@ -1,13 +1,12 @@
 'use strict';
 
 app.controller('newDirectController', ['$uibModalInstance', '$log',
-  'channelsService', 'ArrayUtil', 'User',
-  function ($uibModalInstance, $log, channelsService, ArrayUtil, User, Channel) {
+  'channelsService', 'ArrayUtil', 'User', '$state',
+  function ($uibModalInstance, $log, channelsService, ArrayUtil, User, $state) {
 
     var self = this;
 
     self.forms = {};
-    self.newChannel = {};
     self.teamMembers = [];
 
     User.team.getTeamMembers(User.team.id).then(function (event) {
@@ -24,40 +23,11 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
       $uibModalInstance.dismiss('cancel');
     };
 
-    self.createChannelSubmit = function () {
-      if (self.forms.newChannelForm.$valid === true) {
-        sendNewChannelData();
-        $uibModalInstance.close();
-      }
-    };
-
-    var sendNewChannelData = function () {
-      makeSelectedMembersArray();
-      var newChannelData = {
-        name: self.newChannel.name,
-        description: self.newChannel.description,
-        type: Channel.TYPE.DIRECT,
-        member_ids: selectedMembers,
-        creator: window.memberId
-      };
-
-      channelsService.sendNewChannel(newChannelData, function (response) {
-        $log.info('New channel response: ' + response);
-        if (response.status) {
-          self.closeCreateChannel();
-        } else {
-          $log.error('Error sending new channel form to server : ', response.message);
-          self.newChannel.serverError = true;
-        }
+    self.directClick = function (direct) {
+      $log.info('salam:', direct);
+      $state.go('messenger.messages', {
+        slug: direct.getUrlifiedSlug()
       });
-    };
-
-    angular.element(document).ready(function () {
-      initializeNewDirect();
-    });
-
-    var initializeNewDirect = function () {
-      self.newChannel.serverError = false;
     };
   }
 ]);

@@ -59,15 +59,15 @@ app.service('channelsService', [
       }
     });
 
-    socket.on('file:lived', function (data) {
-      var channel = findChannelById(data.channelId);
-      channel.liveFileId = data.fileId;
-      $rootScope.$broadcast('channels:updated');
-    });
-
     /**
      * @summary Methods
      */
+
+    function setChannelLivedFileId(channelId, fileId){
+      var channel = findChannelById(channelId);
+      channel.liveFileId = fileId;
+      $rootScope.$broadcast('channels:updated');
+    }
 
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
@@ -313,7 +313,8 @@ app.service('channelsService', [
       addIsTypingMemberByChannelId: addIsTypingMemberByChannelId,
       removeIsTypingMemberByChannelId: removeIsTypingMemberByChannelId,
       addMessagesPromise: addMessagesPromise,
-      getChannelMembers: getChannelMembers
+      getChannelMembers: getChannelMembers,
+      setChannelLivedFileId: setChannelLivedFileId
     };
   }
 ]);

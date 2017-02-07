@@ -1,3 +1,7 @@
-/**
- * Created by apple on 2/7/2017 AD.
- */
+'use strict';
+
+app.controller('userProfileController', ['$scope', 'User',
+  function($scope, User){
+
+  $scope.user = User;
+}]);
