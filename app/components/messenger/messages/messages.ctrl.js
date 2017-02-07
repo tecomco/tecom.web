@@ -2,9 +2,9 @@
 
 app.controller('messagesController', [
   '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
-  'messagesService', 'channelsService', 'filesService',
+  'Notification', 'messagesService', 'channelsService', 'filesService',
   function ($scope, $state, $stateParams, $window, $timeout, Upload,
-            messagesService, channelsService, filesService) {
+            Notification, messagesService, channelsService, filesService) {
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -32,6 +32,7 @@ app.controller('messagesController', [
           messagesService.seenMessage($scope.channel.id, message.id,
             message.senderId);
         } else {
+          
           self.lastUnSeenMessage = message;
         }
       }
