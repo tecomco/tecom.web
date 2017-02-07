@@ -1,5 +1,5 @@
 'use strict';
 
-app.controller('userProfileController', [function(){
+app.controller('teamProfileController', [function(){
 
 }]);

@@ -45,18 +45,19 @@
         <img src="static/img/user-def.png">
         <div class="info">
           <label>ایمیل:</label>
-          <label class="label">{{$ctrl.user.email}}</label>
+          <label class="label">{{user.email}}</label>
           <br>
           <label>نام کاربری:</label>
-          <label class="label">'@'+{{$ctrl.user.username}}</label>
+          <label class="label">@</label>
+          <label ng-show="!editUsernameActive" class="label">{{user.username}}</label>
+          <input ng-show="editUsernameActive" type="text" ng-model="usernameInput" placeholder="{{user.username}}"/>
           <div class="modal-input modal-input-details">
-              <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="zmdi zmdi-edit"></span></button>
+            <button ng-show="!editUsernameActive" tooltip-placement="bottom" uib-tooltip="ویرایش نام کاربری" class="modal-btn modal-btn-details" ng-click="editUsername()"><span class="zmdi zmdi-edit"></span></button>
+            <button ng-show="editUsernameActive" tooltip-placement="bottom" uib-tooltip="ذخیره نام کاربری" class="modal-btn modal-btn-details" ng-click="saveUsername()"><span class="zmdi zmdi-edit"></span></button>
           </div>
           <br>
-          <label>رمز عبور:</label>
-          <label class="label">**********</label>
           <div class="modal-input modal-input-details">
-              <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="zmdi zmdi-edit"></span></button>
+              <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="modal-btn modal-btn-details" ng-click="editChannel()"><span class="zmdi zmdi-edit"></span></button>
           </div>
         </div>
         <div class="leave">
