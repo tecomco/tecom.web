@@ -14,7 +14,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
 
     var makeSelectedMembersArray = function () {
       selectedMembers = [];
-      selectedMembers.push(User.id.toString());
+      selectedMembers.push(User.getCurrent().id.toString());
       for (var i = 0; i < self.teamMembers.length; i++) {
         if (self.teamMembers[i].selected === true)
           selectedMembers.push(self.teamMembers[i].id.toString());
@@ -29,8 +29,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
       return (form.name.$viewValue && form.name.$invalid);
     };
 
-    User.team.getTeamMembers(User.team.id).then(function (members) {
-      ArrayUtil.removeElementByKeyValue(members, 'id', User.id);
+    User.getCurrent().team.getTeamMembers().then(function (members) {
+      ArrayUtil.removeElementByKeyValue(members, 'id', User.getCurrent().id);
       self.teamMembers = members;
     });
 
@@ -54,8 +54,8 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
         description: self.newChannel.description,
         type: newChannelType,
         member_ids: selectedMembers,
-        creator: User.id,
-        team: User.team.id
+        creator: User.getCurrent().id,
+        team: User.getCurrent().team.id
       };
       channelsService.createChannel(newChannelData)
         .then(function () {

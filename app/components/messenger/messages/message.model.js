@@ -24,7 +24,7 @@ app.factory('Message', [
         this.id = Message.generateIntegerId(_id);
       }
       this.isPending = isPending || false;
-      this.username = User.team.getUsernameById(this.senderId);
+      this.username = User.getCurrent().team.getUsernameById(this.senderId);
     };
 
     Message.prototype.getViewWellFormed = function () {
@@ -54,7 +54,7 @@ app.factory('Message', [
         body = '';
         var addedMemberIds = this.additionalData;
         angular.forEach(addedMemberIds, function (memberId) {
-          body += '@' + User.team.getUsernameById(memberId) + ' و ';
+          body += '@' + User.getCurrent().team.getUsernameById(memberId) + ' و ';
         });
         body = body.slice(0, body.length - 3);
         if (this.type === Message.TYPE.NOTIF.USER_ADDED) {
@@ -79,7 +79,7 @@ app.factory('Message', [
     };
 
     Message.prototype.isFromMe = function () {
-      return this.senderId === User.id;
+      return this.senderId === User.getCurrent().id;
     };
 
     Message.prototype.isEnglish = function () {

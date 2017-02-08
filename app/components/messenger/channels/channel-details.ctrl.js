@@ -88,7 +88,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         });
       }
       else {
-        User.team.getTeamMembers(User.team.id).then(function (teamMembers) {
+        User.getCurrent().team.getTeamMembers().then(function (teamMembers) {
           teamMembers.forEach(function (teamMember) {
             if (!self.channelMembers.find(function (member) {
                 return member.member_id === teamMember.id;
@@ -180,7 +180,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
 
     self.showRemoveIcon = function (member) {
       return (member.isChannelMember) &&
-        (selectedMember === member && member.member_id !== User.id);
+        (selectedMember === member && member.member_id !== User.getCurrent().id);
     };
 
     function makeListItem(member) {

@@ -5,11 +5,12 @@ app.service('db', ['$window', '$q', '$log', 'User', function ($window, $q, $log,
 
   var self = this;
 
-  if (!User.exists()) return;
+  if (!User.getCurrent()) return;
   createDb();
 
   function createDb() {
-    self.db = new $window.PouchDB('tecom:' + User.team.id + ':' + User.id);
+    self.db = new $window.PouchDB('tecom:' + User.getCurrent().team.id + ':' +
+      User.getCurrent().id);
     $log.info('PouchDB connected successfuly.');
     self.createIndexPromise = self.db.createIndex({
       index: {

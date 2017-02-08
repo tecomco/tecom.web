@@ -1,8 +1,8 @@
 'use strict';
 
 app.service('channelsService', [
-  '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state',
-  function ($rootScope, $http, $q, $log, socket, Channel, $state) {
+  '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state', 'User',
+  function ($rootScope, $http, $q, $log, socket, Channel, $state, User) {
 
     var self = this;
 
@@ -23,7 +23,14 @@ app.service('channelsService', [
     });
 
     socket.on('channel:new', function (result) {
-      createAndPushChannel(result.channel);
+      console.log(result);
+      var channel = createAndPushChannel(result.channel);
+      console.log('asd', channel);
+      if (result.channel.creatorId === User.getCurrent().id) {
+        $state.go('messenger.messages', {
+          slug: channel.slug
+        });
+      }
       $rootScope.$broadcast('channels:updated');
     });
 
@@ -63,7 +70,7 @@ app.service('channelsService', [
      * @summary Methods
      */
 
-    function setChannelLivedFileId(channelId, fileId){
+    function setChannelLivedFileId(channelId, fileId) {
       var channel = findChannelById(channelId);
       channel.liveFileId = fileId;
       $rootScope.$broadcast('channels:updated');

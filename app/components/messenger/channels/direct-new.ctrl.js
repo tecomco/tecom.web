@@ -9,12 +9,9 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
     self.forms = {};
     self.teamMembers = [];
 
-    User.team.getTeamMembers(User.team.id).then(function (event) {
+    User.getCurrent().team.getTeamMembers().then(function (event) {
       self.teamMembers = event;
-      ArrayUtil.removeElementByKeyValue(self.teamMembers, 'id', window.memberId);
-      for (var i = 0; i < self.teamMembers.length; i++) {
-        self.teamMembers[i].selected = false;
-      }
+      ArrayUtil.removeElementByKeyValue(self.teamMembers, 'id', User.id);
     }, function (status) {
       $log.info('error getting team members : ', status);
     });
@@ -24,10 +21,11 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
     };
 
     self.directClick = function (direct) {
-      $log.info('salam:', direct);
+      var slug = '@' + User.getCurrent().team.getUsernameById(direct.id);
       $state.go('messenger.messages', {
-        slug: direct.getUrlifiedSlug()
+        slug: slug
       });
+      self.closeCreateChannel();
     };
   }
 ]);

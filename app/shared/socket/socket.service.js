@@ -1,8 +1,10 @@
 'use strict';
 
 app.factory('socket', [
-  '$rootScope', '$log', 'ENV', '$uibModal', 'domainUtil', 'AuthService', 'User',
-  function ($rootScope, $log, ENV, $uibModal, domainUtil, AuthService, User) {
+  '$rootScope', '$log', 'ENV', '$uibModal', 'domainUtil', 'AuthService',
+  '$localStorage',
+  function ($rootScope, $log, ENV, $uibModal, domainUtil, AuthService,
+  $localStorage) {
 
     var self = this;
 
@@ -13,7 +15,7 @@ app.factory('socket', [
     self.socket = io.connect(socketUri, {
       path: '/ws/',
       query: {
-        token: User.token,
+        token: $localStorage.token,
         teamSlug: teamSlug
       },
       extraHeaders: {
@@ -33,10 +35,6 @@ app.factory('socket', [
 
     self.socket.on('err', function (err) {
       $log.info('Error On Socket :', err);
-      if (err.name === 'TokenExpiredError' && User.exists()) {
-        $log.info('Token refresh started.');
-        AuthService.refreshToken(User.token);
-      }
     });
 
     return {
