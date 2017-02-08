@@ -26,7 +26,7 @@ app.service('channelsService', [
       console.log(result);
       var channel = createAndPushChannel(result.channel);
       console.log('asd', channel);
-      if (result.channel.creatorId === User.getCurrent().id) {
+      if (result.creatorId === User.getCurrent().id) {
         $state.go('messenger.messages', {
           slug: channel.slug
         });

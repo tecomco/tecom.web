@@ -54,9 +54,44 @@ app.service('profileService', ['$log', 'User', '$http', '$q',
       return defered.promise;
     }
 
+    function removeTeamMember(member){
+      //Http Rquest
+      var defered = $q.defer();
+      $http({
+        method: 'PATCH',
+        url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/username/',
+        data: {username: username}
+      }).success(function (data) {
+        User.getCurrent().username = data.username;
+        defered.resolve();
+      }).error(function (err) {
+        $log.error('Error Removing Team Member', err);
+        defered.reject();
+      });
+      return defered.promise;
+    }
+    function makeAdmin(member){
+      //Http Rquest
+      var defered = $q.defer();
+      $http({
+        method: 'PATCH',
+        url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/username/',
+        data: {username: username}
+      }).success(function (data) {
+        User.getCurrent().username = data.username;
+        defered.resolve();
+      }).error(function (err) {
+        $log.error('Error Making Admin', err);
+        defered.reject();
+      });
+      return defered.promise;
+    }
+
     return {
       changeUsername: changeUsername,
       changePassword: changePassword,
-      changeProfileImage: changeProfileImage
+      changeProfileImage: changeProfileImage,
+      removeTeamMember: removeTeamMember,
+      makeAdmin: makeAdmin
     };
   }]);

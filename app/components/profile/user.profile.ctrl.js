@@ -15,18 +15,22 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
     };
 
     $scope.savePassword = function () {
-      $scope.changePasswordActive = false;
-      profileService.changePassword($scope.oldPasswordInput,
-        $scope.newPasswordInput, $scope.confirmPasswordInput).then(function (infoMsg) {
-        setInfoOrErrorMessage('info', infoMsg);
-      }).catch(function (errorMsg) {
-        setInfoOrErrorMessage('error', errorMsg);
-      });
+      if ($scope.newPasswordInput !== $scope.confirmPasswordInput)
+        setInfoOrErrorMessage('error', 'رمز عبور با تکرار آن مطابقت ندارد.');
+      else {
+        $scope.changePasswordActive = false;
+        profileService.changePassword($scope.oldPasswordInput,
+          $scope.newPasswordInput, $scope.confirmPasswordInput).then(function (infoMsg) {
+          setInfoOrErrorMessage('info', infoMsg);
+        }).catch(function (errorMsg) {
+          setInfoOrErrorMessage('error', errorMsg);
+        });
+      }
     };
 
     $scope.saveUsername = function () {
-      $scope.user.username = $scope.usernameInput;
       profileService.changeUsername($scope.usernameInput).then(function (infoMsg) {
+        $scope.user.username = $scope.usernameInput;
         setInfoOrErrorMessage('info', infoMsg);
       }).catch(function (errorMsg) {
         setInfoOrErrorMessage('error', errorMsg);
@@ -40,9 +44,9 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
 
     $scope.uploadProfileImage = function (file, errorFiles) {
       if (file) {
-        profileService.changeProfileImage(file).then(function(infoMsg){
+        profileService.changeProfileImage(file).then(function (infoMsg) {
           setInfoOrErrorMessage('info', infoMsg);
-        }).catch(function(errorMsg){
+        }).catch(function (errorMsg) {
           setInfoOrErrorMessage('error', errorMsg);
         });
       }
@@ -52,13 +56,17 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
       switch (type) {
         case 'info':
           $scope.infoMessage = message;
+          $scope.showInfoMessage = true;
           $timeout(function () {
+            $scope.showInfoMessage = false;
             $scope.infoMessage = null;
           }, 2000);
           break;
         case 'error':
+          $scope.showErrorMessage = true;
           $scope.errorMessage = message;
           $timeout(function () {
+            $scope.showErrorMessage = false;
             $scope.errorMessage = null;
           }, 2000);
           break;
@@ -69,5 +77,7 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
       $scope.user = User.getCurrent();
       $scope.editUsernameActive = false;
       $scope.changePasswordActive = false;
+      $scope.showErrorMessage = false;
+      $scope.showInfoMessage = false;
     }
   }]);

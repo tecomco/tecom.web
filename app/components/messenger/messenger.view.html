@@ -73,8 +73,8 @@
           <div class="modal-input modal-input-details">
             <button ng-show="changePasswordActive" type="button" class="btn btn-default" ng-click="savePassword()">ذخیره رمز عبور</button>
           </div>
-          <span class="modal-err">{{errorMessage}}</span>
-          <span>{{infoMessage}}</span>
+          <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
+          <span ng-show="showInfoMessage">{{infoMessage}}</span>
         </div>
         <div class="leave">
           <div class="modal-input">
@@ -89,7 +89,7 @@
 <!-- Team profile modal -->
 <script type="text/ng-template" id="teamProfile.html">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.close()">&times;</button>
+    <button type="button" class="close" data-dismiss="modal" ng-click="closeModal()">&times;</button>
     <h4 class="modal-title">مدیریت تیم</h4>
   </div>
   <div class="modal-body two-part-modal">
@@ -110,8 +110,8 @@
             <div ng-repeat="member in teamMembers" class="g-m-one">
               <img ng-src="static/img/user-def.png"/>
               <label>@{{member.username}}</label>
-              <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn modal-btn-details-remove"><span class="glyphicon glyphicon-remove"></span></button>
-              <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" class="btn modal-btn-details-admin"><span class="fa fa-star"></span></button>
+              <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn modal-btn-details-remove" ng-click="removeTeamMember(member)"><span class="glyphicon glyphicon-remove"></span></button>
+              <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" class="btn modal-btn-details-admin"><span class="fa fa-star" ng-click="makeAdmin(member)"></span></button>
             </div>
           </div>
         </div>

@@ -18,19 +18,27 @@ app.controller('teamProfileController', ['$scope', 'User', 'profileService',
     $uibModalInstance.close();
   };
 
+  $scope.removeTeamMember = function(member){
+    profileService.removeTeamMember(member);
+  };
+
+  $scope.makeAdmin = function(member){
+    profileService.makeAdmin(member);
+  }
+
   function setInfoOrErrorMessage(type, message) {
     switch (type) {
       case 'info':
         $scope.infoMessage = message;
         $timeout(function () {
           $scope.infoMessage = null;
-        }, 2000);
+        }, 4000);
         break;
       case 'error':
         $scope.errorMessage = message;
         $timeout(function () {
           $scope.errorMessage = null;
-        }, 2000);
+        }, 4000);
         break;
     }
   }
