@@ -36,11 +36,12 @@ app.factory('AuthService', [
       var defer = $q.defer();
       var data = {
         username: username,
-        password: password
+        password: password,
+        teamSlug: domainUtil.getSubdomain()
       };
       $http({
         method: 'POST',
-        url: '/api/v1/auth/login/',
+        url: '/api/v1/auth/login',
         data: data,
         skipAuthorization: true
       }).then(function (response) {
