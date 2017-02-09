@@ -5,12 +5,12 @@ var app = angular.module('tecomApp', [
   'angularMoment', 'ngSanitize', 'ngFileUpload'
 ]);
 
-app.config(['$httpProvider', 'jwtOptionsProvider', 'UserProvider',
-  function ($httpProvider, jwtOptionsProvider, UserProvider) {
+app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
+  function ($httpProvider, jwtOptionsProvider, $localStorageProvider) {
 
     jwtOptionsProvider.config({
       tokenGetter: function () {
-        return UserProvider.$get().token;
+        return $localStorageProvider.get('token');
       }
     });
 

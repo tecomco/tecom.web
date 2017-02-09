@@ -18,11 +18,6 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         'channels@messenger': {
           templateUrl: 'app/components/messenger/channels/channels.view.html'
         }
-      },
-      onEnter: function ($window, User) {
-        if (!User.exists()) {
-          $window.location.assign('/login');
-        }
       }
     })
     .state('messenger.home', {

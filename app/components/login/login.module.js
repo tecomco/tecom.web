@@ -18,10 +18,9 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         });
     }
   ])
-
   .controller('loginController',
-    ['$scope', '$log', '$window', '$http', 'AuthService', 'domainUtil',
-      function ($scope, $log, $window, $http, AuthService, domainUtil) {
+    ['$scope', '$log', '$window', '$http', 'AuthService',
+      function ($scope, $log, $window, $http, AuthService) {
 
         $scope.hasLoginError = false;
         $scope.submitClicked = false;
@@ -30,8 +29,7 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
           var isFormValid = $scope.forms.login.username.$valid &&
             $scope.forms.login.password.$valid;
           if (isFormValid) {
-            var teamSlug = domainUtil.getSubdomain();
-            AuthService.login($scope.username, $scope.password, teamSlug)
+            AuthService.login($scope.username, $scope.password)
               .then(function () {
                 $window.location.assign('/messenger');
               }).catch(function (err) {

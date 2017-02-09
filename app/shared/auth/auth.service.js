@@ -1,19 +1,38 @@
 'use strict';
 
 app.factory('AuthService', [
-  '$log', '$http', '$q', 'jwtHelper', 'ArrayUtil', 'User',
-  function ($log, $http, $q, jwtHelper, ArrayUtil, User) {
+  '$log', '$http', '$q', '$window', '$localStorage', 'jwtHelper', 'ArrayUtil',
+  'User', 'domainUtil',
+  function ($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
+            User, domainUtil) {
+
+    initialize();
+
+    function initialize() {
+      var token = $localStorage.token;
+      if (token) {
+        var teamSlug = domainUtil.getSubdomain();
+        createUser(token, teamSlug);
+      } else {
+        // $window.location.assign('/login');
+      }
+    }
 
     function createUser(token, teamSlug) {
       var decodedToken = jwtHelper.decodeToken(token);
       var currentMembership = ArrayUtil.getElementByKeyValue(
         decodedToken.memberships, 'team_slug', teamSlug);
-      var user = new User(currentMembership.id, currentMembership.username,
-        decodedToken.username, currentMembership.team_id, null, token);
-      return user.save();
+      $log.info('membership', currentMembership);
+      var user = User.setCurrent(currentMembership.id, currentMembership.username,
+        decodedToken.username, currentMembership.team_id, null, token,
+        currentMembership.image, currentMembership.is_admin);
     }
 
-    function login(username, password, teamSlug) {
+    function persistToken(token) {
+      $localStorage.token = token;
+    }
+
+    function login(username, password) {
       var defer = $q.defer();
       var data = {
         username: username,
@@ -27,20 +46,14 @@ app.factory('AuthService', [
       }).then(function (response) {
         var token = response.data.token;
         if (token) {
-          createUser(token, teamSlug)
-            .then(function () {
-              defer.resolve();
-            })
-            .catch(function () {
-              defer.reject();
-            });
+          persistToken(token);
+          defer.resolve();
         } else {
           defer.reject();
         }
-      }).catch(function(err){
+      }).catch(function (err) {
         defer.reject(err);
       });
-
       return defer.promise;
     }
 
@@ -55,7 +68,7 @@ app.factory('AuthService', [
           $log.info('Logout error.', err);
           defer.reject();
         });
-        return defer.promise;
+      return defer.promise;
     }
 
     function refreshToken(token) {
@@ -78,7 +91,7 @@ app.factory('AuthService', [
     return {
       login: login,
       logout: logout,
-      refreshToken: refreshToken,
+      refreshToken: refreshToken
     };
   }
 ]);

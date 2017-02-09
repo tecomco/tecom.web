@@ -1,53 +1,30 @@
 'use strict';
 
-app.factory('User', ['$localStorage', '$q', 'Team',
-  function ($localStorage, $q, Team) {
+app.factory('User', ['Team', function (Team) {
 
-    function User(id, username, email, teamId, teamMembers, token) {
+    function User(id, username, email, teamId, image, isAdmin) {
       this.id = id;
       this.username = username;
       this.email = email;
-      this.token = token;
-      this.team = new Team(teamId, teamMembers, token);
+      this.team = new Team(teamId);
+      this.image = 'http://images.dujour.com/wp-content/uploads/assets/media/2859_a226e450e214f350856e2980b6e55ac9-853x1024.jpg';
+      this.isAdmin = isAdmin;
     }
 
-    User.exists = function (that) {
-      var self = that || this;
-      return self instanceof User;
-    };
+    var self = this;
 
-    User.prototype.exists = function () {
-      return this.constructor.exists(this);
-    };
-
-    User.prototype.save = function () {
-      var that = this;
-      var defered = $q.defer();
-      this.team.members.then(function (teamMembers) {
-        $localStorage.user = {
-          id: that.id,
-          username: that.username,
-          email: that.email,
-          team: {
-            id: that.team.id,
-            members: teamMembers
-          },
-          token: that.token
-        };
-        defered.resolve();
-      });
-      return defered.promise;
-    };
-
-    var currentUser = $localStorage.user;
-    if (currentUser) {
-      return new User(currentUser.id, currentUser.username, currentUser.email,
-        currentUser.team.id, currentUser.team.members, currentUser.token);
-    } else {
-      return User;
+    function setCurrent(id, username, email, teamId, image, isAdmin) {
+      self.currentUser = new User(id, username, email, teamId, image, isAdmin);
     }
+
+    function getCurrent() {
+      return self.currentUser;
+    }
+
+    return {
+      setCurrent: setCurrent,
+      getCurrent: getCurrent
+    };
 
   }
-]).config(function (UserProvider) {
-  UserProvider.$get();
-});
+]);

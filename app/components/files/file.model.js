@@ -59,7 +59,7 @@ app.factory('File', ['$http', '$window', 'Line',
     File.prototype.getSelectedTempLine = function()
     {
       return this.selectedTemp;
-    }
+    };
 
     File.prototype.deselectFilelines = function()
     {
@@ -67,7 +67,7 @@ app.factory('File', ['$http', '$window', 'Line',
         this.deselectTempLine(this.selectedTemp);
         this.selectedTemp = null;
       }
-    }
+    };
 
 
 

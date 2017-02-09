@@ -68,7 +68,7 @@ app.factory('Channel', [
     Channel.prototype.getIsTypingString = function () {
       var isTypingStr = '';
       angular.forEach(this.isTypingMemberIds, function (memberId) {
-        isTypingStr += User.team.getNameById(memberId);
+        isTypingStr += User.getCurrent().team.getNameById(memberId);
         isTypingStr += ' و ';
       });
       return isTypingStr.slice(0, isTypingStr.length - 3);
@@ -121,8 +121,8 @@ app.factory('Channel', [
       ids.push(parseInt(this.slug.slice(this.slug.indexOf(':') + 1,
         this.slug.length)));
       ids.forEach(function (id) {
-        if (id !== User.id) {
-          var name = User.team.getUsernameById(id);
+        if (id !== User.getCurrent().id) {
+          var name = User.getCurrent().team.getUsernameById(id);
           that.name = name;
           that.slug = name;
           return;

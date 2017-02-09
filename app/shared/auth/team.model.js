@@ -1,37 +1,33 @@
 'use strict';
 
-app.factory('Team', ['$http', '$q', '$log', 'ArrayUtil',
-  function ($http, $q, $log, ArrayUtil) {
+app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
+  function ($http, $q, $log, $localStorage, ArrayUtil) {
 
-    var isBusy = false;
-
-    function Team(id, members, token) {
+    function Team(id) {
       this.id = id;
-      if (!isBusy) {
-        this.members = Array.isArray(members) ? members :
-          this.getMembersFromServer(token);
-      }
+      this.members = [];
+      var that = this;
+      this.getTeamMembers()
+        .then(function (members) {
+          that.members = members;
+        });
     }
 
-    Team.prototype.getMembersFromServer = function (token) {
-      var that = this;
-      var defered = $q.defer();
-      isBusy = true;
+    Team.prototype.getTeamMembers = function () {
+      var deferred = $q.defer();
       $http({
         method: 'GET',
         url: '/api/v1/teams/' + this.id + '/members/',
         headers: {
-          'Authorization': 'JWT ' + token
+          'Authorization': 'JWT ' + $localStorage.token
         }
-      }).then(function (res) {
-        var members = res.data;
-        $log.info('Successful getting team members. length:', members.length);
-        defered.resolve(members);
-      }).catch(function (err) {
-        $log.error('Error getting team members.', err);
-        defered.reject();
+      }).success(function (res) {
+        deferred.resolve(res);
+      }).error(function (err) {
+        $log.error('Getting team members failed.', err);
+        deferred.reject();
       });
-      return defered.promise;
+      return deferred.promise;
     };
 
     Team.prototype.getUsernameById = function (userId) {
@@ -42,21 +38,6 @@ app.factory('Team', ['$http', '$q', '$log', 'ArrayUtil',
     Team.prototype.getNameById = function (userId) {
       var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', userId);
       return (index !== -1) ? this.members[index].full_name : null;
-    };
-
-    Team.prototype.getTeamMembers = function(teamId) {
-      var deferred = $q.defer();
-      $http({
-        method: 'GET',
-        url: '/api/v1/teams/' + teamId + '/members/'
-      }).success(function (data) {
-        var members = data;
-        deferred.resolve(members);
-      }).error(function (err) {
-        $log.info('Error Getting team members.', err);
-        deferred.reject(err);
-      });
-      return deferred.promise;
     };
 
     return Team;
