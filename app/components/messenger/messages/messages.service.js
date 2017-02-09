@@ -197,8 +197,8 @@ app.service('messagesService', [
         }
         livedFile.deselectFilelines();
       }
-      var message = new Message(messageBody, type || Message.TYPE.TEXT, User.id,
-        channelId, null, null, additionalData, about, true);
+      var message = new Message(messageBody, type || Message.TYPE.TEXT,
+        User.getCurrent().id, channelId, null, null, additionalData, about, true);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;
@@ -214,20 +214,21 @@ app.service('messagesService', [
       var additionalData = {
         name: fileName
       };
-      var message = new Message(null, Message.TYPE.FILE, User.id,
+      var message = new Message(null, Message.TYPE.FILE, User.getCurrent().id,
         channelId, null, null, additionalData, null, true);
       Upload.upload({
         url: 'api/v1/files/upload/' + fileName,
         data: {
           name: fileName,
           channel: channelId,
-          sender: User.id,
+          sender: User.getCurrent().id,
           file: fileData
         },
         method: 'PUT'
       }).then(function (res) {
         message.additionalData.url = res.data.file;
         message.additionalData.fileId = res.data.id;
+        message.additionalData.type = res.data.type;
         socket.emit('message:send', message.getServerWellFormed(),
           function (data) {
             message.isPending = false;

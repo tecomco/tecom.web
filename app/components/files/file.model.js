@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('File', ['$http', '$window', 'Line',
-  function ($http, $window, Line) {
+app.factory('File', ['$http', '$window', 'Line', 'fileUtil',
+  function ($http, $window, Line, fileUtil) {
 
     function File(id, url, fileData, name, channelId) {
       this.id = id;
@@ -68,7 +68,6 @@ app.factory('File', ['$http', '$window', 'Line',
         this.selectedTemp = null;
       }
     };
-
 
 
     // File.prototype.getTabView = function () {

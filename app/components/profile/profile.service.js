@@ -1,10 +1,11 @@
 'use strict';
 
-app.service('profileService', ['$log', 'User', '$http', '$q',
-  function ($log, User, $http, $q) {
+app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
+  function ($log, User, $http, $q, ArrayUtil) {
 
     function changeUsername(username) {
       var defered = $q.defer();
+      $log.info('user:', username);
       $http({
         method: 'PATCH',
         url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/username/',
@@ -14,7 +15,10 @@ app.service('profileService', ['$log', 'User', '$http', '$q',
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
       }).error(function (err) {
         $log.error('Error Changing Username', err);
-        defered.reject('خطا در تغییر نام کاربری');
+        if (ArrayUtil.contains(err.username, 'This field may not be blank.'))
+          defered.reject('نام کاربری نباید خالی باشد.');
+        else
+          defered.reject('خطا در تغییر نام کاربری');
       });
       return defered.promise;
     }
@@ -54,7 +58,7 @@ app.service('profileService', ['$log', 'User', '$http', '$q',
       return defered.promise;
     }
 
-    function removeTeamMember(member){
+    function removeTeamMember(member) {
       //Http Rquest
       var defered = $q.defer();
       $http({
@@ -70,7 +74,8 @@ app.service('profileService', ['$log', 'User', '$http', '$q',
       });
       return defered.promise;
     }
-    function makeAdmin(member){
+
+    function makeAdmin(member) {
       //Http Rquest
       var defered = $q.defer();
       $http({

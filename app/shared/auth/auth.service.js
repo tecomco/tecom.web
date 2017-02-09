@@ -32,10 +32,10 @@ app.factory('AuthService', [
       $localStorage.token = token;
     }
 
-    function login(username, password) {
+    function login(email, password) {
       var defer = $q.defer();
       var data = {
-        username: username,
+        email: email,
         password: password,
         teamSlug: domainUtil.getSubdomain()
       };

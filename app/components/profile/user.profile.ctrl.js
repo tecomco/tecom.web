@@ -11,6 +11,7 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
     };
 
     $scope.changePassword = function () {
+      clearPasswordFields();
       $scope.changePasswordActive = true;
     };
 
@@ -60,7 +61,7 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
           $timeout(function () {
             $scope.showInfoMessage = false;
             $scope.infoMessage = null;
-          }, 2000);
+          }, 4000);
           break;
         case 'error':
           $scope.showErrorMessage = true;
@@ -68,13 +69,20 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
           $timeout(function () {
             $scope.showErrorMessage = false;
             $scope.errorMessage = null;
-          }, 2000);
+          }, 4000);
           break;
       }
     }
 
+    function clearPasswordFields(){
+      $scope.oldPasswordInput = '';
+      $scope.newPasswordInput = '';
+      $scope.confirmPasswordInput = '';
+    }
+
     function initialize() {
       $scope.user = User.getCurrent();
+      $scope.usernameInput = '';
       $scope.editUsernameActive = false;
       $scope.changePasswordActive = false;
       $scope.showErrorMessage = false;

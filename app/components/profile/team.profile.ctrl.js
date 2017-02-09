@@ -24,7 +24,7 @@ app.controller('teamProfileController', ['$scope', 'User', 'profileService',
 
   $scope.makeAdmin = function(member){
     profileService.makeAdmin(member);
-  }
+  };
 
   function setInfoOrErrorMessage(type, message) {
     switch (type) {

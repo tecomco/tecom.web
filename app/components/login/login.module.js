@@ -29,12 +29,12 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
           var isFormValid = $scope.forms.login.username.$valid &&
             $scope.forms.login.password.$valid;
           if (isFormValid) {
-            AuthService.login($scope.username, $scope.password)
+            AuthService.login($scope.email, $scope.password)
               .then(function () {
                 $window.location.assign('/messenger');
               }).catch(function (err) {
               $log.error('Login Error:', err);
-              $scope.hasloginError = true;
+              $scope.hasloginError = false;
               if (!err.data.non_field_errors)
                 $scope.loginErrorString = 'خطا در اتصال به سرور';
               else if (err.data.non_field_errors[0] ===

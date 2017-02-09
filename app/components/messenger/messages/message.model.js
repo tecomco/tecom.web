@@ -1,8 +1,8 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'db', 'textUtil', 'channelsService', 'User',
-  function ($log, db, textUtil, channelsService, User) {
+  '$log', 'db', 'textUtil', 'channelsService', 'User', 'fileUtil',
+  function ($log, db, textUtil, channelsService, User, fileUtil) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
                      additionalData, about, isPending) {
@@ -37,16 +37,19 @@ app.factory('Message', [
           body += '<i class="zmdi zmdi-link"></i></a>';
         }
       } else if (this.type === Message.TYPE.FILE) {
+        this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
         body = '<div class="ng-scope" dir="rtl">';
         body += '<label class="file-name">' + this.additionalData.name + '</label>';
         body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
-        body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
-        body += '<label>LIVE</label>';
-        body += '<i class="fa fa-circle"></i>';
-        body += '</a>';
+        if(this.canBeLived) {
+          body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
+          body += '<label>LIVE</label>';
+          body += '<i class="fa fa-circle"></i>';
+          body += '</a>';
+        }
         body += '<a class="dl-btn" href=\"' + this.additionalData.url + '" download="' +
           this.additionalData.name + '" target="_blank">';
-        body += '<i class="zmdi zmdi-eye"></i>';
+        body += '<i class="zmdi zmdi-download"></i>';
         body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
