@@ -43,7 +43,7 @@ app.factory('Message', [
         body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
         if (this.canBeLived) {
           body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
-          body += '<label dir="ltr">LIVE!</label>';
+          body += '<label dir="ltr">LIVE</label>';
           body += '<i class="fa fa-circle"></i>';
           body += '</a>';
         }
@@ -73,10 +73,10 @@ app.factory('Message', [
         body = 'اطلاعات گروه تغییر کرد.';
       } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
         body = 'فایل "' + this.additionalData.fileName + '" ، ' +
-          '<span class="live-btn" dir="ltr">Live!</span>' + ' شد';
+          '<span class="live-btn" dir="ltr">LIVE</span>' + ' شد';
       } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
         body = 'فایل "' + this.additionalData.fileName + '" از حالت ' +
-          '<span class="live-btn" dir="ltr">Live!</span>' + ' خارج شد';
+          '<span class="live-btn" dir="ltr">LIVE</span>' + ' خارج شد';
       }
       return body;
     };

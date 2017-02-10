@@ -2,9 +2,12 @@
   <div class="col-sm-3 col-lg-2 no-padding channel-section">
     <div class="right-section">
       <div ng-controller="MessengerCtrl" class="right-section-header" uib-dropdown>
-        <a uib-dropdown-toggle>
+        <a>
           <img src="static/img/tecom-logo.png"/>
           <span class="brand-name-right-header">تیکام</span>
+        </a>
+        <a uib-dropdown-toggle>
+            <i class="zmdi zmdi-more-vert"></i>
         </a>
         <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
           <li ng-click="openModal('userProfile')">
