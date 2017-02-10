@@ -5,7 +5,7 @@ app.factory('Message', [
   function ($log, db, textUtil, channelsService, User, fileUtil) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-                     additionalData, about, isPending) {
+      additionalData, about, isPending) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
         additionalData, about, isPending);
     }
@@ -41,9 +41,9 @@ app.factory('Message', [
         body = '<div class="ng-scope" dir="rtl">';
         body += '<label class="file-name">' + this.additionalData.name + '</label>';
         body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
-        if(this.canBeLived) {
+        if (this.canBeLived) {
           body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
-          body += '<label>LIVE</label>';
+          body += '<label dir="ltr">LIVE!</label>';
           body += '<i class="fa fa-circle"></i>';
           body += '</a>';
         }
@@ -73,10 +73,10 @@ app.factory('Message', [
         body = 'اطلاعات گروه تغییر کرد.';
       } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
         body = 'فایل "' + this.additionalData.fileName + '" ، ' +
-          '<span dir="ltr">Live!</span>' + ' شد';
+          '<span class="live-btn" dir="ltr">Live!</span>' + ' شد';
       } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
         body = 'فایل "' + this.additionalData.fileName + '" از حالت ' +
-          '<span dir="ltr">Live!</span>' + ' خارج شد';
+          '<span class="live-btn" dir="ltr">Live!</span>' + ' خارج شد';
       }
       return body;
     };

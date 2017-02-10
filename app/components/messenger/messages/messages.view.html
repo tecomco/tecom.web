@@ -22,6 +22,7 @@
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
           </div>
         </div>
+        <!-- TODO: Fix this -->
         <div ng-show="channel.anyoneTyping()" class="msg-holder">
           <div class="msg msg-recieve">
             <label class="name">{{channel.getIsTypingString()}}</label>

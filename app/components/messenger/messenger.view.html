@@ -7,14 +7,14 @@
           <span class="brand-name-right-header">تیکام</span>
         </a>
         <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
-          <li>
-            <a ng-click="openModal('userProfile')"><i class="fa fa-user"></i>پروفایل من</a>
+          <li ng-click="openModal('userProfile')">
+            <a><i class="fa fa-user"></i>پروفایل من</a>
           </li>
-          <li>
-            <a ng-click="openModal('teamProfile')"><i class="fa fa-users"></i>مدیریت تیم</a>
+          <li ng-click="openModal('teamProfile')">
+            <a><i class="fa fa-users"></i>مدیریت تیم</a>
           </li>
-          <li>
-            <a><i class="fa fa-sign-out "></i>خروج</a>
+          <li ng-click="logout()">
+            <a><i class="fa fa-sign-out"></i>خروج</a>
           </li>
         </ul>
       </div>
@@ -78,7 +78,7 @@
         </div>
         <div class="leave">
           <div class="modal-input">
-            <input type="submit" value="خروج از گروه" class="btn btn-default">
+            <button ng-click="leaveTeam()" class="btn btn-default">خروج از تیم</button>
           </div>
         </div>
       </div>
@@ -97,23 +97,31 @@
       <div class="col-sm-10 col-sm-offset-1">
         <div class="t-info">
           <label>نام تیم:</label>
+          <!--
           <input ng-show="editTeamNameActive" type="text" ng-model="usernameInput" placeholder="{{team.name}}"/>
           <div class="modal-input modal-input-details">
             <button ng-show="!editTeamNameActive" tooltip-placement="bottom" uib-tooltip="ویرایش نام تیم" class="modal-btn modal-btn-details" ng-click="editTeamName()"><span class="zmdi zmdi-edit"></span></button>
             <button ng-show="editTeamNameActive" tooltip-placement="bottom" uib-tooltip="ذخیره نام تیم" class="modal-btn modal-btn-details" ng-click="saveTeamName()"><span class="zmdi zmdi-edit"></span></button>
           </div>
-
-          <label class="label">تیکام</label>
+          -->
+          <label class="label">{{team.name}}</label>
           <br>
           <label>اعضای تیم:</label>
           <div class="g-members">
             <div ng-repeat="member in teamMembers" class="g-m-one">
               <img ng-src="static/img/user-def.png"/>
               <label>@{{member.username}}</label>
+              <!--
               <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn modal-btn-details-remove" ng-click="removeTeamMember(member)"><span class="glyphicon glyphicon-remove"></span></button>
               <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" class="btn modal-btn-details-admin"><span class="fa fa-star" ng-click="makeAdmin(member)"></span></button>
+              -->
             </div>
           </div>
+          <button ng-click="inviteMember()" ng-show="!inviteMode" class="btn btn-default">دعوت عضو به تیم!</button>
+          <form name="forms.inviteMember" ng-submit="sendInvitation()" ng-show="inviteMode" novalidate>
+            <input type="email" name="email" ng-model="invitedEmail" placeholder="ایمیلش رو وارد کن" required />
+            <input type="submit" value="دعوت" />
+          </form>
         </div>
       </div>
     </div>

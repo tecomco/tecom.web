@@ -11,6 +11,10 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
         .then(function (members) {
           that.members = members;
         });
+      this.getName()
+        .success(function (res) {
+          that.name = res.name;
+        });
     }
 
     Team.prototype.getTeamMembers = function () {
@@ -28,6 +32,16 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
         deferred.reject();
       });
       return deferred.promise;
+    };
+
+    Team.prototype.getName = function () {
+      return $http({
+        method: 'GET',
+        url: '/api/v1/teams/' + this.id + '/name/',
+        headers: {
+          'Authorization': 'JWT ' + $localStorage.token
+        }
+      });
     };
 
     Team.prototype.getUsernameById = function (userId) {

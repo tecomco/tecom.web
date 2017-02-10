@@ -66,7 +66,6 @@ app.controller('messagesController', [
       // var messagesWindow = document.getElementById('messagesWindow');
       // var inputHolder = document.getElementById('inputHolder');
       // var inputPlaceHolder = document.getElementById('inputPlaceHolder');
-      // console.log('chat:', inputPlaceHolder.scrollHeight);
       // var height = messagesWindow.scrollHeight - inputPlaceHolder.scrollHeight;
       // messagesHolder.style.height = height.toString() + 'px';
     };

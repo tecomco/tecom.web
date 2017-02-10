@@ -15,6 +15,9 @@ app.service('channelsService', [
     socket.on('init', function (results) {
       self.channels = [];
       self.initChannelsCount = results.length;
+      if (self.initChannelsCount === 0) {
+        $rootScope.isLoading = false;
+      }
       results.forEach(function (result) {
         var channel = createAndPushChannel(result);
         $rootScope.$emit('channel:new', channel);
@@ -23,10 +26,8 @@ app.service('channelsService', [
     });
 
     socket.on('channel:new', function (result) {
-      console.log(result);
       var channel = createAndPushChannel(result.channel);
-      console.log('asd', channel);
-      if (result.creatorId === User.getCurrent().id) {
+      if (result.channel.creatorId === User.getCurrent().id) {
         $state.go('messenger.messages', {
           slug: channel.slug
         });

@@ -9,7 +9,9 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
       $http({
         method: 'PATCH',
         url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/username/',
-        data: {username: username}
+        data: {
+          username: username
+        }
       }).success(function (data) {
         User.getCurrent().username = data.username;
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
@@ -44,11 +46,12 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
 
     function changeProfileImage(file) {
       var defered = $q.defer();
-      console.log(file);
       $http({
         method: 'PUT',
         url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/image/',
-        data: {image: file}
+        data: {
+          image: file
+        }
       }).success(function (data) {
         defered.resolve('عکس پروفایل با موفقیت تغییر کرد.');
       }).error(function (err) {
@@ -58,38 +61,25 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
       return defered.promise;
     }
 
-    function removeTeamMember(member) {
-      //Http Rquest
-      var defered = $q.defer();
-      $http({
-        method: 'PATCH',
-        url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/username/',
-        data: {username: username}
-      }).success(function (data) {
-        User.getCurrent().username = data.username;
-        defered.resolve();
-      }).error(function (err) {
-        $log.error('Error Removing Team Member', err);
-        defered.reject();
+    function removeTeamMember(member) {}
+
+    function makeAdmin(member) {}
+
+    function leaveTeam() {
+      return $http({
+        method: 'POST',
+        url: '/api/v1/teams/member/' + User.getCurrent().id + '/leave/'
       });
-      return defered.promise;
     }
 
-    function makeAdmin(member) {
-      //Http Rquest
-      var defered = $q.defer();
-      $http({
-        method: 'PATCH',
-        url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/username/',
-        data: {username: username}
-      }).success(function (data) {
-        User.getCurrent().username = data.username;
-        defered.resolve();
-      }).error(function (err) {
-        $log.error('Error Making Admin', err);
-        defered.reject();
+    function sendInvitationEmail(email) {
+      return $http({
+        method: 'POST',
+        url: '/api/v1/teams/' + User.getCurrent().team.id + '/invite/send/',
+        data: {
+          email: email
+        }
       });
-      return defered.promise;
     }
 
     return {
@@ -97,6 +87,9 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
       changePassword: changePassword,
       changeProfileImage: changeProfileImage,
       removeTeamMember: removeTeamMember,
-      makeAdmin: makeAdmin
+      makeAdmin: makeAdmin,
+      leaveTeam: leaveTeam,
+      sendInvitationEmail: sendInvitationEmail
     };
-  }]);
+  }
+]);

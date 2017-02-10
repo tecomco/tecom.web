@@ -1,10 +1,22 @@
 'use strict';
 
-app.controller('teamProfileController', ['$scope', 'User', 'profileService',
-  '$uibModalInstance', '$timeout',
+app.controller('teamProfileController', [
+  '$scope', 'User', 'profileService', '$uibModalInstance', '$timeout',
   function ($scope, User, profileService, $uibModalInstance, $timeout) {
 
   initialize();
+
+  $scope.inviteMember = function () {
+    initializeInviteMemberForm();
+    $scope.inviteMode = true;
+  };
+
+  $scope.sendInvitation = function () {
+    profileService.sendInvitationEmail($scope.invitedEmail)
+      .then(function () {
+        $scope.inviteMode = false;
+      });
+  };
 
   $scope.editTeamName = function () {
     $scope.editTeamNameActive = true;
@@ -45,10 +57,17 @@ app.controller('teamProfileController', ['$scope', 'User', 'profileService',
 
   function initialize() {
     User.getCurrent().team.getTeamMembers().then(function(members){
-      console.log(members);
       $scope.teamMembers = members;
     });
     $scope.team = User.getCurrent().team;
     $scope.editTeamNameActive = false;
+    $scope.inviteMode = false;
+    $scope.forms = {};
   }
+
+  function initializeInviteMemberForm() {
+    $scope.invitedEmail = '';
+    $scope.forms.inviteMember.$setPristine();
+  }
+
 }]);

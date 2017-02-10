@@ -7,7 +7,7 @@ app.factory('User', ['Team', function (Team) {
       this.username = username;
       this.email = email;
       this.team = new Team(teamId);
-      this.image = 'http://images.dujour.com/wp-content/uploads/assets/media/2859_a226e450e214f350856e2980b6e55ac9-853x1024.jpg';
+      this.image = image || '/static/img/user-def.png';
       this.isAdmin = isAdmin;
     }
 

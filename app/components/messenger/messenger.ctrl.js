@@ -1,7 +1,7 @@
 'use strict';
 
-app.controller('MessengerCtrl', ['$scope', '$uibModal',
-  function ($scope, $uibModal) {
+app.controller('MessengerCtrl', ['$scope', '$window', '$uibModal', 'AuthService',
+  function ($scope, $window, $uibModal, AuthService) {
 
     $scope.openModal = function (name) {
       var modalInstance = $uibModal.open({
@@ -11,6 +11,13 @@ app.controller('MessengerCtrl', ['$scope', '$uibModal',
         controllerAs: '$ctrl'
       });
       modalInstance.result.then(function () {}, function () {});
+    };
+
+    $scope.logout = function () {
+      AuthService.logout()
+        .then(function () {
+          $window.location.href = '/login';
+        });
     };
 
   }

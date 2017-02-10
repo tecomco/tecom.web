@@ -1,8 +1,8 @@
 'use strict';
 
-app.controller('userProfileController', ['$scope', 'User', 'profileService',
-  '$uibModalInstance', '$timeout',
-  function ($scope, User, profileService, $uibModalInstance, $timeout) {
+app.controller('userProfileController', [
+  '$scope', '$window', 'User', 'AuthService', 'profileService', '$uibModalInstance', '$timeout',
+  function ($scope, $window, User, AuthService, profileService, $uibModalInstance, $timeout) {
 
     initialize();
 
@@ -51,6 +51,16 @@ app.controller('userProfileController', ['$scope', 'User', 'profileService',
           setInfoOrErrorMessage('error', errorMsg);
         });
       }
+    };
+
+    $scope.leaveTeam = function () {
+      profileService.leaveTeam()
+       .then(function () {
+         return AuthService.logout();
+       })
+       .then(function () {
+         $window.location.href = '/login';
+       });
     };
 
     function setInfoOrErrorMessage(type, message) {
