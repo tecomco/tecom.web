@@ -78,6 +78,13 @@ a, a:hover, a:visited, a:focus {
     right: 85px;
 }
 
+.user-options-btn {
+    float: left;
+    display: inline-block;
+    padding: 7px 20px;
+    font-size: 20px;
+}
+
 .user-options {
     position: absolute;
     top: 54px;
@@ -328,11 +335,13 @@ a, a:hover, a:visited, a:focus {
     padding: 14px 0 10px;
     background: rgba(17, 17, 17, 0.2);
 }
-ul.dropdown-menu{
-  border-radius: 0;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.11);
-  padding: 0;
+
+ul.dropdown-menu {
+    border-radius: 0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.11);
+    padding: 0;
 }
+
 .dropdown-menu>li>a {
     display: block;
     padding: 8px 20px;
@@ -342,9 +351,18 @@ ul.dropdown-menu{
     color: #333;
     white-space: nowrap;
 }
-.dropdown-menu > li > a:focus i, .dropdown-menu > li > a:hover i{
-  color: #555;
+
+.dropdown-menu>li>a i, .dropdown-menu>li>a i {
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 }
+
+.dropdown-menu>li>a:focus i, .dropdown-menu>li>a:hover i {
+    color: #555;
+}
+
 .noti-holder {
     position: absolute;
     top: 16px;
@@ -783,10 +801,10 @@ pre.prettyprint {
     cursor: pointer;
 }
 
-.notif .live-btn, .doc-tab .live-btn{
-  float: none;
-  margin-left: 0;
-  top: -2px;
+.notif .live-btn, .doc-tab .live-btn {
+    float: none;
+    margin-left: 0;
+    top: -2px;
 }
 
 .live-btn i {
