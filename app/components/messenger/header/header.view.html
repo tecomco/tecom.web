@@ -108,7 +108,7 @@
                         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="$ctrl.searchBox">
                     </div>
                     <div class="g-members">
-                        <div ng-repeat="member in $ctrl.listItems | orderBy : 'username' | filter : {full_name : $ctrl.searchBox}" class="g-m-one" ng-mouseover="$ctrl.mouseHoverIn(member)" ng-mouseleave="$ctrl.mouseHoverOut()" ng-style="$ctrl.getListItemCSS(member)" ng-click="$ctrl.pushMember(member)">
+                        <div ng-repeat="member in $ctrl.listItems | orderBy : 'username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-mouseover="$ctrl.mouseHoverIn(member)" ng-mouseleave="$ctrl.mouseHoverOut()" ng-style="$ctrl.getListItemCSS(member)" ng-click="$ctrl.pushMember(member)">
                             <div>
                                 <img ng-src="static/img/user-def.png"/>
                                 <label>@{{member.username}}</label>
