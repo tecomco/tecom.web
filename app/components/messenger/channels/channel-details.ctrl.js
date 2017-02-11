@@ -167,9 +167,8 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
 
     self.getListItemCSS = function (listMember) {
       if (self.addingMemberActive) {
-        if (listMember.isChannelMember)
-          return {'background-color': '#CFE0F3'};
-        else if (ArrayUtil.contains(self.addedMemberIds, listMember.member_id))
+        if (listMember.isChannelMember ||
+            ArrayUtil.contains(self.addedMemberIds, listMember.member_id))
           return {'background-color': '#C4F3AB'};
         else
           return {'background-color': 'white'};

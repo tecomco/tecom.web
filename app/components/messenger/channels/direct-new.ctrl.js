@@ -11,7 +11,7 @@ app.controller('newDirectController', ['$uibModalInstance', '$log',
 
     User.getCurrent().team.getTeamMembers().then(function (event) {
       self.teamMembers = event;
-      ArrayUtil.removeElementByKeyValue(self.teamMembers, 'id', User.id);
+      ArrayUtil.removeElementByKeyValue(self.teamMembers, 'id', User.getCurrent().id);
     }, function (status) {
       $log.info('error getting team members : ', status);
     });

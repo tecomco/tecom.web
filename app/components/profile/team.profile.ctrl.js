@@ -14,8 +14,11 @@ app.controller('teamProfileController', [
   $scope.sendInvitation = function () {
     profileService.sendInvitationEmail($scope.invitedEmail)
       .then(function () {
+        setInfoOrErrorMessage('info', 'ایمیل دعوت به تیم با موفقیت ارسال شد.');
         $scope.inviteMode = false;
-      });
+      }).catch(function(){
+        setInfoOrErrorMessage('error', 'خطا در دعوت به تیم.');
+    });
   };
 
   $scope.editTeamName = function () {
@@ -38,22 +41,26 @@ app.controller('teamProfileController', [
     profileService.makeAdmin(member);
   };
 
-  function setInfoOrErrorMessage(type, message) {
-    switch (type) {
-      case 'info':
-        $scope.infoMessage = message;
-        $timeout(function () {
-          $scope.infoMessage = null;
-        }, 4000);
-        break;
-      case 'error':
-        $scope.errorMessage = message;
-        $timeout(function () {
-          $scope.errorMessage = null;
-        }, 4000);
-        break;
+    function setInfoOrErrorMessage(type, message) {
+      switch (type) {
+        case 'info':
+          $scope.infoMessage = message;
+          $scope.showInfoMessage = true;
+          $timeout(function () {
+            $scope.showInfoMessage = false;
+            $scope.infoMessage = null;
+          }, 4000);
+          break;
+        case 'error':
+          $scope.showErrorMessage = true;
+          $scope.errorMessage = message;
+          $timeout(function () {
+            $scope.showErrorMessage = false;
+            $scope.errorMessage = null;
+          }, 4000);
+          break;
+      }
     }
-  }
 
   function initialize() {
     User.getCurrent().team.getTeamMembers().then(function(members){

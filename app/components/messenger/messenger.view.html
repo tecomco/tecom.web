@@ -63,16 +63,17 @@
             <button ng-show="!changePasswordActive" type="button" class="btn btn-default" ng-click="changePassword()">تغییر رمز عبور</button>
           </div>
           <div ng-show="changePasswordActive">
-            <label>رمز عبور فعلی</label>
-            <input type="password" ng-model="oldPasswordInput"/>
-            <label>رمز عبور جدید</label>
-            <input type="password" ng-model="newPasswordInput"/>
-            <label>تکرار رمز عبور جدید</label>
-            <input type="password" ng-model="confirmPasswordInput"/>
+            <form name="forms.password" ng-submit="savePassword()" novalidate>
+              <label>رمز عبور فعلی</label>
+              <input type="password" ng-model="oldPasswordInput"/>
+              <label>رمز عبور جدید</label>
+              <input type="password" ng-model="newPasswordInput"/>
+              <label>تکرار رمز عبور جدید</label>
+              <input type="password" ng-model="confirmPasswordInput"/>
+              <input type="submit" value="ذخیره رمز عبور"/>
+            </form>
           </div>
-          <div class="modal-input modal-input-details">
-            <button ng-show="changePasswordActive" type="button" class="btn btn-default" ng-click="savePassword()">ذخیره رمز عبور</button>
-          </div>
+
           <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
           <span ng-show="showInfoMessage">{{infoMessage}}</span>
         </div>
@@ -119,9 +120,11 @@
           </div>
           <button ng-click="inviteMember()" ng-show="!inviteMode" class="btn btn-default">دعوت عضو به تیم!</button>
           <form name="forms.inviteMember" ng-submit="sendInvitation()" ng-show="inviteMode" novalidate>
-            <input type="email" name="email" ng-model="invitedEmail" placeholder="ایمیلش رو وارد کن" required />
-            <input type="submit" value="دعوت" />
+            <input type="email" name="email" ng-model="invitedEmail" placeholder="ایمیلش رو وارد کن" required/>
+            <input type="submit" value="دعوت"/>
           </form>
+          <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
+          <span ng-show="showInfoMessage">{{infoMessage}}</span>
         </div>
       </div>
     </div>
