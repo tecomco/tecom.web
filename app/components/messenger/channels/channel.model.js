@@ -20,8 +20,8 @@ app.factory('Channel', [
       this.id = id;
       this.membersCount = membersCount;
       this.notifCount = notifCount || null;
-      this.memberId = memberId || null;
-      this.liveFileId = liveFileId || null;
+      this.memberId = memberId;
+      this.liveFileId = liveFileId;
     };
 
     Channel.prototype.hasUnread = function () {
@@ -68,7 +68,7 @@ app.factory('Channel', [
     Channel.prototype.getIsTypingString = function () {
       var isTypingStr = '';
       angular.forEach(this.isTypingMemberIds, function (memberId) {
-        isTypingStr += User.getCurrent().team.getNameById(memberId);
+        isTypingStr += User.getCurrent().team.getUsernameById(memberId);
         isTypingStr += ' و ';
       });
       return isTypingStr.slice(0, isTypingStr.length - 3);
@@ -99,7 +99,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.isDirectExist = function () {
-      return !this.memberId;
+      return this.memberId === undefined;
     };
 
     Channel.prototype.isPrivate = function () {

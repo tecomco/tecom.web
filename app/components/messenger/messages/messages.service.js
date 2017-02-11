@@ -45,7 +45,14 @@ app.service('messagesService', [
      */
 
     $rootScope.$on('channel:new', function (event, channel) {
-      var promise = getAndSaveNewMessagesByChannelFromServer(channel);
+      var promise;
+      if (channel.isDirect() && !channel.isDirectExist()) {
+        var deferred = $q.defer();
+        deferred.resolve();
+        promise = deferred.promise;
+      } else {
+        promise = getAndSaveNewMessagesByChannelFromServer(channel);
+      }
       channelsService.addMessagesPromise(promise);
     });
 

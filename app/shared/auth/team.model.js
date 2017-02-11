@@ -45,13 +45,16 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
     };
 
     Team.prototype.getUsernameById = function (userId) {
+      if (userId === Team.TECOM_BOT.id) {
+        return Team.TECOM_BOT.username;
+      }
       var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', userId);
       return (index !== -1) ? this.members[index].username : '';
     };
 
-    Team.prototype.getNameById = function (userId) {
-      var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', userId);
-      return (index !== -1) ? this.members[index].full_name : null;
+    Team.TECOM_BOT = {
+      id: 0,
+      username: 'تیک-بات'
     };
 
     return Team;
