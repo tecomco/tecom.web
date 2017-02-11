@@ -23,7 +23,7 @@ app.factory('AuthService', [
       var currentMembership = ArrayUtil.getElementByKeyValue(
         decodedToken.memberships, 'team_slug', teamSlug);
       var user = User.setCurrent(currentMembership.id, currentMembership.username,
-        decodedToken.email, currentMembership.team_id, null, token,
+        decodedToken.email, currentMembership.team_id,
         currentMembership.image, currentMembership.is_admin);
     }
 

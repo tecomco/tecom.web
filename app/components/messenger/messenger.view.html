@@ -13,7 +13,7 @@
           <li ng-click="openModal('userProfile')">
             <a><i class="fa fa-user"></i>پروفایل من</a>
           </li>
-          <li ng-click="openModal('teamProfile')">
+          <li ng-show="isAdmin" ng-click="openModal('teamProfile')">
             <a><i class="fa fa-users"></i>مدیریت تیم</a>
           </li>
           <li ng-click="logout()">
@@ -82,7 +82,18 @@
         </div>
         <div class="leave">
           <div class="modal-input">
-            <button ng-click="leaveTeam()" class="btn btn-default">خروج از تیم</button>
+            <button
+                class="btn btn-default"
+                mwl-confirm
+                message="مطمئنی که می خوای این تیم رو ترک کنی ؟"
+                confirm-text="آره"
+                cancel-text="نه، حواسم نبود"
+                placement="bottom"
+                on-confirm="leaveTeam()"
+                confirm-button-type="danger"
+                cancel-button-type="default">
+              خروج از تیم
+            </button>
           </div>
         </div>
       </div>

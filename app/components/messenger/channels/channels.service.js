@@ -29,7 +29,7 @@ app.service('channelsService', [
       var channel = createAndPushChannel(result.channel);
       if (result.channel.creatorId === User.getCurrent().id) {
         $state.go('messenger.messages', {
-          slug: channel.slug
+          slug: channel.getUrlifiedSlug()
         });
       }
       $rootScope.$broadcast('channels:updated');
@@ -39,7 +39,6 @@ app.service('channelsService', [
      * @todo If the edited channel is the current one, change url.
      */
     socket.on('channel:edit', function (result) {
-      $log.info('channel:edit', result);
       var channel = findChannelById(result.channel.id);
       channel.updateFromJson(result.channel);
       if (isCurrentChannel(channel)) {
@@ -47,7 +46,6 @@ app.service('channelsService', [
           slug: channel.slug
         });
       }
-      $log.info('channels:', self.channels);
       $rootScope.$broadcast('channels:updated');
     });
 
@@ -86,7 +84,8 @@ app.service('channelsService', [
         var fakeDirect = findChannelBySlug(channel.slug);
         if (fakeDirect) {
           fakeDirect.setValues(channel.name, channel.slug, channel.description,
-            channel.type, channel.id, channel.membersCount, null, channel.memberId);
+            channel.type, channel.id, channel.membersCount, null,
+            channel.memberId, channel.liveFileId);
           return fakeDirect;
         }
       }
@@ -167,6 +166,7 @@ app.service('channelsService', [
         channelId: channelId
       };
       socket.emit('channel:members:add', data, function (response) {
+        console.log('add:', response);
         if (response.status)
           defer.resolve();
         else
