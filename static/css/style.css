@@ -366,41 +366,46 @@ ul.dropdown-menu {
 .profile-modal label {
     padding: 0;
 }
-.profile-modal .change-pass label{
+
+.profile-modal .change-pass label {
     padding: 16px 0;
 }
-.modal .profile-modal .modal-btn{
-  padding: 4px 16px;
-  margin: 8px 0 ;
+
+.modal .profile-modal .modal-btn {
+    padding: 4px 16px;
+    margin: 8px 0;
 }
-.modal .profile-modal.modal-body.two-part-modal [type="text"].change-user{
-  margin: 0;
-  width: 70%;
-  display: inline-block;
+
+.modal .profile-modal.modal-body.two-part-modal [type="text"].change-user {
+    margin: 0;
+    width: 70%;
+    display: inline-block;
 }
+
 .profile-modal-img a {
     position: relative;
     text-align: center;
 }
-.danger-btn{
-  width: 100%;
-  background: rgb(230, 77, 77);
-  padding: 8px 0;
-  color: #fff;
-  border-radius: 4px;
-  border: 0;
-  font-size: 18px;
-  text-align: center;
-  margin-top: 8px;
-  transition:all 0.3s ease;
-  -o-transition:all 0.3s ease;
-  -moz-transition:all 0.3s ease;
-  -webkit-transition:all 0.3s ease;
 
+.danger-btn {
+    width: 100%;
+    background: rgb(230, 77, 77);
+    padding: 8px 0;
+    color: #fff;
+    border-radius: 4px;
+    border: 0;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 }
-.danger-btn:hover, .danger-btn:active, .danger-btn:focus{
-  background: rgba(230, 77, 77, 0.8);
 
+.danger-btn:hover, .danger-btn:active, .danger-btn:focus {
+    background: rgba(230, 77, 77, 0.8);
+    color: #fff;
 }
 
 .modal-body.two-part-modal .profile-modal-img i.zmdi {
@@ -1023,7 +1028,7 @@ pre.prettyprint {
     cursor: pointer;
 }
 
-.modal-body [type="text"] , .modal-body [type="password"], .modal-body [type="email"]{
+.modal-body [type="text"], .modal-body [type="password"], .modal-body [type="email"] {
     padding: 8px 16px;
     display: block;
     width: 50%;
@@ -1166,8 +1171,7 @@ pre.prettyprint {
     background: rgba(0, 0, 0, 0);
 }
 
-.modal-input-btn button:hover, .modal-input-btn button:active, .modal-input-btn button:focus,
-.modal-input-btn .modal-btn:hover, .modal-input-btn .modal-btn:active, .modal-input-btn .modal-btn:focus {
+.modal-input-btn button:hover, .modal-input-btn button:active, .modal-input-btn button:focus, .modal-input-btn .modal-btn:hover, .modal-input-btn .modal-btn:active, .modal-input-btn .modal-btn:focus {
     background: rgba(0, 0, 0, 0);
 }
 
@@ -1213,7 +1217,7 @@ pre.prettyprint {
     font-size: 20px;
 }
 
-.modal-body.two-part-modal [type="text"], .modal-body.two-part-modal [type="password"]{
+.modal-body.two-part-modal [type="text"], .modal-body.two-part-modal [type="password"] {
     width: 100%;
     margin: 16px 0;
 }
@@ -1500,9 +1504,11 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 .no-padding {
     padding: 0;
 }
-.no-margin{
-  margin: 0;
+
+.no-margin {
+    margin: 0;
 }
+
 input {
     box-sizing: padding-box;
     direction: rtl;

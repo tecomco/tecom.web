@@ -46,7 +46,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         id: self.channel.id
       };
       channelsService.sendEditedChannel(editedData).then(function () {
-        self.closeDetailsModal();
+        self.editMode = false;
         $log.info('Done Editing Channel');
       }).catch(function (message) {
         if (message.indexOf('Duplicate slug in team.') != -1) {
@@ -160,6 +160,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         }).catch(function () {
           $log.error('Error Adding members');
         });
+        updateListItems();
       }
       else
         updateListItems();
@@ -178,8 +179,12 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     self.showRemoveIcon = function (member) {
-      return (member.isChannelMember) &&
-        (selectedMember === member && member.member_id !== User.getCurrent().id);
+      if(User.getCurrent().isAdmin) {
+        return (member.isChannelMember) &&
+          (selectedMember === member && member.member_id !== User.getCurrent().id);
+      }
+      else
+        return false;
     };
 
     function makeListItem(member) {
