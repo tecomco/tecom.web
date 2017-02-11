@@ -4,8 +4,11 @@
       <ul class="doc-tabs">
         <!--Tabs View-->
         <li class="doc-tab doc-tab-active">
-          <i class="fa fa-circle"></i>
           {{vm.file.name}}
+          <a class="live-btn">
+            <label dir="ltr">LIVE</label>
+            <i class="fa fa-circle"></i>
+          </a>
           <a ng-click="closeFile(vm.file)">
             <i class="fa fa-times"></i>
           </a>
