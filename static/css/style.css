@@ -363,6 +363,65 @@ ul.dropdown-menu {
     color: #555;
 }
 
+.profile-modal label {
+    padding: 0;
+}
+.profile-modal .change-pass label{
+    padding: 16px 0;
+}
+.modal .profile-modal .modal-btn{
+  padding: 4px 16px;
+  margin: 8px 0 ;
+}
+.modal .profile-modal.modal-body.two-part-modal [type="text"].change-user{
+  margin: 0;
+  width: 70%;
+  display: inline-block;
+}
+.profile-modal-img a {
+    position: relative;
+    text-align: center;
+}
+.danger-btn{
+  width: 100%;
+  background: rgb(230, 77, 77);
+  padding: 8px 0;
+  color: #fff;
+  border-radius: 4px;
+  border: 0;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 8px;
+  transition:all 0.3s ease;
+  -o-transition:all 0.3s ease;
+  -moz-transition:all 0.3s ease;
+  -webkit-transition:all 0.3s ease;
+
+}
+.danger-btn:hover, .danger-btn:active, .danger-btn:focus{
+  background: rgba(230, 77, 77, 0.8);
+
+}
+
+.modal-body.two-part-modal .profile-modal-img i.zmdi {
+    position: absolute;
+    top: 32%;
+    left: 0;
+    right: 0;
+    opacity: 0.6;
+    margin: 0 auto;
+    font-size: 50px;
+    color: #fff;
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.modal-body.two-part-modal .profile-modal-img a:hover i.zmdi {
+    opacity: 0.9;
+}
+
 .noti-holder {
     position: absolute;
     top: 16px;
@@ -560,6 +619,55 @@ ul.dropdown-menu {
 .main a:visited {
     color: #8000ff;
 }*/
+
+.file-empty {
+    background: #333;
+    height: 100vh;
+    color: #eee;
+    text-align: center;
+    padding-top: 20vh;
+}
+
+.file-empty .em-fi-al {
+    display: block;
+    color: #eee;
+    font-size: 24px;
+    text-align: center;
+    padding: 60px 0;
+}
+
+.file-empty .live-btn {
+    font-size: 16px;
+    background: rgba(255, 255, 255, 1);
+}
+
+.file-empty .fa-code {
+    font-size: 40px;
+}
+
+.file-empty .live-btn label {
+    top: 2px;
+    left: -2px;
+}
+
+.file-empty .live-btn i {
+    font-size: 9px;
+}
+
+.up-fi {
+    background: rgba(255, 255, 255, 1);
+    padding: 16px;
+    border-radius: 4px;
+}
+
+.file-empty .up-fi .live-btn {
+    left: 2px;
+    top: 0px;
+}
+
+.up-fi span {
+    color: #333;
+}
 
 .doc-section {
     height: 100%;
@@ -801,7 +909,7 @@ pre.prettyprint {
     cursor: pointer;
 }
 
-.notif .live-btn, .doc-tab .live-btn {
+.notif .live-btn, .doc-tab .live-btn, .file-empty .live-btn {
     float: none;
     margin-left: 0;
     top: -2px;
@@ -915,7 +1023,7 @@ pre.prettyprint {
     cursor: pointer;
 }
 
-.modal-body [type="text"] {
+.modal-body [type="text"] , .modal-body [type="password"], .modal-body [type="email"]{
     padding: 8px 16px;
     display: block;
     width: 50%;
@@ -931,7 +1039,7 @@ pre.prettyprint {
     border: 1px solid #DDDDDD;
 }
 
-.modal-body [type="text"]:focus {
+.modal-body [type="text"]:focus, .modal-body [type="password"]:focus, .modal-body [type="email"]:focus {
     padding: 8px 16px;
     display: block;
     width: 50%;
@@ -989,6 +1097,10 @@ pre.prettyprint {
     display: inline-block;
     font-size: 16px;
     margin: 0 auto;
+}
+
+.modal .modal-btn:hover {
+    color: #fff;
 }
 
 .modal .modal-btn-details {
@@ -1050,6 +1162,19 @@ pre.prettyprint {
     position: relative;
 }
 
+.modal-input-btn button {
+    background: rgba(0, 0, 0, 0);
+}
+
+.modal-input-btn button:hover, .modal-input-btn button:active, .modal-input-btn button:focus,
+.modal-input-btn .modal-btn:hover, .modal-input-btn .modal-btn:active, .modal-input-btn .modal-btn:focus {
+    background: rgba(0, 0, 0, 0);
+}
+
+.modal-input-btn.modal-input-details .modal-btn-details .zmdi {
+    color: #555;
+}
+
 .search-result {
     background-color: rgba(245, 245, 245, 0.8);
     min-height: 46px;
@@ -1088,7 +1213,7 @@ pre.prettyprint {
     font-size: 20px;
 }
 
-.modal-body.two-part-modal [type="text"] {
+.modal-body.two-part-modal [type="text"], .modal-body.two-part-modal [type="password"]{
     width: 100%;
     margin: 16px 0;
 }
@@ -1375,7 +1500,9 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 .no-padding {
     padding: 0;
 }
-
+.no-margin{
+  margin: 0;
+}
 input {
     box-sizing: padding-box;
     direction: rtl;

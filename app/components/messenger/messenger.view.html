@@ -1,135 +1,196 @@
 <div class="wrapper">
-  <div class="col-sm-3 col-lg-2 no-padding channel-section">
-    <div class="right-section">
-      <div ng-controller="MessengerCtrl" class="right-section-header" uib-dropdown>
-        <a>
-          <img src="static/img/tecom-logo.png"/>
-          <span class="brand-name-right-header">تیکام</span>
-        </a>
-        <a uib-dropdown-toggle class="user-options-btn">
-            <i class="zmdi zmdi-more-vert"></i>
-        </a>
-        <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
-          <li ng-click="openModal('userProfile')">
-            <a><i class="fa fa-user"></i>پروفایل من</a>
-          </li>
-          <li ng-click="openModal('teamProfile')">
-            <a><i class="fa fa-users"></i>مدیریت تیم</a>
-          </li>
-          <li ng-click="logout()">
-            <a><i class="fa fa-sign-out"></i>خروج</a>
-          </li>
-        </ul>
-      </div>
-      <div class="right-section-main">
-        <div ui-view="channels"></div>
-      </div>
+    <div class="col-sm-3 col-lg-2 no-padding channel-section">
+        <div class="right-section">
+            <div ng-controller="MessengerCtrl" class="right-section-header" uib-dropdown>
+                <a>
+                    <img src="static/img/tecom-logo.png" />
+                    <span class="brand-name-right-header">تیکام</span>
+                </a>
+                <a uib-dropdown-toggle class="user-options-btn">
+                    <i class="zmdi zmdi-more-vert"></i>
+                </a>
+                <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
+                    <li ng-click="openModal('userProfile')">
+                        <a><i class="fa fa-user"></i>پروفایل من</a>
+                    </li>
+                    <li ng-click="openModal('teamProfile')">
+                        <a><i class="fa fa-users"></i>مدیریت تیم</a>
+                    </li>
+                    <li ng-click="logout()">
+                        <a><i class="fa fa-sign-out"></i>خروج</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="right-section-main">
+                <div ui-view="channels"></div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-sm-9 col-lg-10 no-padding chat-section">
-    <div ui-view></div>
-  </div>
-  <div class="loading" ng-show="isLoading">
-    <img class="loading-img" src="static/img/loading.gif">
-    <div class="loading-txt">تمرکز روی همه چیز، همون تمرکز روی هیچ چیزِ.</div>
-  </div>
+    <div class="col-sm-9 col-lg-10 no-padding chat-section">
+        <div ui-view></div>
+    </div>
+    <div class="loading" ng-show="isLoading">
+        <img class="loading-img" src="static/img/loading.gif">
+        <div class="loading-txt">تمرکز روی همه چیز، همون تمرکز روی هیچ چیزِ.</div>
+    </div>
 </div>
 <div class="clearfix"></div>
 
 <!-- User profile modal -->
 <script type="text/ng-template" id="userProfile.html">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" ng-click="closeModal()">&times;</button>
-    <h4 class="modal-title">پروفایل من</h4>
-  </div>
-  <div class="modal-body two-part-modal">
-    <div class="container-fluid u-profile">
-      <div class="col-sm-10  col-sm-offset-1">
-        <a type="file" ngf-select="uploadProfileImage($file, $invalidFiles)" ngf-max-size="1MB">
-          <!--<img src="static/img/user-def.png">-->
-          <img ng-src="{{user.image}}">
-        </a>
-        <div class="info">
-          <label>ایمیل:</label>
-          <label class="label">{{user.email}}</label>
-          <br>
-          <label>نام کاربری:</label>
-          <label class="label">@</label>
-          <label ng-show="!editUsernameActive" class="label">{{user.username}}</label>
-          <input ng-show="editUsernameActive" type="text" ng-model="usernameInput" placeholder="{{user.username}}"/>
-          <div class="modal-input modal-input-details">
-            <button ng-show="!editUsernameActive" tooltip-placement="bottom" uib-tooltip="ویرایش نام کاربری" class="modal-btn modal-btn-details" ng-click="editUsername()"><span class="zmdi zmdi-edit"></span></button>
-            <button ng-show="editUsernameActive" tooltip-placement="bottom" uib-tooltip="ذخیره نام کاربری" class="modal-btn modal-btn-details" ng-click="saveUsername()"><span class="zmdi zmdi-edit"></span></button>
-          </div>
-          <br>
-          <div class="modal-input modal-input-details">
-            <button ng-show="!changePasswordActive" type="button" class="btn btn-default" ng-click="changePassword()">تغییر رمز عبور</button>
-          </div>
-          <div ng-show="changePasswordActive">
-            <form name="forms.password" ng-submit="savePassword()" novalidate>
-              <label>رمز عبور فعلی</label>
-              <input type="password" ng-model="oldPasswordInput"/>
-              <label>رمز عبور جدید</label>
-              <input type="password" ng-model="newPasswordInput"/>
-              <label>تکرار رمز عبور جدید</label>
-              <input type="password" ng-model="confirmPasswordInput"/>
-              <input type="submit" value="ذخیره رمز عبور"/>
-            </form>
-          </div>
-
-          <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
-          <span ng-show="showInfoMessage">{{infoMessage}}</span>
-        </div>
-        <div class="leave">
-          <div class="modal-input">
-            <button ng-click="leaveTeam()" class="btn btn-default">خروج از تیم</button>
-          </div>
-        </div>
-      </div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="closeModal()">&times;</button>
+        <h4 class="modal-title">پروفایل من</h4>
     </div>
-  </div>
+    <div class="modal-body two-part-modal profile-modal">
+        <div class="container-fluid u-profile">
+            <div class="col-sm-10  col-sm-offset-1">
+                <div class="col-sm-4">
+
+                    <div class="profile-modal-img">
+
+                        <a type="file" ngf-select="uploadProfileImage($file, $invalidFiles)" ngf-max-size="1MB">
+                            <!--<img src="static/img/user-def.png">-->
+                            <img ng-src="{{user.image}}">
+                            <i class="zmdi zmdi-camera"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+
+                    <div class="info no-padding">
+                        <div class="col-sm-4 no-padding">
+
+                            <label>ایمیل:</label>
+                        </div>
+                        <div class="col-sm-8">
+
+                            <label class="label">{{user.email}}</label>
+                        </div>
+                        <div class="clearfix"></div>
+
+
+                        <div class="col-sm-4 no-padding">
+                            <label>نام کاربری:</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label class="label">@</label>
+                            <label ng-show="!editUsernameActive" class="label">{{user.username}}</label>
+                            <input ng-show="editUsernameActive" type="text" class="change-user" ng-model="usernameInput" placeholder="{{user.username}}" />
+                            <div class="modal-input modal-input-details modal-input-btn">
+                                <button ng-show="!editUsernameActive" tooltip-placement="bottom" uib-tooltip="ویرایش نام کاربری" class="modal-btn modal-btn-details" ng-click="editUsername()"><span class="zmdi zmdi-edit"></span></button>
+                                <button ng-show="editUsernameActive" tooltip-placement="bottom" uib-tooltip="ذخیره نام کاربری" class="modal-btn modal-btn-details" ng-click="saveUsername()"><span class="zmdi zmdi-check"></span></button>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+
+                    </div>
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8">
+                    <div class="">
+
+                        <div class="modal-input">
+                            <button ng-show="!changePasswordActive" type="button" class="btn btn-default modal-btn" ng-click="changePassword()">تغییر رمز عبور</button>
+                        </div>
+                        <div ng-show="changePasswordActive" class="change-pass">
+                            <form name="forms.password" ng-submit="savePassword()" novalidate>
+                                <div class="col-sm-5">
+                                    <label>رمز عبور فعلی</label>
+                                </div>
+                                <div class="col-sm-7">
+                                    <div class="modal-input">
+                                        <input type="password" ng-model="oldPasswordInput" class="no-margin" />
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="col-sm-5">
+                                    <label>رمز عبور جدید</label>
+                                </div>
+                                <div class="col-sm-7">
+                                    <input type="password" ng-model="newPasswordInput" class="no-margin" />
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="col-sm-5">
+                                    <label>تکرار رمز عبور جدید</label>
+                                </div>
+                                <div class="col-sm-7">
+                                    <input type="password" ng-model="confirmPasswordInput" class="no-margin" />
+                                </div>
+                                <div class="clearfix"></div>
+                                <input type="submit" value="ذخیره رمز عبور" />
+                            </form>
+                        </div>
+                        <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
+                        <span ng-show="showInfoMessage">{{infoMessage}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="leave">
+                    <div class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="modal-input">
+                            <button ng-click="leaveTeam()" class="danger-btn">خروج از تیم</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="clearfix">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </script>
 
 <!-- Team profile modal -->
 <script type="text/ng-template" id="teamProfile.html">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" ng-click="closeModal()">&times;</button>
-    <h4 class="modal-title">مدیریت تیم</h4>
-  </div>
-  <div class="modal-body two-part-modal">
-    <div class="container-fluid u-profile">
-      <div class="col-sm-10 col-sm-offset-1">
-        <div class="t-info">
-          <label>نام تیم:</label>
-          <!--
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="closeModal()">&times;</button>
+        <h4 class="modal-title">مدیریت تیم</h4>
+    </div>
+    <div class="modal-body two-part-modal profile-modal">
+        <div class="container-fluid u-profile">
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="t-info">
+                    <label>نام تیم:</label>
+                    <!--
           <input ng-show="editTeamNameActive" type="text" ng-model="usernameInput" placeholder="{{team.name}}"/>
           <div class="modal-input modal-input-details">
             <button ng-show="!editTeamNameActive" tooltip-placement="bottom" uib-tooltip="ویرایش نام تیم" class="modal-btn modal-btn-details" ng-click="editTeamName()"><span class="zmdi zmdi-edit"></span></button>
             <button ng-show="editTeamNameActive" tooltip-placement="bottom" uib-tooltip="ذخیره نام تیم" class="modal-btn modal-btn-details" ng-click="saveTeamName()"><span class="zmdi zmdi-edit"></span></button>
           </div>
           -->
-          <label class="label">{{team.name}}</label>
-          <br>
-          <label>اعضای تیم:</label>
-          <div class="g-members">
-            <div ng-repeat="member in teamMembers" class="g-m-one">
-              <img ng-src="static/img/user-def.png"/>
-              <label>@{{member.username}}</label>
-              <!--
+                    <label class="label">{{team.name}}</label>
+                    <br>
+                    <label>اعضای تیم:</label>
+                    <div class="g-members">
+                        <div ng-repeat="member in teamMembers" class="g-m-one">
+                            <img ng-src="static/img/user-def.png" />
+                            <label>@{{member.username}}</label>
+                            <!--
               <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn modal-btn-details-remove" ng-click="removeTeamMember(member)"><span class="glyphicon glyphicon-remove"></span></button>
               <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" class="btn modal-btn-details-admin"><span class="fa fa-star" ng-click="makeAdmin(member)"></span></button>
               -->
+                        </div>
+                    </div>
+                    <div class="modal-input">
+                        <button ng-click="inviteMember()" ng-show="!inviteMode" class="btn btn-default modal-btn">دعوت عضو به تیم!</button>
+                    </div>
+                    <form name="forms.inviteMember" ng-submit="sendInvitation()" ng-show="inviteMode" novalidate>
+                        <div class="input-modal">
+                            <input type="email" name="email" ng-model="invitedEmail" placeholder="ایمیلش رو وارد کن" required/>
+                        </div>
+                        <input type="submit" value="دعوت" />
+                    </form>
+                    <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
+                    <span ng-show="showInfoMessage">{{infoMessage}}</span>
+                </div>
             </div>
-          </div>
-          <button ng-click="inviteMember()" ng-show="!inviteMode" class="btn btn-default">دعوت عضو به تیم!</button>
-          <form name="forms.inviteMember" ng-submit="sendInvitation()" ng-show="inviteMode" novalidate>
-            <input type="email" name="email" ng-model="invitedEmail" placeholder="ایمیلش رو وارد کن" required/>
-            <input type="submit" value="دعوت"/>
-          </form>
-          <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
-          <span ng-show="showInfoMessage">{{infoMessage}}</span>
         </div>
-      </div>
     </div>
-  </div>
 </script>
