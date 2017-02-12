@@ -94,6 +94,10 @@ app.controller('messagesController', [
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
 
+    $scope.viewFile = function (fileId) {
+      filesService.viewFile(fileId);
+    };
+
     function initialize() {
       setCurrentChannel();
       if ($scope.channel) {
