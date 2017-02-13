@@ -8,6 +8,7 @@ app.service('filesService', [
 
     var self = this;
     self.files = [];
+    self.viewFile = null;
 
     socket.on('file:lived', function (data) {
       channelsService.setChannelLivedFileId(data.channelId, data.fileId);
@@ -28,7 +29,6 @@ app.service('filesService', [
           self.livedFile = null;
           $rootScope.$broadcast('file:killed');
         }
-
       }
     }
 
@@ -67,6 +67,17 @@ app.service('filesService', [
       return defer.promise;
     }
 
+    function viewFile(fileId) {
+      if (self.livedFile && self.livedFile.id === fileId) {
+        updateLiveFile();
+      }
+      else {
+        getFileById(fileId).then(function (file) {
+          $rootScope.$broadcast('file:view', file);
+        });
+      }
+    }
+
     function makeFileLive(channelId, fileId, fileName) {
       sendLiveFileDataToServer('makeLive', channelId, fileName, fileId);
     }
@@ -103,7 +114,9 @@ app.service('filesService', [
       killLiveFile: killLiveFile,
       updateLiveFile: updateLiveFile,
       getLivedFile: getLivedFile,
-      showFileLine: showFileLine
+      showFileLine: showFileLine,
+      getFileById: getFileById,
+      viewFile: viewFile
     };
   }
 

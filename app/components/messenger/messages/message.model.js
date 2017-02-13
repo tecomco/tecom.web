@@ -47,9 +47,8 @@ app.factory('Message', [
           body += '<i class="fa fa-circle"></i>';
           body += '</a>';
         }
-        body += '<a class="dl-btn" href=\"' + this.additionalData.url + '" download="' +
-          this.additionalData.name + '" target="_blank">';
-        body += '<i class="zmdi zmdi-download"></i>';
+        body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData.fileId + ')">';
+        body += '<i class="fa fa-eye"></i>';
         body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
