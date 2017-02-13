@@ -40,7 +40,7 @@ app.factory('AuthService', [
       };
       $http({
         method: 'POST',
-        url: '/api/v1/auth/login',
+        url: '/api/v1/auth/login/',
         data: data,
         skipAuthorization: true
       }).then(function (response) {
