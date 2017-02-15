@@ -2,9 +2,9 @@
 
 app.service('filesService', [
   '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q', 'channelsService',
-  'File',
+  'File', 'fileUtil',
   function ($rootScope, $http, $log, socket, ArrayUtil, $q, channelsService,
-            File) {
+            File, fileUtil) {
 
     var self = this;
     self.files = [];
@@ -48,19 +48,26 @@ app.service('filesService', [
       else {
         var url;
         var name;
+        var type;
         $http({
           method: 'GET',
-          url: '/api/v1/files/' + fileId + '/url-name'
+          url: '/api/v1/files/' + fileId + '/'
         }).then(function (res) {
           url = res.data.file;
           name = res.data.name;
+          type = res.data.type;
           return getFileDataByUrl(url);
         }).then(function (res) {
-          var file = new File(fileId, url, res.data, name, channelId);
-          self.files.push(file);
-          defer.resolve(file);
+          if (fileUtil.isTextFormat(type)) {
+            var file = new File(fileId, url, res.data, name, channelId);
+            self.files.push(file);
+            defer.resolve(file);
+          }
+          else
+            $log.error('Lived File Format Not Supported Yet !');
+          defer.reject();
         }).catch(function (err) {
-          $log.error('Error Getting File From Server.', err);
+          $log.error('Error Getting File name and URL From Server.', err);
           defer.reject();
         });
       }

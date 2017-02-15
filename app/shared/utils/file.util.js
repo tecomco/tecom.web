@@ -2,7 +2,7 @@
 
 app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
 
-  var textBaseFormats = ['txt', 'c', 'js', 'java', 'py', 'html', 'cpp', 'json',
+  var textBaseFormats = ['txt', 'c', 'js', 'java', 'py', 'cpp',
     'css', 'apsx', 'htm', 'jsp', 'php', 'xml', 'asp', 'rdf', 'cs', 'fs', 'lib',
     's', 'src', 'dtd', 'bat', 'o', 'mm', 'swift', 'cc', 'lua', 'prl', 'mac',
     'phtml', 'sh', 'h', 'html5', 'cxx', 'vb', 'r', 'cls', 'pyt', 'cmd', 'rb',

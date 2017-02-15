@@ -187,7 +187,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     self.showRemoveIcon = function (member) {
       if(User.getCurrent().isAdmin && !self.addingMemberActive) {
         return (member.isChannelMember) &&
-          (selectedMember === member && member.member_id !== User.getCurrent().id);
+          (selectedMember === member && member.member_id !== User.getCurrent().memberId);
       }
       else
         return false;

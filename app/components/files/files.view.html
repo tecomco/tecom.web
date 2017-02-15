@@ -36,7 +36,7 @@
   <div ng-show="viewState() !== 'noFile'">
     <div class="doc-section-header">
       <ul class="doc-tabs">
-        <li ng-show="vm.liveFile" ng-class="viewState()=='live' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-click="liveFileTabClick()">
+        <li ng-show="vm.liveFile" ng-class="viewState()=='live' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="liveFileTabClick()">
           {{vm.liveFile.name}}
           <a class="live-btn">
             <i class="fa fa-circle"></i>
@@ -47,7 +47,7 @@
           </a>
         </li>
 
-        <li ng-show="vm.viewFile" ng-class="viewState()=='view' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-click="viewFileTabClick()">
+        <li ng-show="vm.viewFile" ng-class="viewState()=='view' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="viewFileTabClick()">
           {{vm.viewFile.name}}
           <a ng-click="closeViewFile(vm.viewFile)">
             <i class="fa fa-times"></i>

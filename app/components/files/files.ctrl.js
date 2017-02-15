@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('filesController', ['$window', 'filesService', '$scope',
-  '$timeout',
-  function ($window, filesService, $scope, $timeout) {
+  '$timeout', '$rootScope',
+  function ($window, filesService, $scope, $timeout, $rootScope) {
 
     $scope.vm = {};
     var selectedFileType = 'none';
@@ -16,21 +16,28 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     });
 
     $scope.$on('file:lived', function (event, file) {
-      $scope.vm.liveFile = file;
       selectedFileType = 'live';
+      if ($scope.vm.viewFile && file.id === $scope.vm.viewFile.id)
+        $scope.vm.viewFile = null;
+      $scope.vm.liveFile = file;
+      broadcastViewState();
     });
 
-    $scope.$on('file:killed', function (event) {
+    $scope.$on('file:killed', function () {
+      selectedFileType = 'view';
       $scope.vm.liveFile = null;
+      broadcastViewState();
     });
 
     $scope.$on('file:view', function (event, file) {
-      $scope.vm.viewFile = file;
       selectedFileType = 'view';
+      $scope.vm.viewFile = file;
+      broadcastViewState();
     });
 
     $scope.$on('file:show:line', function (event, file, lineNumber) {
       if (file === $scope.vm.liveFile) {
+        console.log('taghtaghtagh');
         selectedFileType = 'live';
         file.selectPermLine(lineNumber);
         scrollToLine(file, lineNumber);
@@ -46,6 +53,7 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
         file.selectPermLine(lineNumber);
         scrollToLine(file, lineNumber);
       }
+      broadcastViewState();
     });
 
     $scope.lineClick = function (lineNum) {
@@ -62,16 +70,20 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     };
 
     $scope.closeViewFile = function () {
+      selectedFileType = 'live';
       $scope.vm.viewFile = null;
+      broadcastViewState();
     };
 
-    $scope.liveFileTabClick = function(){
+    $scope.liveFileTabClick = function () {
       selectedFileType = 'live';
-    }
+      broadcastViewState();
+    };
 
-    $scope.viewFileTabClick = function(){
+    $scope.viewFileTabClick = function () {
       selectedFileType = 'view';
-    }
+      broadcastViewState();
+    };
 
     $scope.viewState = function () {
       if (!($scope.vm.liveFile || $scope.vm.viewFile))
@@ -82,9 +94,19 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
         return 'view';
     };
 
+    function broadcastViewState() {
+      $rootScope.$broadcast('view:state:changed', $scope.viewState());
+    }
+
+    broadcastViewState();
+
     function scrollToLine(file, lineNum) {
+      var codeView;
+      if ($scope.viewState() === 'live')
+        codeView = document.getElementById('liveCodeView');
+      else
+        codeView = document.getElementById('codeView');
       $timeout(function () {
-        var codeView = document.getElementById('codeView');
         var middle = ((lineNum - 17) / file.lines.length) * codeView.scrollHeight;
         codeView.scrollTop = middle;
       }, 0, false);

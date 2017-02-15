@@ -2,7 +2,7 @@
     <div class="name">
         <label>{{channel.name}}</label>
         <div class="det" ng-show="!channel.isDirect()">
-            <label dir="rtl">{{channel.getLocaleMembersCount()}}
+            <label ng-show="channel.getLocaleMembersCount()" dir="rtl">{{channel.getLocaleMembersCount()}}
                 عضو</label>
             <label>{{channel.description}}</label>
         </div>

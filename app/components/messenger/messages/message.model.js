@@ -48,7 +48,10 @@ app.factory('Message', [
           body += '</a>';
         }
         body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData.fileId + ')">';
-        body += '<i class="fa fa-eye"></i>';
+        if (this.canBeLived)
+          body += '<i class="fa fa-eye"></i>';
+        else
+          body += '<i class="fa fa-download"></i>';
         body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
@@ -81,7 +84,7 @@ app.factory('Message', [
     };
 
     Message.prototype.isFromMe = function () {
-      return this.senderId === User.getCurrent().id;
+      return this.senderId === User.getCurrent().memberId;
     };
 
     Message.prototype.isEnglish = function () {

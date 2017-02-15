@@ -121,7 +121,7 @@ app.factory('Channel', [
       ids.push(parseInt(this.slug.slice(this.slug.indexOf(':') + 1,
         this.slug.length)));
       ids.forEach(function (id) {
-        if (id !== User.getCurrent().id) {
+        if (id !== User.getCurrent().memberId) {
           var name = User.getCurrent().team.getUsernameById(id);
           that.name = name;
           that.slug = name;

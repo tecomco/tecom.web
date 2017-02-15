@@ -27,7 +27,7 @@ app.service('channelsService', [
 
     socket.on('channel:new', function (result) {
       var channel = createAndPushChannel(result.channel);
-      if (result.channel.creatorId === User.getCurrent().id) {
+      if (result.channel.creatorId === User.getCurrent().memberId) {
         $state.go('messenger.messages', {
           slug: channel.getUrlifiedSlug()
         });

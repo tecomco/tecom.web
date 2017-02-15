@@ -8,7 +8,7 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
       $log.info('user:', username);
       $http({
         method: 'PATCH',
-        url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/username/',
+        url: '/api/v1/auth/users/' + User.getCurrent().id + '/username/change/',
         data: {
           username: username
         }
@@ -48,7 +48,7 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
       var defered = $q.defer();
       $http({
         method: 'PUT',
-        url: '/api/v1/teams/member/' + User.getCurrent().id + '/change/image/',
+        url: '/api/v1/teams/member/' + User.getCurrent().memberId + '/change/image/',
         data: {
           image: file
         }
@@ -68,7 +68,7 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
     function leaveTeam() {
       return $http({
         method: 'POST',
-        url: '/api/v1/teams/member/' + User.getCurrent().id + '/leave/'
+        url: '/api/v1/teams/member/' + User.getCurrent().memberId + '/leave/'
       });
     }
 

@@ -10,7 +10,7 @@ app.service('db', ['$window', '$q', '$log', 'User', function ($window, $q, $log,
 
   function createDb() {
     self.db = new $window.PouchDB('tecom:' + User.getCurrent().team.id + ':' +
-      User.getCurrent().id);
+      User.getCurrent().memberId);
     $log.info('PouchDB connected successfuly.');
     self.createIndexPromise = self.db.createIndex({
       index: {

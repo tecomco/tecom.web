@@ -35,13 +35,17 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
               }).catch(function (err) {
               $log.error('Login Error:', err);
               $scope.hasloginError = false;
-              if (!err.data.non_field_errors)
-                $scope.loginErrorString = 'خطا در اتصال به سرور';
-              else if (err.data.non_field_errors[0] ===
-                'Unable to log in with provided credentials.')
-                $scope.loginErrorString = 'نام کاربری یا رمزعبور صحیح نمی باشد.';
-
-              $scope.hasLoginError = true;
+              if (err.data) {
+                $scope.hasLoginError = true;
+                if (typeof err.data === 'objectcd de' &&
+                  err.data[0] === 'User does not belong to team.')
+                  $scope.loginErrorString = 'شما در این تیم عضو نیستید.';
+                else if (err.data.non_field_errors[0] ===
+                  'Unable to log in with provided credentials.')
+                  $scope.loginErrorString = 'نام کاربری یا رمزعبور صحیح نمی باشد.';
+                else
+                  $scope.loginErrorString = 'خطا در اتصال به سرور';
+              }
               initializeLoginForm();
             });
           }
