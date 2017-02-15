@@ -22,7 +22,7 @@ app.factory('AuthService', [
       var decodedToken = jwtHelper.decodeToken(token);
       var currentMembership = ArrayUtil.getElementByKeyValue(
         decodedToken.memberships, 'team_slug', teamSlug);
-      var user = User.setCurrent(currentMembership.id, currentMembership.username,
+      var user = User.setCurrent(currentMembership.id, decodedToken.username,
         decodedToken.email, currentMembership.team_id,
         currentMembership.image, currentMembership.is_admin);
     }

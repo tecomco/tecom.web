@@ -26,7 +26,7 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         $scope.submitClicked = false;
 
         $scope.login = function () {
-          var isFormValid = $scope.forms.login.username.$valid &&
+          var isFormValid = $scope.forms.login.email.$valid &&
             $scope.forms.login.password.$valid;
           if (isFormValid) {
             AuthService.login($scope.email, $scope.password)
@@ -54,7 +54,7 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         var initializeLoginForm = function () {
           $scope.forms.login.$setPristine();
           $scope.password = '';
-          $scope.remember = false;
+          // $scope.remember = false;
         };
 
         // $scope.circles = [];

@@ -32,7 +32,6 @@ html, body, ul, li {
     margin: 0;
     padding: 0;
     font-family: 'iransans';
-
 }
 
 * {
@@ -48,8 +47,9 @@ body {
     padding: 0;
     direction: rtl;
     font-family: 'iransans', 'calibri';
-    background: #fff;
     color: #666;
+    background: url(../img/bg-pattern-green.png);
+    background-size: 25%;
     font-weight: 200;
     overflow: hidden;
 }
@@ -64,29 +64,42 @@ a, a:hover, a:visited, a:focus {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
+
 .container {
     height: 100vh;
 }
-.login-form {
-    width: 600px;
-    background: rgba(255, 255, 255, 1);
-    border: none;
-    border-radius: 20px;
-    padding: 50px 40px;
-    z-index: 9999;
-    margin: 0 auto;
-    margin-top: 100px;
 
+.login-form {
+    width: 100%;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.1), 0 0 2px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
 }
+
+.login-img-holder {
+    background: rgb(39, 169, 114);
+    border-radius: 7px 7px 0 0;
+}
+
+.login-img {
+    width: 100%;
+    border-radius: 7px 7px 0 0;
+    margin-bottom: 20px;
+}
+
 .login-form-title {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: 200;
     color: #017446;
     text-align: center;
-    margin-bottom: 40px;
 }
 
-.login-err {
+.form-err {
+    text-align: center;
+}
+
+.form-err label {
     border-radius: 4px;
     color: #fff;
     font-weight: 100;
@@ -101,28 +114,10 @@ a, a:hover, a:visited, a:focus {
 }
 
 .login-form-body {
-    padding: 0 50px;
+    padding: 0px 20px 20px;
 }
-.animated-background {
-    /*z-index: -1;*/
-}
-.circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 25px;
-    /*position: relative;*/
-    top: 50px;
-    left: 50px;
-    background: red;
-    -webkit-filter: blur(5px);
-    -moz-filter: blur(5px);
-    -o-filter: blur(5px);
-    -ms-filter: blur(5px);
-    filter: blur(5px);
-    z-index: -1;
 
-}
-.input-box {
+.form-input input {
     padding: 8px 16px;
     display: block;
     width: 100%;
@@ -136,9 +131,10 @@ a, a:hover, a:visited, a:focus {
     -o-transition: all 0.3s ease;
     outline: none;
     border: 1px solid #DDDDDD;
+    text-align: center;
 }
 
-.input-box:focus {
+.form-input input:focus {
     padding: 8px 16px;
     display: block;
     width: 100%;
@@ -153,7 +149,6 @@ a, a:hover, a:visited, a:focus {
     box-shadow: 0 0 5px rgba(36, 167, 114, 0.6);
     border: 1px solid rgba(36, 167, 114, 0.6);
 }
-
 
 .ws-checkbox {
     font-size: 15px;
@@ -216,7 +211,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 .submit-btn {
     display: block;
     font-weight: 200;
-    width: 150px;
+    width: 100%;
     margin: 0 auto;
     padding: 4px;
     font-size: 20px;
@@ -230,6 +225,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
 }
+
 .submit-btn:hover {
     background: rgba(9, 148, 92, 0.8);
 }
@@ -237,11 +233,4 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 .submit-btn:focus, .submit-btn:active {
     background: rgba(9, 148, 92, 0.8);
     color: #f3f3f3;
-}
-.login-form-body > .fa {
-    font-size: 150px;
-    /* text-align: center; */
-    margin: 0 auto;
-    position: relative;
-    right: 37%;
 }

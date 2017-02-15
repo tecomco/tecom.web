@@ -1,18 +1,29 @@
-<div ng-controller="loginController" class="login-form">
-    <div class="login-form-heading">
+<div class="col-sm-4"></div>
+<div class="col-sm-4">
+  <div class="container-fluid">
+    <div ng-controller="loginController" class="login-form">
+      <div class="login-img-holder">
+        <img src="static/img/tecom-logo-big.png" class="login-img" />
+      </div>
+      <div class="login-form-heading">
         <h4 class="login-form-title">ایمیل و رمز عبورت رو وارد کن...</h4>
-    </div>
-    <div class="login-form-body">
+      </div>
+      <div class="login-form-body">
         <form name="forms.login" ng-submit="login()" novalidate>
-            <div class="form-group">
-                <input ng-model="email" class="input-box" placeholder="ایمیل" name="username" type="text" required>
-            </div>
+          <div class="form-group form-input">
+            <input ng-model="email" placeholder="ایمیل" name="email" type="text" required>
+          </div>
+          <div class="form-err">
             <label class="login-err" ng-show="forms.login.email.$invalid && (!forms.login.email.$pristine || forms.login.$submitted)">وارد کردن نام کاربری ضروری می باشد.</label>
-            <div class="form-group">
-                <input ng-model="password" class="input-box" placeholder="رمز عبور" name="password" type="password" required>
-            </div>
-            <label class="login-err" ng-show="forms.login.password.$invalid && (!forms.login.password.$pristine || forms.login.$submitted)">وارد کردن رمز عبور ضروری می باشد.</label>
-            <label class="login-err" ng-show="hasLoginError">{{loginErrorString}}</label>
+          </div>
+          <div class="form-group form-input">
+            <input ng-model="password" placeholder="رمز عبور" name="password" type="password" required>
+          </div>
+          <div class="form-err">
+            <label ng-show="forms.login.password.$invalid && (!forms.login.password.$pristine || forms.login.$submitted)">وارد کردن رمز عبور ضروری می باشد.</label>
+            <label ng-show="hasLoginError">{{loginErrorString}}</label>
+          </div>
+          <!--
             <label class="ws-checkbox">
                 <span>مرا به خاطر بسپار.</span>
                 <input ng-model="remember" name="remember" type="checkbox">
@@ -20,8 +31,11 @@
                     <i class="fa fa-check"></i>
                 </div>
             </label>
-
-            <input class="submit-btn" type="submit" value="ورود">
+             -->
+          <input class="submit-btn" type="submit" value="ورود">
         </form>
+      </div>
     </div>
+  </div>
 </div>
+<div class="col-sm-4"></div>
