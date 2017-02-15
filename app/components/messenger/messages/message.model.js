@@ -33,25 +33,30 @@ app.factory('Message', [
         body = Message.generateMessageWellFormedText(this.body);
         if (this.about) {
           body += '<br><a ng-click="showFileLine(' +
-            this.about.fileId + ',' + this.about.lineNumber + ')">';
+            this.about.fileId + ',' + this.about.lineNumber +
+            ')" tooltip-placement="top" uib-tooltip="در مورد...">';
           body += '<i class="zmdi zmdi-link"></i></a>';
         }
       } else if (this.type === Message.TYPE.FILE) {
         this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
         body = '<div class="ng-scope" dir="rtl">';
         body += '<label class="file-name">' + this.additionalData.name + '</label>';
-        body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div>';
+        body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
         if (this.canBeLived) {
-          body += '<a class="live-btn" dir="ltr" ng-click="goLive(' + this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
+          body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
+          this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
           body += '<label dir="ltr">LIVE</label>';
           body += '<i class="fa fa-circle"></i>';
           body += '</a>';
-        }
-        body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData.fileId + ')">';
-        if (this.canBeLived)
+          body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData.fileId +
+            ')" tooltip-placement="top" uib-tooltip="مشاهده">';
           body += '<i class="fa fa-eye"></i>';
-        else
+        } else {
+          body += '<a class="dl-btn" href="' + this.additionalData.url +
+          '" download="' +  this.additionalData.name +
+          '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
           body += '<i class="fa fa-download"></i>';
+        }
         body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||

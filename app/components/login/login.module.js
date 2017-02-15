@@ -37,10 +37,11 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
               $scope.hasloginError = false;
               if (err.data) {
                 $scope.hasLoginError = true;
-                if (typeof err.data === 'objectcd de' &&
+                if (typeof err.data === 'object' &&
                   err.data[0] === 'User does not belong to team.')
                   $scope.loginErrorString = 'شما در این تیم عضو نیستید.';
-                else if (err.data.non_field_errors[0] ===
+                else if (typeof err.data.non_field_errors === 'object' &&
+                  err.data.non_field_errors[0] ===
                   'Unable to log in with provided credentials.')
                   $scope.loginErrorString = 'نام کاربری یا رمزعبور صحیح نمی باشد.';
                 else

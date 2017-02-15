@@ -41,7 +41,7 @@ app.service('channelsService', [
     socket.on('channel:edit', function (result) {
       var channel = findChannelById(result.channel.id);
       channel.updateFromJson(result.channel);
-      if (isCurrentChannel(channel)) {
+      if (channel.isSelected()) {
         $state.transitionTo('messenger.messages', {
           slug: channel.slug
         });
@@ -132,9 +132,12 @@ app.service('channelsService', [
       return self.currentChannel;
     }
 
+    function areChannelsReady() {
+      return !$rootScope.isLoading;
+    }
+
     function createChannel(channel) {
       var deferred = $q.defer();
-
       socket.emit('channel:create', channel, function (res) {
         if (res.status) {
           deferred.resolve();
@@ -166,7 +169,6 @@ app.service('channelsService', [
         channelId: channelId
       };
       socket.emit('channel:members:add', data, function (response) {
-        console.log('add:', response);
         if (response.status)
           defer.resolve();
         else
@@ -269,10 +271,6 @@ app.service('channelsService', [
       return deferred.promise;
     }
 
-    function isCurrentChannel(channel) {
-      return (self.currentChannel.id === channel.id);
-    }
-
     function anyChannelHasUnread() {
       for (var i = 0; i < self.channels.length; i++) {
         if (self.channels[i].hasUnread()) {
@@ -311,6 +309,7 @@ app.service('channelsService', [
       findChannelBySlug: findChannelBySlug,
       setCurrentChannelBySlug: setCurrentChannelBySlug,
       getCurrentChannel: getCurrentChannel,
+      areChannelsReady: areChannelsReady,
       createChannel: createChannel,
       sendEditedChannel: sendEditedChannel,
       addMembersToChannel: addMembersToChannel,

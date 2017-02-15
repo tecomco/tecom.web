@@ -4,19 +4,19 @@ app.controller('messagesController', [
   '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
   'messagesService', 'channelsService', 'filesService',
   function ($scope, $state, $stateParams, $window, $timeout, Upload,
-            messagesService, channelsService, filesService) {
-
-    if (!$stateParams.slug) {
-      channelsService.setCurrentChannelBySlug(null);
-      return;
-    }
+    messagesService, channelsService, filesService) {
 
     var self = this;
 
     $scope.messages = [];
     $scope.file = {};
 
-    initialize();
+    if (!$stateParams.slug) {
+      channelsService.setCurrentChannelBySlug(null);
+      return;
+    } else if (channelsService.areChannelsReady()) {
+      initialize();
+    }
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -150,8 +150,8 @@ app.controller('messagesController', [
         self.isTabfocused = true;
         seenLastUnSeenMessage();
       }).bind('blur', function () {
-      self.isTabfocused = false;
-    });
+        self.isTabfocused = false;
+      });
 
   }
 ]);
