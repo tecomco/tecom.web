@@ -51,6 +51,17 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'stage',
+            socketUri: 'tecomstage.ir/'
+          }
+        }
+      },
+      prod: {
+        options: {
+          dest: 'app/app.config.js'
+        },
+        constants: {
+          ENV: {
+            name: 'prod',
             socketUri: 'tecom.me/'
           }
         }
@@ -83,6 +94,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev', 'jsdoc']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
+  grunt.registerTask('prod', ['jshint', 'ngconstant:prod']);
   grunt.registerTask('ui', ['ngconstant:ui']);
   grunt.registerTask('lint', ['jshint']);
 };
