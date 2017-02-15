@@ -24,7 +24,7 @@ app.factory('AuthService', [
         decodedToken.memberships, 'team_slug', teamSlug);
       var user = User.setCurrent(decodedToken.user_id, decodedToken.username,
         decodedToken.email, currentMembership.team_id, currentMembership.id,
-        currentMembership.image, currentMembership.is_admin);
+        null, currentMembership.is_admin);
     }
 
     function persistToken(token) {

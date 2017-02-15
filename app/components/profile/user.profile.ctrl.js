@@ -63,10 +63,6 @@ app.controller('userProfileController', [
        });
     };
 
-    $scope.test = function(){
-      console.log('Salam');
-    };
-
     function setInfoOrErrorMessage(type, message) {
       switch (type) {
         case 'info':

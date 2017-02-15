@@ -14,8 +14,9 @@ app.factory('User', ['Team', function (Team) {
 
     var self = this;
 
-    function setCurrent(id, username, email, teamId, image, isAdmin) {
-      self.currentUser = new User(id, username, email, teamId, image, isAdmin);
+    function setCurrent(id, username, email, teamId, memberId, image, isAdmin) {
+      self.currentUser = new User(id, username, email, teamId, memberId, image,
+        isAdmin);
     }
 
     function getCurrent() {

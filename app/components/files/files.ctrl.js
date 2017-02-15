@@ -37,7 +37,6 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
 
     $scope.$on('file:show:line', function (event, file, lineNumber) {
       if (file === $scope.vm.liveFile) {
-        console.log('taghtaghtagh');
         selectedFileType = 'live';
         file.selectPermLine(lineNumber);
         scrollToLine(file, lineNumber);
