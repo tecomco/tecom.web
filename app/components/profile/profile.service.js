@@ -1,7 +1,8 @@
 'use strict';
 
-app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
-  function ($log, User, $http, $q, ArrayUtil) {
+app.service('profileService', [
+  '$log', 'Upload', 'User', '$http', '$q', 'ArrayUtil',
+  function ($log, Upload, User, $http, $q, ArrayUtil) {
 
     function changeUsername(username) {
       var defered = $q.defer();
@@ -46,15 +47,16 @@ app.service('profileService', ['$log', 'User', '$http', '$q', 'ArrayUtil',
 
     function changeProfileImage(file) {
       var defered = $q.defer();
-      $http({
-        method: 'PUT',
-        url: '/api/v1/teams/member/' + User.getCurrent().memberId + '/change/image/',
+      Upload.upload({
+        url: '/api/v1/auth/users/' + User.getCurrent().id + '/image/change/',
         data: {
           image: file
-        }
-      }).success(function (data) {
+        },
+        method: 'PATCH'
+      }).then(function (res) {
+        User.getCurrent().image = res.data.image;
         defered.resolve('عکس پروفایل با موفقیت تغییر کرد.');
-      }).error(function (err) {
+      }).catch(function (err) {
         $log.error('Error Changing Profile Image', err);
         defered.reject('خطا در تغییر عکس پروفایل');
       });
