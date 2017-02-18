@@ -138,7 +138,7 @@ app.factory('Channel', [
       this.isRemoved = true;
     };
 
-    Channel.prototype.isRemoved = function () {
+    Channel.prototype.getIsRemoved = function () {
       return this.isRemoved || false;
     };
 
