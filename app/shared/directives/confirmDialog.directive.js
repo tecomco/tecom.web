@@ -14,7 +14,7 @@ app.directive('confirmDialog', function () {
     link: function(scope, elm, attrs) {
       scope.callUpdate = function() {
         scope.confirmFunc()();
-      }
+      };
     }
   };
 });
