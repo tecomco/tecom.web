@@ -122,7 +122,6 @@ app.service('channelsService', [
               defer.resolve();
             });
         } else {
-          console.log('setCurrent');
           setCurrentChannel(channel);
           defer.resolve();
         }

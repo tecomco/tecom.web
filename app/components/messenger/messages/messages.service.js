@@ -19,7 +19,6 @@ app.service('messagesService', [
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
-      console.log('message:', message);
       if (message.about) {
         filesService.showFileLine(message.about.fileId, message.about.lineNumber);
       }

@@ -111,20 +111,16 @@ app.controller('messagesController', [
     function setCurrentChannel() {
       var defer = $q.defer();
       var slug = $stateParams.slug.replace('@', '');
-      console.log('slug:', slug);
       channelsService.setCurrentChannelBySlug(slug).then(function () {
         $scope.channel = channelsService.getCurrentChannel();
-        console.log('channel:', $scope.channel);
         defer.resolve();
       });
       return defer.promise;
     }
 
     function bindMessages() {
-      console.log('bind');
       messagesService.getMessagesByChannelId($scope.channel.id)
         .then(function (messages) {
-          console.log('messages', messages);
           $scope.messages = messages;
           scrollBottom();
           if ($scope.channel.hasUnread()) {
