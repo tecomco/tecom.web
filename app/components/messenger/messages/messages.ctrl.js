@@ -4,7 +4,7 @@ app.controller('messagesController', [
   '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
   'messagesService', 'channelsService', 'filesService',
   function ($scope, $state, $stateParams, $window, $timeout, Upload,
-    messagesService, channelsService, filesService) {
+            messagesService, channelsService, filesService) {
 
     var self = this;
 
@@ -109,8 +109,11 @@ app.controller('messagesController', [
 
     function setCurrentChannel() {
       var slug = $stateParams.slug.replace('@', '');
-      channelsService.setCurrentChannelBySlug(slug);
-      $scope.channel = channelsService.getCurrentChannel();
+      console.log('slug:', slug);
+      channelsService.setCurrentChannelBySlug(slug).then(function () {
+        $scope.channel = channelsService.getCurrentChannel();
+        console.log('channel:', $scope.channel);
+      });
     }
 
     function bindMessages() {
@@ -150,8 +153,8 @@ app.controller('messagesController', [
         self.isTabfocused = true;
         seenLastUnSeenMessage();
       }).bind('blur', function () {
-        self.isTabfocused = false;
-      });
+      self.isTabfocused = false;
+    });
 
   }
 ]);

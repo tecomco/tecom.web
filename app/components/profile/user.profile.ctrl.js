@@ -53,7 +53,7 @@ app.controller('userProfileController', [
       }
     };
 
-    $scope.leaveTeam = function () {
+    $scope.leaveTeam = function (test) {
       profileService.leaveTeam()
        .then(function () {
          return AuthService.logout();
