@@ -106,21 +106,27 @@ app.service('channelsService', [
     }
 
     function setCurrentChannelBySlug(slug) {
+      var defer = $q.defer();
       if (!slug) {
         setCurrentChannel(null);
+        defer.resolve();
       } else {
         var channel = findChannelBySlug(slug);
         if (!channel) {
           setCurrentChannel(null);
+          defer.resolve();
         } else if (channel.isDirect() && !channel.isDirectExist()) {
           createDirect(channel.memberId)
             .then(function () {
               setCurrentChannel(channel);
+              defer.resolve();
             });
         } else {
           setCurrentChannel(channel);
+          defer.resolve();
         }
       }
+      return defer.promise;
     }
 
     function setCurrentChannel(channel) {

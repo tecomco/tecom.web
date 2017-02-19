@@ -29,7 +29,7 @@ app.controller('MessengerCtrl', ['$scope', '$window', '$uibModal',
       }
       else if(pannel === 'files'){
         if($scope.activeFile)
-          return '"col-sm-6 col-lg-6 no-padding doc-section"';
+          return 'col-sm-6 col-lg-6 no-padding doc-section';
         else
           return 'col-sm-4 col-lg- no-padding';
       }
