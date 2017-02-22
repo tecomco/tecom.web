@@ -25,6 +25,9 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         $scope.hasLoginError = false;
         $scope.submitClicked = false;
 
+        $scope.passwordRecoveryUrl = getPasswordRecoveryUrl();
+        console.log('$scope.passwordRecoveryUrl', $scope.passwordRecoveryUrl);
+
         $scope.login = function () {
           var isFormValid = $scope.forms.login.email.$valid &&
             $scope.forms.login.password.$valid;
@@ -51,6 +54,13 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
             });
           }
         };
+
+        function getPasswordRecoveryUrl() {
+          var splitHost = $window.location.host.split('.');
+          var domain = splitHost[1];
+          domain += splitHost[2] ? '.' + splitHost[2] : '';
+          return 'http://' + domain + '/password/recovery/';
+        }
 
         angular.element(document).ready(function () {
           initializeLoginForm();
