@@ -63,9 +63,10 @@ app.service('filesService', [
             self.files.push(file);
             defer.resolve(file);
           }
-          else
+          else {
             $log.error('Lived File Format Not Supported Yet !');
-          defer.reject();
+            defer.reject();
+          }
         }).catch(function (err) {
           $log.error('Error Getting File name and URL From Server.', err);
           defer.reject();

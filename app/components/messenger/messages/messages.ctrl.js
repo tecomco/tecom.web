@@ -2,9 +2,9 @@
 
 app.controller('messagesController', [
   '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
-  'messagesService', 'channelsService', 'filesService',
+  'messagesService', 'channelsService', 'filesService', '$q',
   function ($scope, $state, $stateParams, $window, $timeout, Upload,
-    messagesService, channelsService, filesService) {
+            messagesService, channelsService, filesService, $q) {
 
     var self = this;
 
@@ -99,18 +99,23 @@ app.controller('messagesController', [
     };
 
     function initialize() {
-      setCurrentChannel();
-      if ($scope.channel) {
-        bindMessages();
-        $scope.inputMessage = '';
-        self.isTabfocused = true;
-      }
+      setCurrentChannel().then(function(){
+        if ($scope.channel) {
+          bindMessages();
+          $scope.inputMessage = '';
+          self.isTabfocused = true;
+        }
+      });
     }
 
     function setCurrentChannel() {
+      var defer = $q.defer();
       var slug = $stateParams.slug.replace('@', '');
-      channelsService.setCurrentChannelBySlug(slug);
-      $scope.channel = channelsService.getCurrentChannel();
+      channelsService.setCurrentChannelBySlug(slug).then(function () {
+        $scope.channel = channelsService.getCurrentChannel();
+        defer.resolve();
+      });
+      return defer.promise;
     }
 
     function bindMessages() {
@@ -150,8 +155,8 @@ app.controller('messagesController', [
         self.isTabfocused = true;
         seenLastUnSeenMessage();
       }).bind('blur', function () {
-        self.isTabfocused = false;
-      });
+      self.isTabfocused = false;
+    });
 
   }
 ]);
