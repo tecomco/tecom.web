@@ -33,7 +33,8 @@ app.factory('Message', [
         body = Message.generateMessageWellFormedText(this.body);
         if (this.about) {
           body += '<br><a ng-click="showFileLine(' +
-            this.about.fileId + ',' + this.about.lineNumber +
+            this.about.fileId + ',' + this.about.lineNumber + ',' +
+            this.about.lineNumberTo +
             ')" tooltip-placement="top" uib-tooltip="در مورد...">';
           body += '<i class="zmdi zmdi-link"></i></a>';
         }
