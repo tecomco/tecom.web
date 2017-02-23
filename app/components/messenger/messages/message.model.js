@@ -28,15 +28,15 @@ app.factory('Message', [
     };
 
     Message.prototype.getViewWellFormed = function () {
-      var body;
+      var body = '';
       if (this.type === Message.TYPE.TEXT) {
-        body = Message.generateMessageWellFormedText(this.body);
         if (this.about) {
-          body += '<br><a ng-click="showFileLine(' +
+          body += '<a class="msg-attachment" ng-click="showFileLine(' +
             this.about.fileId + ',' + this.about.lineNumber +
             ')" tooltip-placement="top" uib-tooltip="در مورد...">';
-          body += '<i class="zmdi zmdi-link"></i></a>';
+          body += '<div><i class="zmdi zmdi-link"></i></div></a>';
         }
+        body += Message.generateMessageWellFormedText(this.body);
       } else if (this.type === Message.TYPE.FILE) {
         this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
         body = '<div class="ng-scope" dir="rtl">';

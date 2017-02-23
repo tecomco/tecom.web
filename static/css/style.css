@@ -51,8 +51,8 @@ body {
     color: #666;
     font-weight: 200;
     overflow: hidden;
-}
 
+}
 a, a:hover, a:visited, a:focus {
     text-decoration: none;
     color: inherit;
@@ -927,6 +927,56 @@ pre.prettyprint {
     float: left;
 }
 
+.msg-attachment {
+    position: absolute;
+    right: -24px;
+    top: 0;
+    bottom: 0;
+    text-align: center;
+    width: 32px;
+    background: rgba(72, 203, 150, 1);
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+}
+
+.msg-attachment:hover, .msg:hover .msg-attachment {
+    background: rgba(36, 167, 114, 1);
+}
+
+.msg-attachment:hover>div, .msg:hover .msg-attachment>div {
+    transform: rotateZ(270deg);
+}
+
+.msg-attachment label {
+    color: #777;
+    padding: 0 4px;
+    margin-bottom: 0;
+    font-size: 12px;
+}
+
+.msg-attachment>div {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: -9999px;
+    font-size: 30px;
+    line-height: 30px;
+    transform: rotateZ(90deg);
+    bottom: -9999px;
+    left: -9999px;
+    right: -9999px;
+    margin: auto;
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.msg-attachment i {
+    font-size: 30px;
+    color: #fff;
+}
+
 .msg:after {
     display: block;
     height: 0;
@@ -1126,11 +1176,12 @@ pre.prettyprint {
     color: #24A772;
     opacity: 0.8;
 }
-.input-holder .send-btn i{
-  transform: rotateZ(180deg);
-  -webkit-transform: rotateZ(180deg);
-  -moz-transform: rotateZ(180deg);
-  -o-transform: rotateZ(180deg);
+
+.input-holder .send-btn i {
+    transform: rotateZ(180deg);
+    -webkit-transform: rotateZ(180deg);
+    -moz-transform: rotateZ(180deg);
+    -o-transform: rotateZ(180deg);
 }
 
 .input-holder .send-btn label {
