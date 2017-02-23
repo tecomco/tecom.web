@@ -20,7 +20,8 @@ app.service('messagesService', [
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
       if (message.about) {
-        filesService.showFileLine(message.about.fileId, message.about.lineNumber);
+        filesService.showFileLine(message.about.fileId, message.about.lineNumber,
+          message.about.lineNumberTo);
       }
     });
 
@@ -199,11 +200,14 @@ app.service('messagesService', [
       }
       var livedFile = filesService.getLivedFile();
       if (livedFile) {
-        var selectedLineNumber = livedFile.getSelectedTempLine();
-        if (selectedLineNumber) {
-          about = {fileId: livedFile.id, lineNumber: selectedLineNumber};
-        }
-        livedFile.deselectFilelines();
+        var tempLines = livedFile.getTempLines();
+        if (tempLines)
+          about = {
+            fileId: livedFile.id,
+            lineNumber: tempLines.start,
+            lineNumberTo: tempLines.end
+          };
+        livedFile.deselectTempLines();
       }
       var message = new Message(messageBody, type || Message.TYPE.TEXT,
         User.getCurrent().memberId, channelId, null, null, additionalData, about, true);
@@ -215,6 +219,7 @@ app.service('messagesService', [
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
         });
+      console.log('message:', message);
       return message;
     }
 

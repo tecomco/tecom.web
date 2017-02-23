@@ -1,17 +1,19 @@
 'use strict';
 
-app.factory('File', ['$http', '$window', 'Line', 'fileUtil',
-  function ($http, $window, Line, fileUtil) {
+app.factory('File', ['$http', '$window', 'Line', 'fileUtil', '$timeout',
+  function ($http, $window, Line, fileUtil, $timeout) {
 
     function File(id, url, fileData, name, channelId) {
       this.id = id;
       this.url = url;
       this.name = name;
       this.channelId = channelId;
-      this.lines = getLinesByData(fileData);
+      this.lines = getLinesByData(fileData, this);
+      this.isTempSelected = false;
+      this.isPermSelected = false;
     }
 
-    function getLinesByData(fileData) {
+    function getLinesByData(fileData, file) {
       var lines = [];
       var prettifiedFile = $window.PR.prettyPrintOne(fileData, '', true);
       var el = document.createElement('html');
@@ -19,56 +21,70 @@ app.factory('File', ['$http', '$window', 'Line', 'fileUtil',
       var listItems = el.getElementsByTagName('li');
       for (var i = 0; i < listItems.length; i++) {
         var listItem = listItems[i];
-        listItem.setAttribute('ng-click', 'lineClick(' + i + ')');
-        var line = new Line(i + 1, listItem.innerHTML);
+        var line = new Line(i + 1, listItem.innerHTML, file);
         lines.push(line);
       }
       return lines;
     }
 
-    File.prototype.selectTempLine = function (lineNum) {
-      if(this.selectedTemp)
-        this.deselectTempLine(this.selectedTemp);
-      if(this.selectedTemp !== lineNum) {
-        var line = this.getLine(lineNum);
-        line.setSelected(Line.SELECT_TYPE.TEMPORARY, true);
-        this.selectedTemp = lineNum;
+    File.prototype.selectTempLines = function (type, lineNum) {
+      this.isTempSelected = true;
+      if (type === 'start')
+        this.tempStartLine = lineNum;
+      else if (type === 'end')
+        this.tempEndLine = lineNum;
+    };
+
+    File.prototype.deselectTempLines = function () {
+      this.isTempSelected = false;
+      this.tempStartLine = null;
+      this.tempEndLine = null;
+    };
+
+    File.prototype.selectPermLines = function (startLine, endLine) {
+      this.isPermSelected = true;
+      this.permStartLine = startLine;
+      this.permEndLine = endLine;
+      var that = this;
+      if (this.permTimeout) {
+        $timeout.cancel(this.permTimeout);
       }
-      else{
-        this.selectedTemp = null;
-      }
+      this.permTimeout = $timeout(function () {
+        that.isPermSelected = false;
+      }, 2000);
     };
 
-    File.prototype.deselectTempLine = function (lineNum) {
-      this.lines[lineNum - 1].setSelected(Line.SELECT_TYPE.TEMPORARY, false);
-    };
-
-    File.prototype.selectPermLine = function (lineNum) {
-      this.lines.forEach(function (line) {
-        if (line.num !== lineNum)
-          line.setSelected(Line.SELECT_TYPE.PERMENANT, false);
-        else
-          line.setSelected(Line.SELECT_TYPE.PERMENANT, true);
-      });
-    };
-
-    File.prototype.getLine = function(lineNum){
+    File.prototype.getLine = function (lineNum) {
       return this.lines[lineNum - 1];
     };
 
-    File.prototype.getSelectedTempLine = function()
-    {
-      return this.selectedTemp;
-    };
-
-    File.prototype.deselectFilelines = function()
-    {
-      if(this.selectedTemp) {
-        this.deselectTempLine(this.selectedTemp);
-        this.selectedTemp = null;
+    File.prototype.getTempLines = function () {
+      if(!this.isTempSelected)
+        return null;
+      else {
+        return this.findStartAndEndTempLines(this);
       }
     };
 
+    File.prototype.findStartAndEndTempLines = function(){
+      var startTemp = Math.min(this.tempStartLine, this.tempEndLine);
+      var endTemp = Math.max(this.tempStartLine, this.tempEndLine);
+      return {
+        start: startTemp,
+        end: endTemp,
+      };
+    }
+
+    File.prototype.isLineTemp = function (lineNumber) {
+      if(this.isTempSelected){
+        var tempLines = this.findStartAndEndTempLines();
+        if(lineNumber >= tempLines.start && lineNumber <= tempLines.end)
+          return true;
+        else
+          return false;
+      }
+      return false;
+    };
 
     // File.prototype.getTabView = function () {
     //   var view = '<li class="doc-tab doc-tab-active">';
@@ -84,41 +100,21 @@ app.factory('File', ['$http', '$window', 'Line', 'fileUtil',
 ]);
 
 
-app.factory('Line', ['$timeout', function ($timeout) {
+app.factory('Line', [function () {
 
-  function Line(number, html) {
+  function Line(number, html, file) {
     this.num = number;
     this.html = html;
-    this.tempSelected = false;
-    this.permSelected = false;
+    this.file = file;
   }
 
-  Line.prototype.setSelected = function (selectType, value) {
-    switch (selectType) {
-      case Line.SELECT_TYPE.TEMPORARY:
-        if (this.tempSelected === true && value === true)
-          this.tempSelected = false;
-        else
-          this.tempSelected = value;
-        break;
-      case Line.SELECT_TYPE.PERMENANT:
-        this.permSelected = value;
-        var that = this;
-        if (this.permTimeout) {
-          $timeout.cancel(this.permTimeout);
-        }
-        this.permTimeout = $timeout(function () {
-          that.permSelected = false;
-        }, 2000);
-        break;
-    }
-  };
-
   Line.prototype.getCssClass = function () {
-    if (this.tempSelected) {
-      return 'line-temp-selected';
-    } else if (this.permSelected) {
-      return 'line-perm-selected';
+    if (this.file.isTempSelected) {
+      if (this.num >= this.file.tempStartLine && this.num <= this.file.tempEndLine)
+        return 'line-temp-selected';
+    } else if (this.file.isPermSelected) {
+      if (this.num >= this.file.permStartLine && this.num <= this.file.permEndLine)
+        return 'line-perm-selected';
     }
   };
 

@@ -70,8 +70,8 @@ app.controller('messagesController', [
       // messagesHolder.style.height = height.toString() + 'px';
     };
 
-    $scope.showFileLine = function (fileId, lineNumber) {
-      filesService.showFileLine(fileId, lineNumber);
+    $scope.showFileLine = function (fileId, startLine, endLine) {
+      filesService.showFileLine(fileId, startLine, endLine);
     };
 
     function scrollBottom() {
