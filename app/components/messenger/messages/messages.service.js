@@ -65,7 +65,8 @@ app.service('messagesService', [
       var messagePromises = [];
       var messages = [];
       var dataToBeSend = {
-        channelId: channel.id
+        channelId: channel.id,
+        teamId: channel.teamId
       };
       messagePromises.push(new Promise(function (resolve) {
         getLastMessageByChannelIdFromDb(channel.id)
@@ -255,6 +256,7 @@ app.service('messagesService', [
     function seenMessage(channelId, messageId, senderId) {
       var data = {
         channelId: channelId,
+        teamId: channelsService.getCurrentChannel().teamId,
         messageId: messageId,
         senderId: senderId
       };

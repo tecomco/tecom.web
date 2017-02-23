@@ -25,6 +25,10 @@ app.factory('Message', [
       }
       this.isPending = isPending || false;
       this.username = User.getCurrent().team.getUsernameById(this.senderId);
+      var currentChannel = channelsService.getCurrentChannel();
+      if (currentChannel) {
+        this.teamId = currentChannel.teamId;
+      }
     };
 
     Message.prototype.getViewWellFormed = function () {
@@ -170,6 +174,7 @@ app.factory('Message', [
     Message.prototype.getServerWellFormed = function () {
       var data = {
         channelId: this.channelId,
+        teamId: this.teamId,
         messageBody: this.body,
         type: this.type
       };

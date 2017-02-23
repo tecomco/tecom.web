@@ -7,10 +7,8 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
       this.id = id;
       this.members = [];
       var that = this;
-      this.getTeamMembers()
-        .then(function (members) {
-          that.members = members;
-        });
+      this.areMembersReady = false;
+      this.membersPromise = this.getTeamMembers();
       this.getName()
         .success(function (res) {
           that.name = res.name;
@@ -18,6 +16,7 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
     }
 
     Team.prototype.getTeamMembers = function () {
+      var that = this;
       var deferred = $q.defer();
       $http({
         method: 'GET',
@@ -26,6 +25,8 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
           'Authorization': 'JWT ' + $localStorage.token
         }
       }).success(function (res) {
+        that.members = res;
+        that.areMembersReady = true;
         deferred.resolve(res);
       }).error(function (err) {
         $log.error('Getting team members failed.', err);
