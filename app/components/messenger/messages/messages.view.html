@@ -25,9 +25,11 @@
         </div>
         <!-- TODO: Fix this -->
         <div ng-show="channel.anyoneTyping()" class="msg-holder">
-          <div class="msg msg-recieve">
+          <div class="is-typing">
             <label class="name">{{channel.getIsTypingString()}}</label>
-            <img class="is-typing-img" src="http://jobsonsight.org/ellipsis.gif">
+            <span><i class="zmdi zmdi-circle"></i></span>
+            <span><i class="zmdi zmdi-circle"></i></span>
+            <span><i class="zmdi zmdi-circle"></i></span>
           </div>
         </div>
       </div>
@@ -38,7 +40,7 @@
       </a>
       <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
       <a class="send-btn" href="#" ng-click="sendMessage($event)">
-        <i class="fa fa-paper-plane"></i>
+        <i class="zmdi zmdi-mail-send"></i>
       </a>
     </div>
     <div ng-show="channel.getIsRemoved()" class="input-holder">

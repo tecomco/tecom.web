@@ -30,7 +30,7 @@
         </div>
     </div>
     <div ng-show="viewState() !== 'noFile'">
-        <div class="doc-section-header">
+        <div class="doc-section-header" dir="ltr">
             <ul class="doc-tabs">
                 <li ng-show="vm.liveFile" ng-class="viewState()=='live' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="liveFileTabClick()">
                     {{vm.liveFile.name}}

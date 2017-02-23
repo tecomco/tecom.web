@@ -20,11 +20,6 @@
             </a>
         </li>
         <li>
-            <a href="#">
-                <i class="zmdi zmdi-settings"></i>
-            </a>
-        </li>
-        <li>
             <div class="head-search">
                 <input type="text" placeholder="جستجو"/>
                 <i class="zmdi zmdi-search"></i>
@@ -32,8 +27,13 @@
         </li>
         -->
         <li>
+            <a href="#">
+                <i class="zmdi zmdi-close"></i>
+            </a>
+        </li>
+        <li>
             <a ng-show="!channel.isDirect()" tooltip-placement="bottom" uib-tooltip="اطلاعات و تنظیمات گروه" ng-click="openChannelDetailsModal()">
-                <i class="fa fa-bars"></i>
+                <i class="zmdi zmdi-info"></i>
             </a>
         </li>
     </ul>

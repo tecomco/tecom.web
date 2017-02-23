@@ -64,6 +64,10 @@ a, a:hover, a:visited, a:focus {
     -o-transition: all 0.3s ease;
 }
 
+a * {
+    cursor: pointer;
+}
+
 .wrapper {
     height: 100vh;
 }
@@ -232,6 +236,7 @@ a, a:hover, a:visited, a:focus {
     color: #555;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid #eee;
+    height: 58px;
 }
 
 .header ul {
@@ -263,7 +268,7 @@ a, a:hover, a:visited, a:focus {
 
 .header ul.top-left {
     float: left;
-    width: 50%;
+    width: 180px;
     direction: ltr;
 }
 
@@ -292,7 +297,7 @@ a, a:hover, a:visited, a:focus {
 
 .header .name {
     display: inline-block;
-    max-width: 50%;
+    max-width: calc(100% - 180px);
 }
 
 .header .name>label {
@@ -677,19 +682,23 @@ ul.dropdown-menu {
 .file-empty .live-btn i {
     font-size: 9px;
 }
+
 .file-empty .live-btn label {
     top: 2px;
     left: -2px;
 }
-.file-empty .up-fi .live-btn{
-  font-size: 10px;
-  margin-right: 2px;
+
+.file-empty .up-fi .live-btn {
+    font-size: 10px;
+    margin-right: 2px;
 }
+
 .file-empty .up-fi .live-btn label {
-  top: 1px;
+    top: 1px;
 }
+
 .file-empty .up-fi .live-btn i {
-  font-size: 5px;
+    font-size: 5px;
 }
 
 .up-fi {
@@ -777,6 +786,7 @@ ul.dropdown-menu {
 #codeView {
     table-layout: fixed;
     width: 100%;
+    direction: rtl;
 }
 
 #codeView * {
@@ -813,6 +823,12 @@ pre.prettyprint {
     width: auto;
     overflow: auto;
     max-height: 100vh;
+    border: 0;
+}
+
+.doc-section {
+    background: #333;
+    height: 100vh;
 }
 
 .date-holder {
@@ -917,6 +933,61 @@ pre.prettyprint {
     content: "";
     clear: both;
     float: none;
+}
+
+.is-typing {
+    text-align: center;
+    float: left;
+    padding: 4px 8px 0;
+    background: #fafafa;
+    color: rgb(5, 198, 186);
+    position: relative;
+    bottom: -4px;
+    border-radius: 4px 4px 0 0;
+}
+
+.is-typing>span {
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.is-typing>span i {
+    font-size: 5px;
+    position: relative;
+    top: -2px;
+}
+
+.is-typing>span:first-of-type {
+    animation: type-anim 0.5s ease 0s infinite;
+    -webkit-animation: type-anim 0.5s ease 0s infinite;
+}
+
+.is-typing>span:nth-of-type(2) {
+    animation: type-anim 0.5s ease 0.33s infinite;
+    -webkit-animation: type-anim 0.5s ease 0.33s infinite;
+}
+
+.is-typing>span:last-of-type {
+    animation: type-anim 0.5s ease 0.66s infinite;
+    -webkit-animation: type-anim 0.5s ease 0.66s infinite;
+}
+
+@keyframes type-anim {
+    0% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(2);
+    }
+    100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
 }
 
 .file-icon-holder {
@@ -1054,6 +1125,12 @@ pre.prettyprint {
 .input-holder .send-btn:hover {
     color: #24A772;
     opacity: 0.8;
+}
+.input-holder .send-btn i{
+  transform: rotateZ(180deg);
+  -webkit-transform: rotateZ(180deg);
+  -moz-transform: rotateZ(180deg);
+  -o-transform: rotateZ(180deg);
 }
 
 .input-holder .send-btn label {
@@ -1261,7 +1338,7 @@ pre.prettyprint {
 }
 
 .modal-left-part {
-    border-right: 1px solid rgba(100, 100, 100, 0.4);
+    border-right: 1px solid rgba(100, 100, 100, 0.1);
     /*padding: 20px;*/
 }
 
