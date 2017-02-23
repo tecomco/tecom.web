@@ -794,13 +794,14 @@ ul.dropdown-menu {
 }
 
 .linenums li {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     list-style-type: decimal;
     font-family: monospace;
     cursor: pointer;
-    transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -webkit-transition: all 0.3s ease;
 }
 
 .linenums li:hover {
@@ -817,6 +818,10 @@ ul.dropdown-menu {
 
 .line-perm-selected {
     background: rgba(36, 167, 114, 0.7);
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 }
 
 pre.prettyprint {

@@ -5,14 +5,14 @@ app.factory('Channel', [
   function ($stateParams, textUtil, User, ArrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount, memberId, liveFileId) {
+      notifCount, memberId, liveFileId, teamId) {
       this.setValues(name, slug, description, type, id, membersCount,
-        notifCount, memberId, liveFileId);
+        notifCount, memberId, liveFileId, teamId);
       this.isTypingMemberIds = [];
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
-      membersCount, notifCount, memberId, liveFileId) {
+      membersCount, notifCount, memberId, liveFileId, teamId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -22,6 +22,7 @@ app.factory('Channel', [
       this.notifCount = notifCount || null;
       this.memberId = memberId;
       this.liveFileId = liveFileId;
+      this.teamId = teamId;
     };
 
     Channel.prototype.hasUnread = function () {
@@ -122,12 +123,23 @@ app.factory('Channel', [
         this.slug.length)));
       ids.forEach(function (id) {
         if (id !== User.getCurrent().memberId) {
-          var name = User.getCurrent().team.getUsernameById(id);
-          that.name = name;
-          that.slug = name;
+          var team = User.getCurrent().team;
+          if (team.areMembersReady) {
+            that.setNameAndSlugById(team, id);
+          } else {
+            team.membersPromise.then(function () {
+              that.setNameAndSlugById(team, id);
+            });
+          }
           return;
         }
       });
+    };
+
+    Channel.prototype.setNameAndSlugById = function (team, id) {
+      var name = team.getUsernameById(id);
+      this.name = name;
+      this.slug = name;
     };
 
     Channel.prototype.getUrlifiedSlug = function () {

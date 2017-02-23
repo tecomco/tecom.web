@@ -5,6 +5,9 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
   function ($window, filesService, $scope, $timeout, $rootScope) {
 
     $scope.vm = {};
+    var selectTextMode = false;
+    var startLine;
+
     var selectedFileType = 'none';
     filesService.updateLiveFile();
 
@@ -35,29 +38,57 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
       broadcastViewState();
     });
 
-    $scope.$on('file:show:line', function (event, file, lineNumber) {
+    $scope.$on('file:show:line', function (event, file, startLine, endLine) {
       if (file === $scope.vm.liveFile) {
         selectedFileType = 'live';
-        file.selectPermLine(lineNumber);
-        scrollToLine(file, lineNumber);
+        file.selectPermLines(startLine, endLine);
+        scrollToLine(file, startLine, endLine);
       }
       else if (file === $scope.vm.viewFile) {
         selectedFileType = 'view';
-        file.selectPermLine(lineNumber);
-        scrollToLine(file, lineNumber);
+        file.selectPermLines(startLine, endLine);
+        scrollToLine(file, startLine, endLine);
       }
       else {
         selectedFileType = 'view';
         openFile(file);
-        file.selectPermLine(lineNumber);
-        scrollToLine(file, lineNumber);
+        file.selectPermLines(startLine, endLine);
+        scrollToLine(file, startLine, endLine);
       }
       broadcastViewState();
     });
 
     $scope.lineClick = function (lineNum) {
-      $scope.vm.liveFile.selectTempLine(lineNum);
+      if($scope.vm.liveFile.isLineTemp(lineNum)) {
+        $scope.vm.liveFile.deselectTempLines();
+        document.getElementById('inputPlaceHolder').focus();
+      }
+      else {
+        $scope.vm.liveFile.selectTempLines('start', lineNum);
+        $scope.vm.liveFile.selectTempLines('end', lineNum);
+        document.getElementById('inputPlaceHolder').focus();
+      }
+    };
+
+    $scope.mouseDownLine = function (lineNum) {
+      selectTextMode = true;
+      startLine = lineNum;
+      $scope.vm.liveFile.selectTempLines('start', lineNum);
+      $scope.vm.liveFile.selectTempLines('end', lineNum);
+    };
+
+    $scope.mouseUpLine = function (lineNum) {
+      selectTextMode = false;
       document.getElementById('inputPlaceHolder').focus();
+    };
+
+    $scope.mouseOverLine = function (lineNum) {
+      if (selectTextMode) {
+        var start = Math.min(startLine, lineNum);
+        var end = Math.max(startLine, lineNum);
+        $scope.vm.liveFile.selectTempLines('start', start);
+        $scope.vm.liveFile.selectTempLines('end', end);
+      }
     };
 
     var openFile = function (file) {
@@ -99,14 +130,19 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
 
     broadcastViewState();
 
-    function scrollToLine(file, lineNum) {
+    function scrollToLine(file, start, end) {
       var codeView;
       if ($scope.viewState() === 'live')
         codeView = document.getElementById('liveCodeView');
       else
         codeView = document.getElementById('codeView');
       $timeout(function () {
-        var middle = ((lineNum - 17) / file.lines.length) * codeView.scrollHeight;
+        var middleLine;
+        if(Math.abs(start, end) < 30)
+          middleLine = Math.ceil((start+end)/2);
+        else
+          var middleLine = start;
+        var middle = ((middleLine - 17) / file.lines.length) * codeView.scrollHeight;
         codeView.scrollTop = middle;
       }, 0, false);
     }

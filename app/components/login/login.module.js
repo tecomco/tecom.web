@@ -26,7 +26,6 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         $scope.submitClicked = false;
 
         $scope.passwordRecoveryUrl = getPasswordRecoveryUrl();
-        console.log('$scope.passwordRecoveryUrl', $scope.passwordRecoveryUrl);
 
         $scope.login = function () {
           var isFormValid = $scope.forms.login.email.$valid &&

@@ -12,6 +12,10 @@ app.factory('User', ['Team', function (Team) {
       this.isAdmin = isAdmin;
     }
 
+    User.prototype.isTecomBot = function () {
+      return this.id === Team.TECOM_BOT.id;
+    };
+
     var self = this;
 
     function setCurrent(id, username, email, teamId, memberId, image, isAdmin) {

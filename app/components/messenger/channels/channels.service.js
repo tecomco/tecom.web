@@ -78,8 +78,9 @@ app.service('channelsService', [
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
-        data.liveFileId);
-      if (channel.isDirect() && channel.isDirectExist()) {
+        data.liveFileId, data.teamId);
+      if (channel.isDirect() && channel.isDirectExist() &&
+        !User.getCurrent().isTecomBot()) {
         channel.changeNameAndSlugFromId();
         var fakeDirect = findChannelBySlug(channel.slug);
         if (fakeDirect) {

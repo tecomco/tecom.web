@@ -25,6 +25,10 @@ app.factory('Message', [
       }
       this.isPending = isPending || false;
       this.username = User.getCurrent().team.getUsernameById(this.senderId);
+      var currentChannel = channelsService.getCurrentChannel();
+      if (currentChannel) {
+        this.teamId = currentChannel.teamId;
+      }
     };
 
     Message.prototype.getViewWellFormed = function () {
@@ -32,7 +36,8 @@ app.factory('Message', [
       if (this.type === Message.TYPE.TEXT) {
         if (this.about) {
           body += '<a class="msg-attachment" ng-click="showFileLine(' +
-            this.about.fileId + ',' + this.about.lineNumber +
+            this.about.fileId + ',' + this.about.lineNumber + ',' +
+            this.about.lineNumberTo +
             ')" tooltip-placement="top" uib-tooltip="در مورد...">';
           body += '<div><i class="zmdi zmdi-link"></i></div></a>';
         }
@@ -170,6 +175,7 @@ app.factory('Message', [
     Message.prototype.getServerWellFormed = function () {
       var data = {
         channelId: this.channelId,
+        teamId: this.teamId,
         messageBody: this.body,
         type: this.type
       };
