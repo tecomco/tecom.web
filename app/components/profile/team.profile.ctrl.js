@@ -2,44 +2,58 @@
 
 app.controller('teamProfileController', [
   '$scope', 'User', 'profileService', '$uibModalInstance', '$timeout',
-  function ($scope, User, profileService, $uibModalInstance, $timeout) {
+  'validationUtil',
+  function ($scope, User, profileService, $uibModalInstance, $timeout,
+            validationUtil) {
 
-  initialize();
+    initialize();
 
-  $scope.inviteMember = function () {
-    initializeInviteMemberForm();
-    $scope.inviteMode = true;
-  };
+    $scope.inviteMember = function () {
+      initializeInviteMemberForm();
+      $scope.inviteMode = true;
+    };
 
-  $scope.sendInvitation = function () {
-    profileService.sendInvitationEmail($scope.invitedEmail)
-      .then(function () {
-        setInfoOrErrorMessage('info', 'ایمیل دعوت به تیم با موفقیت ارسال شد.');
-        $scope.inviteMode = false;
-      }).catch(function(){
-        setInfoOrErrorMessage('error', 'خطا در دعوت به تیم.');
-    });
-  };
+    $scope.sendInvitation = function () {
+      console.log($scope.invitedEmail);
+      if(!$scope.invitedEmail)
+        setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن');
+      else if (validationUtil.validateEmail($scope.invitedEmail)) {
+        profileService.sendInvitationEmail($scope.invitedEmail)
+          .then(function () {
+            setInfoOrErrorMessage('info', 'ایمیل دعوت به تیم با موفقیت ارسال شد.');
+            $scope.inviteMode = false;
+          }).catch(function (err) {
+          console.log('err:', err);
+          if (err.data && err.data[0] === 'Email already a member.')
+            setInfoOrErrorMessage('error',
+              'فرد مورد نظرت در حال حاضر عضو تیمه');
+          else
+            setInfoOrErrorMessage('error', 'خطا در دعوت به تیم');
+        });
+      }
+      else
+        setInfoOrErrorMessage('error', 'ایمیل وارد شده معتبر نیست');
+    };
 
-  $scope.editTeamName = function () {
-    $scope.editTeamNameActive = true;
-  };
+    $scope.editTeamName = function () {
+      $scope.editTeamNameActive = true;
+    };
 
-  $scope.saveTeamName = function () {
-    $scope.editTeamNameActive = false;
-  };
+    $scope.saveTeamName = function () {
+      $scope.editTeamNameActive = false;
+    };
 
-  $scope.closeModal = function () {
-    $uibModalInstance.close();
-  };
+    $scope.closeModal = function () {
+      $uibModalInstance.close();
+    };
 
-  $scope.removeTeamMember = function(member){
-    profileService.removeTeamMember(member);
-  };
+    $scope.removeTeamMember = function (member) {
+      profileService.removeTeamMember(member);
+    };
 
-  $scope.makeAdmin = function(member){
-    profileService.makeAdmin(member);
-  };
+    $scope.makeAdmin = function (member) {
+      profileService.makeAdmin(member);
+    };
 
     function setInfoOrErrorMessage(type, message) {
       switch (type) {
@@ -62,19 +76,19 @@ app.controller('teamProfileController', [
       }
     }
 
-  function initialize() {
-    User.getCurrent().team.getTeamMembers().then(function(members){
-      $scope.teamMembers = members;
-    });
-    $scope.team = User.getCurrent().team;
-    $scope.editTeamNameActive = false;
-    $scope.inviteMode = false;
-    $scope.forms = {};
-  }
+    function initialize() {
+      User.getCurrent().team.getTeamMembers().then(function (members) {
+        $scope.teamMembers = members;
+      });
+      $scope.team = User.getCurrent().team;
+      $scope.editTeamNameActive = false;
+      $scope.inviteMode = false;
+      $scope.forms = {};
+    }
 
-  function initializeInviteMemberForm() {
-    $scope.invitedEmail = '';
-    $scope.forms.inviteMember.$setPristine();
-  }
+    function initializeInviteMemberForm() {
+      $scope.invitedEmail = '';
+      $scope.forms.inviteMember.$setPristine();
+    }
 
-}]);
+  }]);

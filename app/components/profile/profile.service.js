@@ -1,8 +1,8 @@
 'use strict';
 
 app.service('profileService', [
-  '$log', 'Upload', 'User', '$http', '$q', 'ArrayUtil',
-  function ($log, Upload, User, $http, $q, ArrayUtil) {
+  '$log', 'Upload', 'User', '$http', '$q', 'ArrayUtil', 'AuthService',
+  function ($log, Upload, User, $http, $q, ArrayUtil, AuthService) {
 
     function changeUsername(username) {
       var defered = $q.defer();
@@ -14,6 +14,7 @@ app.service('profileService', [
           username: username
         }
       }).success(function (data) {
+        //AuthService.refreshToken()
         User.getCurrent().username = data.username;
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
       }).error(function (err) {

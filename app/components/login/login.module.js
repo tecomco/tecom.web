@@ -28,9 +28,9 @@ var app = angular.module('LoginApp', ['ui.router', 'ngStorage', 'angular-jwt'])
         $scope.passwordRecoveryUrl = getPasswordRecoveryUrl();
 
         $scope.login = function () {
-          var isFormValid = $scope.forms.login.email.$valid &&
+          var isFormNotEmpty = $scope.forms.login.email.$valid &&
             $scope.forms.login.password.$valid;
-          if (isFormValid) {
+          if (isFormNotEmpty) {
             AuthService.login($scope.email, $scope.password)
               .then(function () {
                 $window.location.assign('/messenger');

@@ -18,6 +18,10 @@ app.controller('messagesController', [
       initialize();
     }
 
+    $scope.$on('scroll:isTyping', function(){
+      scrollBottom();
+    });
+
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
         initialize();

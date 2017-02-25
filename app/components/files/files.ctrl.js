@@ -7,10 +7,20 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     $scope.vm = {};
     var selectTextMode = false;
     var startLine;
+    var flagLineIsTemp = false;
+    $scope.fileLoading = false;
 
     var selectedFileType = 'none';
     filesService.updateLiveFile();
 
+    $scope.$on('file:loading', function () {
+      $scope.fileLoading = true;
+      console.log('trued');
+    });
+
+    $scope.$on('file:ready', function () {
+      $scope.fileLoading = false;
+    });
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -58,26 +68,22 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
       broadcastViewState();
     });
 
-    $scope.lineClick = function (lineNum) {
-      if($scope.vm.liveFile.isLineTemp(lineNum)) {
-        $scope.vm.liveFile.deselectTempLines();
-        document.getElementById('inputPlaceHolder').focus();
-      }
-      else {
-        $scope.vm.liveFile.selectTempLines('start', lineNum);
-        $scope.vm.liveFile.selectTempLines('end', lineNum);
-        document.getElementById('inputPlaceHolder').focus();
-      }
-    };
-
     $scope.mouseDownLine = function (lineNum) {
       selectTextMode = true;
+      if($scope.vm.liveFile.isLineTemp(lineNum)) {
+        flagLineIsTemp = true;
+        $scope.vm.liveFile.deselectTempLines();
+      }
       startLine = lineNum;
       $scope.vm.liveFile.selectTempLines('start', lineNum);
       $scope.vm.liveFile.selectTempLines('end', lineNum);
     };
 
     $scope.mouseUpLine = function (lineNum) {
+      if(flagLineIsTemp && startLine === lineNum) {
+        $scope.vm.liveFile.deselectTempLines();
+        flagLineIsTemp = false;
+      }
       selectTextMode = false;
       document.getElementById('inputPlaceHolder').focus();
     };

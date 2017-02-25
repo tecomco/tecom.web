@@ -46,6 +46,8 @@ app.service('filesService', [
         defer.resolve(file);
       }
       else {
+        $rootScope.$broadcast('file:loading');
+        console.log('broadcasted');
         var url;
         var name;
         var type;
@@ -61,14 +63,17 @@ app.service('filesService', [
           if (fileUtil.isTextFormat(type)) {
             var file = new File(fileId, url, res.data, name, channelId);
             self.files.push(file);
+            $rootScope.$broadcast('file:ready');
             defer.resolve(file);
           }
           else {
             $log.error('Lived File Format Not Supported Yet !');
+            $rootScope.$broadcast('file:ready');
             defer.reject();
           }
         }).catch(function (err) {
           $log.error('Error Getting File name and URL From Server.', err);
+          $rootScope.$broadcast('file:ready');
           defer.reject();
         });
       }

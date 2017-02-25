@@ -2,9 +2,9 @@
 
 app.factory('AuthService', [
   '$log', '$http', '$q', '$window', '$localStorage', 'jwtHelper', 'ArrayUtil',
-  'User', 'domainUtil',
+  'User', 'domainUtil', 'validationUtil',
   function ($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
-            User, domainUtil) {
+            User, domainUtil, validationUtil) {
 
     initialize();
 
@@ -31,13 +31,17 @@ app.factory('AuthService', [
       $localStorage.token = token;
     }
 
-    function login(email, password) {
+    function login(usernameOrEmail, password) {
       var defer = $q.defer();
       var data = {
-        email: email,
         password: password,
         teamSlug: domainUtil.getSubdomain()
       };
+      if(validationUtil.validateEmail(usernameOrEmail))
+        data.email = usernameOrEmail;
+      else
+        data.username = usernameOrEmail;
+
       $http({
         method: 'POST',
         url: '/api/v1/auth/login/',
@@ -72,6 +76,7 @@ app.factory('AuthService', [
     }
 
     function refreshToken(token) {
+      var defer = $q.defer();
       var data = {
         token: token
       };
@@ -83,9 +88,15 @@ app.factory('AuthService', [
         $log.info('Response:', response);
         var token = response.data.token;
         if (token) {
-          createUser(token);
+          persistToken(token);
+          var teamSlug = domainUtil.getSubdomain();
+          createUser(token, teamSlug);
+          defer.resolve();
         }
+      }).catch(function(){
+        defer.reject();
       });
+      return defer.promise;
     }
 
     return {

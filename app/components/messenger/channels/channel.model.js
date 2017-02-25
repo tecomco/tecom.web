@@ -5,14 +5,14 @@ app.factory('Channel', [
   function ($stateParams, textUtil, User, ArrayUtil) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount, memberId, liveFileId, teamId) {
+                     notifCount, memberId, liveFileId, teamId) {
       this.setValues(name, slug, description, type, id, membersCount,
         notifCount, memberId, liveFileId, teamId);
       this.isTypingMemberIds = [];
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
-      membersCount, notifCount, memberId, liveFileId, teamId) {
+                                            membersCount, notifCount, memberId, liveFileId, teamId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -76,7 +76,8 @@ app.factory('Channel', [
     };
 
     Channel.prototype.anyoneTyping = function () {
-      return this.isTypingMemberIds.length > 0;
+      var anyoneTyping = (this.isTypingMemberIds.length > 0);
+      return anyoneTyping;
     };
 
     Channel.prototype.isSelected = function () {

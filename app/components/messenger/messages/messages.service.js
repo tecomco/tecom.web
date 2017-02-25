@@ -26,9 +26,9 @@ app.service('messagesService', [
     });
 
     socket.on('message:type:start', function (data) {
-      channelsService.addIsTypingMemberByChannelId(data.channelId,
-        data.memberId);
+      channelsService.addIsTypingMemberByChannelId(data.channelId, data.memberId);
       $rootScope.$broadcast('channels:updated');
+      $rootScope.$broadcast('scroll:isTyping');
     });
 
     socket.on('message:type:end', function (data) {
