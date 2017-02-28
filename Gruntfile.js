@@ -6,6 +6,8 @@ module.exports = function (grunt) {
     '*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
   ];
 
+  var ENV_CONFIG_PATH = 'app/app.config.js';
+
   grunt.initConfig({
     jshint: {
       files: SRC_FILES,
@@ -20,23 +22,18 @@ module.exports = function (grunt) {
           'io': true,
           'document': true,
           'window': true,
-          'Promise': true,
-          'FileReader': true
+          'Promise': true
         }
       }
     },
     ngconstant: {
-      // Options for all targets
       options: {
         space: '  ',
         wrap: '\'use strict\';\n\n {\%= __ngModule %}',
         name: 'config',
+        dest: ENV_CONFIG_PATH
       },
-      // Environment targets
       dev: {
-        options: {
-          dest: 'app/app.config.js'
-        },
         constants: {
           ENV: {
             name: 'dev',
@@ -45,9 +42,6 @@ module.exports = function (grunt) {
         }
       },
       stage: {
-        options: {
-          dest: 'app/app.config.js'
-        },
         constants: {
           ENV: {
             name: 'stage',
@@ -56,33 +50,18 @@ module.exports = function (grunt) {
         }
       },
       prod: {
-        options: {
-          dest: 'app/app.config.js'
-        },
         constants: {
           ENV: {
             name: 'prod',
             socketUri: 'tecom.me/'
           }
         }
-      },
-      ui: {
-        options: {
-          dest: 'app/app.config.js'
-        },
-        constants: {
-          ENV: {
-            name: 'ui',
-            socketUri: ''
-          }
-        }
       }
     },
-    jsdoc: {
-      dist: {
-        src: SRC_FILES,
-        options: {
-          destination: 'docs'
+    uglify: {
+      my_target: {
+        files: {
+          'dist/tecom.min.js': SRC_FILES
         }
       }
     }
@@ -90,11 +69,10 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-ng-constant');
-  grunt.loadNpmTasks('grunt-jsdoc');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  grunt.registerTask('dev', ['jshint', 'ngconstant:dev', 'jsdoc']);
+  grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
   grunt.registerTask('prod', ['jshint', 'ngconstant:prod']);
-  grunt.registerTask('ui', ['ngconstant:ui']);
   grunt.registerTask('lint', ['jshint']);
 };
