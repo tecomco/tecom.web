@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('teamProfileController', [
-  '$scope', 'User', 'profileService', '$uibModalInstance', '$timeout',
+  '$scope', '$log', 'User', 'profileService', '$uibModalInstance', '$timeout',
   'validationUtil',
-  function ($scope, User, profileService, $uibModalInstance, $timeout,
+  function ($scope, $log, User, profileService, $uibModalInstance, $timeout,
             validationUtil) {
 
     initialize();
@@ -14,7 +14,6 @@ app.controller('teamProfileController', [
     };
 
     $scope.sendInvitation = function () {
-      console.log($scope.invitedEmail);
       if(!$scope.invitedEmail)
         setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن');
       else if (validationUtil.validateEmail($scope.invitedEmail)) {
@@ -23,7 +22,7 @@ app.controller('teamProfileController', [
             setInfoOrErrorMessage('info', 'ایمیل دعوت به تیم با موفقیت ارسال شد.');
             $scope.inviteMode = false;
           }).catch(function (err) {
-          console.log('err:', err);
+          $log.error('Invitation Error:', err);
           if (err.data && err.data[0] === 'Email already a member.')
             setInfoOrErrorMessage('error',
               'فرد مورد نظرت در حال حاضر عضو تیمه');

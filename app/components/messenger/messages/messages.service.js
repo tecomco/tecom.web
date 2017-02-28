@@ -219,7 +219,6 @@ app.service('messagesService', [
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
         });
-      console.log('message:', message);
       return message;
     }
 

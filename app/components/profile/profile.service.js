@@ -2,11 +2,12 @@
 
 app.service('profileService', [
   '$log', 'Upload', 'User', '$http', '$q', 'ArrayUtil', 'AuthService',
-  function ($log, Upload, User, $http, $q, ArrayUtil, AuthService) {
+  '$localStorage',
+  function ($log, Upload, User, $http, $q, ArrayUtil, AuthService,
+            $localStorage) {
 
     function changeUsername(username) {
       var defered = $q.defer();
-      $log.info('user:', username);
       $http({
         method: 'PATCH',
         url: '/api/v1/auth/users/' + User.getCurrent().id + '/username/change/',
@@ -14,8 +15,8 @@ app.service('profileService', [
           username: username
         }
       }).success(function (data) {
-        //AuthService.refreshToken()
-        User.getCurrent().username = data.username;
+        $localStorage.token = data.token;
+        AuthService.initialize();
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
       }).error(function (err) {
         $log.error('Error Changing Username', err);
@@ -64,9 +65,11 @@ app.service('profileService', [
       return defered.promise;
     }
 
-    function removeTeamMember(member) {}
+    function removeTeamMember(member) {
+    }
 
-    function makeAdmin(member) {}
+    function makeAdmin(member) {
+    }
 
     function leaveTeam() {
       return $http({

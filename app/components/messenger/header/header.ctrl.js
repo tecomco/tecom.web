@@ -2,9 +2,9 @@
 
 app.controller('headerController',
   ['$scope', '$localStorage', '$uibModal', '$window', 'AuthService', 'db',
-    'channelsService',
+    'channelsService', '$state',
   function ($scope, $localStorage, $uibModal, $window, AuthService, db,
-    channelsService) {
+    channelsService, $state) {
 
     $scope.$on('channel:changed', function () {
       $scope.channel = channelsService.getCurrentChannel();
@@ -34,6 +34,5 @@ app.controller('headerController',
           $window.location.href = '/login';
         });
     };
-
   }
 ]);

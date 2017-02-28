@@ -9,5 +9,5 @@ app.factory('validationUtil', function(){
 
   return{
     validateEmail: validateEmail
-  }
+  };
 });

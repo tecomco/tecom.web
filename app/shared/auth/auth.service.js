@@ -75,34 +75,10 @@ app.factory('AuthService', [
       return defer.promise;
     }
 
-    function refreshToken(token) {
-      var defer = $q.defer();
-      var data = {
-        token: token
-      };
-      $http({
-        method: 'POST',
-        url: '/api/v1/auth/token/refresh/',
-        data: data
-      }).then(function (response) {
-        $log.info('Response:', response);
-        var token = response.data.token;
-        if (token) {
-          persistToken(token);
-          var teamSlug = domainUtil.getSubdomain();
-          createUser(token, teamSlug);
-          defer.resolve();
-        }
-      }).catch(function(){
-        defer.reject();
-      });
-      return defer.promise;
-    }
-
     return {
+      initialize: initialize,
       login: login,
       logout: logout,
-      refreshToken: refreshToken
     };
   }
 ]);

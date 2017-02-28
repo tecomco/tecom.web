@@ -47,7 +47,6 @@ app.service('filesService', [
       }
       else {
         $rootScope.$broadcast('file:loading');
-        console.log('broadcasted');
         var url;
         var name;
         var type;
@@ -117,7 +116,6 @@ app.service('filesService', [
     }
 
     function showFileLine(fileId, startLine, endLine) {
-      console.log('show:', startLine, endLine);
       getFileById(fileId).then(function (file) {
         $rootScope.$broadcast('file:show:line', file, startLine, endLine);
       });

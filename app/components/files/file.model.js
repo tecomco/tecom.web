@@ -71,17 +71,14 @@ app.factory('File', ['$http', '$window', 'Line', 'fileUtil', '$timeout',
       var endTemp = Math.max(this.tempStartLine, this.tempEndLine);
       return {
         start: startTemp,
-        end: endTemp,
+        end: endTemp
       };
-    }
+    };
 
     File.prototype.isLineTemp = function (lineNumber) {
       if(this.isTempSelected){
         var tempLines = this.findStartAndEndTempLines();
-        if(lineNumber >= tempLines.start && lineNumber <= tempLines.end)
-          return true;
-        else
-          return false;
+        return (lineNumber >= tempLines.start && lineNumber <= tempLines.end);
       }
       return false;
     };

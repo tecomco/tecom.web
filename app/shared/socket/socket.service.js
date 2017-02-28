@@ -1,10 +1,8 @@
 'use strict';
 
 app.factory('socket', [
-  '$rootScope', '$log', 'ENV', '$uibModal', 'domainUtil', 'AuthService',
-  '$localStorage',
-  function ($rootScope, $log, ENV, $uibModal, domainUtil, AuthService,
-  $localStorage) {
+  '$rootScope', '$log', 'ENV', '$uibModal', 'domainUtil', '$localStorage',
+  function ($rootScope, $log, ENV, $uibModal, domainUtil, $localStorage) {
 
     var self = this;
 

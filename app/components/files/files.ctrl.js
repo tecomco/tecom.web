@@ -15,7 +15,6 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
 
     $scope.$on('file:loading', function () {
       $scope.fileLoading = true;
-      console.log('trued');
     });
 
     $scope.$on('file:ready', function () {
@@ -70,7 +69,7 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
 
     $scope.mouseDownLine = function (lineNum) {
       selectTextMode = true;
-      if($scope.vm.liveFile.isLineTemp(lineNum)) {
+      if ($scope.vm.liveFile.isLineTemp(lineNum)) {
         flagLineIsTemp = true;
         $scope.vm.liveFile.deselectTempLines();
       }
@@ -80,7 +79,7 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     };
 
     $scope.mouseUpLine = function (lineNum) {
-      if(flagLineIsTemp && startLine === lineNum) {
+      if (flagLineIsTemp && startLine === lineNum) {
         $scope.vm.liveFile.deselectTempLines();
         flagLineIsTemp = false;
       }
@@ -144,10 +143,10 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
         codeView = document.getElementById('codeView');
       $timeout(function () {
         var middleLine;
-        if(Math.abs(start, end) < 30)
-          middleLine = Math.ceil((start+end)/2);
+        if (Math.abs(start, end) < 30)
+          middleLine = Math.ceil((start + end) / 2);
         else
-          var middleLine = start;
+          middleLine = start;
         var middle = ((middleLine - 17) / file.lines.length) * codeView.scrollHeight;
         codeView.scrollTop = middle;
       }, 0, false);
