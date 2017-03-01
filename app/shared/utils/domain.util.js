@@ -12,7 +12,7 @@ app.factory('domainUtil', ['$location', function ($location) {
   }
 
   return {
-    getSubdomain: getSubdomain
+    getSubdomain: getSubdomain,
   };
 
 }]);

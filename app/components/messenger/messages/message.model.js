@@ -5,7 +5,7 @@ app.factory('Message', [
   function ($log, db, textUtil, channelsService, User, fileUtil) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-      additionalData, about, isPending) {
+                     additionalData, about, isPending) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
         additionalData, about, isPending);
     }
@@ -24,11 +24,14 @@ app.factory('Message', [
         this.id = Message.generateIntegerId(_id);
       }
       this.isPending = isPending || false;
-      this.username = User.getCurrent().team.getUsernameById(this.senderId);
       var currentChannel = channelsService.getCurrentChannel();
       if (currentChannel) {
         this.teamId = currentChannel.teamId;
       }
+    };
+
+    Message.prototype.getUsername = function () {
+      return User.getCurrent().team.getUsernameById(this.senderId);
     };
 
     Message.prototype.getViewWellFormed = function () {
@@ -49,19 +52,19 @@ app.factory('Message', [
         body += '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
         if (this.canBeLived) {
           body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
-          this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
+            this.additionalData.fileId + ', \'' + this.additionalData.name + '\')">';
           body += '<label dir="ltr">LIVE</label>';
           body += '<i class="fa fa-circle"></i>';
           body += '</a>';
           body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData.fileId +
             ')" tooltip-placement="top" uib-tooltip="مشاهده">';
           body += '<i class="fa fa-eye"></i>';
-        } else {
-          body += '<a class="dl-btn" href="' + this.additionalData.url +
-          '" download="' +  this.additionalData.name +
-          '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
-          body += '<i class="fa fa-download"></i>';
         }
+        body += '<a class="dl-btn" href="' + this.additionalData.url +
+          '" download="' + this.additionalData.name +
+          '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
+        body += '<i class="fa fa-download"></i>';
+
         body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
@@ -85,10 +88,12 @@ app.factory('Message', [
         body = 'اطلاعات گروه تغییر کرد.';
       } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
         body = 'فایل "' + this.additionalData.fileName + '" ، ' +
-          '<span class="live-btn" dir="ltr">LIVE</span>' + ' شد';
+          '<span class="live-btn"><label dir="ltr">LIVE</label>' +
+          '<i class="fa fa-circle"></i></span>' + ' شد';
       } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
         body = 'فایل "' + this.additionalData.fileName + '" از حالت ' +
-          '<span class="live-btn" dir="ltr">LIVE</span>' + ' خارج شد';
+          '<span class="live-btn"><label dir="ltr">LIVE</label>' +
+          '<i class="fa fa-circle"></i></span>' + 'خارج شد';
       }
       return body;
     };

@@ -52,6 +52,7 @@ app.controller('messagesController', [
       clearMessageInput();
       messagesService.endTyping($scope.channel.id);
       $timeout.cancel(self.isTypingTimeout);
+      self.isTyping = false;
     };
 
     $scope.typing = function () {
@@ -66,12 +67,6 @@ app.controller('messagesController', [
         self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
-      // var messagesHolder = document.getElementById('messagesHolder');
-      // var messagesWindow = document.getElementById('messagesWindow');
-      // var inputHolder = document.getElementById('inputHolder');
-      // var inputPlaceHolder = document.getElementById('inputPlaceHolder');
-      // var height = messagesWindow.scrollHeight - inputPlaceHolder.scrollHeight;
-      // messagesHolder.style.height = height.toString() + 'px';
     };
 
     $scope.showFileLine = function (fileId, startLine, endLine) {

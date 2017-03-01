@@ -16,6 +16,11 @@ app.service('profileService', [
         }
       }).success(function (data) {
         $localStorage.token = data.token;
+        User.getCurrent().username = username;
+        var userInTeam = ArrayUtil.getElementByKeyValue(User.getCurrent().team.members, 'id',
+          User.getCurrent().memberId);
+        userInTeam.username = username;
+        console.log(User.getCurrent());
         AuthService.initialize();
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
       }).error(function (err) {
@@ -69,6 +74,18 @@ app.service('profileService', [
     }
 
     function makeAdmin(member) {
+      console.log('member:', member);
+      var defer = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/v1/teams/'+ User.getCurrent().team.id +'/member/'+
+        member.id + '/admin/'
+      }).success(function (data) {
+        defered.resolve();
+      }).error(function (err) {
+        $log.error('Error Making Admin', err);
+        defered.reject();
+      });
     }
 
     function leaveTeam() {

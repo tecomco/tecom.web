@@ -804,6 +804,18 @@ ul.dropdown-menu {
     cursor: pointer;
 }
 
+.linenums-view li {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    list-style-type: decimal;
+    font-family: monospace;
+    cursor: pointer;
+}
+
+
 .linenums li:hover {
     background: rgba(255, 255, 255, 0.05);
 }

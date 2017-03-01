@@ -104,7 +104,9 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     };
 
     $scope.closeLiveFile = function (file) {
+      $scope.vm.liveFile = null;
       filesService.killLiveFile(file);
+      broadcastViewState();
     };
 
     $scope.closeViewFile = function () {
@@ -131,6 +133,13 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
       else
         return 'view';
     };
+
+    $scope.getFileDownloadData = function(type){
+      if($scope.viewState() === 'live' && $scope.vm.liveFile)
+        return (type === 'url') ? $scope.vm.liveFile.url : $scope.vm.liveFile.name;
+      else if($scope.viewState() === 'view' && $scope.vm.viewFile)
+        return (type === 'url') ? $scope.vm.viewFile.url : $scope.vm.viewFile.name;
+    }
 
     function broadcastViewState() {
       $rootScope.$broadcast('view:state:changed', $scope.viewState());

@@ -2,9 +2,9 @@
 
 app.controller('teamProfileController', [
   '$scope', '$log', 'User', 'profileService', '$uibModalInstance', '$timeout',
-  'validationUtil',
+  'validationUtil', 'ArrayUtil',
   function ($scope, $log, User, profileService, $uibModalInstance, $timeout,
-            validationUtil) {
+            validationUtil, ArrayUtil) {
 
     initialize();
 
@@ -51,7 +51,9 @@ app.controller('teamProfileController', [
     };
 
     $scope.makeAdmin = function (member) {
-      profileService.makeAdmin(member);
+      profileService.makeAdmin(member).then(function(){
+        // ArrayUtil.getElementByKeyValue(User.getCurrent().team.members, 'id', member.id);
+      });
     };
 
     function setInfoOrErrorMessage(type, message) {
@@ -73,6 +75,10 @@ app.controller('teamProfileController', [
           }, 4000);
           break;
       }
+    }
+
+    function isMe(member){
+      return member.id === User.getCurrent().id;
     }
 
     function initialize() {

@@ -151,7 +151,7 @@ app.service('messagesService', [
           sort: [{
             id: 'desc'
           }],
-          limit: 50
+          limit: 200
         }).then(function (docs) {
           deferred.resolve(docs);
         });
