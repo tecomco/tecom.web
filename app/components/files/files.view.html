@@ -61,13 +61,11 @@
           </a>
         </li>
       </ul>
-
-      <div>
-        <a class="doc-file-ex" ng-href="{{getFileDownloadData('url')}}" download="{{getFileDownloadData('name')}}" target="_blank" uib-tooltip="دانلود">
+      <div class="doc-tab" style="float: right">
+        <a ng-href="{{getFileDownloadData('url')}}" download="{{getFileDownloadData('name')}}" target="_blank" uib-tooltip="دانلود" tooltip-placement="bottom">
           <i class="fa fa-download"></i>
         </a>
       </div>
-
     </div>
     <div ng-show="viewState() === 'live'">
       <div class="doc-section-body" ng-show="!fileLoading">
