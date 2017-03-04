@@ -14,7 +14,7 @@ app.controller('teamProfileController', [
     };
 
     $scope.sendInvitation = function () {
-      if(!$scope.invitedEmail)
+      if (!$scope.invitedEmail)
         setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن');
       else if (validationUtil.validateEmail($scope.invitedEmail)) {
         profileService.sendInvitationEmail($scope.invitedEmail)
@@ -51,7 +51,7 @@ app.controller('teamProfileController', [
     };
 
     $scope.makeAdmin = function (member) {
-      profileService.makeAdmin(member).then(function(){
+      profileService.makeAdmin(member).then(function () {
         // ArrayUtil.getElementByKeyValue(User.getCurrent().team.members, 'id', member.id);
       });
     };
@@ -77,9 +77,15 @@ app.controller('teamProfileController', [
       }
     }
 
-    function isMe(member){
-      return member.id === User.getCurrent().id;
-    }
+    $scope.isMe = function (member) {
+      if (member.id === User.getCurrent().memberId) {
+        console.log('member', member.username);
+        console.log('member.id:', member.id);
+        console.log('User.memberId:', User.getCurrent().memberId);
+        console.log('============');
+      }
+      return member.id === User.getCurrent().memberId;
+    };
 
     function initialize() {
       User.getCurrent().team.getTeamMembers().then(function (members) {

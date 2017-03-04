@@ -31,7 +31,12 @@ app.factory('Message', [
     };
 
     Message.prototype.getUsername = function () {
-      return User.getCurrent().team.getUsernameById(this.senderId);
+      var username = User.getCurrent().team.getUsernameById(this.senderId);
+      if (!this.isNotif() && username === '') {
+        console.log('empty username');
+        console.log('team:', User.getCurrent().team);
+      }
+      return username;
     };
 
     Message.prototype.getViewWellFormed = function () {
@@ -228,6 +233,15 @@ app.factory('Message', [
       wellFormedText = textUtil.urlify(wellFormedText);
       // wellFormedText = textUtil.hashtagify(wellFormedText);
       return wellFormedText;
+    };
+
+    Message.prototype.isNotif = function () {
+      return (this.type === Message.TYPE.NOTIF.USER_ADDED ||
+      this.type === Message.TYPE.NOTIF.USER_REMOVED ||
+      this.type === Message.TYPE.NOTIF.FILE_LIVED ||
+      this.type === Message.TYPE.NOTIF.CHANNEL_CREATED ||
+      this.type === Message.TYPE.NOTIF.CHANNEL_EDITED ||
+      this.type === Message.TYPE.NOTIF.FILE_DIED);
     };
 
     Message.TYPE = {

@@ -167,9 +167,9 @@
             <div ng-repeat="member in teamMembers" class="g-m-one">
               <img ng-src="static/img/user-def.png"/>
               <label>@{{member.username}}</label>
-              <div ng-show="isMe(member)">
-                <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn modal-btn-details-remove" ng-click="removeTeamMember(member)"><span class="glyphicon glyphicon-remove"></span></button>
-                <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" class="btn modal-btn-details-admin"><span class="fa fa-diamond" ng-click="makeAdmin(member)"></span></button>
+              <div ng-hide="isMe(member)" style="float: left">
+                <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn" ng-click="removeTeamMember(member)"><span class="glyphicon glyphicon-remove"></span></button>
+                <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" class="btn"><span class="fa fa-diamond" ng-click="makeAdmin(member)"></span></button>
               </div>
             </div>
           </div>

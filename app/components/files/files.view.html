@@ -94,7 +94,7 @@
       <div class="doc-section-body" ng-show="!fileLoading">
             <pre id="codeView" class="prettyprint linenums-view" dir="ltr">
       <ol class="linenums-view">
-        <li ng-repeat="line in vm.viewFile.lines track by $index" ng-bind-html="line.html"></li>
+        <li ng-repeat="line in vm.viewFile.lines track by $index" ng-bind-html="line.html" ng-class="line.getCssClass()"></li>
       </ol>
     </pre>
       </div>

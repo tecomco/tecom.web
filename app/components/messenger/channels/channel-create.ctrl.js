@@ -29,10 +29,6 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
       return (form.name.$viewValue && form.name.$invalid);
     };
 
-    User.getCurrent().team.getTeamMembers().then(function (members) {
-      ArrayUtil.removeElementByKeyValue(members, 'id', User.getCurrent().memberId);
-      self.teamMembers = members;
-    });
 
     self.closeCreateChannel = function () {
       $uibModalInstance.close();
@@ -71,6 +67,14 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
         });
     };
 
+    function makeTeamMembersArray() {
+      User.getCurrent().team.members.forEach(function (member) {
+        self.teamMembers.push(member);
+      });
+      ArrayUtil.removeElementByKeyValue(self.teamMembers,
+        'id', User.getCurrent().memberId);
+    }
+
     angular.element(document).ready(function () {
       initializeNewChannelForm();
     });
@@ -82,6 +86,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
       self.newChannel.dublicateError = false;
       self.newChannel.serverError = false;
       self.forms.newChannelForm.$setPristine();
+      makeTeamMembersArray();
     };
   }
 ]);
