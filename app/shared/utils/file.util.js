@@ -20,7 +20,8 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
     'gml', 'rbx', 'mli', 'pdl', 'pxi', 'simba', 'xmljet', 'fpp', 'pdl', 'gs',
     'rs', 'magik', 'cr2', 'gst', 'con', 'sit', 'qf', 'gnumakefile', 'fdo', 'epp',
     'emakefile', 'sw', 'ks', 'm2', 'pm6', 'p5', 'adiumscripts', 'eql', 'lit',
-    'xmss', 'seestyle', 'makefile', 'sjava', 'emakerfile', 'cuo', 'rtf'];
+    'xmss', 'seestyle', 'makefile', 'sjava', 'emakerfile', 'cuo', 'rtf',
+    'es6', 'hbs', 'erb', 'scss'];
 
   function isTextFormat(format) {
     return ArrayUtil.contains(textBaseFormats, format);

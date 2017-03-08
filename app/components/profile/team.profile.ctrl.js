@@ -47,13 +47,27 @@ app.controller('teamProfileController', [
     };
 
     $scope.removeTeamMember = function (member) {
-      profileService.removeTeamMember(member);
+      profileService.removeTeamMember(member).then(function () {
+        ArrayUtil.removeElementByKeyValue($scope.teamMembers, 'id', member.id);
+        console.log('Team Members after remove:', User.getCurrent().team.members);
+      }).catch(function(err){
+        $log.error('Error Removing Team Member:', err);
+      });
     };
 
     $scope.makeAdmin = function (member) {
       profileService.makeAdmin(member).then(function () {
-        // ArrayUtil.getElementByKeyValue(User.getCurrent().team.members, 'id', member.id);
+        member.is_admin = true;
+      }).catch(function(err){
+        $log.error('Error Making Member Admin:', err);
       });
+    };
+
+    $scope.getAdminButtonCSS = function(member){
+      if(member.is_admin)
+        return 'modal-btn-details-admin';
+      else
+        return 'btn';
     };
 
     function setInfoOrErrorMessage(type, message) {
@@ -78,19 +92,11 @@ app.controller('teamProfileController', [
     }
 
     $scope.isMe = function (member) {
-      if (member.id === User.getCurrent().memberId) {
-        console.log('member', member.username);
-        console.log('member.id:', member.id);
-        console.log('User.memberId:', User.getCurrent().memberId);
-        console.log('============');
-      }
       return member.id === User.getCurrent().memberId;
     };
 
     function initialize() {
-      User.getCurrent().team.getTeamMembers().then(function (members) {
-        $scope.teamMembers = members;
-      });
+      $scope.teamMembers = User.getCurrent().team.members;
       $scope.team = User.getCurrent().team;
       $scope.editTeamNameActive = false;
       $scope.inviteMode = false;

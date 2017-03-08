@@ -68,7 +68,6 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     });
 
     $scope.mouseDownLine = function (lineNum) {
-      console.log('mouse down');
       selectTextMode = true;
       if ($scope.vm.liveFile.isLineTemp(lineNum)) {
         flagLineIsTemp = true;
@@ -80,9 +79,7 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     };
 
     $scope.mouseUpLine = function (lineNum) {
-      console.log('mouse up');
       if (flagLineIsTemp && startLine === lineNum) {
-        console.log('flagLine');
         $scope.vm.liveFile.deselectTempLines();
         flagLineIsTemp = false;
       }
