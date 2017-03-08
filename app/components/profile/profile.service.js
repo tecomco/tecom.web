@@ -71,21 +71,33 @@ app.service('profileService', [
     }
 
     function removeTeamMember(member) {
-    }
-
-    function makeAdmin(member) {
-      console.log('member:', member);
-      var defer = $q.defer();
+      var defered = $q.defer();
       $http({
         method: 'POST',
         url: '/api/v1/teams/'+ User.getCurrent().team.id +'/member/'+
-        member.id + '/admin/'
-      }).success(function (data) {
+        member.id + '/kick/'
+      }).success(function () {
         defered.resolve();
       }).error(function (err) {
         $log.error('Error Making Admin', err);
         defered.reject();
       });
+      return defered.promise;
+    }
+
+    function makeAdmin(member) {
+      var defered = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/v1/teams/'+ User.getCurrent().team.id +'/member/'+
+        member.id + '/admin/'
+      }).success(function () {
+        defered.resolve();
+      }).error(function (err) {
+        $log.error('Error Making Admin', err);
+        defered.reject();
+      });
+      return defered.promise;
     }
 
     function leaveTeam() {
