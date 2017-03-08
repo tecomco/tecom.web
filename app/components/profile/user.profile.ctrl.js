@@ -35,6 +35,7 @@ app.controller('userProfileController', [
         setInfoOrErrorMessage('info', infoMsg);
       }).catch(function (errorMsg) {
         setInfoOrErrorMessage('error', errorMsg);
+        $scope.usernameInput = '';
       });
       $scope.editUsernameActive = false;
     };
@@ -71,7 +72,7 @@ app.controller('userProfileController', [
           $timeout(function () {
             $scope.showInfoMessage = false;
             $scope.infoMessage = null;
-          }, 4000);
+          }, 5000);
           break;
         case 'error':
           $scope.showErrorMessage = true;
@@ -79,7 +80,7 @@ app.controller('userProfileController', [
           $timeout(function () {
             $scope.showErrorMessage = false;
             $scope.errorMessage = null;
-          }, 4000);
+          }, 5000);
           break;
       }
     }

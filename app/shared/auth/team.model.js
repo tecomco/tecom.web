@@ -53,6 +53,13 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
       return (index !== -1) ? this.members[index].username : '';
     };
 
+    Team.prototype.getActiveMembers = function () {
+      var activeMembers = this.members.filter(function (member) {
+        return member.active === true;
+      });
+      return activeMembers;
+    };
+
     Team.TECOM_BOT = {
       id: 0,
       username: 'تیک-بات'

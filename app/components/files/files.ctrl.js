@@ -136,7 +136,7 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
         return (type === 'url') ? $scope.vm.liveFile.url : $scope.vm.liveFile.name;
       else if($scope.viewState() === 'view' && $scope.vm.viewFile)
         return (type === 'url') ? $scope.vm.viewFile.url : $scope.vm.viewFile.name;
-    }
+    };
 
     function broadcastViewState() {
       $rootScope.$broadcast('view:state:changed', $scope.viewState());

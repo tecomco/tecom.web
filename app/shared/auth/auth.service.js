@@ -42,7 +42,6 @@ app.factory('AuthService', [
       else
         data.username = usernameOrEmail;
 
-      console.log('login data:', data);
       $http({
         method: 'POST',
         url: '/api/v1/auth/login/',

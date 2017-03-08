@@ -1,12 +1,21 @@
 'use strict';
 
-app.factory('teamService', ['socket', 'User', function (socket, User) {
+app.factory('teamService', ['socket', 'User', 'ArrayUtil',
+  function (socket, User, ArrayUtil) {
 
-  socket.on('member:new', function (member) {
-    User.getCurrent().team.members.push(member);
-  });
+    socket.on('member:new', function (member) {
+      User.getCurrent().team.members.push(member);
+    });
 
-  return {};
+    function deactiveTeamMember(memberId) {
+      var member = ArrayUtil.getElementByKeyValue(User.getCurrent().team.members,
+        'id', memberId);
+      member.active = false;
+    }
 
-}]).run(['teamService', function (teamService) {
+    return {
+      deactiveTeamMember: deactiveTeamMember
+    };
+
+  }]).run(['teamService', function (teamService) {
 }]);

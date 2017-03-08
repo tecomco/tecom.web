@@ -17,16 +17,25 @@ app.service('profileService', [
       }).success(function (data) {
         $localStorage.token = data.token;
         User.getCurrent().username = username;
-        var userInTeam = ArrayUtil.getElementByKeyValue(User.getCurrent().team.members, 'id',
-          User.getCurrent().memberId);
+        var userInTeam = ArrayUtil.getElementByKeyValue(
+          User.getCurrent().team.getActiveMembers(), 'id', User.getCurrent().memberId);
         userInTeam.username = username;
-        console.log(User.getCurrent());
         AuthService.initialize();
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
       }).error(function (err) {
         $log.error('Error Changing Username', err);
-        if (ArrayUtil.contains(err.username, 'This field may not be blank.'))
-          defered.reject('نام کاربری نباید خالی باشد.');
+        if (err.username) {
+          if (ArrayUtil.contains(err.username, 'This field may not be blank.'))
+            defered.reject('نام کاربری نباید خالی باشد.');
+          else if (ArrayUtil.contains(err.username,
+              'A user with that username already exists.'))
+            defered.reject('این نام کاربری قبلا انتخاب شده است.');
+          else if (ArrayUtil.contains(err.username,
+              'Enter a valid username. This value may contain only letters, numbers, and @/./+/-/_ characters.'))
+            defered.reject('نام کاربری معتبر نیست، این نام تنها می تواند شامل حروف، اعداد و بعضی از علامت ها باشد.');
+          else
+            defered.reject('خطا در تغییر نام کاربری');
+        }
         else
           defered.reject('خطا در تغییر نام کاربری');
       });
@@ -100,6 +109,21 @@ app.service('profileService', [
       return defered.promise;
     }
 
+    function disAdmin(member) {
+      var defered = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/v1/teams/' + User.getCurrent().team.id + '/member/' +
+        member.id + '/disadmin/'
+      }).success(function () {
+        defered.resolve();
+      }).error(function (err) {
+        $log.error('Error deAdmining', err);
+        defered.reject();
+      });
+      return defered.promise;
+    }
+
     function leaveTeam() {
       return $http({
         method: 'POST',
@@ -123,6 +147,7 @@ app.service('profileService', [
       changeProfileImage: changeProfileImage,
       removeTeamMember: removeTeamMember,
       makeAdmin: makeAdmin,
+      disAdmin: disAdmin,
       leaveTeam: leaveTeam,
       sendInvitationEmail: sendInvitationEmail
     };

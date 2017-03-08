@@ -2,9 +2,9 @@
 
 app.controller('teamProfileController', [
   '$scope', '$log', 'User', 'profileService', '$uibModalInstance', '$timeout',
-  'validationUtil', 'ArrayUtil',
+  'validationUtil', 'ArrayUtil', 'teamService',
   function ($scope, $log, User, profileService, $uibModalInstance, $timeout,
-            validationUtil, ArrayUtil) {
+            validationUtil, ArrayUtil, teamService) {
 
     initialize();
 
@@ -48,8 +48,8 @@ app.controller('teamProfileController', [
 
     $scope.removeTeamMember = function (member) {
       profileService.removeTeamMember(member).then(function () {
-        ArrayUtil.removeElementByKeyValue($scope.teamMembers, 'id', member.id);
-        console.log('Team Members after remove:', User.getCurrent().team.members);
+        teamService.deactiveTeamMember(member.id);
+        $scope.teamMembers = User.getCurrent().team.getActiveMembers();
       }).catch(function(err){
         $log.error('Error Removing Team Member:', err);
       });
@@ -96,7 +96,7 @@ app.controller('teamProfileController', [
     };
 
     function initialize() {
-      $scope.teamMembers = User.getCurrent().team.members;
+      $scope.teamMembers = User.getCurrent().team.getActiveMembers();
       $scope.team = User.getCurrent().team;
       $scope.editTeamNameActive = false;
       $scope.inviteMode = false;

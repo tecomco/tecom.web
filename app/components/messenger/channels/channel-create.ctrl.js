@@ -68,7 +68,7 @@ app.controller('createChannelController', ['$uibModalInstance', '$log',
     };
 
     function makeTeamMembersArray() {
-      User.getCurrent().team.members.forEach(function (member) {
+      User.getCurrent().team.getActiveMembers().forEach(function (member) {
         self.teamMembers.push(member);
       });
       ArrayUtil.removeElementByKeyValue(self.teamMembers,
