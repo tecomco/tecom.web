@@ -51,7 +51,6 @@ body {
     background: url(../img/bg-pattern-green.png);
     background-size: 25%;
     font-weight: 200;
-    overflow: hidden;
 }
 
 a, a:hover, a:visited, a:focus {
@@ -65,16 +64,13 @@ a, a:hover, a:visited, a:focus {
     -o-transition: all 0.3s ease;
 }
 
-.container {
-    height: 100vh;
-}
-
 .login-form {
     width: 100%;
     background: #fff;
     border-radius: 7px;
     box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.1), 0 0 2px rgba(0, 0, 0, 0.05);
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .login-img-holder {

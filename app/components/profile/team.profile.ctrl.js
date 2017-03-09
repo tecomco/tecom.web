@@ -72,11 +72,8 @@ app.controller('teamProfileController', [
       }
     };
 
-    $scope.getAdminButtonCSS = function (member) {
-      if (member.is_admin)
-        return 'modal-btn-details-admin';
-      else
-        return 'btn';
+    $scope.getAdminButtonCSS = function(member){
+      return member.is_admin ? 'is-admin' : '';
     };
 
     function setInfoOrErrorMessage(type, message) {

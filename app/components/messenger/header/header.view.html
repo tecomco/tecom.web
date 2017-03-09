@@ -8,7 +8,7 @@
         </div>
     </div>
     <ul class="top-left">
-      <!--
+        <!--
         <li>
             <a  tooltip-placement="bottom" uib-tooltip="پاک کردن همه چیز :(" ng-click="clearCache()">
                 <i class="fa fa-code"></i>
@@ -77,33 +77,44 @@
                 <div class="col-sm-6">
                     <div class="g-title">
                         <i ng-class="$ctrl.channel.isPrivate() ? 'fa fa-lock':'fa fa-globe'"></i>
-                        <span>{{$ctrl.channel.name}}</span>
-                        <div class="modal-input modal-input-details" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
-                            <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="modal-btn modal-btn-details" ng-click="$ctrl.editChannel()"><span class="zmdi zmdi-edit"></span></button>
+                        <!-- <span>{{$ctrl.channel.name}}</span> -->
+                        <input type="text" disabled="true" class="input-text title" value={{$ctrl.channel.name}} />
+                        <div class="" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
+                            <!-- <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="" ng-click="$ctrl.editChannel()"> -->
+                            <button class="btn-modal" ng-click="$ctrl.editChannel()">
+                              <span class="zmdi zmdi-edit"></span>
+                              <span>ویرایش</span>
+                            </button>
                         </div>
                     </div>
                     <div class="g-details">
                         <!-- <label>توضیحات گروه :</label> -->
-                        <span>{{$ctrl.channel.description}}</span>
+                        <input type="text" disabled="true" class="input-text" value={{$ctrl.channel.description}} />
                     </div>
                     <!--<div class="g-settings">-->
-                        <!--<i class="zmdi zmdi-settings"></i>-->
-                        <!--<h3>تنظیمات</h3>-->
-                        <!--<label class="ws-checkbox">-->
-                            <!--<span>اعلان ها</span>-->
-                            <!--<input type="checkbox" ng-model="notifCheckbox">-->
-                            <!--<div class="checkbox-stat">-->
-                                <!--<i class="fa fa-check"></i>-->
-                            <!--</div>-->
-                        <!--</label>-->
+                    <!--<i class="zmdi zmdi-settings"></i>-->
+                    <!--<h3>تنظیمات</h3>-->
+                    <!--<label class="ws-checkbox">-->
+                    <!--<span>اعلان ها</span>-->
+                    <!--<input type="checkbox" ng-model="notifCheckbox">-->
+                    <!--<div class="checkbox-stat">-->
+                    <!--<i class="fa fa-check"></i>-->
+                    <!--</div>-->
+                    <!--</label>-->
                     <!--</div>-->
                 </div>
                 <div class="col-sm-6 modal-left-part">
-                    <i class="zmdi zmdi-accounts"></i>
-                    <h3>اعضای گروه</h3>
-                    <div class="modal-input modal-input-details">
+                    <div class="g-title">
+                        <i class="zmdi zmdi-accounts"></i>
+                        <h3>اعضای گروه</h3>
+                        <!-- <div class="modal-input modal-input-details">
                         <button tooltip-placement="bottom" uib-tooltip="اضافه کردن  به اعضای گروه" ng-show="!$ctrl.addingMemberActive" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
                         <button tooltip-placement="bottom" uib-tooltip="ذخیره" ng-show="$ctrl.addingMemberActive" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-save"></span></button>
+                    </div> -->
+                        <button class="btn-modal" ng-click="$ctrl.addMembersClick()">
+                      <span class="zmdi zmdi-account-add"></span>
+                      <span>اضافه کردن  به اعضای گروه</span>
+                    </button>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.addingMemberActive">
                         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="$ctrl.searchBox">
@@ -111,7 +122,7 @@
                     <div class="g-members">
                         <div ng-repeat="member in $ctrl.listItems | orderBy : 'username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-mouseover="$ctrl.mouseHoverIn(member)" ng-mouseleave="$ctrl.mouseHoverOut()" ng-style="$ctrl.getListItemCSS(member)" ng-click="$ctrl.pushMember(member)">
                             <div>
-                                <img ng-src="static/img/user-def.png"/>
+                                <img ng-src="static/img/user-def.png" />
                                 <label>@{{member.username}}</label>
                                 <button ng-show="$ctrl.showRemoveIcon(member)" tooltip-placement="bottom" uib-tooltip="حذف کردن از گروه" class="btn modal-btn-details-remove"><span class="glyphicon glyphicon-remove" ng-click="$ctrl.deleteMember(member)"></span></button>
                             </div>
