@@ -101,15 +101,6 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
     updateListItems();
 
-
-    self.mouseHoverIn = function (channelMember) {
-      selectedMember = channelMember;
-    };
-
-    self.mouseHoverOut = function () {
-      selectedMember = null;
-    };
-
     self.deleteMember = function (member) {
       var data = {
         channelMemberId: member.channelMemberId,
@@ -173,7 +164,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
       if (self.addingMemberActive) {
         if (listMember.isChannelMember ||
             ArrayUtil.contains(self.addedMemberIds, listMember.member_id))
-          return {'background-color': '#C4F3AB'};
+          return {'background-color': 'rgba(36, 167, 114, 0.2)'};
         else
           return {'background-color': 'white'};
       }
@@ -182,12 +173,11 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     self.showRemoveIcon = function (member) {
-      if(User.getCurrent().isAdmin && !self.addingMemberActive) {
-        return (member.isChannelMember) &&
-          (selectedMember === member && member.member_id !== User.getCurrent().memberId);
-      }
-      else
+      if (User.getCurrent().isAdmin && !self.addingMemberActive) {
+        return member.member_id !== User.getCurrent().memberId;
+      } else {
         return false;
+      }
     };
 
     function makeListItem(member) {

@@ -111,24 +111,29 @@
                         <button tooltip-placement="bottom" uib-tooltip="اضافه کردن  به اعضای گروه" ng-show="!$ctrl.addingMemberActive" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
                         <button tooltip-placement="bottom" uib-tooltip="ذخیره" ng-show="$ctrl.addingMemberActive" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-save"></span></button>
                     </div> -->
-                        <button class="btn-modal" ng-click="$ctrl.addMembersClick()">
-                      <span class="zmdi zmdi-account-add"></span>
-                      <span>اضافه کردن  به اعضای گروه</span>
-                    </button>
+                        <button class="btn-modal" ng-click="$ctrl.addMembersClick()" ng-hide="$ctrl.addingMemberActive">
+                          <span class="zmdi zmdi-account-add"></span>
+                          <span>اضافه کردن  به اعضای گروه</span>
+                        </button>
+                        <button class="btn-modal" ng-click="$ctrl.addMembersClick()" ng-show="$ctrl.addingMemberActive">
+                          <span class="zmdi zmdi-check"></span>
+                          <span>ذخیره</span>
+                        </button>
                     </div>
                     <div class="modal-input" ng-show="$ctrl.addingMemberActive">
                         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="$ctrl.searchBox">
                     </div>
                     <div class="g-members">
-                        <div ng-repeat="member in $ctrl.listItems | orderBy : 'username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-mouseover="$ctrl.mouseHoverIn(member)" ng-mouseleave="$ctrl.mouseHoverOut()" ng-style="$ctrl.getListItemCSS(member)" ng-click="$ctrl.pushMember(member)">
+                        <div ng-repeat="member in $ctrl.listItems | orderBy : 'username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-style="$ctrl.getListItemCSS(member)" ng-click="$ctrl.pushMember(member)">
                             <div>
                                 <img ng-src="static/img/user-def.png" />
                                 <label>@{{member.username}}</label>
-                                <button ng-show="$ctrl.showRemoveIcon(member)" tooltip-placement="bottom" uib-tooltip="حذف کردن از گروه" class="btn modal-btn-details-remove"><span class="glyphicon glyphicon-remove" ng-click="$ctrl.deleteMember(member)"></span></button>
+                                <button ng-show="$ctrl.showRemoveIcon(member)" ng-click="$ctrl.deleteMember(member)" class="btn modal-btn-details-remove">
+                                  <span class="zmdi zmdi-close"></span>
+                                </button>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="clearfix"></div>
             </div>

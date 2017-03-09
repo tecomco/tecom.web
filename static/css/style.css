@@ -107,7 +107,6 @@ a * {
 }
 
 .u-profile .info {
-    display: inline-block;
     padding: 20px;
     position: relative;
     top: 15px;
@@ -1069,6 +1068,7 @@ pre.prettyprint {
 .file-name {}
 
 .live-btn {
+    display: inline-block;
     text-align: center;
     border-radius: 6px;
     float: right;
@@ -1293,17 +1293,21 @@ pre.prettyprint {
     position: relative;
     top: 5px;
     background: rgba(0, 0, 0, 0);
-    color: #D94A0D;
+    color: #aaa;
+    transition:all 0.3s ease;
+    -o-transition:all 0.3s ease;
+    -moz-transition:all 0.3s ease;
+    -webkit-transition:all 0.3s ease;
 }
 
 .modal .modal-btn-details-remove:hover, .modal .modal-btn-details-remove:focus {
-    color: rgba(217, 74, 13, 0.8);
+    color: #777;
 }
 
 .modal .modal-btn-details-remove:active {
     -webkit-box-shadow: none;
     box-shadow: none;
-    color: rgba(217, 74, 13, 1);
+    color: #777;
 }
 
 .modal .modal-btn-details-admin {
@@ -1432,7 +1436,12 @@ pre.prettyprint {
     font-weight: 300;
     color: #666;
 }
-
+.relative-parent{
+  position: relative;
+}
+.relative-parent .btn-modal{
+  top: 0;
+}
 .btn-modal {
     display: inline-block;
     left: 0;
@@ -1444,7 +1453,12 @@ pre.prettyprint {
     position: absolute;
     top: 12px;
 }
-
+.relative-parent .btn-adjust{
+  top: 10px;
+}
+.btn-modal > *{
+  font-size: 14px !important;
+}
 .modal-body.two-part-modal .input-text[type="text"] {
     display: inline-block;
     margin: 0;
@@ -1567,7 +1581,7 @@ pre.prettyprint {
 
 .modal-dialog {
     background: transparent;
-    margin: 0;
+    margin: 70px 15%;
     width: 70%;
     overflow: hidden;
 }
@@ -1631,6 +1645,18 @@ pre.prettyprint {
 .modal-body .g-members a {
     display: block;
     padding: 4px;
+}
+
+
+/*.tooltip:not(.fade.in){
+  left: unset !important;
+  right: unset !important;
+}*/
+
+.modal .t-ms input[type] {
+    margin-top: 0;
+    padding: 8px 4px;
+    font-size: 16px;
 }
 
 .modal-body .g-members a:hover {
