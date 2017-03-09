@@ -50,17 +50,26 @@ app.controller('teamProfileController', [
       profileService.removeTeamMember(member).then(function () {
         teamService.deactiveTeamMember(member.id);
         $scope.teamMembers = User.getCurrent().team.getActiveMembers();
-      }).catch(function(err){
+      }).catch(function (err) {
         $log.error('Error Removing Team Member:', err);
       });
     };
 
-    $scope.makeAdmin = function (member) {
-      profileService.makeAdmin(member).then(function () {
-        member.is_admin = true;
-      }).catch(function(err){
-        $log.error('Error Making Member Admin:', err);
-      });
+    $scope.changeMemberAdminState = function (member) {
+      if (member.is_admin === false) {
+        profileService.makeAdmin(member).then(function () {
+          member.is_admin = true;
+        }).catch(function (err) {
+          $log.error('Error Making Member Admin:', err);
+        });
+      }
+      else{
+        profileService.disAdmin(member).then(function () {
+          member.is_admin = false;
+        }).catch(function (err) {
+          $log.error('Error DisAdmining Member:', err);
+        });
+      }
     };
 
     $scope.getAdminButtonCSS = function(member){

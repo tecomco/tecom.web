@@ -143,6 +143,7 @@
 
 <!-- Team profile modal -->
 <script type="text/ng-template" id="teamProfile.html">
+
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="closeModal()">&times;</button>
         <h4 class="modal-title">مدیریت {{team.name}}</h4>
@@ -157,7 +158,7 @@
                             <label>@{{member.username}}</label>
                             <div ng-hide="isMe(member)" style="float: left">
                                 <button tooltip-placement="bottom" uib-tooltip="ادمین" class="t-m-btn" ng-class="getAdminButtonCSS(member)">
-                                  <span class="fa fa-diamond" ng-click="makeAdmin(member)"></span>
+                                  <span class="fa fa-diamond" ng-click="changeMemberAdminState(member)"></span>
                                 </button>
                                 <button tooltip-placement="bottom" uib-tooltip="حذف" class="t-m-btn" ng-click="removeTeamMember(member)">
                                   <span class="zmdi zmdi-close"></span>
