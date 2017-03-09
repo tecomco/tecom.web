@@ -169,7 +169,7 @@
               <label>@{{member.username}}</label>
               <div ng-hide="isMe(member)" style="float: left">
                 <button tooltip-placement="bottom" uib-tooltip="حذف" class="btn" ng-click="removeTeamMember(member)"><span class="glyphicon glyphicon-remove"></span></button>
-                <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" ng-class="getAdminButtonCSS(member)"><span class="fa fa-diamond" ng-click="makeAdmin(member)"></span></button>
+                <button tooltip-placement="bottom" uib-tooltip="ادمین کن!" ng-class="getAdminButtonCSS(member)"><span class="fa fa-diamond" ng-click="changeMemberAdminState(member)"></span></button>
               </div>
             </div>
           </div>
