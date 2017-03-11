@@ -19,25 +19,38 @@
       <div class="container-fluid">
         <div class="tecom-form">
           <div class="form-img-holder">
-            <i class="fa fa-frown-o"></i>
+            <i class="fa fa-mobile"></i>
           </div>
           <div class="mobile-msg">
-            <p>تیکام در حال حاضر فقط روی دسکتاپ بهترین تجربه‌ی کاربری رو داره.</p>
-            <p>اما پیشنهاد ما اینه که قبل این‌که برین پای لپ‌تاپتون، تو نظرسنجیمون شرکت کنین تا به کار تیم ما جهت بدین! (نظر شما مهمه.)</p>
-            <div>
-              <a onclick="ga('send', 'event', 'Mobile', 'click', 'android')">
-                <i class="fa fa-android"></i>
-              </a>
-              <a onclick="ga('send', 'event', 'Mobile', 'click', 'ios')">
-                <i class="fa fa-apple"></i>
-              </a>
+            <div class="mobile-welcome">
+              <p>کاربر عزیز</p>
+              <p id="os">موبایل</p>
+              <p>!</p>
             </div>
+            <p>تیکام در حال حاضر فقط روی دسکتاپ بهترین تجربه‌ی کاربری رو داره. اما با این اتفاقی که الان افتاد، تیم ما ساخت و توسعه‌ی اپلیکیشن موبایل رو تو اولویت میذاره. (شما به روند ساخت تیکام جهت می‌دین!)</p>
           </div>
         </div>
       </div>
     </div>
     <div class="col-sm-4"></div>
   </div>
+
+  <script>
+    function getParameterByName(name) {
+      var url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    var os = getParameterByName('os');
+    if (os) {
+      document.getElementById('os').innerHTML = os;
+    }
+  </script>
 
   <script>
     if (window.location.origin === 'http://tecom.me') {

@@ -263,3 +263,9 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   font-size: 50px;
   padding: 10px;
 }
+
+.mobile-welcome p {
+  display: inline-block;
+  font-size: 25px;
+  font-weight: 400;
+}

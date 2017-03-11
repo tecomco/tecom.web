@@ -19,7 +19,15 @@ var app = angular.module('LoginApp', [
           },
           onEnter: function ($window) {
             if (isMobile.phone) {
-              $window.location.assign('/mobile');
+              var mobileType;
+              if (isMobile.apple.phone) {
+                mobileType = 'iOS';
+              } else if (isMobile.android.phone) {
+                mobileType = 'Android';
+              } else {
+                mobileType = 'Mobile';
+              }
+              $window.location.assign('/mobile?os=' + mobileType);
             }
           }
         });
