@@ -2,7 +2,9 @@
 
 app.service('channelsService', [
   '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state', 'User',
-  function ($rootScope, $http, $q, $log, socket, Channel, $state, User) {
+  'teamService',
+  function ($rootScope, $http, $q, $log, socket, Channel, $state, User,
+  teamService) {
 
     var self = this;
 
@@ -75,13 +77,22 @@ app.service('channelsService', [
       $rootScope.$broadcast('channels:updated');
     }
 
+    function setDirectActiveState(username, state){
+      var channel = findChannelBySlug(username);
+      channel.active = state;
+    }
+
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
         data.liveFileId, data.teamId);
       if (channel.isDirect() && channel.isDirectExist() &&
         !User.getCurrent().isTecomBot()) {
-        channel.changeNameAndSlugFromId();
+        channel.changeNameAndSlugFromId().then(function(){
+          if(!User.getCurrent().team.isDirectActive(channel.slug)){
+            channel.active = false;
+          }
+        });
         var fakeDirect = findChannelBySlug(channel.slug);
         if (fakeDirect) {
           fakeDirect.setValues(channel.name, channel.slug, channel.description,
@@ -328,7 +339,8 @@ app.service('channelsService', [
       removeIsTypingMemberByChannelId: removeIsTypingMemberByChannelId,
       addMessagesPromise: addMessagesPromise,
       getChannelMembers: getChannelMembers,
-      setChannelLivedFileId: setChannelLivedFileId
+      setChannelLivedFileId: setChannelLivedFileId,
+      setDirectActiveState: setDirectActiveState
     };
   }
 ]);

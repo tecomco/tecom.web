@@ -30,14 +30,20 @@ app.controller('userProfileController', [
     };
 
     $scope.saveUsername = function () {
-      profileService.changeUsername($scope.usernameInput).then(function (infoMsg) {
-        $scope.user.username = $scope.usernameInput;
-        setInfoOrErrorMessage('info', infoMsg);
-      }).catch(function (errorMsg) {
-        setInfoOrErrorMessage('error', errorMsg);
-        $scope.usernameInput = '';
-      });
-      $scope.editUsernameActive = false;
+      if ($scope.usernameInput === '')
+        setInfoOrErrorMessage('error', 'نام کاربری نباید خالی باشد.');
+      else if ($scope.usernameInput.length > 16)
+        setInfoOrErrorMessage('error', 'نام کاربری حداکثر می تواند ۱۶ کاراکتر باشد.');
+      else {
+        profileService.changeUsername($scope.usernameInput).then(function (infoMsg) {
+          $scope.user.username = $scope.usernameInput;
+          setInfoOrErrorMessage('info', infoMsg);
+          $scope.editUsernameActive = false;
+        }).catch(function (errorMsg) {
+          setInfoOrErrorMessage('error', errorMsg);
+          $scope.usernameInput = '';
+        });
+      }
     };
 
     $scope.closeModal = function () {
@@ -56,12 +62,12 @@ app.controller('userProfileController', [
 
     $scope.leaveTeam = function (test) {
       profileService.leaveTeam()
-       .then(function () {
-         return AuthService.logout();
-       })
-       .then(function () {
-         $window.location.href = '/login';
-       });
+        .then(function () {
+          return AuthService.logout();
+        })
+        .then(function () {
+          $window.location.href = '/login';
+        });
     };
 
     function setInfoOrErrorMessage(type, message) {
@@ -85,7 +91,7 @@ app.controller('userProfileController', [
       }
     }
 
-    function clearPasswordFields(){
+    function clearPasswordFields() {
       $scope.oldPasswordInput = '';
       $scope.newPasswordInput = '';
       $scope.confirmPasswordInput = '';

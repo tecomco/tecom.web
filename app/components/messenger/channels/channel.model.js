@@ -1,8 +1,8 @@
 'use strict';
 
 app.factory('Channel', [
-  '$stateParams', 'textUtil', 'User', 'ArrayUtil',
-  function ($stateParams, textUtil, User, ArrayUtil) {
+  '$stateParams', 'textUtil', 'User', 'ArrayUtil', '$q',
+  function ($stateParams, textUtil, User, ArrayUtil, $q) {
 
     function Channel(name, slug, description, type, id, membersCount,
                      notifCount, memberId, liveFileId, teamId) {
@@ -12,7 +12,8 @@ app.factory('Channel', [
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
-                                            membersCount, notifCount, memberId, liveFileId, teamId) {
+                                            membersCount, notifCount, memberId,
+                                            liveFileId, teamId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -23,6 +24,7 @@ app.factory('Channel', [
       this.memberId = memberId;
       this.liveFileId = liveFileId;
       this.teamId = teamId;
+      this.active = true;
     };
 
     Channel.prototype.hasUnread = function () {
@@ -117,6 +119,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.changeNameAndSlugFromId = function () {
+      var deferred = $q.defer();
       var that = this;
       var ids = [];
       ids.push(parseInt(this.slug.slice(0, this.slug.indexOf(':'))));
@@ -127,14 +130,16 @@ app.factory('Channel', [
           var team = User.getCurrent().team;
           if (team.areMembersReady) {
             that.setNameAndSlugById(team, id);
+            deferred.resolve();
           } else {
             team.membersPromise.then(function () {
               that.setNameAndSlugById(team, id);
+              deferred.resolve();
             });
           }
-          return;
         }
       });
+      return deferred.promise;
     };
 
     Channel.prototype.setNameAndSlugById = function (team, id) {

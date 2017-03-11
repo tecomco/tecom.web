@@ -37,7 +37,7 @@ app.factory('AuthService', [
         password: password,
         teamSlug: domainUtil.getSubdomain()
       };
-      if(validationUtil.validateEmail(usernameOrEmail))
+      if (validationUtil.validateEmail(usernameOrEmail))
         data.email = usernameOrEmail;
       else
         data.username = usernameOrEmail;

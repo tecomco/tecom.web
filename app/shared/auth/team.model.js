@@ -50,7 +50,37 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
         return Team.TECOM_BOT.username;
       }
       var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', userId);
-      return (index !== -1) ? this.members[index].username : '';
+      if (index !== -1)
+        return this.members[index].username;
+      else {
+        return '';
+      }
+    };
+
+    Team.prototype.getMemberByUsername = function (username) {
+      if (username === Team.TECOM_BOT.username) {
+        return Team.TECOM_BOT;
+      }
+      var index = ArrayUtil.getIndexByKeyValue(this.members, 'username', username);
+      if (index !== -1)
+        return this.members[index];
+      else {
+        $log.error('Member Not Found !');
+        return null;
+      }
+    };
+
+    Team.prototype.getMemberById = function (id) {
+      if (id === Team.TECOM_BOT.id) {
+        return Team.TECOM_BOT;
+      }
+      var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', id);
+      if (index !== -1)
+        return this.members[index];
+      else {
+        $log.error('Member Not Found !');
+        return null;
+      }
     };
 
     Team.prototype.getActiveMembers = function () {
@@ -59,6 +89,15 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
       });
       return activeMembers;
     };
+
+    Team.prototype.isDirectActive = function(username){
+      var member = this.getMemberByUsername(username);
+      if(member) {
+        if(member.id === Team.TECOM_BOT.id)
+          return true;
+        return member.active;
+      }
+    }
 
     Team.TECOM_BOT = {
       id: 0,

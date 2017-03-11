@@ -2,9 +2,9 @@
 
 app.controller('teamProfileController', [
   '$scope', '$log', 'User', 'profileService', '$uibModalInstance', '$timeout',
-  'validationUtil', 'ArrayUtil', 'teamService',
+  'validationUtil', 'ArrayUtil', 'teamService', 'channelsService',
   function ($scope, $log, User, profileService, $uibModalInstance, $timeout,
-            validationUtil, ArrayUtil, teamService) {
+            validationUtil, ArrayUtil, teamService, channelsService) {
 
     initialize();
 
@@ -50,6 +50,7 @@ app.controller('teamProfileController', [
       profileService.removeTeamMember(member).then(function () {
         teamService.deactiveTeamMember(member.id);
         $scope.teamMembers = User.getCurrent().team.getActiveMembers();
+        channelsService.setDirectActiveState(member.username, false);
       }).catch(function (err) {
         $log.error('Error Removing Team Member:', err);
       });

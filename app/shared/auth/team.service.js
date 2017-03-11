@@ -8,13 +8,13 @@ app.factory('teamService', ['socket', 'User', 'ArrayUtil',
     });
 
     function deactiveTeamMember(memberId) {
-      var member = ArrayUtil.getElementByKeyValue(User.getCurrent().team.members,
-        'id', memberId);
-      member.active = false;
+      var member = User.getCurrent().team.getMemberById(memberId);
+      if (member)
+        member.active = false;
     }
 
     return {
-      deactiveTeamMember: deactiveTeamMember
+      deactiveTeamMember: deactiveTeamMember,
     };
 
   }]).run(['teamService', function (teamService) {
