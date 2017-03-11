@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>تیکام | موبایل</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width"> {% verbatim %}
+  <link rel="stylesheet" href="/static/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/lib/bootstrap-rtl/dist/css/bootstrap-rtl.min.css" />
+  <link rel="stylesheet" href="/static/lib/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/static/css/login-style.css" />
+  <link rel="shortcut icon" href="/favicon.png" type="image/png" /> {% endverbatim %}
+</head>
+
+<body>
+  <div class="container">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+      <div class="container-fluid">
+        <div class="tecom-form">
+          <div class="form-img-holder">
+            <i class="fa fa-frown-o"></i>
+          </div>
+          <div class="mobile-msg">
+            <p>تیکام در حال حاضر فقط روی دسکتاپ بهترین تجربه‌ی کاربری رو داره.</p>
+            <p>اما پیشنهاد ما اینه که قبل این‌که برین پای لپ‌تاپتون، تو نظرسنجیمون شرکت کنین تا به کار تیم ما جهت بدین! (نظر شما مهمه.)</p>
+            <div>
+              <a onclick="ga('send', 'event', 'Mobile', 'click', 'android')">
+                <i class="fa fa-android"></i>
+              </a>
+              <a onclick="ga('send', 'event', 'Mobile', 'click', 'ios')">
+                <i class="fa fa-apple"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4"></div>
+  </div>
+
+  <script>
+    if (window.location.origin === 'http://tecom.me') {
+      (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function() {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+      ga('create', 'UA-91549437-1', 'auto');
+      ga('send', 'pageview');
+
+      var _qevents = _qevents || [];
+      (function() {
+        var elem = document.createElement('script');
+        elem.src = (document.location.protocol == "https:" ? "https://secure" : "http://edge") + ".quantserve.com/quant.js";
+        elem.async = true;
+        elem.type = "text/javascript";
+        var scpt = document.getElementsByTagName('script')[0];
+        scpt.parentNode.insertBefore(elem, scpt);
+      })();
+      _qevents.push({
+        qacct: "p-bW-ygNu_RkgPt"
+      });
+
+      console.log('Analytics Loaded.');
+    }
+  </script>
+</body>
+
+</html>

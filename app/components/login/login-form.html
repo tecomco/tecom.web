@@ -5,9 +5,6 @@
       <div class="login-img-holder">
         <img src="static/img/tecom-logo-big.png" class="login-img" />
       </div>
-      <div class="login-form-heading">
-        <h4 class="login-form-title">نام کاربری (یا ایمیل) و رمز عبورت رو وارد کن...</h4>
-      </div>
       <div class="login-form-body">
         <form name="forms.login" ng-submit="login()" novalidate>
           <div class="form-group form-input">
@@ -32,7 +29,8 @@
                 </div>
             </label>
              -->
-          <input class="submit-btn" type="submit" value="ورود">
+          <input ng-hide="isLoading" class="submit-btn" type="submit" value="ورود" />
+          <button ng-show="isLoading" class="submit-btn" disabled><i class="fa fa-spinner fa-spin"></i></button>
         </form>
         <a href="{{passwordRecoveryUrl}}" class="btn btn-link">رمزت رو یادت رفته؟</a>
       </div>
