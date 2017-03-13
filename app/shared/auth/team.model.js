@@ -97,7 +97,7 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
           return true;
         return member.active;
       }
-    }
+    };
 
     Team.TECOM_BOT = {
       id: 0,

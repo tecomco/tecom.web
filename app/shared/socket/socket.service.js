@@ -8,10 +8,8 @@ app.factory('socket', [
 
     var teamSlug = domainUtil.getSubdomain();
 
-    var socketUri = teamSlug ? teamSlug + '.' + ENV.socketUri : ENV.socketUri;
-
-    self.socket = io.connect(socketUri, {
-      path: '/ws/',
+    self.socket = io.connect(ENV.socketUri, {
+      path: '/',
       query: {
         token: $localStorage.token,
         teamSlug: teamSlug
