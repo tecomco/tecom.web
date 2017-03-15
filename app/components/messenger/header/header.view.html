@@ -2,30 +2,11 @@
     <div class="name">
         <label>{{channel.name}}</label>
         <div class="det" ng-show="!channel.isDirect()">
-            <label ng-show="channel.getLocaleMembersCount()" dir="rtl">{{channel.getLocaleMembersCount()}}
-                عضو</label>
+            <label ng-show="channel.getLocaleMembersCount()" dir="rtl">{{channel.getLocaleMembersCount()}} عضو</label>
             <label>{{channel.description}}</label>
         </div>
     </div>
     <ul class="top-left">
-        <!--
-        <li>
-            <a  tooltip-placement="bottom" uib-tooltip="پاک کردن همه چیز :(" ng-click="clearCache()">
-                <i class="fa fa-code"></i>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <i class="zmdi zmdi-more-vert"></i>
-            </a>
-        </li>
-        <li>
-            <div class="head-search">
-                <input type="text" placeholder="جستجو"/>
-                <i class="zmdi zmdi-search"></i>
-            </div>
-        </li>
-        -->
         <li>
             <a ui-sref="messenger.home({slug: null})">
                 <i class="zmdi zmdi-close"></i>
@@ -76,11 +57,9 @@
             <div ng-show="!$ctrl.editMode" class="container-fluid">
                 <div class="col-sm-6">
                     <div class="g-title">
-                        <i ng-class="$ctrl.channel.isPrivate() ? 'fa fa-lock':'fa fa-globe'"></i>
-                        <!-- <span>{{$ctrl.channel.name}}</span> -->
+                        <i ng-class="$ctrl.channel.isPrivate() ? 'fa fa-lock' : 'fa fa-globe'"></i>
                         <input type="text" disabled="true" class="input-text title" value={{$ctrl.channel.name}} />
-                        <div class="" ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
-                            <!-- <button tooltip-placement="bottom" uib-tooltip="ویرایش" class="" ng-click="$ctrl.editChannel()"> -->
+                        <div ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
                             <button class="btn-modal" ng-click="$ctrl.editChannel()">
                               <span class="zmdi zmdi-edit"></span>
                               <span>ویرایش</span>
@@ -88,29 +67,13 @@
                         </div>
                     </div>
                     <div class="g-details">
-                        <!-- <label>توضیحات گروه :</label> -->
                         <input type="text" disabled="true" class="input-text" value={{$ctrl.channel.description}} />
                     </div>
-                    <!--<div class="g-settings">-->
-                    <!--<i class="zmdi zmdi-settings"></i>-->
-                    <!--<h3>تنظیمات</h3>-->
-                    <!--<label class="ws-checkbox">-->
-                    <!--<span>اعلان ها</span>-->
-                    <!--<input type="checkbox" ng-model="notifCheckbox">-->
-                    <!--<div class="checkbox-stat">-->
-                    <!--<i class="fa fa-check"></i>-->
-                    <!--</div>-->
-                    <!--</label>-->
-                    <!--</div>-->
                 </div>
                 <div class="col-sm-6 modal-left-part">
                     <div class="g-title">
                         <i class="zmdi zmdi-accounts"></i>
                         <h3>اعضای گروه</h3>
-                        <!-- <div class="modal-input modal-input-details">
-                        <button tooltip-placement="bottom" uib-tooltip="اضافه کردن  به اعضای گروه" ng-show="!$ctrl.addingMemberActive" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-account-add"></span></button>
-                        <button tooltip-placement="bottom" uib-tooltip="ذخیره" ng-show="$ctrl.addingMemberActive" ng-click="$ctrl.addMembersClick()" class="modal-btn modal-btn-details"><span class="zmdi zmdi-save"></span></button>
-                    </div> -->
                         <button class="btn-modal" ng-click="$ctrl.addMembersClick()" ng-hide="$ctrl.addingMemberActive">
                           <span class="zmdi zmdi-account-add"></span>
                           <span>اضافه کردن  به اعضای گروه</span>
@@ -137,7 +100,6 @@
                 </div>
                 <div class="clearfix"></div>
             </div>
-
         </div>
     </script>
 </div>
