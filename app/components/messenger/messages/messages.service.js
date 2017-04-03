@@ -76,6 +76,7 @@ app.service('messagesService', [
               dataToBeSend.lastSavedMessageId = lastMessage.id;
             }
             socket.emit('message:get', dataToBeSend, function (res) {
+              $log.info('DEBUG - Messages from server count:', res.messages.length, channel.slug);
               channelsService.updateChannelNotification(channel.id, 'num',
                 res.notifCount);
               if (res.lastDatetime) {
@@ -96,9 +97,15 @@ app.service('messagesService', [
           });
       }));
       Promise.all(messagePromises).then(function () {
-        bulkSaveMessage(messages).then(function () {
+        $log.info('DEBUG - All messages promises in MessageService resolved.', channel.slug);
+        if (messages.length > 0) {
+          bulkSaveMessage(messages).then(function () {
+            $log.info('DEBUG - Bulk saved.', channel.slug);
+            deferred.resolve();
+          });
+        } else {
           deferred.resolve();
-        });
+        }
       });
       return deferred.promise;
     }

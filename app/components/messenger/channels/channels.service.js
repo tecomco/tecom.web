@@ -268,8 +268,10 @@ app.service('channelsService', [
         self.messagesPromise = [];
       }
       self.messagesPromise.push(promise);
+      $log.info('DEBUG - initChannelsCount:', self.initChannelsCount, ', messagesPromise:', self.messagesPromise.length);
       if (self.messagesPromise.length == self.initChannelsCount) {
         $q.all(self.messagesPromise).then(function () {
+          $log.info('DEBUG - All messages promises in ChannelService resolved.');
           $rootScope.isLoading = false;
         });
       }
