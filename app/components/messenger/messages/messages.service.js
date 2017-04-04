@@ -46,7 +46,6 @@ app.service('messagesService', [
      */
 
     $rootScope.$on('channel:new', function (event, channel) {
-      $log.info('DEBUG - MessageService channel:new called. Channel:', channel);
       var promise;
       if (channel.isDirect() && !channel.isDirectExist()) {
         var deferred = $q.defer();

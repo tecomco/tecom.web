@@ -14,19 +14,7 @@ app.service('channelsService', [
      * @summary Socket listeners
      */
 
-    socket.on('init', function (results) {
-      self.channels = [];
-      self.initChannelsCount = results.length;
-      if (self.initChannelsCount === 0) {
-        $rootScope.isLoading = false;
-      }
-      $log.info('DEBUG - Channels init called. Results:', results);
-      results.forEach(function (result) {
-        var channel = createAndPushChannel(result);
-        $rootScope.$emit('channel:new', channel);
-      });
-      $rootScope.$broadcast('channels:updated', 'init');
-    });
+    initialize();
 
     socket.on('channel:new', function (result) {
       var channel = createAndPushChannel(result.channel);
@@ -71,6 +59,25 @@ app.service('channelsService', [
     /**
      * @summary Methods
      */
+
+    function initialize() {
+      getInitialChannels();
+    }
+
+    function getInitialChannels() {
+      socket.emit('channel:init', null, function (results) {
+        self.channels = [];
+        self.initChannelsCount = results.length;
+        if (self.initChannelsCount === 0) {
+          $rootScope.isLoading = false;
+        }
+        results.forEach(function (result) {
+          var channel = createAndPushChannel(result);
+          $rootScope.$emit('channel:new', channel);
+        });
+        $rootScope.$broadcast('channels:updated', 'init');
+      });
+    }
 
     function setChannelLivedFileId(channelId, fileId) {
       var channel = findChannelById(channelId);
