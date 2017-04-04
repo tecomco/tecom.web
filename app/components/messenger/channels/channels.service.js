@@ -20,6 +20,7 @@ app.service('channelsService', [
       if (self.initChannelsCount === 0) {
         $rootScope.isLoading = false;
       }
+      $log.info('DEBUG - Channels init called. Results:', results);
       results.forEach(function (result) {
         var channel = createAndPushChannel(result);
         $rootScope.$emit('channel:new', channel);
@@ -268,10 +269,8 @@ app.service('channelsService', [
         self.messagesPromise = [];
       }
       self.messagesPromise.push(promise);
-      $log.info('DEBUG - initChannelsCount:', self.initChannelsCount, ', messagesPromise:', self.messagesPromise.length);
       if (self.messagesPromise.length == self.initChannelsCount) {
         $q.all(self.messagesPromise).then(function () {
-          $log.info('DEBUG - All messages promises in ChannelService resolved.');
           $rootScope.isLoading = false;
         });
       }
