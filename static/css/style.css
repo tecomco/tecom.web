@@ -393,24 +393,22 @@ ul.dropdown-menu {
 }
 
 .danger-btn {
-    width: 100%;
-    background: rgb(230, 77, 77);
-    padding: 8px 0;
-    color: #fff;
-    border-radius: 4px;
+    padding: 4px 16px;
     border: 0;
-    font-size: 18px;
-    text-align: center;
-    margin-top: 8px;
+    color: rgb(230, 77, 77);
+    background: #fff;
     transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
 }
-
+.popover{
+    font-family: "iransans";
+    font-weight: 200;
+}
 .danger-btn:hover, .danger-btn:active, .danger-btn:focus {
-    background: rgba(230, 77, 77, 0.8);
-    color: #fff;
+    color: rgba(230, 77, 77, 0.8);
+    background: #fff;
 }
 
 .modal-body.two-part-modal .profile-modal-img i.zmdi {
@@ -727,8 +725,6 @@ ul.dropdown-menu {
     border-right: 1px solid #eee;
 }
 
-.doc-section-body {}
-
 .doc-tabs {
     direction: ltr;
     display: block;
@@ -782,14 +778,10 @@ ul.dropdown-menu {
     background: rgba(0, 0, 0, 0.1);
 }
 
-#codeView {
+.code-view {
     table-layout: fixed;
     width: 100%;
-    direction: rtl;
-}
 
-#codeView * {
-    direction: ltr;
 }
 
 .linenums li {
@@ -810,6 +802,8 @@ ul.dropdown-menu {
     list-style-type: decimal;
     font-family: monospace;
     cursor: pointer;
+    display: block;
+    width: 100%;
 }
 
 .linenums li:hover {
@@ -833,12 +827,18 @@ ul.dropdown-menu {
 }
 
 pre.prettyprint {
-    width: auto;
-    overflow: auto;
-    max-height: 100vh;
+    width: 100%;
     border: 0;
+    overflow-y: scroll;
+    height: calc(100vh - 58px); 
+    direction: rtl;
 }
-
+pre.prettyprint *{
+    direction: ltr;
+}
+ol.linenums{
+    overflow-x: scroll;  
+}
 .doc-section {
     background: #333;
     height: 100vh;
@@ -1109,6 +1109,7 @@ pre.prettyprint {
     border-radius: 6px;
     float: right;
     margin-top: 10px;
+    margin-left: 5px;
 }
 
 .dl-btn i {
@@ -1248,7 +1249,7 @@ pre.prettyprint {
     font-weight: 100;
 }
 
-.modal [type="submit"], .modal-btn {
+.modal [type="submit"]:not(.no-style), .modal-btn:not(.no-style) {
     display: block;
     font-weight: 200;
     width: 150px;
@@ -1332,11 +1333,11 @@ pre.prettyprint {
     opacity: 1;
 }
 
-.modal [type="submit"]:hover, .modal .modal-btn:hover {
+.modal [type="submit"]:not(.no-style):hover, .modal .modal-btn:not(.no-style):hover {
     background: rgba(9, 148, 92, 0.8);
 }
 
-.modal [type="submit"]:focus, .modal [type="submit"]:active, .modal .modal-btn:focus, .modal .modal-btn:active {
+.modal [type="submit"]:not(.no-style):focus, .modal [type="submit"]:not(.no-style):active, .modal .modal-btn:not(.no-style):focus, .modal .modal-btn:not(.no-style):active {
     background: rgba(9, 148, 92, 0.8);
     color: #f3f3f3;
 }
@@ -1440,7 +1441,7 @@ pre.prettyprint {
   position: relative;
 }
 .relative-parent .btn-modal{
-  top: 0;
+  top: 8px;
 }
 .btn-modal {
     display: inline-block;
@@ -1474,7 +1475,15 @@ pre.prettyprint {
     font-size: 24px;
     width: 80%;
 }
-
+.change-pass-btn{
+    border: 0;
+    font-weight: 100;
+    color: #aaa;
+}
+.change-pass-btn:active, .modal .change-pass-btn:hover, .change-pass-btn:focus{
+    color: #aaa;
+    background: #fff;
+}
 .t-m-btn {
     background: none;
     border: 0;
@@ -1507,10 +1516,13 @@ pre.prettyprint {
     color: rgba(36, 167, 114, 0.9);
 }
 
-.modal-body.two-part-modal .input-text[disabled="true"] {
+.modal-body.two-part-modal .input-text[disabled="disabled"] {
     border: 1px solid rgba(0, 0, 0, 0);
     color: #888;
     background: none;
+}
+.modal-body.two-part-modal .title.input-text.p-input[type="text"] {
+    width: 70%;
 }
 
 .modal-body.two-part-modal .g-title .btn-modal>* {
