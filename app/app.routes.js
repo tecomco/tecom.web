@@ -13,7 +13,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/messenger',
       views: {
         '': {
-          templateUrl: 'app/components/messenger/messenger.view.html'
+          templateUrl: 'app/components/messenger/messenger.view.html?v=1.0.0'
         },
         'channels@messenger': {
           templateUrl: 'app/components/messenger/channels/channels.view.html'
@@ -34,7 +34,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
           templateUrl: 'app/components/messenger/header/header.view.html'
         },
         'files@messenger.messages': {
-          templateUrl: 'app/components/files/files.view.html'
+          templateUrl: 'app/components/files/files.view.html?v=1.0.0'
         }
       },
       params: {
