@@ -58,7 +58,7 @@
                 <div class="col-sm-6">
                     <div class="g-title">
                         <i ng-class="$ctrl.channel.isPrivate() ? 'fa fa-lock' : 'fa fa-globe'"></i>
-                        <input type="text" disabled="true" class="input-text title" value={{$ctrl.channel.name}} />
+                        <input type="text" disabled="disabled" class="input-text title" value={{$ctrl.channel.name}} />
                         <div ng-show="$ctrl.isAdmin  && (!$ctrl.editMode)">
                             <button class="btn-modal" ng-click="$ctrl.editChannel()">
                               <span class="zmdi zmdi-edit"></span>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     <div class="g-details">
-                        <input type="text" disabled="true" class="input-text" value={{$ctrl.channel.description}} />
+                        <input type="text" disabled="disabled" class="input-text" value={{$ctrl.channel.description}} />
                     </div>
                 </div>
                 <div class="col-sm-6 modal-left-part">
