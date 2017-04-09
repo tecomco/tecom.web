@@ -32,7 +32,7 @@ app.config(['$provide', function ($provide) {
             $log.info('Error log sent to server successfully. We will fix it soon.');
           })
           .catch(function () {
-            $log.info('...وای به روزی که بگندد نمک');
+            $log.error('Error sending error log to server');
           });
       };
     }

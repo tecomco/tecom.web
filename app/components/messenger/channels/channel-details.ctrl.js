@@ -81,8 +81,9 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         self.channelMembers = [];
         channelsService.getChannelMembers(self.channel.id).then(function (event) {
           event.members.forEach(function (channelMember) {
-            self.listItems.push(makeListItem(channelMember));
-            self.channelMembers.push(makeListItem(channelMember));
+            var item = makeListItem(channelMember);
+            self.listItems.push(item);
+            self.channelMembers.push(item);
           });
         }).catch(function (err) {
         });
@@ -182,10 +183,9 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
 
     function makeListItem(member) {
       var item = {
-        full_name: member.full_name,
         member_id: (member.member_id) ? member.member_id : member.id,
         channelMemberId: (member.member_id) ? member.id : null,
-        image: member.image,
+        image: User.getCurrent().team.getImageById(member.member_id),
         username: member.username,
         isChannelMember: (member.member_id) ? true : false,
         isMemberSelected: false

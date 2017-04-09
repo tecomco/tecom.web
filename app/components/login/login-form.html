@@ -5,6 +5,9 @@
       <div class="login-img-holder">
         <img src="static/img/tecom-logo-big.png" class="login-img" />
       </div>
+      <div class="login-redirect-error" ng-if="redirectError">
+        <label>{{redirectError}}</label>
+      </div>
       <div class="login-form-body">
         <form name="forms.login" ng-submit="login()" novalidate>
           <div class="form-group form-input">

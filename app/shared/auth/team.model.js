@@ -99,6 +99,15 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
       }
     };
 
+    Team.prototype.getImageById = function(id){
+      var member = this.getMemberById(id);
+      if(member && member.image) {
+        return member.image;
+      }
+      else
+        return '/static/img/user-def.png';
+    };
+
     Team.TECOM_BOT = {
       id: 0,
       username: 'تیک-بات'

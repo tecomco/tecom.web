@@ -74,7 +74,7 @@
             </div>
             <div class="g-members">
               <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {username : $ctrl.newChannel.search}" class="g-m-one">
-                <img ng-src="static/img/user-def.png" />
+                <img ng-src="{{teamMember.image || '/static/img/user-def.png'}}" />
                 <label dir="rtl">@{{teamMember.username}}</label>
                 <label class="ws-checkbox">
                   <input type="checkbox" id="selectCheckbox" ng-model="teamMember.selected"/>
