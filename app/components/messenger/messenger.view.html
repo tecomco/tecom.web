@@ -65,17 +65,17 @@
             </div>
             <div class="col-sm-9">
               <div class="relative-parent profile-info">
-                <label class="label">@</label>
-                <div ng-show="!editUsernameActive">
-                  <label class="label">{{user.username}}</label>
-                  <button class="btn-modal" ng-click="editUsername()">
+                <form ng-submit="saveUsername()">
+                  <label class="label">@</label>
+                  <input type="text" ng-value="user.username" ng-disabled="!editUsernameActive" class="input-text title p-input" ng-model="usernameInput"/>
+                  <button ng-hide="editUsernameActive" class="btn-modal" ng-click="editUsername()">
                     <span class="zmdi zmdi-edit"></span>
                     <span>ویرایش نام کاربری</span>
                   </button>
-                </div>
-                <form ng-show="editUsernameActive" ng-submit="saveUsername()">
-                  <input type="text" class="change-user" ng-model="usernameInput" placeholder="{{user.username}}"/>
-                  <input type="submit" value="ذخیره" class="btn-modal btn-adjust">
+                  <button ng-show="editUsernameActive" type="submit" class="btn-modal no-style" ng-click="saveUsername()">
+                    <span class="zmdi zmdi-check"></span>
+                    <span>ذخیره</span>
+                  </button>
                 </form>
               </div>
             </div>
@@ -87,7 +87,7 @@
         <div class="col-sm-9">
           <div>
             <div class="modal-input">
-              <button ng-show="!changePasswordActive" type="button" class="btn btn-default modal-btn" ng-click="changePassword()">تغییر رمز عبور</button>
+              <button ng-show="!changePasswordActive" type="button" class="btn btn-default modal-btn change-pass-btn no-style" ng-click="changePassword()">تغییر رمز عبور</button>
             </div>
             <div ng-show="changePasswordActive" class="change-pass">
               <form name="forms.password" ng-submit="savePassword()" novalidate>
@@ -123,14 +123,10 @@
         </div>
         <div class="clearfix"></div>
         <div class="leave">
-          <div class="col-sm-4">
+          <div class="col-sm-3">
           </div>
-          <div class="col-sm-4">
-            <div class="modal-input">
-              <confirm-dialog button-name="خروج از تیم" message="مطمئنی که می خوای این تیم رو ترک کنی ؟" cancel="نه، حواسم نبود" ok="آره" confirm-func="leaveTeam"></confirm-dialog>
-            </div>
-          </div>
-          <div class="col-sm-4">
+          <div class="col-sm-9">
+              <confirm-dialog button-name="خروج از تیم" message="مطمئنی که می خوای این تیم رو ترک کنی؟" cancel="نه، حواسم نبود" ok="آره" confirm-func="leaveTeam"></confirm-dialog>
           </div>
           <div class="clearfix">
           </div>

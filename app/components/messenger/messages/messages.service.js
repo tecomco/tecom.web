@@ -96,9 +96,13 @@ app.service('messagesService', [
           });
       }));
       Promise.all(messagePromises).then(function () {
-        bulkSaveMessage(messages).then(function () {
+        if (messages.length > 0) {
+          bulkSaveMessage(messages).then(function () {
+            deferred.resolve();
+          });
+        } else {
           deferred.resolve();
-        });
+        }
       });
       return deferred.promise;
     }
