@@ -160,6 +160,14 @@ app.factory('Channel', [
       return this.isRemoved || false;
     };
 
+    Channel.prototype.setIsArchived = function () {
+      this.isArchived = true;
+    };
+
+    Channel.prototype.getIsArchived = function () {
+      return this.isArchived || false;
+    };
+
     Channel.TYPE = {
       PUBLIC: 0,
       PRIVATE: 1,

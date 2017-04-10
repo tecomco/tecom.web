@@ -1,8 +1,9 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
-  '$log', 'channelsService', 'User', 'ArrayUtil', 'Channel',
-  function ($scope, $uibModalInstance, $log, channelsService, User,
+app.controller('channelDetailsController', ['$scope', '$state',
+  '$uibModalInstance', '$log', 'channelsService', 'User', 'ArrayUtil',
+  'Channel',
+  function ($scope, $state, $uibModalInstance, $log, channelsService, User,
             ArrayUtil, Channel) {
 
     var self = this;
@@ -164,7 +165,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     self.getListItemCSS = function (listMember) {
       if (self.addingMemberActive) {
         if (listMember.isChannelMember ||
-            ArrayUtil.contains(self.addedMemberIds, listMember.member_id))
+          ArrayUtil.contains(self.addedMemberIds, listMember.member_id))
           return {'background-color': 'rgba(36, 167, 114, 0.2)'};
         else
           return {'background-color': 'white'};
@@ -179,6 +180,16 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
       } else {
         return false;
       }
+    };
+
+    self.archiveChannel = function () {
+      channelsService.archiveChannel(self.channel.id)
+        .then(function () {
+          self.closeDetailsModal();
+        })
+        .catch(function () {
+
+        });
     };
 
     function makeListItem(member) {

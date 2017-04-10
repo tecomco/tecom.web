@@ -97,6 +97,11 @@ app.controller('messagesController', [
       filesService.viewFile(fileId);
     };
 
+    $scope.removeAndCloseChannel = function(channel){
+      channelsService.removeChannel(channel.id);
+      $state.go('messenger.home');
+    };
+
     function initialize() {
       setCurrentChannel().then(function(){
         if ($scope.channel) {

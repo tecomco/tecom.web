@@ -2,9 +2,9 @@
 
 app.service('channelsService', [
   '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state', 'User',
-  'teamService',
+  'teamService', 'ArrayUtil',
   function ($rootScope, $http, $q, $log, socket, Channel, $state, User,
-  teamService) {
+            teamService, ArrayUtil) {
 
     var self = this;
 
@@ -56,6 +56,17 @@ app.service('channelsService', [
       }
     });
 
+    socket.on('channel:archived', function (result) {
+      var channel = findChannelById(result.channelId);
+      channel.setIsArchived();
+      if (channel && getCurrentChannel() &&
+        channel.id === getCurrentChannel().id) {
+        $state.go('messenger.home');
+        removeChannel(channel.id);
+      }
+      $rootScope.$broadcast('channels:updated');
+    });
+
     /**
      * @summary Methods
      */
@@ -85,7 +96,7 @@ app.service('channelsService', [
       $rootScope.$broadcast('channels:updated');
     }
 
-    function setDirectActiveState(username, state){
+    function setDirectActiveState(username, state) {
       var channel = findChannelBySlug(username);
       channel.active = state;
     }
@@ -94,10 +105,9 @@ app.service('channelsService', [
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
         data.liveFileId, data.teamId);
-      if (channel.isDirect() && channel.isDirectExist() &&
-        !User.getCurrent().isTecomBot()) {
-        channel.changeNameAndSlugFromId().then(function(){
-          if(!User.getCurrent().team.isDirectActive(channel.slug)){
+      if (channel.isDirect() && channel.isDirectExist() && !User.getCurrent().isTecomBot()) {
+        channel.changeNameAndSlugFromId().then(function () {
+          if (!User.getCurrent().team.isDirectActive(channel.slug)) {
             channel.active = false;
           }
         });
@@ -271,6 +281,10 @@ app.service('channelsService', [
       $rootScope.$broadcast('channels:updated');
     }
 
+    function broadcastUpdate() {
+      $rootScope.$broadcast('channels:updated');
+    }
+
     function addMessagesPromise(promise) {
       if (!self.messagesPromise) {
         self.messagesPromise = [];
@@ -322,6 +336,27 @@ app.service('channelsService', [
       });
     }
 
+    function removeChannel(channelId) {
+      ArrayUtil.removeElementByKeyValue(self.channels, 'id', channelId);
+      $rootScope.$broadcast('channels:updated');
+    }
+
+    function archiveChannel(channelId) {
+      var defer = $q.defer();
+      var data = {channelId: channelId};
+      socket.emit("channel:archive", data, function (results) {
+        if (results.status) {
+          console.log("Channel succesfully Archived");
+          defer.resolve();
+        }
+        else {
+          console.log("Error Archiving Channel : ", results.message);
+          defer.reject();
+        }
+      });
+      return defer.promise;
+    }
+
     /**
      * @summary Public API
      */
@@ -348,7 +383,10 @@ app.service('channelsService', [
       addMessagesPromise: addMessagesPromise,
       getChannelMembers: getChannelMembers,
       setChannelLivedFileId: setChannelLivedFileId,
-      setDirectActiveState: setDirectActiveState
+      setDirectActiveState: setDirectActiveState,
+      archiveChannel: archiveChannel,
+      removeChannel: removeChannel,
+      broadcastUpdate: broadcastUpdate
     };
   }
 ]);
