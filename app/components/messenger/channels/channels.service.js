@@ -57,11 +57,6 @@ app.service('channelsService', [
     socket.on('channel:archived', function (result) {
       var channel = findChannelById(result.channelId);
       channel.setIsArchived();
-      if (channel && getCurrentChannel() &&
-        channel.id === getCurrentChannel().id) {
-        $state.go('messenger.home');
-        removeChannel(channel.id);
-      }
       $rootScope.$broadcast('channels:updated');
     });
 
