@@ -192,6 +192,10 @@ app.controller('channelDetailsController', ['$scope', '$state',
         });
     };
 
+    self.archiveChannelPermission = function(){
+      return User.getCurrent().isAdmin
+    };
+
     function makeListItem(member) {
       var item = {
         member_id: (member.member_id) ? member.member_id : member.id,

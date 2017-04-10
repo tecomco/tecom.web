@@ -69,7 +69,7 @@
                     <div class="g-details">
                         <input type="text" disabled="disabled" class="input-text" value={{$ctrl.channel.description}} />
                     </div>
-                    <div>
+                    <div ng-show="$ctrl.archiveChannelPermission()">
                         <button ng-click="$ctrl.archiveChannel()">
                             <span class="fa fa-times"></span>
                             <span>حذف گروه</span>
