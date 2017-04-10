@@ -66,6 +66,12 @@
           <i class="fa fa-download"></i>
         </a>
       </div>
+      <div ng-show="viewState()=='view'" ng-click="makeViewFileLive()" class="doc-tab" style="float: right">
+        <div class="live-btn" >
+          <label dir="ltr">LIVE</label>
+          <i class="fa fa-circle"></i>
+        </div>
+      </div>
     </div>
     <div ng-show="viewState() === 'live'">
       <div class="doc-section-body" ng-show="!fileLoading">
