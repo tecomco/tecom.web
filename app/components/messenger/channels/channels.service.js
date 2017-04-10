@@ -14,8 +14,6 @@ app.service('channelsService', [
      * @summary Socket listeners
      */
 
-    initialize();
-
     socket.on('channel:new', function (result) {
       var channel = createAndPushChannel(result.channel);
       if (result.channel.creatorId === User.getCurrent().memberId) {
@@ -68,12 +66,16 @@ app.service('channelsService', [
     });
 
     /**
-     * @summary Methods
+     * @summary RootScope listeners.
      */
 
-    function initialize() {
-      getInitialChannels();
-    }
+     $rootScope.$on('socket:connected', function () {
+       getInitialChannels();
+     });
+
+    /**
+     * @summary Methods
+     */
 
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
