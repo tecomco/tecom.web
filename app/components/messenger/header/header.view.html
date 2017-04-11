@@ -70,10 +70,7 @@
                         <input type="text" disabled="disabled" class="input-text" value={{$ctrl.channel.description}} />
                     </div>
                     <div ng-show="$ctrl.archiveChannelPermission()">
-                        <button ng-click="$ctrl.archiveChannel()">
-                            <span class="fa fa-times"></span>
-                            <span>حذف گروه</span>
-                        </button>
+                      <confirm-dialog button-name="حذف گروه" message="مطمئنی که می خوای این گروه رو حذف کنی؟" cancel="نه، حواسم نبود" ok="آره" confirm-func="$ctrl.archiveChannel"></confirm-dialog>
                     </div>
                 </div>
                 <div class="col-sm-6 modal-left-part">
