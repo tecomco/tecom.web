@@ -801,7 +801,6 @@ ul.dropdown-menu {
     user-select: none;
     list-style-type: decimal;
     font-family: monospace;
-    cursor: pointer;
     display: block;
     width: 100%;
 }
@@ -830,14 +829,14 @@ pre.prettyprint {
     width: 100%;
     border: 0;
     overflow-y: scroll;
-    height: calc(100vh - 58px); 
+    height: calc(100vh - 58px);
     direction: rtl;
 }
 pre.prettyprint *{
     direction: ltr;
 }
 ol.linenums{
-    overflow-x: scroll;  
+    overflow-x: scroll;
 }
 .doc-section {
     background: #333;
