@@ -145,7 +145,7 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
     $scope.makeViewFileLive = function(){
       var file = $scope.vm.viewFile;
       filesService.makeFileLive(file.channelId, file.id, file.name);
-    }
+    };
     broadcastViewState();
 
     function scrollToLine(file, start, end) {
