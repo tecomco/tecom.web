@@ -92,13 +92,13 @@ app.factory('Message', [
       } else if (this.type === Message.TYPE.NOTIF.CHANNEL_EDITED) {
         body = 'اطلاعات گروه تغییر کرد.';
       } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
-        body = 'فایل "' + this.additionalData.fileName + '" ، ' +
+        body = 'فایل "' + this.additionalData.fileName + '"، ' +
           '<span class="live-btn"><label dir="ltr">LIVE</label>' +
-          '<i class="fa fa-circle"></i></span>' + ' شد';
+          '<i class="fa fa-circle"></i></span>' + ' شد.';
       } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
-        body = 'فایل "' + this.additionalData.fileName + '" از حالت ' +
+        body = 'فایل "' + this.additionalData.fileName + '"، از حالت ' +
           '<span class="live-btn"><label dir="ltr">LIVE</label>' +
-          '<i class="fa fa-circle"></i></span>' + 'خارج شد';
+          '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
       }
       return body;
     };
