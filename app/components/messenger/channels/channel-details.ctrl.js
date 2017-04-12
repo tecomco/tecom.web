@@ -188,7 +188,9 @@ app.controller('channelDetailsController', ['$scope', '$state',
           self.closeDetailsModal();
         })
         .catch(function () {
-
+          /*
+          Handle Archive Channel Error;
+          */
         });
     };
 

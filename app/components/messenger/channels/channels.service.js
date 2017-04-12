@@ -56,17 +56,19 @@ app.service('channelsService', [
 
     socket.on('channel:archived', function (result) {
       var channel = findChannelById(result.channelId);
-      channel.setIsArchived();
-      $rootScope.$broadcast('channels:updated');
+      if (channel) {
+        channel.setIsArchived();
+        $rootScope.$broadcast('channels:updated');
+      }
     });
 
     /**
      * @summary RootScope listeners.
      */
 
-     $rootScope.$on('socket:connected', function () {
-       getInitialChannels();
-     });
+    $rootScope.$on('socket:connected', function () {
+      getInitialChannels();
+    });
 
     /**
      * @summary Methods
