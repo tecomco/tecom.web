@@ -34,8 +34,8 @@ var app = angular.module('LoginApp', [
     }
   ])
   .controller('loginController', [
-    '$scope', '$log', '$window', '$location', '$http', 'AuthService',
-    function ($scope, $log, $window, $location, $http, AuthService) {
+    '$scope', '$log', '$window', '$location', '$http', '$localStorage', 'AuthService',
+    function ($scope, $log, $window, $location, $http, $localStorage, AuthService) {
 
       $scope.hasLoginError = false;
       $scope.submitClicked = false;
@@ -43,6 +43,8 @@ var app = angular.module('LoginApp', [
 
       $scope.passwordRecoveryUrl = getPasswordRecoveryUrl();
       $scope.redirectError = getRedirectError();
+
+      loginIfTokenAvailable();
 
       $scope.login = function () {
         var isFormNotEmpty = $scope.forms.login.email.$valid &&
@@ -73,6 +75,14 @@ var app = angular.module('LoginApp', [
         }
       };
 
+      function loginIfTokenAvailable() {
+        var token = $location.search().token;
+        if (token) {
+          $localStorage.token = token;
+          $window.location.assign('/messenger');
+        }
+      }
+
       function getPasswordRecoveryUrl() {
         var splitHost = $window.location.host.split('.');
         var domain = splitHost[1];
@@ -82,7 +92,6 @@ var app = angular.module('LoginApp', [
 
       function getRedirectError() {
         var error = $location.search().err;
-        console.log('err:', error);
         switch (error) {
           case 'InvalidToken':
             return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
