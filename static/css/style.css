@@ -1,4 +1,4 @@
-@font-face {
+doc-tab@font-face {
     font-family: 'iransans';
     src: url("../font/IRANSansWeb_UltraLight.eot"), url("../font/IRANSansWeb_UltraLight.woff") format("woff"), url("../font/IRANSansWeb_UltraLight.ttf") format("truetype"), url("../font/IRANSansWeb_UltraLight.woff2") format("woff2");
     font-weight: 100
@@ -746,6 +746,10 @@ ul.dropdown-menu {
     -webkit-transition: all 0.3s ease;
 }
 
+.doc-tab-icon {
+  margin: 5px;
+}
+
 .doc-tab:hover {
     color: rgba(0, 0, 0, 0.6);
 }
@@ -1246,6 +1250,14 @@ ol.linenums{
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     font-weight: 100;
+}
+
+.modal-msg-part {
+  text-align: center;
+}
+
+.modal-msg {
+  display: block;
 }
 
 .modal [type="submit"]:not(.no-style), .modal-btn:not(.no-style) {

@@ -165,12 +165,14 @@
               <button ng-click="inviteMember()" ng-show="!inviteMode" class="btn btn-default modal-btn">دعوت عضو به تیم!</button>
           </div> -->
           <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation()" novalidate>
-            <div class="col-md-2">
-
-            </div>
+            <div class="col-md-2"></div>
             <div class="col-sm-7 col-md-5 no-padding">
-              <div class="input-modal">
-                <input type="text" name="email" ng-model="invitedEmail" placeholder="ایمیل هم‌تیمی جدیدت رو وارد کن" required/>
+              <div>
+                <input type="text" name="email" ng-model="invitedEmail" placeholder="ایمیل هم‌تیمی جدیدت رو وارد کن..." required/>
+              </div>
+              <div class="modal-msg-part">
+                <span class="modal-msg modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
+                <span class="modal-msg" ng-show="showInfoMessage">{{infoMessage}}</span>
               </div>
             </div>
             <div class="col-sm-5 col-md-3 no-padding">
@@ -178,11 +180,9 @@
                 <input type="submit" value="دعوت به تیم"/>
               </div>
             </div>
-            <div class="col-md-2">
-            </div>
+            <div class="col-md-2"></div>
           </form>
-          <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
-          <span ng-show="showInfoMessage">{{infoMessage}}</span>
+
         </div>
       </div>
     </div>

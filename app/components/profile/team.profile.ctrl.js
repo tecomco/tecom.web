@@ -15,10 +15,11 @@ app.controller('teamProfileController', [
 
     $scope.sendInvitation = function () {
       if (!$scope.invitedEmail)
-        setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن');
+        setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن.');
       else if (validationUtil.validateEmail($scope.invitedEmail)) {
         profileService.sendInvitationEmail($scope.invitedEmail)
           .then(function () {
+            $scope.invitedEmail = '';
             setInfoOrErrorMessage('info', 'ایمیل دعوت به تیم با موفقیت ارسال شد.');
             $scope.inviteMode = false;
           }).catch(function (err) {

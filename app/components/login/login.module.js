@@ -14,7 +14,7 @@ var app = angular.module('LoginApp', [
           url: '/login',
           views: {
             '': {
-              templateUrl: 'app/components/login/login-form.html'
+              templateUrl: 'app/components/login/login-form.html?v=1.0.0'
             }
           },
           onEnter: function ($window) {

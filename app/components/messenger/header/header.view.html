@@ -92,7 +92,7 @@
                     <div class="g-members">
                         <div ng-repeat="member in $ctrl.listItems | orderBy : 'username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-style="$ctrl.getListItemCSS(member)" ng-click="$ctrl.pushMember(member)">
                             <div>
-                                <img ng-src="{{membe.image}}" />
+                                <img ng-src="{{member.image}}" />
                                 <label>@{{member.username}}</label>
                                 <button ng-show="$ctrl.showRemoveIcon(member)" ng-click="$ctrl.deleteMember(member)" class="btn modal-btn-details-remove">
                                   <span class="zmdi zmdi-close"></span>
