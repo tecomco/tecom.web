@@ -84,9 +84,12 @@ app.service('filesService', [
         updateLiveFile();
       }
       else {
-        getFileById(fileId).then(function (file) {
-          $rootScope.$broadcast('file:view', file);
-        });
+        var currentChannel = channelsService.getCurrentChannel();
+        if (currentChannel) {
+          getFileById(fileId, currentChannel.id).then(function (file) {
+            $rootScope.$broadcast('file:view', file);
+          });
+        }
       }
     }
 
@@ -116,9 +119,12 @@ app.service('filesService', [
     }
 
     function showFileLine(fileId, startLine, endLine) {
-      getFileById(fileId).then(function (file) {
-        $rootScope.$broadcast('file:show:line', file, startLine, endLine);
-      });
+      var currentChannel = channelsService.getCurrentChannel();
+      if (currentChannel) {
+        getFileById(fileId, currentChannel.id).then(function (file) {
+          $rootScope.$broadcast('file:show:line', file, startLine, endLine);
+        });
+      }
     }
 
     return {

@@ -46,12 +46,13 @@
     <div ng-show="channel.getIsRemoved()" class="input-holder">
       <label>شما از این گروه حذف شدین.</label>
     </div>
-    <div ng-show="channel.getIsArchived()" class="input-holder">
+    <div ng-show="channel.getIsArchived() && channel.active" class="input-holder">
       <label>این گروه توسط ادمین حذف شده و دیگر به آن دسترسی ندارید.</label>
       <button ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
     </div>
     <div ng-show="!channel.active" class="input-holder">
       <label>@ {{channel.name}} دیگر در این تیم عضو نیست.</label>
+      <button ng-click="archiveDirect(channel)">حذف و بستن مکالمه</button>
     </div>
   </div>
 </div>

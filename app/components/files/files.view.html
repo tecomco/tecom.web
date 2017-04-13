@@ -66,11 +66,8 @@
           <i class="fa fa-download"></i>
         </a>
       </div>
-      <div ng-show="viewState()=='view'" ng-click="makeViewFileLive()" class="doc-tab" style="float: right">
-        <div class="live-btn" >
-          <label dir="ltr">LIVE</label>
-          <i class="fa fa-circle"></i>
-        </div>
+      <div ng-show="viewState()=='view'">
+        <a class="live-btn" dir="ltr" ng-click="makeViewFileLive()"><label dir="ltr">LIVE </label><i class="fa fa-circle"></i></a>
       </div>
     </div>
     <div ng-show="viewState() === 'live'">

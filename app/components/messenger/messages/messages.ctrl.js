@@ -97,6 +97,18 @@ app.controller('messagesController', [
       filesService.viewFile(fileId);
     };
 
+    $scope.archiveDirect = function (channel) {
+      channelsService.archiveChannel(channel.id)
+        .then(function () {
+          $scope.removeAndCloseChannel(channel)
+        })
+        .catch(function () {
+          /*
+           Handle Archive Channel Error;
+           */
+        });
+    };
+
     $scope.removeAndCloseChannel = function(channel){
       channelsService.removeChannel(channel.id);
       $state.go('messenger.home');

@@ -56,17 +56,19 @@ app.service('channelsService', [
 
     socket.on('channel:archived', function (result) {
       var channel = findChannelById(result.channelId);
-      channel.setIsArchived();
-      $rootScope.$broadcast('channels:updated');
+      if (channel) {
+        channel.setIsArchived();
+        $rootScope.$broadcast('channels:updated');
+      }
     });
 
     /**
      * @summary RootScope listeners.
      */
 
-     $rootScope.$on('socket:connected', function () {
-       getInitialChannels();
-     });
+    $rootScope.$on('socket:connected', function () {
+      getInitialChannels();
+    });
 
     /**
      * @summary Methods
@@ -278,10 +280,6 @@ app.service('channelsService', [
       $rootScope.$broadcast('channels:updated');
     }
 
-    function broadcastUpdate() {
-      $rootScope.$broadcast('channels:updated');
-    }
-
     function addMessagesPromise(promise) {
       if (!self.messagesPromise) {
         self.messagesPromise = [];
@@ -341,13 +339,13 @@ app.service('channelsService', [
     function archiveChannel(channelId) {
       var defer = $q.defer();
       var data = {channelId: channelId};
-      socket.emit("channel:archive", data, function (results) {
+      socket.emit('channel:archive', data, function (results) {
         if (results.status) {
-          console.log("Channel succesfully Archived");
+          $log.info('Channel succesfully Archived');
           defer.resolve();
         }
         else {
-          console.log("Error Archiving Channel : ", results.message);
+          $log.error('Error Archiving Channel : ', results.message);
           defer.reject();
         }
       });
@@ -383,7 +381,6 @@ app.service('channelsService', [
       setDirectActiveState: setDirectActiveState,
       archiveChannel: archiveChannel,
       removeChannel: removeChannel,
-      broadcastUpdate: broadcastUpdate
     };
   }
 ]);
