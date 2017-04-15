@@ -76,6 +76,7 @@ app.service('messagesService', [
               dataToBeSend.lastSavedMessageId = lastMessage.id;
             }
             socket.emit('message:get', dataToBeSend, function (res) {
+              console.log('DEBUG - ' + res.messages.length + ' messages retrieved for ' + channel.slug + '.');
               channelsService.updateChannelNotification(channel.id, 'num',
                 res.notifCount);
               if (res.lastDatetime) {

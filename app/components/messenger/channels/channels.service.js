@@ -67,6 +67,7 @@ app.service('channelsService', [
      */
 
     $rootScope.$on('socket:connected', function () {
+      console.log('DEBUG - Socket connected event called in ChannelService.');
       getInitialChannels();
     });
 
@@ -76,6 +77,7 @@ app.service('channelsService', [
 
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
+        console.log('DEBUG - ' + results.length + ' initial channels retrieved from server.', results);
         self.channels = [];
         self.initChannelsCount = results.length;
         if (self.initChannelsCount === 0) {
@@ -285,6 +287,7 @@ app.service('channelsService', [
         self.messagesPromise = [];
       }
       self.messagesPromise.push(promise);
+      console.log('DEBUG - Messages promise added.');
       if (self.messagesPromise.length == self.initChannelsCount) {
         $q.all(self.messagesPromise).then(function () {
           $rootScope.isLoading = false;
