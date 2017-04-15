@@ -8,7 +8,14 @@ app.service('channelsService', [
 
     var self = this;
 
+    /**
+     * @summary Global variables
+     */
+
     self.channels = [];
+    self.initialChannelsGottenForFirstTime = false;
+
+    initialize();
 
     /**
      * @summary Socket listeners
@@ -68,12 +75,18 @@ app.service('channelsService', [
 
     $rootScope.$on('socket:connected', function () {
       console.log('DEBUG - Socket connected event called in ChannelService.');
-      getInitialChannels();
+      if (self.initialChannelsGottenForFirstTime) {
+        getInitialChannels();
+      }
     });
 
     /**
      * @summary Methods
      */
+
+    function initialize() {
+      getInitialChannels();
+    }
 
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
@@ -88,6 +101,7 @@ app.service('channelsService', [
           $rootScope.$emit('channel:new', channel);
         });
         $rootScope.$broadcast('channels:updated', 'init');
+        self.initialChannelsGottenForFirstTime = true;
       });
     }
 
@@ -341,7 +355,9 @@ app.service('channelsService', [
 
     function archiveChannel(channelId) {
       var defer = $q.defer();
-      var data = {channelId: channelId};
+      var data = {
+        channelId: channelId
+      };
       socket.emit('channel:archive', data, function (results) {
         if (results.status) {
           $log.info('Channel succesfully Archived');
