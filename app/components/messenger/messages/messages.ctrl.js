@@ -100,7 +100,7 @@ app.controller('messagesController', [
     $scope.archiveDirect = function (channel) {
       channelsService.archiveChannel(channel.id)
         .then(function () {
-          $scope.removeAndCloseChannel(channel)
+          $scope.removeAndCloseChannel(channel);
         })
         .catch(function () {
           /*
@@ -134,7 +134,7 @@ app.controller('messagesController', [
           var timeDiff =
             Math.abs(message.datetime.getTime() - lastMessage.datetime.getTime());
           var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
-          return (diffDays == 0) ? false : true;
+          return (diffDays === 0) ? false : true;
         }
       }
     };

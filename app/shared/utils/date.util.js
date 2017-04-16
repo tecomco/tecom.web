@@ -1,12 +1,13 @@
 'use strict';
 
-app.factory('dateUtil', function () {
+app.factory('dateUtil', ['$window', function ($window) {
 
-  function getPersianDateString(datetime){
-    var pDate = persianDate(datetime);
+  function getPersianDateString(datetime) {
+    var pDate = $window.persianDate(datetime);
     return pDate.format("dddd DD MMMM");
   }
+
   return {
-    getPersianDateString: getPersianDateString,
+    getPersianDateString: getPersianDateString
   };
-});
+}]);

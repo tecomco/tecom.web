@@ -13,9 +13,11 @@
         <!--<div class="date-holder">-->
         <!--<label>۱۵ مرداد</label>-->
         <!--</div>-->
-        <div ng-repeat="message in messages | orderBy : 'datetime'" class="msg-holder">
-          <label ng-if="isMessageDateInAnotherDay(message)">{{message.getLocaleDate()}}</label>
-          <div ng-class="message.getCssClass()">
+        <div ng-repeat="message in messages | orderBy : 'datetime'">
+          <div class="input-holder" ng-if="isMessageDateInAnotherDay(message)" style="text-align: center">
+            <span>{{message.getLocaleDate()}}</span>
+          </div>
+          <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name">{{message.getUsername()}}</label>
             <label class="status" ng-show="message.isFromMe()">
               <i ng-class="message.getStatusIcon()"></i>
