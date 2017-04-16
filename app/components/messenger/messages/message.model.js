@@ -1,8 +1,8 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'db', 'textUtil', 'channelsService', 'User', 'fileUtil',
-  function ($log, db, textUtil, channelsService, User, fileUtil) {
+  '$log', 'db', 'textUtil', 'channelsService', 'User', 'fileUtil', 'dateUtil',
+  function ($log, db, textUtil, channelsService, User, fileUtil, dateUtil) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
                      additionalData, about, isPending) {
@@ -243,6 +243,11 @@ app.factory('Message', [
       this.type === Message.TYPE.NOTIF.CHANNEL_EDITED ||
       this.type === Message.TYPE.NOTIF.FILE_DIED);
     };
+
+    Message.prototype.getLocaleDate = function(){
+      dateUtil.getPersianDateString(this.datetime);
+    }
+
 
     Message.TYPE = {
       TEXT: 0,

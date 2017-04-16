@@ -19,7 +19,7 @@ app.service('filesService', [
       var currentChannel = channelsService.getCurrentChannel();
       if (currentChannel) {
         if (currentChannel.liveFileId) {
-          getFileById(currentChannel.liveFileId, currentChannel.id)
+          getFileById(currentChannel.liveFileId)
             .then(function (file) {
               $rootScope.$broadcast('file:lived', file);
               self.livedFile = file;
@@ -39,7 +39,7 @@ app.service('filesService', [
       });
     }
 
-    function getFileById(fileId, channelId) {
+    function getFileById(fileId) {
       var defer = $q.defer();
       var file = ArrayUtil.getElementByKeyValue(self.files, 'id', fileId);
       if (file) {
@@ -50,6 +50,7 @@ app.service('filesService', [
         var url;
         var name;
         var type;
+        var channelId;
         $http({
           method: 'GET',
           url: '/api/v1/files/' + fileId + '/'
@@ -57,6 +58,7 @@ app.service('filesService', [
           url = res.data.file;
           name = res.data.name;
           type = res.data.type;
+          channelId = res.data.channel;
           return getFileDataByUrl(url);
         }).then(function (res) {
           if (fileUtil.isTextFormat(type)) {
@@ -84,12 +86,9 @@ app.service('filesService', [
         updateLiveFile();
       }
       else {
-        var currentChannel = channelsService.getCurrentChannel();
-        if (currentChannel) {
-          getFileById(fileId, currentChannel.id).then(function (file) {
-            $rootScope.$broadcast('file:view', file);
-          });
-        }
+        getFileById(fileId).then(function (file) {
+          $rootScope.$broadcast('file:view', file);
+        });
       }
     }
 
@@ -119,12 +118,9 @@ app.service('filesService', [
     }
 
     function showFileLine(fileId, startLine, endLine) {
-      var currentChannel = channelsService.getCurrentChannel();
-      if (currentChannel) {
-        getFileById(fileId, currentChannel.id).then(function (file) {
-          $rootScope.$broadcast('file:show:line', file, startLine, endLine);
-        });
-      }
+      getFileById(fileId).then(function (file) {
+        $rootScope.$broadcast('file:show:line', file, startLine, endLine);
+      });
     }
 
     return {

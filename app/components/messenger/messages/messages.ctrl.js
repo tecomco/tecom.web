@@ -2,9 +2,9 @@
 
 app.controller('messagesController', [
   '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
-  'messagesService', 'channelsService', 'filesService', '$q',
+  'messagesService', 'channelsService', 'filesService', '$q', 'ArrayUtil',
   function ($scope, $state, $stateParams, $window, $timeout, Upload,
-            messagesService, channelsService, filesService, $q) {
+            messagesService, channelsService, filesService, $q, ArrayUtil) {
 
     var self = this;
 
@@ -18,7 +18,7 @@ app.controller('messagesController', [
       initialize();
     }
 
-    $scope.$on('scroll:isTyping', function(){
+    $scope.$on('scroll:isTyping', function () {
       scrollBottom();
     });
 
@@ -109,13 +109,13 @@ app.controller('messagesController', [
         });
     };
 
-    $scope.removeAndCloseChannel = function(channel){
+    $scope.removeAndCloseChannel = function (channel) {
       channelsService.removeChannel(channel.id);
       $state.go('messenger.home');
     };
 
     function initialize() {
-      setCurrentChannel().then(function(){
+      setCurrentChannel().then(function () {
         if ($scope.channel) {
           bindMessages();
           $scope.inputMessage = '';
@@ -123,6 +123,21 @@ app.controller('messagesController', [
         }
       });
     }
+
+    $scope.isMessageDateInAnotherDay = function (message) {
+      if (message.id == 1)
+        return true;
+      else {
+        var lastMessage =
+          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id - 1);
+        if (lastMessage) {
+          var timeDiff =
+            Math.abs(message.datetime.getTime() - lastMessage.datetime.getTime());
+          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+          return (diffDays == 0) ? false : true;
+        }
+      }
+    };
 
     function setCurrentChannel() {
       var defer = $q.defer();
@@ -175,4 +190,7 @@ app.controller('messagesController', [
     });
 
   }
-]);
+])
+;
+
+
