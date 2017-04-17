@@ -850,7 +850,7 @@ ol.linenums{
 .date-holder {
     text-align: center;
     position: relative;
-    margin: 8px 0;
+    margin: 3px 0px 3px 0px;
     font-weight: 100;
 }
 
@@ -867,9 +867,10 @@ ol.linenums{
 }
 
 .date-holder label {
-    background: #f1f1f1;
-    padding: 16px;
-    font-size: 18px;
+    background: rgb(244, 245, 246);
+    margin: 15px 0px 15px 0px;
+    padding: 0px 5px;
+    font-size: 15px;
     color: #aaa;
     position: relative;
     z-index: 2;

@@ -10,12 +10,9 @@
         <span>در حال وصل شدن به سرور...</span>
       </div>
       <div class="main">
-        <!--<div class="date-holder">-->
-        <!--<label>۱۵ مرداد</label>-->
-        <!--</div>-->
         <div ng-repeat="message in messages | orderBy : 'datetime'">
-          <div class="input-holder" ng-if="isMessageDateInAnotherDay(message)" style="text-align: center">
-            <span>{{message.getLocaleDate()}}</span>
+          <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
+            <label>{{message.getLocaleDate()}}</label>
           </div>
           <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name">{{message.getUsername()}}</label>
