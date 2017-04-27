@@ -25,11 +25,13 @@ app.controller('channelDetailsController', ['$scope', '$state',
     };
 
     self.formNameCheckEmpty = function (form) {
-      return ((form.name.$touched || form.$submitted) && (!form.name.$viewValue));
+      //console.log(form.name);
+      //rebturn ((self.forms.detailsForm.name.$touched ||
+      //  form.$submitted) && (!self.forms.detailsForm.name.$viewValue));
     };
 
     self.formNameCheckMax = function (form) {
-      return (form.name.$viewValue && form.name.$invalid);
+      //return (form.name.$viewValue && form.name.$invalid);
     };
 
     self.closeDetailsModal = function () {
@@ -134,6 +136,7 @@ app.controller('channelDetailsController', ['$scope', '$state',
     };
 
     self.addMembersClick = function () {
+      self.editMode = true;
       if (self.addingMemberActive === false) {
         self.addingMemberActive = true;
         updateListItems();
@@ -189,12 +192,12 @@ app.controller('channelDetailsController', ['$scope', '$state',
         })
         .catch(function () {
           /*
-          Handle Archive Channel Error;
-          */
+           Handle Archive Channel Error;
+           */
         });
     };
 
-    self.userHasChannelArchivePermission = function(){
+    self.userHasChannelArchivePermission = function () {
       return User.getCurrent().isAdmin;
     };
 
