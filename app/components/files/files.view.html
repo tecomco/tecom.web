@@ -43,37 +43,46 @@
   <div ng-show="viewState() !== 'noFile'">
     <div class="doc-section-header" dir="ltr">
       <ul class="doc-tabs">
-        <li ng-show="vm.liveFile" ng-class="viewState()=='live' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="liveFileTabClick()">
-          {{vm.liveFile.name}}
-          <a class="tab-live-sign">
+        <li ng-show="vm.liveFile" ng-class="viewState()=='live' ? 'doc-tab doc-tab-active doc-tab-live' : 'doc-tab doc-tab-live'" ng-mouseup="liveFileTabClick()">
+          <span class="doc-tab-title">{{vm.liveFile.name}}</span>
+          <a class="live-btn">
             <i class="fa fa-circle"></i>
-            <!-- <label dir="ltr">LIVE</label> -->
+            <label dir="ltr">LIVE</label>
           </a>
           <a ng-click="closeLiveFile(vm.liveFile)" uib-tooltip="LIVE خروج از حالت" tooltip-placement="bottom" class="doc-tab-dl-btn">
             <i class="zmdi zmdi-close"></i>
           </a>
+          <div class="doc-tab-options">
+            <a class="doc-tab-icon" ng-href="{{getFileDownloadData('url')}}" download="{{getFileDownloadData('name')}}" target="_blank">
+              <i class="zmdi zmdi-download"></i>
+            </a>
+          </div>
         </li>
 
         <li ng-show="vm.viewFile" ng-class="viewState()=='view' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="viewFileTabClick()">
-          {{vm.viewFile.name}}
+          <span class="doc-tab-title">{{vm.viewFile.name}}</span>
           <a ng-click="closeViewFile(vm.viewFile)" class="doc-tab-dl-btn">
             <i class="zmdi zmdi-close"></i>
           </a>
+          <div class="doc-tab-options">
+            <!-- <a class="doc-tab-icon" ng-show="viewState()=='view'" ng-click="makeViewFileLive()"> -->
+            <a class="doc-tab-icon" ng-click="makeViewFileLive()">
+              <span class="live-btn" dir="ltr">
+              <i class="fa fa-circle"></i>
+              <label dir="ltr">LIVE</label>
+            </span>
+            </a>
+            <a class="doc-tab-icon" ng-href="{{getFileDownloadData('url')}}" download="{{getFileDownloadData('name')}}" target="_blank">
+              <i class="zmdi zmdi-download"></i>
+            </a>
+          </div>
         </li>
+
       </ul>
-      <div class="doc-tab-options">
-        <a class="live-btn doc-tab-icon" dir="ltr" ng-show="viewState()=='view'" ng-click="makeViewFileLive()">
-          <i class="fa fa-circle"></i>
-          <label dir="ltr">LIVE</label>
-        </a>
-        <a class="doc-tab-icon" ng-href="{{getFileDownloadData('url')}}" download="{{getFileDownloadData('name')}}" target="_blank" uib-tooltip="دانلود" tooltip-placement="bottom">
-          <i class="fa fa-download"></i>
-        </a>
-      </div>
     </div>
     <div ng-show="viewState() === 'live'">
       <div class="doc-section-body" ng-show="!fileLoading">
-            <pre id="liveCodeView" class="prettyprint linenums code-view" >
+        <pre id="liveCodeView" class="prettyprint linenums code-view">
       <ol class="linenums">
         <li ng-repeat="line in vm.liveFile.lines track by $index" ng-mousedown="mouseDownLine(line.num)" ng-mouseup="mouseUpLine(line.num)" ng-mouseover="mouseOverLine(line.num)" ng-click="lineClick(line.num)" ng-bind-html="line.html"
             ng-class="line.getCssClass()"></li>
@@ -96,7 +105,7 @@
 
     <div ng-show="viewState() === 'view'">
       <div class="doc-section-body" ng-show="!fileLoading">
-            <pre id="codeView" class="prettyprint linenums-view code-view">
+        <pre id="codeView" class="prettyprint linenums-view code-view">
       <ol class="linenums-view">
         <li ng-repeat="line in vm.viewFile.lines track by $index" ng-bind-html="line.html" ng-class="line.getCssClass()"></li>
       </ol>

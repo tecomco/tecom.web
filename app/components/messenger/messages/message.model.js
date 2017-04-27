@@ -68,7 +68,7 @@ app.factory('Message', [
         body += '<a class="dl-btn" href="' + this.additionalData.url +
           '" download="' + this.additionalData.name +
           '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
-        body += '<i class="fa fa-download"></i>';
+        body += '<i class="zmdi zmdi-download"></i>';
 
         body += '</a></div>';
         return body;
