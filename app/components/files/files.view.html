@@ -45,23 +45,23 @@
       <ul class="doc-tabs">
         <li ng-show="vm.liveFile" ng-class="viewState()=='live' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="liveFileTabClick()">
           {{vm.liveFile.name}}
-          <a class="live-btn">
+          <a class="tab-live-sign">
             <i class="fa fa-circle"></i>
-            <label dir="ltr">LIVE</label>
+            <!-- <label dir="ltr">LIVE</label> -->
           </a>
-          <a ng-click="closeLiveFile(vm.liveFile)" uib-tooltip="LIVE خروج از حالت" tooltip-placement="bottom">
-            <i class="fa fa-times"></i>
+          <a ng-click="closeLiveFile(vm.liveFile)" uib-tooltip="LIVE خروج از حالت" tooltip-placement="bottom" class="doc-tab-dl-btn">
+            <i class="zmdi zmdi-close"></i>
           </a>
         </li>
 
         <li ng-show="vm.viewFile" ng-class="viewState()=='view' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="viewFileTabClick()">
           {{vm.viewFile.name}}
-          <a ng-click="closeViewFile(vm.viewFile)">
-            <i class="fa fa-times"></i>
+          <a ng-click="closeViewFile(vm.viewFile)" class="doc-tab-dl-btn">
+            <i class="zmdi zmdi-close"></i>
           </a>
         </li>
       </ul>
-      <div class="doc-tab" style="float: right">
+      <div class="doc-tab-options">
         <a class="live-btn doc-tab-icon" dir="ltr" ng-show="viewState()=='view'" ng-click="makeViewFileLive()">
           <i class="fa fa-circle"></i>
           <label dir="ltr">LIVE</label>
