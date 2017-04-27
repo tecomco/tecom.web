@@ -125,14 +125,14 @@ app.controller('messagesController', [
     }
 
     $scope.isMessageDateInAnotherDay = function (message) {
-      if (message.id == 1)
+      if (message.id === 1)
         return true;
       else {
-        var lastMessage =
+        var previousMessage =
           ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id - 1);
-        if (lastMessage) {
-          var timeDiff =
-            Math.abs(message.datetime.getTime() - lastMessage.datetime.getTime());
+        if (previousMessage) {
+          var timeDiff = Math.abs(message.datetime.getTime()
+            - previousMessage.datetime.getTime());
           var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
           return (diffDays === 0) ? false : true;
         }

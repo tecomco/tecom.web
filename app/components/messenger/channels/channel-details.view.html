@@ -1,0 +1,117 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" ng-click="$close()">&times;</button>
+  <h4 class="modal-title">اطلاعات و تنظیمات گروه</h4>
+</div>
+<div class="modal-body two-part-modal">
+  <form name="forms.detailsForm" ng-show="editMode" ng-submit="submitChannelDetailsForm()" novalidate>
+    <div class="container-fluid">
+      <div class="col-sm-10 col-sm-offset-1">
+        <div class="modal-input">
+          <input type="text" name="name" ng-model="details.name" ng-minlength="1" ng-maxlength="32" placeholder="نام گروه" required>
+          <div ng-messages="forms.detailsForm.name.$error">
+            <span class="modal-err" ng-message="minlength">وارد کردن نام گروه الزامی است!</span>
+            <span class="modal-err" ng-message="maxlength">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+            <!--<span class="modal-err" ng-show="details.duplicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>-->
+          </div>
+        </div>
+        <div class="modal-input">
+          <input type="text" name="description" placeholder="توضیح گروه" ng-model="details.description" ng-maxlength="256">
+          <span class="modal-err" ng-show="forms.detailsForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+        </div>
+        <label class="ws-checkbox">
+          <span>این گروه خصوصی است.</span>
+          <input type="checkbox" ng-model="details.isPrivate">
+          <div class="checkbox-stat">
+            <i class="fa fa-check"></i>
+          </div>
+        </label>
+        <div class="modal-input">
+          <input type="submit" value="ذخیره تغییرات" class="btn btn-defualt">
+          <span class="modal-err" ng-show="details.serverError">خطا در اتصال به سرور</span>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </form>
+  <div ng-show="!editMode" class="container-fluid">
+    <div class="col-sm-6">
+      <div class="g-title">
+        <i ng-class="channel.isPrivate() ? 'fa fa-lock' : 'fa fa-globe'"></i>
+        <input type="text" disabled="disabled" class="input-text title" value={{channel.name}}/>
+        <div ng-show="isAdmin  && (!editMode)">
+          <button class="btn-modal" ng-click="editChannel()">
+            <span class="zmdi zmdi-edit"></span>
+            <span>ویرایش</span>
+          </button>
+        </div>
+      </div>
+      <div class="g-details">
+        <input type="text" disabled="disabled" class="input-text" value={{channel.description}}/>
+      </div>
+    </div>
+    <div class="col-sm-6 modal-left-part">
+      <div class="g-title">
+        <i class="zmdi zmdi-accounts"></i>
+        <h3>اعضای گروه</h3>
+        <button class="btn-modal" ng-click="addMembersClick()" ng-hide="addingMemberActive">
+          <span class="zmdi zmdi-account-add"></span>
+          <span>اضافه کردن  به اعضای گروه</span>
+        </button>
+        <button class="btn-modal" ng-click="addMembersClick()" ng-show="addingMemberActive">
+          <span class="zmdi zmdi-check"></span>
+          <span>ذخیره</span>
+        </button>
+      </div>
+      <div class="modal-input" ng-show="addingMemberActive">
+        <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="searchBox">
+      </div>
+      <div class="g-members">
+        <div ng-repeat="member in listItems | orderBy : 'username' | filter : {username : searchBox}" class="g-m-one" ng-style="getListItemCSS(member)" ng-click="pushMember(member)">
+          <div>
+            <img ng-src="{{member.image}}"/>
+            <label>@{{member.username}}</label>
+            <button ng-show="showRemoveIcon(member)" ng-click="deleteMember(member)" class="btn modal-btn-details-remove">
+              <span class="zmdi zmdi-close"></span>
+            </button>
+          </div>
+        </div>
+        <div class="g-m-one">
+          <div class="disabled">
+            <img src="static/img/user-def.png"/>
+            <span class="zmdi zmdi-check-circle"></span>
+            <label>@اکبر آقا</label>
+            <label class="hint">(عضو گروه)</label>
+            <button class="btn modal-btn-details-remove">
+              <span class="zmdi zmdi-close"></span>
+            </button>
+          </div>
+        </div>
+        <div class="g-m-one">
+          <div class="selectable">
+            <img src="static/img/user-def.png"/>
+            <span class="zmdi zmdi-check-circle"></span>
+            <label>@اکبر آقا</label>
+            <button class="btn modal-btn-details-remove">
+              <span class="zmdi zmdi-close"></span>
+            </button>
+          </div>
+        </div>
+        <div class="g-m-one">
+          <div class="selected">
+            <img src="static/img/user-def.png"/>
+            <span class="zmdi zmdi-check-circle"></span>
+            <label>@اکبر آقا</label>
+            <button class="btn modal-btn-details-remove">
+              <span class="zmdi zmdi-close"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div ng-if="userHasChannelArchivePermission()">
+      <confirm-dialog button-name="حذف گروه" message="مطمئنی که می خوای این گروه رو حذف کنی؟" cancel="نه، حواسم نبود" ok="آره" confirm-func="archiveChannel"></confirm-dialog>
+    </div>
+  </div>
+</div>
