@@ -19,7 +19,6 @@
     "google-code-prettify": "^1.0.5",
     "angular-bootstrap-confirm": "^2.5.0",
     "angular-ismobile": "^1.1.0",
-    "persian-date": "^0.1.8",
-    "angular-messages": "^1.6.4"
+    "persian-date": "^0.1.8"
   }
 }
