@@ -1,4 +1,4 @@
-doc-tab@font-face {
+@font-face {
     font-family: 'iransans';
     src: url("../font/IRANSansWeb_UltraLight.eot"), url("../font/IRANSansWeb_UltraLight.woff") format("woff"), url("../font/IRANSansWeb_UltraLight.ttf") format("truetype"), url("../font/IRANSansWeb_UltraLight.woff2") format("woff2");
     font-weight: 100
@@ -718,6 +718,7 @@ ul.dropdown-menu {
 }
 
 .doc-section-header {
+  position: relative;
     background: #f7f7f7;
     color: #555;
     height: 58px;
@@ -725,25 +726,49 @@ ul.dropdown-menu {
     border-right: 1px solid #eee;
 }
 
+.doc-tab-options{
+  position: absolute;
+  right: 0;
+  padding: 19px;
+}
+
+.tab-live-sign i{
+  color: rgb(230, 77, 77);
+  position: absolute;
+  right: 26px;
+  font-size: 8px;
+  top: 23px;
+}
+
 .doc-tabs {
     direction: ltr;
     display: block;
     float: left;
     height: 100%;
+    width: 100%;
 }
 
 .doc-tab {
+    width: 40%;
     list-style: none;
-    display: table-cell;
+    float: left;
     border-right: 1px #eee solid;
     cursor: default;
     height: 100%;
+    position: relative;
     cursor: pointer;
     padding: 19px 20px;
+    padding-right: 30px;
     transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
+}
+
+.doc-tab .doc-tab-dl-btn{
+  position: absolute;
+  top: 20px;
+  right: 15px;
 }
 
 .doc-tab-icon {
@@ -1697,21 +1722,75 @@ ol.linenums{
 
 .g-m-one {
     padding: 4px;
+    position: relative;
     transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
 }
-
-.g-m-one:hover {
-    background: rgba(0, 0, 0, 0.03);
+.g-m-one .zmdi-check-circle{
+  visibility: hidden;
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  opacity: 0;
+  font-size: 4px;
+  color: #fff;
+  text-shadow:
+   -1px -1px 0 rgb(32, 164, 109),
+    1px -1px 0 rgb(32, 164, 109),
+    -1px 1px 0 rgb(32, 164, 109),
+     1px 1px 0 rgb(32, 164, 109);
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
 }
 
+.g-m-one .selectable{
+  cursor: pointer
+}
+
+.g-m-one .selected img{
+  padding: 2px;
+  border: 2px solid rgb(32, 164, 109);
+}
+.g-m-one .disabled img{
+  padding: 2px;
+  border: 2px solid #aaa;
+}
+
+.g-m-one .selected .zmdi-check-circle{
+  font-size: 16px;
+  visibility: visible;
+  opacity: 1;
+}
+.g-m-one .disabled .zmdi-check-circle{
+  font-size: 16px;
+  visibility: visible;
+  opacity: 1;
+  text-shadow:
+   -1px -1px 0 #aaa,
+    1px -1px 0 #aaa,
+    -1px 1px 0 #aaa,
+     1px 1px 0 #aaa;
+}
+.g-m-one:hover {
+    background: rgba(0, 0, 0, 0.01);
+}
+.g-m-one .hint{
+  color: #bbb;
+  font-size: 12px;
+}
 .g-m-one img {
     width: 35px;
     height: 35px;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 }
 
 .g-m-one label {
