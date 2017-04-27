@@ -14,8 +14,7 @@ app.controller('headerController',
         if ($scope.channel) {
           var modalInstance = $uibModal.open({
             templateUrl: 'app/components/messenger/channels/channel-details.view.html',
-            controller: 'channelDetailsController',
-            controllerAs: '$ctrl'
+            controller: 'channelDetailsController'
           });
         }
       };

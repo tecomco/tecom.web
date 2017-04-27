@@ -6,58 +6,57 @@ app.controller('channelDetailsController', ['$scope', '$state',
   function ($scope, $state, $uibModalInstance, $log, channelsService, User,
             ArrayUtil, Channel) {
 
-    var self = this;
     var selectedMember;
-    self.editMode = false;
-    self.channel = channelsService.getCurrentChannel();
-    self.isAdmin = true;
-    self.details = {};
-    self.forms = {};
+    $scope.editMode = false;
+    $scope.channel = channelsService.getCurrentChannel();
+    $scope.isAdmin = true;
+    $scope.details = {};
+    $scope.forms = {};
 
-    self.editChannel = function () {
-      self.editMode = true;
-      self.details.name = self.channel.name;
-      self.details.description = self.channel.description;
-      self.details.isPrivate =
-        (self.channel.type === Channel.TYPE.PRIVATE) ? true : false;
-      self.details.duplicateError = false;
-      self.details.serverError = false;
+    $scope.editChannel = function () {
+      $scope.editMode = true;
+      $scope.details.name = $scope.channel.name;
+      $scope.details.description = $scope.channel.description;
+      $scope.details.isPrivate =
+        ($scope.channel.type === Channel.TYPE.PRIVATE) ? true : false;
+      $scope.details.duplicateError = false;
+      $scope.details.serverError = false;
     };
 
-    self.formNameCheckEmpty = function (form) {
+    $scope.formNameCheckEmpty = function (form) {
       //console.log(form.name);
-      //rebturn ((self.forms.detailsForm.name.$touched ||
-      //  form.$submitted) && (!self.forms.detailsForm.name.$viewValue));
+      //rebturn (($scope.forms.detailsForm.name.$touched ||
+      //  form.$submitted) && (!$scope.forms.detailsForm.name.$viewValue));
     };
 
-    self.formNameCheckMax = function (form) {
+    $scope.formNameCheckMax = function (form) {
       //return (form.name.$viewValue && form.name.$invalid);
     };
 
-    self.closeDetailsModal = function () {
+    $scope.closeDetailsModal = function () {
       $uibModalInstance.close();
     };
 
-    self.editChannelDetailsSubmit = function () {
-      self.forms.detailsForm.$setPristine();
-      var type = self.details.isPrivate ?
+    $scope.submitChannelDetailsForm = function () {
+      $scope.forms.detailsForm.$setPristine();
+      var type = $scope.details.isPrivate ?
         Channel.TYPE.PRIVATE : Channel.TYPE.PUBLIC;
       var editedData = {
-        name: self.details.name,
-        description: self.details.description,
+        name: $scope.details.name,
+        description: $scope.details.description,
         type: type,
-        id: self.channel.id
+        id: $scope.channel.id
       };
       channelsService.sendEditedChannel(editedData).then(function () {
-        self.editMode = false;
+        $scope.editMode = false;
         $log.info('Done Editing Channel');
       }).catch(function (message) {
         if (message.indexOf('Duplicate slug in team.') != -1) {
           $log.error('Error : Dublicate Slug');
-          self.details.duplicateError = true;
+          $scope.details.duplicateError = true;
         }
         else {
-          self.details.serverError = true;
+          $scope.details.serverError = true;
           $log.error('Error sending new channel form to server :', message);
         }
       });
@@ -68,25 +67,25 @@ app.controller('channelDetailsController', ['$scope', '$state',
     });
 
     var initializeDetailsForm = function () {
-      self.editMode = false;
-      self.details.duplicateError = false;
-      self.details.serverError = false;
-      self.forms.detailsForm.$setPristine();
-      self.forms.detailsForm.$submitted = false;
-      self.addingMemberActive = false;
-      self.addedMemberIds = [];
-      self.addedMembers = [];
+      $scope.editMode = false;
+      $scope.details.duplicateError = false;
+      $scope.details.serverError = false;
+      $scope.forms.detailsForm.$setPristine();
+      $scope.forms.detailsForm.$submitted = false;
+      $scope.addingMemberActive = false;
+      $scope.addedMemberIds = [];
+      $scope.addedMembers = [];
     };
 
     var updateListItems = function () {
-      if (!self.addingMemberActive) {
-        self.listItems = [];
-        self.channelMembers = [];
-        channelsService.getChannelMembers(self.channel.id).then(function (event) {
+      if (!$scope.addingMemberActive) {
+        $scope.listItems = [];
+        $scope.channelMembers = [];
+        channelsService.getChannelMembers($scope.channel.id).then(function (event) {
           event.members.forEach(function (channelMember) {
             var item = makeListItem(channelMember);
-            self.listItems.push(item);
-            self.channelMembers.push(item);
+            $scope.listItems.push(item);
+            $scope.channelMembers.push(item);
           });
         }).catch(function (err) {
         });
@@ -94,10 +93,10 @@ app.controller('channelDetailsController', ['$scope', '$state',
       else {
         User.getCurrent().team.getTeamMembers().then(function (teamMembers) {
           teamMembers.forEach(function (teamMember) {
-            if (!self.channelMembers.find(function (member) {
+            if (!$scope.channelMembers.find(function (member) {
                 return member.member_id === teamMember.id;
               }))
-              self.listItems.push(makeListItem(teamMember));
+              $scope.listItems.push(makeListItem(teamMember));
           });
         });
 
@@ -105,12 +104,12 @@ app.controller('channelDetailsController', ['$scope', '$state',
     };
     updateListItems();
 
-    self.deleteMember = function (member) {
+    $scope.deleteMember = function (member) {
       var data = {
         channelMemberId: member.channelMemberId,
         memberId: member.member_id,
-        channelId: self.channel.id,
-        channelType: self.channel.type
+        channelId: $scope.channel.id,
+        channelType: $scope.channel.type
       };
       channelsService.removeMemberFromChannel(data).then(function () {
         updateListItems();
@@ -120,44 +119,44 @@ app.controller('channelDetailsController', ['$scope', '$state',
       });
     };
 
-    self.pushMember = function (teamMember) {
+    $scope.pushMember = function (teamMember) {
       if (!teamMember.isChannelMember) {
-        if (!self.addedMemberIds.find(function (member) {
+        if (!$scope.addedMemberIds.find(function (member) {
             return member === teamMember.member_id;
           })) {
-          self.addedMemberIds.push(teamMember.member_id);
+          $scope.addedMemberIds.push(teamMember.member_id);
           teamMember.isMemberSelected = true;
         }
         else {
-          ArrayUtil.removeElementByValue(self.addedMemberIds, teamMember.member_id);
+          ArrayUtil.removeElementByValue($scope.addedMemberIds, teamMember.member_id);
           teamMember.isMemberSelected = false;
         }
       }
     };
 
-    self.addMembersClick = function () {
-      self.editMode = true;
-      if (self.addingMemberActive === false) {
-        self.addingMemberActive = true;
+    $scope.addMembersClick = function () {
+      $scope.editMode = true;
+      if ($scope.addingMemberActive === false) {
+        $scope.addingMemberActive = true;
         updateListItems();
       }
       else {
-        self.addingMemberActive = false;
+        $scope.addingMemberActive = false;
         submitAddedMembers();
       }
     };
 
     function submitAddedMembers() {
-      if (self.addedMemberIds.length > 0) {
-        self.addingMemberActive = false;
-        channelsService.addMembersToChannel(self.addedMemberIds,
-          self.channel.id).then(function () {
+      if ($scope.addedMemberIds.length > 0) {
+        $scope.addingMemberActive = false;
+        channelsService.addMembersToChannel($scope.addedMemberIds,
+          $scope.channel.id).then(function () {
           updateListItems();
-          self.addedMemberIds = [];
+          $scope.addedMemberIds = [];
           $log.info('Done Adding members');
         }).catch(function () {
           updateListItems();
-          self.addedMemberIds = [];
+          $scope.addedMemberIds = [];
           $log.error('Error Adding members');
         });
       }
@@ -165,10 +164,10 @@ app.controller('channelDetailsController', ['$scope', '$state',
         updateListItems();
     }
 
-    self.getListItemCSS = function (listMember) {
-      if (self.addingMemberActive) {
+    $scope.getListItemCSS = function (listMember) {
+      if ($scope.addingMemberActive) {
         if (listMember.isChannelMember ||
-          ArrayUtil.contains(self.addedMemberIds, listMember.member_id))
+          ArrayUtil.contains($scope.addedMemberIds, listMember.member_id))
           return {'background-color': 'rgba(36, 167, 114, 0.2)'};
         else
           return {'background-color': 'white'};
@@ -177,18 +176,18 @@ app.controller('channelDetailsController', ['$scope', '$state',
         return {'background-color': 'white'};
     };
 
-    self.showRemoveIcon = function (member) {
-      if (User.getCurrent().isAdmin && !self.addingMemberActive) {
+    $scope.showRemoveIcon = function (member) {
+      if (User.getCurrent().isAdmin && !$scope.addingMemberActive) {
         return member.member_id !== User.getCurrent().memberId;
       } else {
         return false;
       }
     };
 
-    self.archiveChannel = function () {
-      channelsService.archiveChannel(self.channel.id)
+    $scope.archiveChannel = function () {
+      channelsService.archiveChannel($scope.channel.id)
         .then(function () {
-          self.closeDetailsModal();
+          $scope.closeDetailsModal();
         })
         .catch(function () {
           /*
@@ -197,7 +196,7 @@ app.controller('channelDetailsController', ['$scope', '$state',
         });
     };
 
-    self.userHasChannelArchivePermission = function () {
+    $scope.userHasChannelArchivePermission = function () {
       return User.getCurrent().isAdmin;
     };
 
