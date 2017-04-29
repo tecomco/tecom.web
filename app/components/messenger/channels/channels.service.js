@@ -36,9 +36,10 @@ app.service('channelsService', [
      */
     socket.on('channel:edit', function (result) {
       var channel = findChannelById(result.channel.id);
+      var isChannelSelected = channel.isSelected();
       channel.updateFromJson(result.channel);
-      if (channel.isSelected()) {
-        $state.transitionTo('messenger.messages', {
+      if (isChannelSelected) {
+        $state.go('messenger.messages', {
           slug: channel.slug
         });
       }
