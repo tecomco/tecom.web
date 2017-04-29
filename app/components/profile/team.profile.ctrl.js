@@ -27,7 +27,9 @@ app.controller('teamProfileController', [
           if (err.data && err.data[0] === 'Email already a member.')
             setInfoOrErrorMessage('error',
               'فرد مورد نظرت در حال حاضر عضو تیمه');
-          else
+          else if (err.data && err.data[0] === 'Email already has an active invitaion.')
+            setInfoOrErrorMessage('error', 'ایمیل فعال سازی ارسال شده است.');
+            else
             setInfoOrErrorMessage('error', 'خطا در دعوت به تیم');
         });
       }
