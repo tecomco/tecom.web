@@ -154,19 +154,10 @@
               <div ng-hide="isMe(member)" style="float: left">
                 <confirm-dialog ng-class="getAdminButtonCSS(member)" class="t-m-btn" message='{{member.is_admin ? "مطمئنی میخوای \"@" + member.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + member.username + "\"  ادمین بشه؟"}}' cancel="نه، حواسم نبود" ok="آره"
                   args="[member]" confirm-func="changeMemberAdminState" confirm-button='{{member.is_admin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
-                <!-- <button ng-click="changeMemberAdminState(member)" class="t-m-btn" ng-class="getAdminButtonCSS(member)"> -->
-                <!-- <span class="fa fa-diamond"></span> -->
-                <!-- </button> -->
                 <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{member.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[member]" confirm-func="removeTeamMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
-                <!-- <button ng-click="removeTeamMember(member)" class="t-m-btn"> -->
-                <!-- <span class="zmdi zmdi-close"></span> -->
-                <!-- </button> -->
               </div>
             </div>
           </div>
-          <!-- <div class="modal-input">
-              <button ng-click="inviteMember()" ng-show="!inviteMode" class="btn btn-default modal-btn">دعوت عضو به تیم!</button>
-          </div> -->
           <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation()" novalidate>
             <div class="col-md-2"></div>
             <div class="col-sm-7 col-md-5 no-padding">
