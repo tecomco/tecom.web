@@ -2,7 +2,7 @@
   <div class="col-sm-3 col-lg-2 no-padding channel-section">
     <div class="right-section">
       <div class="right-section-header" uib-dropdown>
-        <img src="static/img/tecom-logo.png"/>
+        <img src="static/img/tecom-logo.png" />
         <span class="brand-name-right-header">تیکام</span>
         <a uib-dropdown-toggle class="user-options-btn">
           <i class="zmdi zmdi-more-vert"></i>
@@ -67,7 +67,7 @@
               <div class="relative-parent profile-info">
                 <form ng-submit="saveUsername()">
                   <label class="label">@</label>
-                  <input type="text" ng-value="user.username" ng-disabled="!editUsernameActive" class="input-text title p-input" ng-model="usernameInput"/>
+                  <input type="text" ng-value="user.username" ng-disabled="!editUsernameActive" class="input-text title p-input" ng-model="usernameInput" />
                   <button ng-hide="editUsernameActive" class="btn-modal" ng-click="editUsername()">
                     <span class="zmdi zmdi-edit"></span>
                     <span>ویرایش نام کاربری</span>
@@ -96,7 +96,7 @@
                 </div>
                 <div class="col-sm-7">
                   <div class="modal-input">
-                    <input type="password" ng-model="oldPasswordInput" class="no-margin"/>
+                    <input type="password" ng-model="oldPasswordInput" class="no-margin" />
                   </div>
                 </div>
                 <div class="clearfix"></div>
@@ -104,17 +104,17 @@
                   <label>رمز عبور جدید</label>
                 </div>
                 <div class="col-sm-7">
-                  <input type="password" ng-model="newPasswordInput" class="no-margin"/>
+                  <input type="password" ng-model="newPasswordInput" class="no-margin" />
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-sm-5">
                   <label>تکرار رمز عبور جدید</label>
                 </div>
                 <div class="col-sm-7">
-                  <input type="password" ng-model="confirmPasswordInput" class="no-margin"/>
+                  <input type="password" ng-model="confirmPasswordInput" class="no-margin" />
                 </div>
                 <div class="clearfix"></div>
-                <input type="submit" value="ذخیره رمز عبور"/>
+                <input type="submit" value="ذخیره رمز عبور" />
               </form>
             </div>
             <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
@@ -126,7 +126,7 @@
           <div class="col-sm-3">
           </div>
           <div class="col-sm-9">
-              <confirm-dialog button-name="خروج از تیم" message="مطمئنی که می خوای این تیم رو ترک کنی؟" cancel="نه، حواسم نبود" ok="آره" confirm-func="leaveTeam"></confirm-dialog>
+            <confirm-dialog button-name="خروج از تیم" class="danger-btn" message="مطمئنی که می خوای این تیم رو ترک کنی؟" cancel="نه، حواسم نبود" ok="آره" confirm-button="danger" confirm-func="leaveTeam"></confirm-dialog>
           </div>
           <div class="clearfix">
           </div>
@@ -149,15 +149,18 @@
         <div class="t-info">
           <div class="g-members">
             <div ng-repeat="member in teamMembers" class="g-m-one">
-              <img ng-src="{{member.image || '/static/img/user-def.png'}}"/>
+              <img ng-src="{{member.image || '/static/img/user-def.png'}}" />
               <label>@{{member.username}}</label>
               <div ng-hide="isMe(member)" style="float: left">
-                <button ng-click="changeMemberAdminState(member)" class="t-m-btn" ng-class="getAdminButtonCSS(member)">
-                  <span class="fa fa-diamond"></span>
-                </button>
-                <button ng-click="removeTeamMember(member)" class="t-m-btn">
-                  <span class="zmdi zmdi-close"></span>
-                </button>
+                <confirm-dialog ng-class="getAdminButtonCSS(member)" class="t-m-btn" message='{{member.is_admin ? "مطمئنی میخوای \"@" + member.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + member.username + "\"  ادمین بشه؟"}}' cancel="نه، حواسم نبود" ok="آره"
+                  args="[member]" confirm-func="changeMemberAdminState" confirm-button='{{member.is_admin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
+                <!-- <button ng-click="changeMemberAdminState(member)" class="t-m-btn" ng-class="getAdminButtonCSS(member)"> -->
+                <!-- <span class="fa fa-diamond"></span> -->
+                <!-- </button> -->
+                <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{member.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[member]" confirm-func="removeTeamMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+                <!-- <button ng-click="removeTeamMember(member)" class="t-m-btn"> -->
+                <!-- <span class="zmdi zmdi-close"></span> -->
+                <!-- </button> -->
               </div>
             </div>
           </div>
@@ -177,7 +180,7 @@
             </div>
             <div class="col-sm-5 col-md-3 no-padding">
               <div class="input-modal">
-                <input type="submit" value="دعوت به تیم"/>
+                <input type="submit" value="دعوت به تیم" />
               </div>
             </div>
             <div class="col-md-2"></div>
