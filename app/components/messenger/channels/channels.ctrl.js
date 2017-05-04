@@ -30,12 +30,6 @@ app.controller('channelsController', [
       }
     });
 
-    $scope.channelClick = function (channel) {
-      $state.go('messenger.messages', {
-        slug: channel.getUrlifiedSlug()
-      });
-    };
-
     $scope.openModal = function (name) {
       var modalInstance = $uibModal.open({
         animation: true,

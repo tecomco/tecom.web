@@ -2,9 +2,9 @@
 
 app.service('channelsService', [
   '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state', 'User',
-  'teamService', 'ArrayUtil',
+   'ArrayUtil',
   function ($rootScope, $http, $q, $log, socket, Channel, $state, User,
-            teamService, ArrayUtil) {
+            ArrayUtil) {
 
     var self = this;
 
@@ -36,9 +36,10 @@ app.service('channelsService', [
      */
     socket.on('channel:edit', function (result) {
       var channel = findChannelById(result.channel.id);
+      var isChannelSelected = channel.isSelected();
       channel.updateFromJson(result.channel);
-      if (channel.isSelected()) {
-        $state.transitionTo('messenger.messages', {
+      if (isChannelSelected) {
+        $state.go('messenger.messages', {
           slug: channel.slug
         });
       }
@@ -74,7 +75,6 @@ app.service('channelsService', [
      */
 
     $rootScope.$on('socket:connected', function () {
-      console.log('DEBUG - Socket connected event called in ChannelService.');
       if (self.initialChannelsGottenForFirstTime) {
         getInitialChannels();
       }
@@ -90,7 +90,6 @@ app.service('channelsService', [
 
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
-        console.log('DEBUG - ' + results.length + ' initial channels retrieved from server.', results);
         self.channels = [];
         self.initChannelsCount = results.length;
         if (self.initChannelsCount === 0) {
@@ -301,7 +300,6 @@ app.service('channelsService', [
         self.messagesPromise = [];
       }
       self.messagesPromise.push(promise);
-      console.log('DEBUG - Messages promise added.');
       if (self.messagesPromise.length == self.initChannelsCount) {
         $q.all(self.messagesPromise).then(function () {
           $rootScope.isLoading = false;
@@ -380,6 +378,7 @@ app.service('channelsService', [
       getDirects: getDirects,
       getChannels: getChannels,
       anyChannelHasUnread: anyChannelHasUnread,
+      createAndPushChannel: createAndPushChannel,
       findChannelById: findChannelById,
       findChannelBySlug: findChannelBySlug,
       setCurrentChannelBySlug: setCurrentChannelBySlug,
