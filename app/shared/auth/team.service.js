@@ -1,10 +1,18 @@
 'use strict';
 
-app.factory('teamService', ['socket', 'User', 'ArrayUtil',
-  function (socket, User, ArrayUtil) {
+app.factory('teamService', ['$rootScope', 'socket', 'User', 'ArrayUtil', 'channelsService', 'Channel',
+  function($rootScope, socket, User, ArrayUtil, channelsService, Channel) {
 
-    socket.on('member:new', function (member) {
+    socket.on('member:new', function(member) {
+      member.active = true;
       User.getCurrent().team.members.push(member);
+      channelsService.createAndPushChannel({
+        name: member.username,
+        slug: member.username,
+        type: Channel.TYPE.DIRECT,
+        memberId: member.id
+      });
+      $rootScope.$broadcast('channels:updated');
     });
 
     function deactiveTeamMember(memberId) {
@@ -17,5 +25,5 @@ app.factory('teamService', ['socket', 'User', 'ArrayUtil',
       deactiveTeamMember: deactiveTeamMember,
     };
 
-  }]).run(['teamService', function (teamService) {
-}]);
+  }
+]).run(['teamService', function(teamService) {}]);

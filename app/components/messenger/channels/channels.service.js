@@ -2,9 +2,9 @@
 
 app.service('channelsService', [
   '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state', 'User',
-  'teamService', 'ArrayUtil',
+   'ArrayUtil',
   function ($rootScope, $http, $q, $log, socket, Channel, $state, User,
-            teamService, ArrayUtil) {
+            ArrayUtil) {
 
     var self = this;
 
@@ -36,9 +36,10 @@ app.service('channelsService', [
      */
     socket.on('channel:edit', function (result) {
       var channel = findChannelById(result.channel.id);
+      var isChannelSelected = channel.isSelected();
       channel.updateFromJson(result.channel);
-      if (channel.isSelected()) {
-        $state.transitionTo('messenger.messages', {
+      if (isChannelSelected) {
+        $state.go('messenger.messages', {
           slug: channel.slug
         });
       }
@@ -377,6 +378,7 @@ app.service('channelsService', [
       getDirects: getDirects,
       getChannels: getChannels,
       anyChannelHasUnread: anyChannelHasUnread,
+      createAndPushChannel: createAndPushChannel,
       findChannelById: findChannelById,
       findChannelBySlug: findChannelBySlug,
       setCurrentChannelBySlug: setCurrentChannelBySlug,
