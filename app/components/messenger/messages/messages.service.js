@@ -2,9 +2,9 @@
 
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'Upload', 'socket', 'channelsService',
-  'Message', 'db', 'User', 'filesService',
-  function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-            Message, db, User, filesService) {
+  'Message', 'db', 'filesService', 'CurrentMember', 'Team',
+  function($rootScope, $http, $log, $q, Upload, socket, channelsService,
+    Message, db, filesService, CurrentMember, Team) {
 
     var self = this;
 
@@ -12,7 +12,7 @@ app.service('messagesService', [
      * @summary Socket listeners
      */
 
-    socket.on('message:send', function (data) {
+    socket.on('message:send', function(data) {
       var message = new Message(data.body, data.type, data.senderId,
         data.channelId, data.id, data.datetime, data.additionalData, data.about);
       message.save();
@@ -25,19 +25,19 @@ app.service('messagesService', [
       }
     });
 
-    socket.on('message:type:start', function (data) {
+    socket.on('message:type:start', function(data) {
       channelsService.addIsTypingMemberByChannelId(data.channelId, data.memberId);
       $rootScope.$broadcast('channels:updated');
       $rootScope.$broadcast('scroll:isTyping');
     });
 
-    socket.on('message:type:end', function (data) {
+    socket.on('message:type:end', function(data) {
       channelsService.removeIsTypingMemberByChannelId(data.channelId,
         data.memberId);
       $rootScope.$broadcast('channels:updated');
     });
 
-    socket.on('message:seen', function (data) {
+    socket.on('message:seen', function(data) {
       channelsService.updateChannelLastSeen(data.channelId, data.messageId);
     });
 
@@ -45,7 +45,7 @@ app.service('messagesService', [
      * @summary RootScope listeners.
      */
 
-    $rootScope.$on('channel:new', function (event, channel) {
+    $rootScope.$on('channel:new', function(event, channel) {
       var promise;
       if (channel.isDirect() && !channel.isDirectExist()) {
         var deferred = $q.defer();
@@ -69,14 +69,15 @@ app.service('messagesService', [
         channelId: channel.id,
         teamId: channel.teamId
       };
-      messagePromises.push(new Promise(function (resolve) {
+      messagePromises.push(new Promise(function(resolve) {
         getLastMessageByChannelIdFromDb(channel.id)
-          .then(function (lastMessage) {
+          .then(function(lastMessage) {
             if (lastMessage) {
               dataToBeSend.lastSavedMessageId = lastMessage.id;
             }
-            socket.emit('message:get', dataToBeSend, function (res) {
-              console.log('DEBUG - ' + res.messages.length + ' messages retrieved for ' + channel.slug + '.');
+            socket.emit('message:get', dataToBeSend, function(res) {
+              console.log('DEBUG - ' + res.messages.length +
+                ' messages retrieved for ' + channel.slug + '.');
               channelsService.updateChannelNotification(channel.id, 'num',
                 res.notifCount);
               if (res.lastDatetime) {
@@ -87,7 +88,7 @@ app.service('messagesService', [
                 channelsService.updateChannelLastSeen(channel.id,
                   res.channelLastSeen);
               }
-              res.messages.forEach(function (msg) {
+              res.messages.forEach(function(msg) {
                 var message = new Message(msg.body, msg.type, msg.senderId,
                   msg.channelId, msg.id, msg.datetime, msg.additionalData, msg.about);
                 messages.push(message.getDbWellFormed());
@@ -96,9 +97,9 @@ app.service('messagesService', [
             });
           });
       }));
-      Promise.all(messagePromises).then(function () {
+      Promise.all(messagePromises).then(function() {
         if (messages.length > 0) {
-          bulkSaveMessage(messages).then(function () {
+          bulkSaveMessage(messages).then(function() {
             deferred.resolve();
           });
         } else {
@@ -110,12 +111,12 @@ app.service('messagesService', [
 
     function bulkSaveMessage(messages) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      db.getDb().then(function(database) {
         database.bulkDocs(messages)
-          .then(function () {
+          .then(function() {
             deferred.resolve();
           })
-          .catch(function (err) {
+          .catch(function(err) {
             deferred.reject();
             $log.error('Bulk saving messages failed.', err);
           });
@@ -126,9 +127,9 @@ app.service('messagesService', [
     function getMessagesByChannelId(channelId) {
       var deferred = $q.defer();
       getMessagesByChannelIdFromDb(channelId)
-        .then(function (res) {
+        .then(function(res) {
           var messages = [];
-          res.docs.forEach(function (doc) {
+          res.docs.forEach(function(doc) {
             var message = new Message(doc.body, doc.type, doc.senderId,
               doc.channelId, doc._id, doc.datetime, doc.additionalData, doc.about);
             messages.push(message);
@@ -143,7 +144,7 @@ app.service('messagesService', [
      */
     function getMessagesByChannelIdFromDb(channelId) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      db.getDb().then(function(database) {
         database.find({
           selector: {
             id: {
@@ -157,7 +158,7 @@ app.service('messagesService', [
             id: 'desc'
           }],
           limit: 200
-        }).then(function (docs) {
+        }).then(function(docs) {
           deferred.resolve(docs);
         });
       });
@@ -166,7 +167,7 @@ app.service('messagesService', [
 
     function getLastMessageByChannelIdFromDb(channelId) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      db.getDb().then(function(database) {
         database.find({
           selector: {
             id: {
@@ -180,13 +181,13 @@ app.service('messagesService', [
             id: 'desc'
           }],
           limit: 1
-        }).then(function (result) {
+        }).then(function(result) {
           if (result.docs.length === 0) {
             deferred.resolve(null);
           } else {
             deferred.resolve(result.docs[0]);
           }
-        }).catch(function (err) {
+        }).catch(function(err) {
           $log.error('Getting last message from db failed.', err);
           deferred.reject();
         });
@@ -215,9 +216,9 @@ app.service('messagesService', [
         livedFile.deselectTempLines();
       }
       var message = new Message(messageBody, type || Message.TYPE.TEXT,
-        User.getCurrent().memberId, channelId, null, null, additionalData, about, true);
+        CurrentMember.member.id, channelId, null, null, additionalData, about, true);
       socket.emit('message:send', message.getServerWellFormed(),
-        function (data) {
+        function(data) {
           message.isPending = false;
           message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
           message.save();
@@ -231,30 +232,30 @@ app.service('messagesService', [
       var additionalData = {
         name: fileName
       };
-      var message = new Message(null, Message.TYPE.FILE, User.getCurrent().memberId,
+      var message = new Message(null, Message.TYPE.FILE, CurrentMember.member.id,
         channelId, null, null, additionalData, null, true);
       Upload.upload({
         url: 'api/v1/files/upload/' + fileName,
         data: {
           name: fileName,
           channel: channelId,
-          sender: User.getCurrent().memberId,
+          sender: CurrentMember.member.id,
           file: fileData
         },
         method: 'PUT'
-      }).then(function (res) {
+      }).then(function(res) {
         message.additionalData.url = res.data.file;
         message.additionalData.fileId = res.data.id;
         message.additionalData.type = res.data.type;
         socket.emit('message:send', message.getServerWellFormed(),
-          function (data) {
+          function(data) {
             message.isPending = false;
             message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
             message.save();
             channelsService.updateChannelLastDatetime(message.channelId,
               message.datetime);
           });
-      }).catch(function (err) {
+      }).catch(function(err) {
         /**
          * @todo Handle upload errors properly.
          */
@@ -275,7 +276,7 @@ app.service('messagesService', [
 
     function seenLastMessageByChannelId(channelId) {
       getLastMessageByChannelIdFromDb(channelId)
-        .then(function (lastMessage) {
+        .then(function(lastMessage) {
           if (lastMessage) {
             seenMessage(channelId, lastMessage.id, lastMessage.senderId);
           }

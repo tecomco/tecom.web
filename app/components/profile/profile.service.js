@@ -1,28 +1,29 @@
 'use strict';
 
 app.service('profileService', [
-  '$log', 'Upload', 'User', '$http', '$q', 'ArrayUtil', 'AuthService',
-  '$localStorage',
-  function ($log, Upload, User, $http, $q, ArrayUtil, AuthService,
-            $localStorage) {
+  '$log', 'Upload', '$http', '$q', 'ArrayUtil', 'AuthService',
+  '$localStorage', 'CurrentMember', 'Team',
+  function($log, Upload, $http, $q, ArrayUtil, AuthService,
+    $localStorage, CurrentMember, Team) {
 
     function changeUsername(username) {
       var defered = $q.defer();
       $http({
         method: 'PATCH',
-        url: '/api/v1/auth/users/' + User.getCurrent().id + '/username/change/',
+        url: '/api/v1/auth/users/' + CurrentMember.member.userId +
+          '/username/change/',
         data: {
           username: username
         }
-      }).success(function (data) {
+      }).success(function(data) {
         $localStorage.token = data.token;
-        User.getCurrent().username = username;
+        CurrentMember.username = username;
         var userInTeam = ArrayUtil.getElementByKeyValue(
-          User.getCurrent().team.getActiveMembers(), 'id', User.getCurrent().memberId);
+          Team.getActiveMembers(), 'id', CurrentMember.member.id);
         userInTeam.username = username;
         AuthService.initialize();
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
-      }).error(function (err) {
+      }).error(function(err) {
         $log.error('Error Changing Username', err);
         if (err.username) {
           if (ArrayUtil.contains(err.username, 'This field may not be blank.'))
@@ -35,8 +36,7 @@ app.service('profileService', [
             defered.reject('نام کاربری معتبر نیست، این نام تنها می تواند شامل حروف، اعداد و بعضی از علامت ها باشد.');
           else
             defered.reject('خطا در تغییر نام کاربری');
-        }
-        else
+        } else
           defered.reject('خطا در تغییر نام کاربری');
       });
       return defered.promise;
@@ -52,9 +52,9 @@ app.service('profileService', [
           new_password1: newPass,
           new_password2: confirm
         }
-      }).success(function (data) {
+      }).success(function(data) {
         defered.resolve('رمز عبور با موفقیت تغییر کرد.');
-      }).error(function (err) {
+      }).error(function(err) {
         $log.error('Error Changing Password', err);
         defered.reject('خطا در تغییر رمز عبور');
       });
@@ -64,15 +64,16 @@ app.service('profileService', [
     function changeProfileImage(file) {
       var defered = $q.defer();
       Upload.upload({
-        url: '/api/v1/auth/users/' + User.getCurrent().id + '/image/change/',
+        url: '/api/v1/auth/users/' + CurrentMember.member.userId +
+          '/image/change/',
         data: {
           image: file
         },
         method: 'PATCH'
-      }).then(function (res) {
-        User.getCurrent().image = res.data.image;
+      }).then(function(res) {
+        CurrentMember.member.image = res.data.image;
         defered.resolve('عکس پروفایل با موفقیت تغییر کرد.');
-      }).catch(function (err) {
+      }).catch(function(err) {
         $log.error('Error Changing Profile Image', err);
         defered.reject('خطا در تغییر عکس پروفایل');
       });
@@ -83,11 +84,11 @@ app.service('profileService', [
       var defered = $q.defer();
       $http({
         method: 'POST',
-        url: '/api/v1/teams/'+ User.getCurrent().team.id +'/member/'+
-        member.id + '/kick/'
-      }).success(function () {
+        url: '/api/v1/teams/' + Team.id + '/member/' +
+          member.id + '/kick/'
+      }).success(function() {
         defered.resolve();
-      }).error(function (err) {
+      }).error(function(err) {
         $log.error('Error Making Admin', err);
         defered.reject();
       });
@@ -98,11 +99,11 @@ app.service('profileService', [
       var defered = $q.defer();
       $http({
         method: 'POST',
-        url: '/api/v1/teams/'+ User.getCurrent().team.id +'/member/'+
-        member.id + '/admin/'
-      }).success(function () {
+        url: '/api/v1/teams/' + Team.id + '/member/' +
+          member.id + '/admin/'
+      }).success(function() {
         defered.resolve();
-      }).error(function (err) {
+      }).error(function(err) {
         $log.error('Error Making Admin', err);
         defered.reject();
       });
@@ -113,11 +114,11 @@ app.service('profileService', [
       var defered = $q.defer();
       $http({
         method: 'POST',
-        url: '/api/v1/teams/' + User.getCurrent().team.id + '/member/' +
-        member.id + '/disadmin/'
-      }).success(function () {
+        url: '/api/v1/teams/' + Team.id + '/member/' +
+          member.id + '/disadmin/'
+      }).success(function() {
         defered.resolve();
-      }).error(function (err) {
+      }).error(function(err) {
         $log.error('Error deAdmining', err);
         defered.reject();
       });
@@ -127,14 +128,14 @@ app.service('profileService', [
     function leaveTeam() {
       return $http({
         method: 'POST',
-        url: '/api/v1/teams/member/' + User.getCurrent().memberId + '/leave/'
+        url: '/api/v1/teams/member/' + CurrentMember.member.id + '/leave/'
       });
     }
 
     function sendInvitationEmail(email) {
       return $http({
         method: 'POST',
-        url: '/api/v1/teams/' + User.getCurrent().team.id + '/invite/send/',
+        url: '/api/v1/teams/' + Team.id + '/invite/send/',
         data: {
           email: email
         }

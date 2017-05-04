@@ -1,17 +1,19 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'db', 'textUtil', 'channelsService', 'User', 'fileUtil', 'dateUtil',
-  function ($log, db, textUtil, channelsService, User, fileUtil, dateUtil) {
+  '$log', 'db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
+  'CurrentMember', 'Team',
+  function($log, db, textUtil, channelsService, fileUtil, dateUtil,
+    CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-                     additionalData, about, isPending) {
+      additionalData, about, isPending) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
         additionalData, about, isPending);
     }
 
-    Message.prototype.setValues = function (body, type, senderId, channelId,
-                                            _id, datetime, additionalData, about, isPending) {
+    Message.prototype.setValues = function(body, type, senderId, channelId,
+      _id, datetime, additionalData, about, isPending) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -30,16 +32,16 @@ app.factory('Message', [
       }
     };
 
-    Message.prototype.getUsername = function () {
-      var username = User.getCurrent().team.getUsernameById(this.senderId);
+    Message.prototype.getUsername = function() {
+      var username = Team.getUsernameByMemberId(this.senderId);
       if (!this.isNotif() && username === '') {
         console.log('empty username');
-        console.log('team:', User.getCurrent().team);
+        console.log('team:', Team);
       }
       return username;
     };
 
-    Message.prototype.getViewWellFormed = function () {
+    Message.prototype.getViewWellFormed = function() {
       var body = '';
       if (this.type === Message.TYPE.TEXT) {
         if (this.about) {
@@ -76,8 +78,8 @@ app.factory('Message', [
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
         body = '';
         var addedMemberIds = this.additionalData;
-        angular.forEach(addedMemberIds, function (memberId) {
-          body += '@' + User.getCurrent().team.getUsernameById(memberId) + ' و ';
+        angular.forEach(addedMemberIds, function(memberId) {
+          body += '@' + Team.getUsernameByMemberId(memberId) + ' و ';
         });
         body = body.slice(0, body.length - 3);
         if (this.type === Message.TYPE.NOTIF.USER_ADDED) {
@@ -103,15 +105,15 @@ app.factory('Message', [
       return body;
     };
 
-    Message.prototype.isFromMe = function () {
-      return this.senderId === User.getCurrent().memberId;
+    Message.prototype.isFromMe = function() {
+      return this.senderId === CurrentMember.member.id;
     };
 
-    Message.prototype.isEnglish = function () {
+    Message.prototype.isEnglish = function() {
       return this.body ? textUtil.isEnglish(this.body) : false;
     };
 
-    Message.prototype.getStyle = function () {
+    Message.prototype.getStyle = function() {
       if ((this.type === Message.TYPE.FILE) || this.isEnglish()) {
         return {
           'text-align': 'left',
@@ -122,7 +124,7 @@ app.factory('Message', [
       }
     };
 
-    Message.prototype.getStatus = function () {
+    Message.prototype.getStatus = function() {
       if (!this.channel) {
         this.channel = channelsService.findChannelById(this.channelId);
         if (!this.channel) {
@@ -138,7 +140,7 @@ app.factory('Message', [
       return Message.STATUS_TYPE.SENT;
     };
 
-    Message.prototype.getStatusIcon = function () {
+    Message.prototype.getStatusIcon = function() {
       var status = this.getStatus();
       switch (status) {
         case Message.STATUS_TYPE.PENDING:
@@ -150,7 +152,7 @@ app.factory('Message', [
       }
     };
 
-    Message.prototype.getCssClass = function () {
+    Message.prototype.getCssClass = function() {
       switch (this.type) {
         case Message.TYPE.TEXT:
           return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
@@ -171,18 +173,18 @@ app.factory('Message', [
       }
     };
 
-    Message.prototype.setIdAndDatetime = function (_id, datetime) {
+    Message.prototype.setIdAndDatetime = function(_id, datetime) {
       this._id = _id;
       this.id = Message.generateIntegerId(_id);
       this.datetime = new Date(datetime);
     };
 
-    Message.generateIntegerId = function (stringId) {
+    Message.generateIntegerId = function(stringId) {
       return parseInt(stringId.slice(stringId.lastIndexOf(':') + 1,
         stringId.length));
     };
 
-    Message.prototype.getServerWellFormed = function () {
+    Message.prototype.getServerWellFormed = function() {
       var data = {
         channelId: this.channelId,
         teamId: this.teamId,
@@ -198,7 +200,7 @@ app.factory('Message', [
       return data;
     };
 
-    Message.prototype.getDbWellFormed = function () {
+    Message.prototype.getDbWellFormed = function() {
       var data = {
         _id: this._id,
         id: this.id,
@@ -217,17 +219,17 @@ app.factory('Message', [
       return data;
     };
 
-    Message.prototype.save = function () {
+    Message.prototype.save = function() {
       var that = this;
-      db.getDb().then(function (database) {
+      db.getDb().then(function(database) {
         database.put(that.getDbWellFormed())
-          .catch(function (err) {
+          .catch(function(err) {
             $log.error('Saving message failed.', err);
           });
       });
     };
 
-    Message.generateMessageWellFormedText = function (text) {
+    Message.generateMessageWellFormedText = function(text) {
       var wellFormedText;
       wellFormedText = textUtil.htmlToPlaintext(text);
       wellFormedText = textUtil.urlify(wellFormedText);
@@ -235,16 +237,16 @@ app.factory('Message', [
       return wellFormedText;
     };
 
-    Message.prototype.isNotif = function () {
+    Message.prototype.isNotif = function() {
       return (this.type === Message.TYPE.NOTIF.USER_ADDED ||
-      this.type === Message.TYPE.NOTIF.USER_REMOVED ||
-      this.type === Message.TYPE.NOTIF.FILE_LIVED ||
-      this.type === Message.TYPE.NOTIF.CHANNEL_CREATED ||
-      this.type === Message.TYPE.NOTIF.CHANNEL_EDITED ||
-      this.type === Message.TYPE.NOTIF.FILE_DIED);
+        this.type === Message.TYPE.NOTIF.USER_REMOVED ||
+        this.type === Message.TYPE.NOTIF.FILE_LIVED ||
+        this.type === Message.TYPE.NOTIF.CHANNEL_CREATED ||
+        this.type === Message.TYPE.NOTIF.CHANNEL_EDITED ||
+        this.type === Message.TYPE.NOTIF.FILE_DIED);
     };
 
-    Message.prototype.getLocaleDate = function(){
+    Message.prototype.getLocaleDate = function() {
       return dateUtil.getPersianDateString(this.datetime);
     };
 

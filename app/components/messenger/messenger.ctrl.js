@@ -1,11 +1,11 @@
 'use strict';
 
-app.controller('MessengerCtrl', ['$scope', '$window', '$uibModal',
-  'AuthService', 'User', '$rootScope',
-  function ($scope, $window, $uibModal, AuthService, User) {
+app.controller('MessengerCtrl', [
+  '$scope', '$window', '$uibModal', 'AuthService', 'CurrentMember',
+  function ($scope, $window, $uibModal, AuthService, CurrentMember) {
 
     $scope.activeFile = false;
-    $scope.isAdmin = User.getCurrent().isAdmin;
+    $scope.isAdmin = CurrentMember.member.isAdmin;
     $scope.openModal = function (name) {
       var modalInstance = $uibModal.open({
         animation: true,

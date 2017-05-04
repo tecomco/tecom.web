@@ -18,14 +18,14 @@ app.config(['$provide', function ($provide) {
         $delegate(exception, cause);
         var $http = $injector.get('$http');
         var $log = $injector.get('$log');
-        var User = $injector.get('User');
+        var CurrentMember = $injector.get('CurrentMember');
         var error = {
           message: exception.message,
           stacktrace: exception.stack,
           user_agent: window.navigator.userAgent
         };
-        if (User.getCurrent()) {
-          error.member = User.getCurrent().memberId;
+        if (CurrentMember.exists()) {
+          error.member = CurrentMember.member.id;
         }
         $http.post('/api/v1/logs/create/', error)
           .then(function () {

@@ -3,8 +3,13 @@
 app.factory('ArrayUtil', function () {
 
   var getIndexByKeyValue = function (array, key, value) {
+    var keySplit = key.split('.');
     for (var i = 0; i < array.length; i++) {
-      if (array[i][key] == value) {
+      var temp = array[i];
+      for (var k = 0; k < keySplit.length; k++){
+        temp = temp[keySplit[k]];
+      }
+      if (temp == value) {
         return i;
       }
     }
