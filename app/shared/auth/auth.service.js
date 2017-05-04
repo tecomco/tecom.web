@@ -76,6 +76,7 @@ app.factory('AuthService', [
     }
 
     return {
+
       initialize: initialize,
       login: login,
       logout: logout,

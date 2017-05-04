@@ -131,8 +131,8 @@ app.controller('messagesController', [
         var previousMessage =
           ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id - 1);
         if (previousMessage) {
-          var timeDiff = Math.abs(message.datetime.getTime()
-            - previousMessage.datetime.getTime());
+          var timeDiff =
+            Math.abs(message.datetime.getTime()-previousMessage.datetime.getTime());
           var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
           return (diffDays === 0) ? false : true;
         }
