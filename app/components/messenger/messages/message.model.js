@@ -33,8 +33,8 @@ app.factory('Message', [
     Message.prototype.getUsername = function () {
       var username = User.getCurrent().team.getUsernameById(this.senderId);
       if (!this.isNotif() && username === '') {
-        console.log('empty username');
-        console.log('team:', User.getCurrent().team);
+        $log.error('Empty username problem. Team members:',
+          User.getCurrent().team);
       }
       return username;
     };

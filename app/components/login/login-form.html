@@ -11,7 +11,7 @@
       <div class="login-form-body">
         <form name="forms.login" ng-submit="login()" novalidate>
           <div class="form-group form-input">
-            <input ng-model="email" placeholder="نام کاربری یا ایمیل" name="email" type="text" required>
+            <input ng-model="email" placeholder="نام کاربری یا ایمیل" name="email" type="text" required autofocus>
           </div>
           <div class="form-err">
             <label class="login-err" ng-show="forms.login.email.$invalid && (!forms.login.email.$pristine || forms.login.$submitted)">وارد کردن نام کاربری یا ایمیل ضروری می باشد.</label>
