@@ -82,10 +82,10 @@ app.factory('Message', [
         body = body.slice(0, body.length - 3);
         if (this.type === Message.TYPE.NOTIF.USER_ADDED) {
           body += (addedMemberIds.length > 1) ?
-            '.به گروه اضافه شدند.' : ' به گروه اضافه شد';
+            ' به گروه اضافه شدند.' : ' به گروه اضافه شد.';
         } else {
           body += (addedMemberIds.length > 1) ?
-            '.از گروه حذف شدند.' : ' از گروه حذف شد';
+            ' از گروه حذف شدند.' : ' از گروه حذف شد.';
         }
       } else if (this.type === Message.TYPE.NOTIF.CHANNEL_CREATED) {
         body = 'گروه ساخته شد.';

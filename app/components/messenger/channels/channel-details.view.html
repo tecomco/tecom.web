@@ -13,7 +13,8 @@
           <div ng-messages="forms.detailsForm.name.$error">
             <span class="modal-err" ng-message="required" ng-show="forms.detailsForm.name.$touched">وارد کردن نام گروه الزامی است!</span>
             <span class="modal-err" ng-message="maxlength">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
-            <!--<span class="modal-err" ng-show="details.duplicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>-->
+            <!-- TODO: Implement this. -->
+            <span class="modal-err" ng-message="unique">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
           </div>
         </div>
         <div class="g-details">
@@ -35,6 +36,13 @@
           <span class="zmdi zmdi-check"></span>
           <span>ذخیره</span>
         </button>
+        <!-- TODO: Implement this. -->
+        <!--
+        <button class="btn-modal" ng-show="editMode">
+          <span class="zmdi zmdi-close"></span>
+          <span>بی‌خیال</span>
+        </button>
+        -->
         <span class="modal-err" ng-show="details.serverError">خطا در اتصال به سرور</span>
       </form>
 
@@ -49,12 +57,19 @@
         <h3>اعضای گروه</h3>
         <button class="btn-modal" ng-click="addMembersClick()" ng-hide="addMemberMode">
           <span class="zmdi zmdi-account-add"></span>
-          <span>اضافه کردن  به اعضای گروه</span>
+          <span>اضافه کردن به اعضای گروه</span>
         </button>
         <button class="btn-modal" ng-click="submitAddedMembers()" ng-show="addMemberMode">
           <span class="zmdi zmdi-check"></span>
           <span>ذخیره</span>
         </button>
+        <!-- TODO: Implement this. -->
+        <!--
+        <button class="btn-modal" ng-click="" ng-show="addMemberMode">
+          <span class="zmdi zmdi-close"></span>
+          <span>بی‌خیال</span>
+        </button>
+        -->
       </div>
       <div class="modal-input" ng-show="addMemberMode">
         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="searchInput">
@@ -63,7 +78,7 @@
         <div ng-repeat="member in membersListItems | orderBy : 'memberRefrence.username' | filter : {username : searchInput}" ng-click="member.click(addMemberMode)">
           <div class="g-m-one" ng-show="addMemberMode ? true : member.isChannelMember()">
             <div ng-class=member.getCssClass(addMemberMode)>
-              <img ng-src="{{member.getImage()}}"/>
+              <img ng-src="{{member.getImage()}}" />
               <span class="zmdi zmdi-check-circle" ng-show="addMemberMode"></span>
               <label>@{{member.memberRefrence.username}}</label>
               <label class="hint" ng-show="addMemberMode && member.isChannelMember()">(عضو گروه)</label>
@@ -79,7 +94,7 @@
   <div class="clearfix"></div>
 
   <div ng-if="isUserAdmin()">
-    <confirm-dialog button-name="حذف گروه" message="مطمئنی که می خوای این گروه رو حذف کنی؟" cancel="نه، حواسم نبود" ok="آره" confirm-func="archiveChannel"></confirm-dialog>
+    <confirm-dialog button-name="حذف گروه" message="مطمئنی که می خوای این گروه رو حذف کنی؟" cancel="نه، حواسم نبود" ok="آره" confirm-func="archiveChannel" class="danger-btn" confirm-button="danger"></confirm-dialog>
   </div>
 </div>
 </div>

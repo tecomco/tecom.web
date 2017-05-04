@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('channelMemberItem', ['User', function (User) {
+app.factory('ChannelMemberItem', ['User', function (User) {
 
   function ChannelMemberItem(teamMemberId) {
     this.memberRefrence = User.getCurrent().team.getMemberById(teamMemberId);
@@ -60,5 +60,4 @@ app.factory('channelMemberItem', ['User', function (User) {
   };
 
   return ChannelMemberItem;
-}
-]);
+}]);

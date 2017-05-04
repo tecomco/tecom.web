@@ -2,9 +2,9 @@
 
 app.controller('channelDetailsController', ['$scope', '$state',
   '$uibModalInstance', '$log', 'channelsService', 'User', 'ArrayUtil',
-  'Channel', 'channelMemberItem',
+  'Channel', 'ChannelMemberItem',
   function ($scope, $state, $uibModalInstance, $log, channelsService, User,
-            ArrayUtil, Channel, channelMemberItem) {
+            ArrayUtil, Channel, ChannelMemberItem) {
 
     var selectedMember;
     $scope.editMode = false;
@@ -67,7 +67,7 @@ app.controller('channelDetailsController', ['$scope', '$state',
     function addActiveTeamMembersToMembersList() {
       User.getCurrent().team.members.forEach(function (teamMember) {
         if (teamMember.active) {
-          var item = new channelMemberItem(teamMember.id);
+          var item = new ChannelMemberItem(teamMember.id);
           $scope.membersListItems.push(item);
         }
       });
@@ -140,12 +140,11 @@ app.controller('channelDetailsController', ['$scope', '$state',
 
     function setAddedMembersChannelIds(channelMembersData) {
       channelMembersData.forEach(function (data) {
-          var channelMember =
-            ArrayUtil.getElementByKeyValue($scope.membersListItems,
-              'teamMemberId', data.member);
-          channelMember.setChannelMemberId(data.id);
-        }
-      );
+        var channelMember =
+          ArrayUtil.getElementByKeyValue($scope.membersListItems,
+            'teamMemberId', data.member);
+        channelMember.setChannelMemberId(data.id);
+      });
     }
 
     function removeTemporaryChannelMembers() {
