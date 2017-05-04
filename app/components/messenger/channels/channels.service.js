@@ -201,12 +201,12 @@ app.service('channelsService', [
 
     function sendEditedChannel(channel) {
       var defer = $q.defer();
-      socket.emit('channel:edit:details', channel, function (response) {
-        if (response.status) {
+      socket.emit('channel:edit:details', channel, function (res) {
+        if (res.status) {
           defer.resolve();
         }
         else {
-          defer.reject(response.message);
+          defer.reject(res.message);
         }
       });
       return defer.promise;
@@ -218,9 +218,9 @@ app.service('channelsService', [
         memberIds: memberIds,
         channelId: channelId
       };
-      socket.emit('channel:members:add', data, function (response) {
-        if (response.status)
-          defer.resolve();
+      socket.emit('channel:members:add', data, function (res) {
+        if (res.status)
+          defer.resolve(res.channelMembers);
         else
           defer.reject();
       });
@@ -311,10 +311,10 @@ app.service('channelsService', [
       var deferred = $q.defer();
       $http({
         method: 'GET',
-        url: '/api/v1/messenger/channels/' + channelId + '/details/'
-      }).success(function (data) {
+        url: '/api/v1/messenger/channels/' + channelId + '/members/'
+      }).then(function (data) {
         deferred.resolve(data);
-      }).error(function (err) {
+      }).catch(function (err) {
         $log.info('Error Getting channel members.', err);
         deferred.reject(err);
       });
