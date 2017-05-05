@@ -121,9 +121,9 @@ app.service('channelsService', [
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
         data.liveFileId, data.teamId);
-      if (channel.isDirect() && !channel.isDirectExist()) {
-        console.log('fake!!', channel.slug);
-      }
+      // if (channel.isDirect() && !channel.isDirectExist()) {
+      //   console.log('fake!!', channel.slug);
+      // }
       if (channel.isDirect() && channel.isDirectExist() && !CurrentMember.member.isTecomBot()) {
         channel.changeNameAndSlugFromId().then(function() {
           if (!Team.isDirectActive(channel.slug)) {

@@ -10,7 +10,7 @@ app.service('profileService', [
       var defered = $q.defer();
       $http({
         method: 'PATCH',
-        url: '/api/v1/auth/users/' + CurrentMember.member.userId +
+        url: '/api/v1/auth/users/' + CurrentMember.member.user.id +
           '/username/change/',
         data: {
           username: username
@@ -64,7 +64,7 @@ app.service('profileService', [
     function changeProfileImage(file) {
       var defered = $q.defer();
       Upload.upload({
-        url: '/api/v1/auth/users/' + CurrentMember.member.userId +
+        url: '/api/v1/auth/users/' + CurrentMember.member.user.id +
           '/image/change/',
         data: {
           image: file

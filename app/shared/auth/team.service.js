@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('teamService', ['$rootScope', 'socket', 'Team', 'ArrayUtil', 'channelsService', 'Channel',
-  function($rootScope, socket, Team, ArrayUtil, channelsService, Channel) {
+app.factory('teamService', ['$rootScope', 'socket', 'Team', 'ArrayUtil', 'channelsService', 'Channel', 'Member',
+  function($rootScope, socket, Team, ArrayUtil, channelsService, Channel, Member) {
 
     socket.on('member:new', function(memberData) {
       memberData.active = true;
