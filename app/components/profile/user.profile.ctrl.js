@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('userProfileController', [
-  '$scope', '$window', 'User', 'AuthService', 'profileService', '$uibModalInstance', '$timeout',
-  function ($scope, $window, User, AuthService, profileService, $uibModalInstance, $timeout) {
+  '$scope', '$window', 'CurrentMember', 'AuthService', 'profileService', '$uibModalInstance', '$timeout',
+  function ($scope, $window, CurrentMember, AuthService, profileService, $uibModalInstance, $timeout) {
 
     initialize();
 
@@ -60,7 +60,7 @@ app.controller('userProfileController', [
       }
     };
 
-    $scope.leaveTeam = function (test) {
+    $scope.leaveTeam = function () {
       profileService.leaveTeam()
         .then(function () {
           return AuthService.logout();
@@ -98,7 +98,7 @@ app.controller('userProfileController', [
     }
 
     function initialize() {
-      $scope.user = User.getCurrent();
+      $scope.user = CurrentMember.member.user;
       $scope.usernameInput = '';
       $scope.editUsernameActive = false;
       $scope.changePasswordActive = false;

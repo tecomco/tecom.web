@@ -1,16 +1,16 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$scope', '$state',
-  '$uibModalInstance', '$log', 'channelsService', 'User', 'ArrayUtil',
-  'Channel', 'ChannelMemberItem',
-  function ($scope, $state, $uibModalInstance, $log, channelsService, User,
-            ArrayUtil, Channel, ChannelMemberItem) {
+app.controller('channelDetailsController', [
+  '$scope', '$state', '$uibModalInstance', '$log', 'channelsService',
+  'CurrentMember', 'Team', 'ArrayUtil', 'Channel', 'ChannelMemberItem',
+  function ($scope, $state, $uibModalInstance, $log, channelsService,
+    CurrentMember, Team, ArrayUtil, Channel, ChannelMemberItem) {
 
     var selectedMember;
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
-    $scope.isAdmin = User.getCurrent().isAdmin;
+    $scope.isAdmin = CurrentMember.member.isAdmin;
     $scope.details = {};
     $scope.forms = {};
     $scope.membersListItems = [];
@@ -45,7 +45,8 @@ app.controller('channelDetailsController', ['$scope', '$state',
         }
         else {
           $scope.details.serverError = true;
-          $log.error('Error sending new channel form to server :', message);
+          $log.error('Error sending new channel form to server :',
+            message);
         }
       });
     };
@@ -65,11 +66,9 @@ app.controller('channelDetailsController', ['$scope', '$state',
     };
 
     function addActiveTeamMembersToMembersList() {
-      User.getCurrent().team.members.forEach(function (teamMember) {
-        if (teamMember.active) {
-          var item = new ChannelMemberItem(teamMember.id);
-          $scope.membersListItems.push(item);
-        }
+      Team.getActiveMembers().forEach(function (teamMember) {
+        var item = new ChannelMemberItem(teamMember.id);
+        $scope.membersListItems.push(item);
       });
     }
 
@@ -113,7 +112,6 @@ app.controller('channelDetailsController', ['$scope', '$state',
     };
 
     $scope.submitAddedMembers = function () {
-      console.log('submited');
       var teamMemberIds = [];
       $scope.membersListItems.forEach(function (item) {
         if (item.isSelected && !item.isChannelMember()) {
@@ -130,11 +128,9 @@ app.controller('channelDetailsController', ['$scope', '$state',
       channelsService.addMembersToChannel(teamMemberIds, $scope.channel.id)
         .then(function (channelMembersData) {
           setAddedMembersChannelIds(channelMembersData);
-          console.log('Done');
         })
         .catch(function () {
           removeTemporaryChannelMembers();
-          console.log('Failed');
         });
     }
 
@@ -154,7 +150,7 @@ app.controller('channelDetailsController', ['$scope', '$state',
     }
 
     $scope.isUserAdmin = function () {
-      return User.getCurrent().isAdmin;
+      return CurrentMember.member.isAdmin;
     };
 
     $scope.archiveChannel = function () {

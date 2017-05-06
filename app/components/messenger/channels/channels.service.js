@@ -1,10 +1,10 @@
 'use strict';
 
 app.service('channelsService', [
-  '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state', 'User',
-   'ArrayUtil',
-  function ($rootScope, $http, $q, $log, socket, Channel, $state, User,
-            ArrayUtil) {
+  '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state', 'CurrentMember', 'Team',
+  'ArrayUtil',
+  function($rootScope, $http, $q, $log, socket, Channel, $state, CurrentMember, Team,
+    ArrayUtil) {
 
     var self = this;
 
@@ -21,9 +21,9 @@ app.service('channelsService', [
      * @summary Socket listeners
      */
 
-    socket.on('channel:new', function (result) {
+    socket.on('channel:new', function(result) {
       var channel = createAndPushChannel(result.channel);
-      if (result.channel.creatorId === User.getCurrent().memberId) {
+      if (result.channel.creatorId === CurrentMember.member.id) {
         $state.go('messenger.messages', {
           slug: channel.getUrlifiedSlug()
         });
@@ -34,7 +34,7 @@ app.service('channelsService', [
     /**
      * @todo If the edited channel is the current one, change url.
      */
-    socket.on('channel:edit', function (result) {
+    socket.on('channel:edit', function(result) {
       var channel = findChannelById(result.channel.id);
       var isChannelSelected = channel.isSelected();
       channel.updateFromJson(result.channel);
@@ -46,7 +46,7 @@ app.service('channelsService', [
       $rootScope.$broadcast('channels:updated');
     });
 
-    socket.on('channel:members:add', function (result) {
+    socket.on('channel:members:add', function(result) {
       $log.info('add member:', result);
       if (result.channel.type === Channel.TYPE.PRIVATE) {
         createAndPushChannel(result.channel);
@@ -54,7 +54,7 @@ app.service('channelsService', [
       }
     });
 
-    socket.on('channel:members:remove', function (result) {
+    socket.on('channel:members:remove', function(result) {
       if (result.channel.type === Channel.TYPE.PRIVATE) {
         var channel = findChannelById(result.channel.id);
         channel.setIsRemoved();
@@ -62,7 +62,7 @@ app.service('channelsService', [
       }
     });
 
-    socket.on('channel:archived', function (result) {
+    socket.on('channel:archived', function(result) {
       var channel = findChannelById(result.channelId);
       if (channel) {
         channel.setIsArchived();
@@ -95,7 +95,7 @@ app.service('channelsService', [
         if (self.initChannelsCount === 0) {
           $rootScope.isLoading = false;
         }
-        results.forEach(function (result) {
+        results.forEach(function(result) {
           var channel = createAndPushChannel(result);
           $rootScope.$emit('channel:new', channel);
         });
@@ -119,9 +119,9 @@ app.service('channelsService', [
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
         data.liveFileId, data.teamId);
-      if (channel.isDirect() && channel.isDirectExist() && !User.getCurrent().isTecomBot()) {
-        channel.changeNameAndSlugFromId().then(function () {
-          if (!User.getCurrent().team.isDirectActive(channel.slug)) {
+      if (channel.isDirect() && channel.isDirectExist() && !CurrentMember.member.isTecomBot()) {
+        channel.changeNameAndSlugFromId().then(function() {
+          if (!Team.isDirectActive(channel.slug)) {
             channel.active = false;
           }
         });
@@ -138,13 +138,13 @@ app.service('channelsService', [
     }
 
     function findChannelById(id) {
-      return self.channels.find(function (channel) {
+      return self.channels.find(function(channel) {
         return channel.id === id;
       });
     }
 
     function findChannelBySlug(slug) {
-      return self.channels.find(function (channel) {
+      return self.channels.find(function(channel) {
         return channel.slug === slug;
       });
     }
@@ -161,7 +161,7 @@ app.service('channelsService', [
           defer.resolve();
         } else if (channel.isDirect() && !channel.isDirectExist()) {
           createDirect(channel.memberId)
-            .then(function () {
+            .then(function() {
               setCurrentChannel(channel);
               defer.resolve();
             });
@@ -188,7 +188,7 @@ app.service('channelsService', [
 
     function createChannel(channel) {
       var deferred = $q.defer();
-      socket.emit('channel:create', channel, function (res) {
+      socket.emit('channel:create', channel, function(res) {
         if (res.status) {
           deferred.resolve();
         } else {
@@ -229,11 +229,10 @@ app.service('channelsService', [
 
     function removeMemberFromChannel(data) {
       var defer = $q.defer();
-      socket.emit('channel:members:remove', data, function (res) {
+      socket.emit('channel:members:remove', data, function(res) {
         if (res.status) {
           defer.resolve();
-        }
-        else
+        } else
           defer.reject(res.message);
       });
       return defer.promise;
@@ -244,7 +243,7 @@ app.service('channelsService', [
       var data = {
         memberId: memberId
       };
-      socket.emit('channel:direct:create', data, function (res) {
+      socket.emit('channel:direct:create', data, function(res) {
         if (res.status) {
           deferred.resolve();
         } else {
@@ -301,7 +300,7 @@ app.service('channelsService', [
       }
       self.messagesPromise.push(promise);
       if (self.messagesPromise.length == self.initChannelsCount) {
-        $q.all(self.messagesPromise).then(function () {
+        $q.all(self.messagesPromise).then(function() {
           $rootScope.isLoading = false;
         });
       }
@@ -335,13 +334,13 @@ app.service('channelsService', [
     }
 
     function getPublicsAndPrivates() {
-      return self.channels.filter(function (channel) {
+      return self.channels.filter(function(channel) {
         return channel.isPublic() || channel.isPrivate();
       });
     }
 
     function getDirects() {
-      return self.channels.filter(function (channel) {
+      return self.channels.filter(function(channel) {
         return channel.isDirect();
       });
     }
@@ -356,12 +355,11 @@ app.service('channelsService', [
       var data = {
         channelId: channelId
       };
-      socket.emit('channel:archive', data, function (results) {
+      socket.emit('channel:archive', data, function(results) {
         if (results.status) {
           $log.info('Channel succesfully Archived');
           defer.resolve();
-        }
-        else {
+        } else {
           $log.error('Error Archiving Channel : ', results.message);
           defer.reject();
         }

@@ -1,116 +1,104 @@
 'use strict';
 
 app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
-  function ($http, $q, $log, $localStorage, ArrayUtil) {
+  'Member',
+  function($http, $q, $log, $localStorage, ArrayUtil, Member) {
 
-    function Team(id) {
-      this.id = id;
-      this.members = [];
-      var that = this;
-      this.areMembersReady = false;
-      this.membersPromise = this.getTeamMembers();
-      this.getName()
-        .success(function (res) {
-          that.name = res.name;
+    function Team() {}
+
+    Team.initialize = function(id) {
+      Team.id = id;
+      Team.members = [];
+      Team.areMembersReady = false;
+      Team.membersPromise = Team.getTeamMembers();
+      Team.getName()
+        .success(function(res) {
+          Team._name = res.name;
         });
-    }
+    };
 
-    Team.prototype.getTeamMembers = function () {
-      var that = this;
+    Team.getTeamMembers = function() {
       var deferred = $q.defer();
       $http({
         method: 'GET',
-        url: '/api/v1/teams/' + this.id + '/members/',
+        url: '/api/v1/teams/' + Team.id + '/members/',
         headers: {
           'Authorization': 'JWT ' + $localStorage.token
         }
-      }).success(function (res) {
-        that.members = res;
-        that.areMembersReady = true;
+      }).success(function(res) {
+        res.forEach(function(memberData) {
+          var member = new Member(memberData.id, memberData.is_admin,
+            memberData.active, memberData.user_id, memberData.username,
+            memberData.email, memberData.image);
+          Team.members.push(member);
+        });
+        Team.areMembersReady = true;
         deferred.resolve(res);
-      }).error(function (err) {
+      }).error(function(err) {
         $log.error('Getting team members failed.', err);
         deferred.reject();
       });
       return deferred.promise;
     };
 
-    Team.prototype.getName = function () {
+    Team.getName = function() {
       return $http({
         method: 'GET',
-        url: '/api/v1/teams/' + this.id + '/name/',
+        url: '/api/v1/teams/' + Team.id + '/name/',
         headers: {
           'Authorization': 'JWT ' + $localStorage.token
         }
       });
     };
 
-    Team.prototype.getUsernameById = function (userId) {
-      if (userId === Team.TECOM_BOT.id) {
-        return Team.TECOM_BOT.username;
+    Team.getUsernameByMemberId = function(memberId) {
+      if (memberId === Member.TECOM_BOT.id) {
+        return Member.TECOM_BOT.username;
       }
-      var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', userId);
-      if (index !== -1)
-        return this.members[index].username;
-      else {
-        return '';
-      }
+      var member = ArrayUtil.getElementByKeyValue(Team.members, 'id', memberId);
+      return member ? member.user.username : '';
     };
 
-    Team.prototype.getMemberByUsername = function (username) {
-      if (username === Team.TECOM_BOT.username) {
-        return Team.TECOM_BOT;
+    Team.getMemberByUsername = function(username) {
+      if (username === Member.TECOM_BOT.username) {
+        return Member.TECOM_BOT;
       }
-      var index = ArrayUtil.getIndexByKeyValue(this.members, 'username', username);
-      if (index !== -1)
-        return this.members[index];
+      var member = ArrayUtil.getElementByKeyValue(Team.members, 'user.username',
+        username);
+      if (member)
+        return member;
       else {
         $log.error('Member Not Found !');
         return null;
       }
     };
 
-    Team.prototype.getMemberById = function (id) {
-      if (id === Team.TECOM_BOT.id) {
-        return Team.TECOM_BOT;
+    Team.getMemberByMemberId = function(memberId) {
+      if (memberId === Member.TECOM_BOT.id) {
+        return Member.TECOM_BOT;
       }
-      var index = ArrayUtil.getIndexByKeyValue(this.members, 'id', id);
-      if (index !== -1)
-        return this.members[index];
-      else {
+      var member = ArrayUtil.getElementByKeyValue(Team.members, 'id', memberId);
+      if (!member)
         $log.error('Member Not Found !');
-        return null;
-      }
+      return member;
     };
 
-    Team.prototype.getActiveMembers = function () {
-      var activeMembers = this.members.filter(function (member) {
+    Team.getActiveMembers = function() {
+      return Team.members.filter(function(member) {
         return member.active === true;
       });
-      return activeMembers;
     };
 
-    Team.prototype.isDirectActive = function(username){
-      var member = this.getMemberByUsername(username);
-      if(member) {
-        if(member.id === Team.TECOM_BOT.id)
-          return true;
-        return member.active;
-      }
+    Team.isDirectActive = function(username) {
+      var member = Team.getMemberByUsername(username);
+      if (member.id === Member.TECOM_BOT.id)
+        return true;
+      return member.active;
     };
 
-    Team.prototype.getImageById = function(id){
-      var member = this.getMemberById(id);
-      if(member && member.image) {
-        return member.image;
-      }
-      else
-        return '/static/img/user-def.png';
-    };
-
-    Team.TECOM_BOT = {
-      id: 0,
-      username: 'تیک-بات'
+    Team.getImageByMemberId = function(memberId) {
+      var member = Team.getMemberByMemberId(memberId);
+      return member.image;
     };
 
     return Team;

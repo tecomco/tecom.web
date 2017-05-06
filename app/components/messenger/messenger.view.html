@@ -149,13 +149,13 @@
       <div class="col-sm-10 col-sm-offset-1">
         <div class="t-info">
           <div class="g-members">
-            <div ng-repeat="member in teamMembers" class="g-m-one">
-              <img ng-src="{{member.image || '/static/img/user-def.png'}}" />
-              <label>@{{member.username}}</label>
+            <div ng-repeat="member in teamMembers | orderBy : '-isAdmin'" class="g-m-one">
+              <img ng-src="{{member.user.image || '/static/img/user-def.png'}}" />
+              <label>@{{member.user.username}}</label>
               <div ng-hide="isMe(member)" style="float: left">
-                <confirm-dialog ng-class="getAdminButtonCSS(member)" class="t-m-btn" message='{{member.is_admin ? "مطمئنی میخوای \"@" + member.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + member.username + "\"  ادمین بشه؟"}}' cancel="نه، حواسم نبود" ok="آره"
-                  args="[member]" confirm-func="changeMemberAdminState" confirm-button='{{member.is_admin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
-                <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{member.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[member]" confirm-func="removeTeamMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+                <confirm-dialog ng-class="getAdminButtonCSS(member)" class="t-m-btn" message='{{member.isAdmin ? "مطمئنی میخوای \"@" + member.user.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + member.user.username + "\"  ادمین بشه؟"}}' cancel="نه، حواسم نبود" ok="آره"
+                  args="[member]" confirm-func="changeMemberAdminState" confirm-button='{{member.isAdmin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
+                <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{member.user.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[member]" confirm-func="removeTeamMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
               </div>
             </div>
           </div>

@@ -75,14 +75,14 @@
         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="searchInput">
       </div>
       <div class="g-members">
-        <div ng-repeat="member in membersListItems | orderBy : 'memberRefrence.username' | filter : {username : searchInput}" ng-click="member.click(addMemberMode)">
-          <div class="g-m-one" ng-show="addMemberMode ? true : member.isChannelMember()">
-            <div ng-class=member.getCssClass(addMemberMode)>
-              <img ng-src="{{member.getImage()}}" />
+        <div ng-repeat="channelMember in membersListItems | orderBy : 'channelMember.member.user.username' | filter : {username : searchInput}" ng-click="channelMember.click(addMemberMode)">
+          <div class="g-m-one" ng-show="addMemberMode ? true : channelMember.isChannelMember()">
+            <div ng-class=channelMember.getCssClass(addMemberMode)>
+              <img ng-src="{{channelMember.member.user.image}}" />
               <span class="zmdi zmdi-check-circle" ng-show="addMemberMode"></span>
-              <label>@{{member.memberRefrence.username}}</label>
-              <label class="hint" ng-show="addMemberMode && member.isChannelMember()">(عضو گروه)</label>
-              <button class="btn modal-btn-details-remove" ng-show="isAdmin && (!addMemberMode)" ng-click="removeMemberClick(member)">
+              <label>@{{channelMember.member.user.username}}</label>
+              <label class="hint" ng-show="addMemberMode && channelMember.isChannelMember()">(عضو گروه)</label>
+              <button class="btn modal-btn-details-remove" ng-show="isAdmin && (!addMemberMode)" ng-click="removeMemberClick(channelMember)">
                 <span class="zmdi zmdi-close"></span>
               </button>
             </div>
