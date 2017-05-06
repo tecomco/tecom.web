@@ -9,10 +9,9 @@ app.factory('teamService', ['$rootScope', 'socket', 'Team', 'ArrayUtil', 'channe
         memberData.active, memberData.user_id, memberData.username,
         memberData.email, memberData.image);
       Team.members.push(member);
-      console.log(member);
       channelsService.createAndPushChannel({
-        name: member.username,
-        slug: member.username,
+        name: member.user.username,
+        slug: member.user.username,
         type: Channel.TYPE.DIRECT,
         memberId: member.id
       });
