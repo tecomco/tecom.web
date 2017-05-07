@@ -2,9 +2,9 @@
 
 app.factory('AuthService', [
   '$log', '$http', '$q', '$window', '$localStorage', 'jwtHelper', 'ArrayUtil',
-  'User', 'domainUtil', 'validationUtil',
-  function ($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
-            User, domainUtil, validationUtil) {
+  'CurrentMember', 'Team', 'domainUtil', 'validationUtil',
+  function($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
+    CurrentMember, Team, domainUtil, validationUtil) {
 
     initialize();
 
@@ -22,9 +22,10 @@ app.factory('AuthService', [
       var decodedToken = jwtHelper.decodeToken(token);
       var currentMembership = ArrayUtil.getElementByKeyValue(
         decodedToken.memberships, 'team_slug', teamSlug);
-      var user = User.setCurrent(decodedToken.user_id, decodedToken.username,
-        decodedToken.email, currentMembership.team_id, currentMembership.id,
-        decodedToken.image, currentMembership.is_admin);
+      CurrentMember.initialize(currentMembership.id, currentMembership.is_admin,
+        decodedToken.user_id, decodedToken.username, decodedToken.email,
+        decodedToken.image);
+      Team.initialize(currentMembership.team_id);
     }
 
     function persistToken(token) {
@@ -47,7 +48,7 @@ app.factory('AuthService', [
         url: '/api/v1/auth/login/',
         data: data,
         skipAuthorization: true
-      }).then(function (response) {
+      }).then(function(response) {
         var token = response.data.token;
         if (token) {
           persistToken(token);
@@ -55,7 +56,7 @@ app.factory('AuthService', [
         } else {
           defer.reject();
         }
-      }).catch(function (err) {
+      }).catch(function(err) {
         defer.reject(err);
       });
       return defer.promise;
@@ -64,11 +65,11 @@ app.factory('AuthService', [
     function logout() {
       var defer = $q.defer();
       $http.post('/api/v1/auth/logout/')
-        .then(function (res) {
+        .then(function(res) {
           $log.info(res);
           defer.resolve();
         })
-        .catch(function (err) {
+        .catch(function(err) {
           $log.info('Logout error.', err);
           defer.reject();
         });

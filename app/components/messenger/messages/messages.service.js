@@ -1,10 +1,11 @@
 'use strict';
 
 app.service('messagesService', [
-  '$rootScope', '$http', '$log', '$q', 'Upload', 'socket', 'channelsService',
-  'Message', 'db', 'User', 'filesService',
+  '$rootScope', '$http', '$log', '$q', 'Upload', 'socket',
+  'channelsService',
+  'Message', 'db', 'filesService', 'CurrentMember', 'Team',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-            Message, db, User, filesService) {
+    Message, db, filesService, CurrentMember, Team) {
 
     var self = this;
 
@@ -14,7 +15,8 @@ app.service('messagesService', [
 
     socket.on('message:send', function (data) {
       var message = new Message(data.body, data.type, data.senderId,
-        data.channelId, data.id, data.datetime, data.additionalData, data.about);
+        data.channelId, data.id, data.datetime, data.additionalData,
+        data.about);
       message.save();
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
@@ -26,7 +28,8 @@ app.service('messagesService', [
     });
 
     socket.on('message:type:start', function (data) {
-      channelsService.addIsTypingMemberByChannelId(data.channelId, data.memberId);
+      channelsService.addIsTypingMemberByChannelId(data.channelId, data
+        .memberId);
       $rootScope.$broadcast('channels:updated');
       $rootScope.$broadcast('scroll:isTyping');
     });
@@ -76,10 +79,12 @@ app.service('messagesService', [
               dataToBeSend.lastSavedMessageId = lastMessage.id;
             }
             socket.emit('message:get', dataToBeSend, function (res) {
-              channelsService.updateChannelNotification(channel.id, 'num',
+              channelsService.updateChannelNotification(channel
+                .id, 'num',
                 res.notifCount);
               if (res.lastDatetime) {
-                channelsService.updateChannelLastDatetime(channel.id,
+                channelsService.updateChannelLastDatetime(
+                  channel.id,
                   new Date(res.lastDatetime));
               }
               if (res.channelLastSeen) {
@@ -87,8 +92,10 @@ app.service('messagesService', [
                   res.channelLastSeen);
               }
               res.messages.forEach(function (msg) {
-                var message = new Message(msg.body, msg.type, msg.senderId,
-                  msg.channelId, msg.id, msg.datetime, msg.additionalData, msg.about);
+                var message = new Message(msg.body, msg.type,
+                  msg.senderId,
+                  msg.channelId, msg.id, msg.datetime,
+                  msg.additionalData, msg.about);
                 messages.push(message.getDbWellFormed());
               });
               resolve();
@@ -129,7 +136,8 @@ app.service('messagesService', [
           var messages = [];
           res.docs.forEach(function (doc) {
             var message = new Message(doc.body, doc.type, doc.senderId,
-              doc.channelId, doc._id, doc.datetime, doc.additionalData, doc.about);
+              doc.channelId, doc._id, doc.datetime, doc.additionalData,
+              doc.about);
             messages.push(message);
           });
           deferred.resolve(messages);
@@ -193,7 +201,8 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function sendAndGetMessage(channelId, messageBody, type, fileName, fileUrl) {
+    function sendAndGetMessage(channelId, messageBody, type, fileName,
+      fileUrl) {
       var additionalData = null;
       var about = null;
       if (fileName) {
@@ -214,7 +223,8 @@ app.service('messagesService', [
         livedFile.deselectTempLines();
       }
       var message = new Message(messageBody, type || Message.TYPE.TEXT,
-        User.getCurrent().memberId, channelId, null, null, additionalData, about, true);
+        CurrentMember.member.id, channelId, null, null, additionalData,
+        about, true);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;
@@ -230,14 +240,15 @@ app.service('messagesService', [
       var additionalData = {
         name: fileName
       };
-      var message = new Message(null, Message.TYPE.FILE, User.getCurrent().memberId,
+      var message = new Message(null, Message.TYPE.FILE, CurrentMember.member
+        .id,
         channelId, null, null, additionalData, null, true);
       Upload.upload({
         url: 'api/v1/files/upload/' + fileName,
         data: {
           name: fileName,
           channel: channelId,
-          sender: User.getCurrent().memberId,
+          sender: CurrentMember.member.id,
           file: fileData
         },
         method: 'PUT'

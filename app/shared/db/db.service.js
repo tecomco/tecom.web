@@ -1,17 +1,17 @@
 'use strict';
 
 
-app.service('db', ['$window', '$q', '$log', 'User',
-  function ($window, $q, $log, User) {
+app.service('db', ['$window', '$q', '$log', 'CurrentMember','Team',
+  function ($window, $q, $log, CurrentMember, Team) {
 
   var self = this;
 
-  if (!User.getCurrent()) return;
+  if (!CurrentMember.exists()) return;
   createDb();
 
   function createDb() {
-    self.db = new $window.PouchDB('tecom:' + User.getCurrent().team.id + ':' +
-      User.getCurrent().memberId);
+    self.db = new $window.PouchDB('tecom:' + Team.id + ':' +
+      CurrentMember.member.id);
     $log.info('PouchDB connected successfuly.');
     self.createIndexPromise = self.db.createIndex({
       index: {

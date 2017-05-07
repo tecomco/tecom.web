@@ -74,8 +74,8 @@
             </div>
             <div class="g-members">
               <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {username : $ctrl.newChannel.search}" class="g-m-one">
-                <img ng-src="{{teamMember.image || '/static/img/user-def.png'}}" />
-                <label dir="rtl">@{{teamMember.username}}</label>
+                <img ng-src="{{teamMember.user.image || '/static/img/user-def.png'}}" />
+                <label dir="rtl">@{{teamMember.user.username}}</label>
                 <label class="ws-checkbox">
                   <input type="checkbox" id="selectCheckbox" ng-model="teamMember.selected"/>
                   <div class="checkbox-stat">
@@ -111,7 +111,7 @@
             <div class="g-members">
               <a ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-click="$ctrl.directClick(teamMember)">
                 <img ng-src="static/img/user-def.png" />
-                <label>@{{teamMember.username}}</label>
+                <label>@{{teamMember.user.username}}</label>
               </a>
             </div>
           </div>

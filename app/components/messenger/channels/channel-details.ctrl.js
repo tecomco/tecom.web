@@ -8,7 +8,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
-    $scope.isAdmin = User.getCurrent().isAdmin;
+    $scope.isAdmin = CurrentMember.member.isAdmin;
     $scope.details = {};
     $scope.forms = {};
     $scope.membersListItems = [];
@@ -43,7 +43,8 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         }
         else {
           $scope.details.serverError = true;
-          $log.error('Error sending new channel form to server :', message);
+          $log.error('Error sending new channel form to server :',
+            message);
         }
       });
     };
@@ -63,8 +64,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     function addActiveTeamMembersToMembersList() {
-      var activeTeamMembers = User.getCurrent().team.getActiveMembers();
-      activeTeamMembers.forEach(function (teamMember) {
+      Team.getActiveMembers().forEach(function (teamMember) {
         var item = new ChannelMemberItem(teamMember.id);
         $scope.membersListItems.push(item);
       });
@@ -112,7 +112,6 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     };
 
     $scope.submitAddedMembers = function () {
-      console.log('submited');
       var teamMemberIds = [];
       $scope.membersListItems.forEach(function (item) {
         if (item.isSelected && !item.isChannelMember()) {
@@ -130,11 +129,9 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
         .then(function (channelMembersData) {
           setAddedMembersChannelIds(channelMembersData);
           $scope.channel.membersCount = $scope.channel.membersCount + 1;
-          console.log('Done');
         })
         .catch(function () {
           removeTemporaryChannelMembers();
-          console.log('Failed');
         });
     }
 
@@ -154,7 +151,7 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
     }
 
     $scope.isUserAdmin = function () {
-      return User.getCurrent().isAdmin;
+      return CurrentMember.member.isAdmin;
     };
 
     $scope.archiveChannel = function () {
