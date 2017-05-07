@@ -75,16 +75,23 @@
         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="searchInput">
       </div>
       <div class="g-members">
-        <div ng-repeat="member in membersListItems | orderBy : 'memberRefrence.username' | filter : {username : searchInput}" ng-click="member.click(addMemberMode)">
+        <div ng-repeat="member in membersListItems | orderBy : 'member.username' | filter : {username : searchInput}" ng-click="member.click(addMemberMode)">
           <div class="g-m-one" ng-show="addMemberMode ? true : member.isChannelMember()">
             <div ng-class=member.getCssClass(addMemberMode)>
-              <img ng-src="{{member.getImage()}}" />
+              <img ng-src="{{member.getImage()}}"/>
               <span class="zmdi zmdi-check-circle" ng-show="addMemberMode"></span>
-              <label>@{{member.memberRefrence.username}}</label>
+              <label>@{{member.member.username}}</label>
               <label class="hint" ng-show="addMemberMode && member.isChannelMember()">(عضو گروه)</label>
-              <button class="btn modal-btn-details-remove" ng-show="isAdmin && (!addMemberMode)" ng-click="removeMemberClick(member)">
-                <span class="zmdi zmdi-close"></span>
-              </button>
+              <div ng-if="isAdmin && !addMemberMode" style="float: left">
+                <confirm-dialog class="btn modal-btn-details-remove" message="مطمئنی می خوای @{{member.username}} رو از گروه حذف کنی ؟" cancel="نه، حواسم نبود" ok="آره" args="[member]" confirm-func="removeMember"
+                                confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+              </div>
+
+              <!--<button class="btn modal-btn-details-remove" ng-show="isAdmin && (!addMemberMode)" ng-click="removeMemberClick(member)">-->
+              <!--<span class="zmdi zmdi-close"></span>-->
+              <!--</button>-->
+
+
             </div>
           </div>
         </div>

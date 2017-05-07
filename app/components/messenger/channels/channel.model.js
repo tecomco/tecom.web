@@ -148,6 +148,22 @@ app.factory('Channel', [
       this.slug = name;
     };
 
+    Channel.prototype.getChannelData = function () {
+      var data;
+      data.name = this.name;
+      data.slug = this.slug;
+      data.description = this.description;
+      data.type = this.type;
+      data.id = this.id;
+      data.membersCount = this.membersCount;
+      data.notifCount = this.notifCount;
+      data.memberId = this.memberId;
+      data.liveFileId = this.liveFileId;
+      data.teamId = this.teamId;
+      data.active = this.active;
+      return data;
+    }
+
     Channel.prototype.getUrlifiedSlug = function () {
       return this.isDirect() ? '@' + this.slug : this.slug;
     };

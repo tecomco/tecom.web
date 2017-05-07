@@ -3,9 +3,9 @@
 app.factory('ChannelMemberItem', ['User', function (User) {
 
   function ChannelMemberItem(teamMemberId) {
-    this.memberRefrence = User.getCurrent().team.getMemberById(teamMemberId);
-    this.teamMemberId = this.memberRefrence.id;
-    this.username = this.memberRefrence.username;
+    this.member = User.getCurrent().team.getMemberById(teamMemberId);
+    this.teamMemberId = this.member.id;
+    this.username = this.member.username;
     this.isSelected = false;
     this.temporaryInChannel = false;
     this.channelMemberId = null;
@@ -40,8 +40,8 @@ app.factory('ChannelMemberItem', ['User', function (User) {
   };
 
   ChannelMemberItem.prototype.getImage = function () {
-    if (this.memberRefrence.image)
-      return this.memberRefrence.image;
+    if (this.member.image)
+      return this.member.image;
     else
       return 'static/img/user-def.png';
   };

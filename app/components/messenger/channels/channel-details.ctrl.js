@@ -1,12 +1,10 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$scope', '$state',
-  '$uibModalInstance', '$log', 'channelsService', 'User', 'ArrayUtil',
-  'Channel', 'ChannelMemberItem',
-  function ($scope, $state, $uibModalInstance, $log, channelsService, User,
+app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
+  '$log', 'channelsService', 'User', 'ArrayUtil', 'Channel', 'ChannelMemberItem',
+  function ($scope, $uibModalInstance, $log, channelsService, User,
             ArrayUtil, Channel, ChannelMemberItem) {
 
-    var selectedMember;
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
@@ -14,13 +12,13 @@ app.controller('channelDetailsController', ['$scope', '$state',
     $scope.details = {};
     $scope.forms = {};
     $scope.membersListItems = [];
+    var channelData = channelsService.getCurrentChannel().getChannelData();
 
     $scope.editChannelClick = function () {
       $scope.editMode = true;
-      $scope.details.name = $scope.channel.name;
-      $scope.details.description = $scope.channel.description;
-      $scope.details.isPrivate =
-        ($scope.channel.type === Channel.TYPE.PRIVATE) ? true : false;
+      $scope.details.name = channelData.name;
+      $scope.details.description = channelData.description;
+      $scope.details.isPrivate = (channelData.type === Channel.TYPE.PRIVATE);
       $scope.details.duplicateError = false;
       $scope.details.serverError = false;
     };
@@ -65,11 +63,10 @@ app.controller('channelDetailsController', ['$scope', '$state',
     };
 
     function addActiveTeamMembersToMembersList() {
-      User.getCurrent().team.members.forEach(function (teamMember) {
-        if (teamMember.active) {
-          var item = new ChannelMemberItem(teamMember.id);
-          $scope.membersListItems.push(item);
-        }
+      var activeTeamMembers = User.getCurrent().team.getActiveMembers();
+      activeTeamMembers.forEach(function (teamMember) {
+        var item = new ChannelMemberItem(teamMember.id);
+        $scope.membersListItems.push(item);
       });
     }
 
@@ -93,17 +90,19 @@ app.controller('channelDetailsController', ['$scope', '$state',
       return item;
     }
 
-    $scope.removeMemberClick = function (channelMember) {
+    $scope.removeMember = function (channelMember) {
       var data = {
         channelMemberId: channelMember.channelMemberId,
         memberId: channelMember.teamMemberId,
         channelId: $scope.channel.id,
         channelType: $scope.channel.type
       };
-      channelsService.removeMemberFromChannel(data).then(function () {
-        channelMember.removeChannelMemberId();
-        $log.info('Member Removed from Channel');
-      }).catch(function (message) {
+      channelsService.removeMemberFromChannel(data)
+        .then(function () {
+          channelMember.removeChannelMemberId();
+          $log.info('Member Removed from Channel');
+          $scope.channel.membersCount = $scope.channel.membersCount - 1;
+        }).catch(function (message) {
         $log.error('Error Removing member from channel:', message);
       });
     };
@@ -130,6 +129,7 @@ app.controller('channelDetailsController', ['$scope', '$state',
       channelsService.addMembersToChannel(teamMemberIds, $scope.channel.id)
         .then(function (channelMembersData) {
           setAddedMembersChannelIds(channelMembersData);
+          $scope.channel.membersCount = $scope.channel.membersCount + 1;
           console.log('Done');
         })
         .catch(function () {
