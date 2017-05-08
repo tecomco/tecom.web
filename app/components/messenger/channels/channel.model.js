@@ -148,7 +148,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getChannelData = function () {
-      var data;
+      var data=[];
       data.name = this.name;
       data.slug = this.slug;
       data.description = this.description;
@@ -161,7 +161,7 @@ app.factory('Channel', [
       data.teamId = this.teamId;
       data.active = this.active;
       return data;
-    }
+    };
 
     Channel.prototype.getUrlifiedSlug = function () {
       return this.isDirect() ? '@' + this.slug : this.slug;

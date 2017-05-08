@@ -1,9 +1,10 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
-  '$log', 'channelsService', 'User', 'ArrayUtil', 'Channel', 'ChannelMemberItem',
-  function ($scope, $uibModalInstance, $log, channelsService, User,
-            ArrayUtil, Channel, ChannelMemberItem) {
+app.controller('channelDetailsController', [
+  '$scope', '$uibModalInstance', '$log', 'channelsService',
+  'ArrayUtil', 'Channel', 'ChannelMemberItem', 'CurrentMember', 'Team',
+  function ($scope, $uibModalInstance, $log, channelsService,
+    ArrayUtil, Channel, ChannelMemberItem, CurrentMember, Team) {
 
     $scope.editMode = false;
     $scope.addMemberMode = false;
@@ -103,8 +104,8 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
           $log.info('Member Removed from Channel');
           $scope.channel.membersCount = $scope.channel.membersCount - 1;
         }).catch(function (message) {
-        $log.error('Error Removing member from channel:', message);
-      });
+          $log.error('Error Removing member from channel:', message);
+        });
     };
 
     $scope.addMembersClick = function () {
