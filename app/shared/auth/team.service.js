@@ -1,9 +1,12 @@
 'use strict';
 
-app.factory('teamService', ['$rootScope', 'socket', 'Team', 'ArrayUtil', 'channelsService', 'Channel', 'Member',
-  function($rootScope, socket, Team, ArrayUtil, channelsService, Channel, Member) {
+app.factory('teamService', [
+  '$rootScope', '$window', 'socket', 'Team', 'ArrayUtil',
+  'channelsService', 'AuthService', 'Channel', 'Member', 'CurrentMember',
+  function ($rootScope, $window, socket, Team, ArrayUtil, channelsService,
+    AuthService, Channel, Member, CurrentMember) {
 
-    socket.on('member:new', function(memberData) {
+    socket.on('member:new', function (memberData) {
       memberData.active = true;
       var member = new Member(memberData.id, memberData.is_admin,
         memberData.active, memberData.user_id, memberData.username,
@@ -18,6 +21,22 @@ app.factory('teamService', ['$rootScope', 'socket', 'Team', 'ArrayUtil', 'channe
       $rootScope.$broadcast('channels:updated');
     });
 
+    socket.on('member:remove', function (memberId) {
+      if (memberId === CurrentMember.member.id) {
+        AuthService.logout()
+          .then(function () {
+            $window.location.assign('/login?err=UserRemoved');
+          });
+      }
+      else {
+        deactiveTeamMember(memberId);
+        var username = Team.getUsernameByMemberId(memberId);
+        channelsService.setDirectActiveState(username, false);
+        $rootScope.$broadcast('channels:updated');
+        $rootScope.$broadcast('members:updated');
+      }
+    });
+
     function deactiveTeamMember(memberId) {
       var member = Team.getMemberByMemberId(memberId);
       if (member)
@@ -29,4 +48,4 @@ app.factory('teamService', ['$rootScope', 'socket', 'Team', 'ArrayUtil', 'channe
     };
 
   }
-]).run(['teamService', function(teamService) {}]);
+]).run(['teamService', function (teamService) {}]);
