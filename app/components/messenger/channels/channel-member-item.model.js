@@ -6,7 +6,7 @@ app.factory('ChannelMemberItem', ['CurrentMember', 'Team',
     function ChannelMemberItem(teamMemberId) {
       this.member = Team.getMemberByMemberId(teamMemberId);
       this.teamMemberId = this.member.id;
-      this.username = this.member.username;
+      this.username = this.member.user.username;
       this.isSelected = false;
       this.temporaryInChannel = false;
       this.channelMemberId = null;

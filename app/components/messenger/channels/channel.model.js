@@ -148,7 +148,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getChannelData = function () {
-      var data;
+      var data = {};
       data.name = this.name;
       data.slug = this.slug;
       data.description = this.description;
