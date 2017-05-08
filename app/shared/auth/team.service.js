@@ -12,6 +12,7 @@ app.factory('teamService', [
         memberData.active, memberData.user_id, memberData.username,
         memberData.email, memberData.image);
       Team.members.push(member);
+      $rootScope.$broadcast('members:updated');
       channelsService.createAndPushChannel({
         name: member.user.username,
         slug: member.user.username,

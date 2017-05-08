@@ -100,9 +100,9 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
       filesService.viewFile(file.id, file.name);
     };
 
-    $scope.closeLiveFile = function (file) {
+    $scope.closeLiveFile = function () {
+      filesService.killLiveFile($scope.vm.liveFile);
       $scope.vm.liveFile = null;
-      filesService.killLiveFile(file);
       broadcastViewState();
     };
 
@@ -131,18 +131,20 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
         return 'view';
     };
 
-    $scope.getFileDownloadData = function(type){
-      if($scope.viewState() === 'live' && $scope.vm.liveFile)
-        return (type === 'url') ? $scope.vm.liveFile.url : $scope.vm.liveFile.name;
-      else if($scope.viewState() === 'view' && $scope.vm.viewFile)
-        return (type === 'url') ? $scope.vm.viewFile.url : $scope.vm.viewFile.name;
+    $scope.getFileDownloadData = function (type) {
+      if ($scope.viewState() === 'live' && $scope.vm.liveFile)
+        return (type === 'url') ? $scope.vm.liveFile.url : $scope.vm.liveFile
+          .name;
+      else if ($scope.viewState() === 'view' && $scope.vm.viewFile)
+        return (type === 'url') ? $scope.vm.viewFile.url : $scope.vm.viewFile
+          .name;
     };
 
     function broadcastViewState() {
       $rootScope.$broadcast('view:state:changed', $scope.viewState());
     }
 
-    $scope.makeViewFileLive = function(){
+    $scope.makeViewFileLive = function () {
       var file = $scope.vm.viewFile;
       filesService.makeFileLive(file.channelId, file.id, file.name);
     };
@@ -160,7 +162,8 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
           middleLine = Math.ceil((start + end) / 2);
         else
           middleLine = start;
-        var middle = ((middleLine - 17) / file.lines.length) * codeView.scrollHeight;
+        var middle = ((middleLine - 17) / file.lines.length) * codeView
+          .scrollHeight;
         codeView.scrollTop = middle;
       }, 0, false);
     }

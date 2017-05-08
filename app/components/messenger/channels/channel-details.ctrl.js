@@ -1,11 +1,10 @@
 'use strict';
 
-app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
-  '$log', 'channelsService', 'User', 'ArrayUtil', 'Channel',
-  'ChannelMemberItem', 'CurrentMember', 'Team',
-  function ($scope, $uibModalInstance, $log, channelsService, User,
+app.controller('channelDetailsController', [
+  '$scope', '$uibModalInstance', '$log', 'channelsService',
+  'ArrayUtil', 'Channel', 'ChannelMemberItem', 'CurrentMember', 'Team',
+  function ($scope, $uibModalInstance, $log, channelsService,
             ArrayUtil, Channel, ChannelMemberItem, CurrentMember, Team) {
-
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
@@ -189,13 +188,13 @@ app.controller('channelDetailsController', ['$scope', '$uibModalInstance',
       clearCustomErrorMessages();
     }
 
-    function unselectAllChannelMemberItems(){
+    function unselectAllChannelMemberItems() {
       $scope.channeMemberItems.forEach(function (item) {
         item.isSelected = false;
       });
     }
 
-    function clearCustomErrorMessages(){
+    function clearCustomErrorMessages() {
       $scope.serverError = false;
       $scope.forms.detailsForm.name.$error.duplicate = false;
     }
