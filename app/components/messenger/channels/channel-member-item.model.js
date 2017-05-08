@@ -17,8 +17,7 @@ app.factory('ChannelMemberItem', ['CurrentMember', 'Team',
         false;
     };
 
-    ChannelMemberItem.prototype.setChannelMemberId = function (
-      channelMemberId) {
+    ChannelMemberItem.prototype.setChannelMemberId = function (channelMemberId) {
       this.channelMemberId = channelMemberId;
       this.temporaryInChannel = false;
     };

@@ -82,9 +82,10 @@
               <span class="zmdi zmdi-check-circle" ng-show="addMemberMode"></span>
               <label>@{{channelMember.member.user.username}}</label>
               <label class="hint" ng-show="addMemberMode && channelMember.isChannelMember()">(عضو گروه)</label>
-              <button class="btn modal-btn-details-remove" ng-show="isAdmin && (!addMemberMode)" ng-click="removeMemberClick(channelMember)">
-                <span class="zmdi zmdi-close"></span>
-              </button>
+              <div ng-if="isAdmin && !addMemberMode" style="float: left">
+                <confirm-dialog class="btn modal-btn-details-remove" message="مطمئنی می خوای @{channelMember.username}} رو از گروه حذف کنی ؟" cancel="نه، حواسم نبود" ok="آره" args="[member]" confirm-func="removeMember"
+                                confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+              </div>
             </div>
           </div>
         </div>
