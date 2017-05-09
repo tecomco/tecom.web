@@ -1,9 +1,10 @@
 'use strict';
 
-app.directive('confirmDialog', function() {
+app.directive('confirmDialog', function () {
 
   function getTemplate(element, attrs) {
-    var templateString = '<button class="{{class}}" ' +
+    var elementName = attrs.isAnchor ? 'a' : 'button';
+    var templateString = '<' + elementName + ' class="{{class}}" ' +
       'mwl-confirm message="{{message}}" confirm-text="{{ok}}" ' +
       ' animation="true" cancel-text="{{cancel}}" placement="bottom" ' +
       ' on-confirm="callUpdate()" confirm-button-type="{{confirmButton}}" ' +
@@ -12,7 +13,7 @@ app.directive('confirmDialog', function() {
       templateString += '<span class="{{icon}}"></span>';
     else
       templateString += '{{buttonName}}';
-    templateString += '</button>';
+    templateString += '</' + elementName + '>';
     return templateString;
   }
   return {
@@ -24,13 +25,14 @@ app.directive('confirmDialog', function() {
       cancel: '@',
       ok: '@',
       confirmButton: '@',
+      isAnchor: '@',
       confirmFunc: '&',
       args: '=',
     },
     replace: true,
     template: getTemplate,
-    link: function(scope, elm, attrs) {
-      scope.callUpdate = function() {
+    link: function (scope, elm, attrs) {
+      scope.callUpdate = function () {
         var fn = scope.confirmFunc();
         if (!scope.args)
           fn();

@@ -26,6 +26,11 @@
                       </span>
           <span>رو بزن.</span>
         </div>
+        <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active">
+          <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
+            <i class="fa fa-paperclip"></i>
+          </a>
+        </div>
       </div>
 
       <div class="file-empty-card" ng-show="fileLoading">
@@ -49,9 +54,7 @@
             <i class="fa fa-circle"></i>
             <label dir="ltr">LIVE</label>
           </a>
-          <a ng-click="closeLiveFile(vm.liveFile)" uib-tooltip="LIVE خروج از حالت" tooltip-placement="bottom" class="doc-tab-dl-btn">
-            <i class="zmdi zmdi-close"></i>
-          </a>
+          <confirm-dialog class="doc-tab-dl-btn" message="مطمئنی میخوای فایل را از حالت LIVE خارج کنی ؟ " cancel="نه، حواسم نبود" ok="آره" confirm-func="closeLiveFile" confirm-button="danger" icon="zmdi zmdi-close" is-anchor='true'></confirm-dialog>
           <div class="doc-tab-options">
             <a class="doc-tab-icon" ng-href="{{getFileDownloadData('url')}}" download="{{getFileDownloadData('name')}}" target="_blank">
               <i class="zmdi zmdi-download"></i>

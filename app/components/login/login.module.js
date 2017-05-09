@@ -1,8 +1,8 @@
 'use strict';
 
 var app = angular.module('LoginApp', [
-  'ui.router', 'ngStorage', 'angular-jwt', 'ismobile'
-])
+    'ui.router', 'ngStorage', 'angular-jwt', 'ismobile'
+  ])
   .config(['$locationProvider', function ($locationProvider) {
     $locationProvider.html5Mode(true);
   }])
@@ -34,8 +34,10 @@ var app = angular.module('LoginApp', [
     }
   ])
   .controller('loginController', [
-    '$scope', '$log', '$window', '$location', '$http', '$localStorage', 'AuthService',
-    function ($scope, $log, $window, $location, $http, $localStorage, AuthService) {
+    '$scope', '$log', '$window', '$location', '$http', '$localStorage',
+    'AuthService',
+    function ($scope, $log, $window, $location, $http, $localStorage,
+      AuthService) {
 
       $scope.hasLoginError = false;
       $scope.submitClicked = false;
@@ -55,23 +57,24 @@ var app = angular.module('LoginApp', [
             .then(function () {
               $window.location.assign('/messenger');
             }).catch(function (err) {
-            $scope.isLoading = false;
-            $log.error('Login Error:', err);
-            $scope.hasloginError = false;
-            if (err.data) {
-              $scope.hasLoginError = true;
-              if (typeof err.data === 'object' &&
-                err.data[0] === 'User does not belong to team.')
-                $scope.loginErrorString = 'شما در این تیم عضو نیستید.';
-              else if (typeof err.data.non_field_errors === 'object' &&
-                err.data.non_field_errors[0] ===
-                'Unable to log in with provided credentials.')
-                $scope.loginErrorString = 'نام کاربری یا رمزعبور صحیح نمی باشد.';
-              else
-                $scope.loginErrorString = 'خطا در اتصال به سرور';
-            }
-            initializeLoginForm();
-          });
+              $scope.isLoading = false;
+              $log.error('Login Error:', err);
+              $scope.hasloginError = false;
+              if (err.data) {
+                $scope.hasLoginError = true;
+                if (typeof err.data === 'object' &&
+                  err.data[0] === 'User does not belong to team.')
+                  $scope.loginErrorString = 'شما در این تیم عضو نیستید.';
+                else if (typeof err.data.non_field_errors === 'object' &&
+                  err.data.non_field_errors[0] ===
+                  'Unable to log in with provided credentials.')
+                  $scope.loginErrorString =
+                  'نام کاربری یا رمزعبور صحیح نمی باشد.';
+                else
+                  $scope.loginErrorString = 'خطا در اتصال به سرور';
+              }
+              initializeLoginForm();
+            });
         }
       };
 
@@ -93,10 +96,13 @@ var app = angular.module('LoginApp', [
       function getRedirectError() {
         var error = $location.search().err;
         switch (error) {
-          case 'InvalidToken':
-            return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
-          default:
-            return null;
+        case 'InvalidToken':
+          return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
+          case 'UserRemoved':
+          /* jshint -W100 */
+          return 'شما توسط یکی از ادمین‌ها از تیم حذف شدید!';
+        default:
+          return null;
         }
       }
 

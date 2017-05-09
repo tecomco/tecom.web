@@ -6,7 +6,7 @@ app.factory('ChannelMemberItem', ['CurrentMember', 'Team',
     function ChannelMemberItem(teamMemberId) {
       this.member = Team.getMemberByMemberId(teamMemberId);
       this.teamMemberId = this.member.id;
-      this.username = this.member.username;
+      this.username = this.member.user.username;
       this.isSelected = false;
       this.temporaryInChannel = false;
       this.channelMemberId = null;
@@ -17,8 +17,7 @@ app.factory('ChannelMemberItem', ['CurrentMember', 'Team',
         false;
     };
 
-    ChannelMemberItem.prototype.setChannelMemberId = function (
-      channelMemberId) {
+    ChannelMemberItem.prototype.setChannelMemberId = function (channelMemberId) {
       this.channelMemberId = channelMemberId;
       this.temporaryInChannel = false;
     };

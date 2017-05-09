@@ -1,31 +1,36 @@
 'use strict';
 
 app.controller('channelDetailsController', [
-  '$scope', '$state', '$uibModalInstance', '$log', 'channelsService',
-  'CurrentMember', 'Team', 'ArrayUtil', 'Channel', 'ChannelMemberItem',
-  function ($scope, $state, $uibModalInstance, $log, channelsService,
-    CurrentMember, Team, ArrayUtil, Channel, ChannelMemberItem) {
-
-    var selectedMember;
+  '$scope', '$uibModalInstance', '$log', 'channelsService',
+  'ArrayUtil', 'Channel', 'ChannelMemberItem', 'CurrentMember', 'Team',
+  function ($scope, $uibModalInstance, $log, channelsService,
+            ArrayUtil, Channel, ChannelMemberItem, CurrentMember, Team) {
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
     $scope.isAdmin = CurrentMember.member.isAdmin;
     $scope.details = {};
     $scope.forms = {};
-    $scope.membersListItems = [];
+    $scope.serverError = false;
+    $scope.channeMemberItems = [];
+    var channelData;
 
     $scope.editChannelClick = function () {
       $scope.editMode = true;
-      $scope.details.name = $scope.channel.name;
-      $scope.details.description = $scope.channel.description;
-      $scope.details.isPrivate =
-        ($scope.channel.type === Channel.TYPE.PRIVATE) ? true : false;
-      $scope.details.duplicateError = false;
-      $scope.details.serverError = false;
+      $scope.serverError = false;
+      channelData = channelsService.getCurrentChannel().getChannelData();
+      setDetailsFormDatas();
     };
 
+    function setDetailsFormDatas() {
+      $scope.details.name = channelData.name;
+      $scope.details.description = channelData.description;
+      $scope.details.isPrivate = (channelData.type === Channel.TYPE.PRIVATE);
+      clearCustomErrorMessages();
+    }
+
     $scope.submitChannelDetailsForm = function () {
+      clearCustomErrorMessages();
       $scope.forms.detailsForm.$setPristine();
       var type = $scope.details.isPrivate ?
         Channel.TYPE.PRIVATE : Channel.TYPE.PUBLIC;
@@ -36,15 +41,16 @@ app.controller('channelDetailsController', [
         id: $scope.channel.id
       };
       channelsService.sendEditedChannel(editedData).then(function () {
+        clearCustomErrorMessages();
         $scope.editMode = false;
         $log.info('Done Editing Channel');
       }).catch(function (message) {
         if (message.indexOf('Duplicate slug in team.') != -1) {
+          $scope.forms.detailsForm.name.$error.duplicate = true;
           $log.error('Error : Dublicate Slug');
-          $scope.details.duplicateError = true;
         }
         else {
-          $scope.details.serverError = true;
+          $scope.serverError = true;
           $log.error('Error sending new channel form to server :',
             message);
         }
@@ -57,27 +63,26 @@ app.controller('channelDetailsController', [
 
     var initializeDetailsForm = function () {
       $scope.details.duplicateError = false;
-      $scope.details.serverError = false;
       $scope.forms.detailsForm.$setPristine();
       $scope.forms.detailsForm.$submitted = false;
       $scope.addedMemberIds = [];
-      addActiveTeamMembersToMembersList();
-      getChannelMembersAndAddToMembersList();
+      addActiveTeamMembersToChanneMemberItems();
+      getChannelMembersAndAddToChanneMemberItems();
     };
 
-    function addActiveTeamMembersToMembersList() {
+    function addActiveTeamMembersToChanneMemberItems() {
       Team.getActiveMembers().forEach(function (teamMember) {
         var item = new ChannelMemberItem(teamMember.id);
-        $scope.membersListItems.push(item);
+        $scope.channeMemberItems.push(item);
       });
     }
 
-    function getChannelMembersAndAddToMembersList() {
+    function getChannelMembersAndAddToChanneMemberItems() {
       channelsService.getChannelMembers($scope.channel.id)
         .then(function (res) {
           if (res && res.data) {
             res.data.forEach(function (channelMember) {
-              var item = findMembersListItemById(channelMember.member);
+              var item = findChanneMemberItemById(channelMember.member);
               if (item) {
                 item.setChannelMemberId(channelMember.id);
               }
@@ -86,34 +91,38 @@ app.controller('channelDetailsController', [
         });
     }
 
-    function findMembersListItemById(id) {
-      var item = ArrayUtil.getElementByKeyValue($scope.membersListItems,
+    function findChanneMemberItemById(id) {
+      var item = ArrayUtil.getElementByKeyValue($scope.channeMemberItems,
         'teamMemberId', id);
       return item;
     }
 
-    $scope.removeMemberClick = function (channelMember) {
+    $scope.removeMember = function (channelMember) {
       var data = {
         channelMemberId: channelMember.channelMemberId,
         memberId: channelMember.teamMemberId,
         channelId: $scope.channel.id,
         channelType: $scope.channel.type
       };
-      channelsService.removeMemberFromChannel(data).then(function () {
-        channelMember.removeChannelMemberId();
-        $log.info('Member Removed from Channel');
-      }).catch(function (message) {
+      channelsService.removeMemberFromChannel(data)
+        .then(function () {
+          channelMember.removeChannelMemberId();
+          $log.info('Member Removed from Channel');
+          $scope.channel.membersCount = $scope.channel.membersCount - 1;
+        }).catch(function (message) {
         $log.error('Error Removing member from channel:', message);
       });
     };
 
     $scope.addMembersClick = function () {
-      $scope.addMemberMode = !$scope.addMemberMode;
+      $scope.addMemberMode = true;
+      clearCustomErrorMessages();
     };
 
     $scope.submitAddedMembers = function () {
+      clearCustomErrorMessages();
       var teamMemberIds = [];
-      $scope.membersListItems.forEach(function (item) {
+      $scope.channeMemberItems.forEach(function (item) {
         if (item.isSelected && !item.isChannelMember()) {
           teamMemberIds.push(item.teamMemberId);
           item.setTemporaryInChannel();
@@ -128,8 +137,11 @@ app.controller('channelDetailsController', [
       channelsService.addMembersToChannel(teamMemberIds, $scope.channel.id)
         .then(function (channelMembersData) {
           setAddedMembersChannelIds(channelMembersData);
+          $scope.channel.membersCount =
+            $scope.channel.membersCount + teamMemberIds.length;
         })
         .catch(function () {
+          $scope.serverError = true;
           removeTemporaryChannelMembers();
         });
     }
@@ -137,14 +149,14 @@ app.controller('channelDetailsController', [
     function setAddedMembersChannelIds(channelMembersData) {
       channelMembersData.forEach(function (data) {
         var channelMember =
-          ArrayUtil.getElementByKeyValue($scope.membersListItems,
+          ArrayUtil.getElementByKeyValue($scope.channeMemberItems,
             'teamMemberId', data.member);
         channelMember.setChannelMemberId(data.id);
       });
     }
 
     function removeTemporaryChannelMembers() {
-      $scope.membersListItems.forEach(function (channelMember) {
+      $scope.channeMemberItems.forEach(function (channelMember) {
         channelMember.removeFromTemporary();
       });
     }
@@ -154,15 +166,37 @@ app.controller('channelDetailsController', [
     };
 
     $scope.archiveChannel = function () {
+      clearCustomErrorMessages();
       channelsService.archiveChannel($scope.channel.id)
         .then(function () {
           $scope.$close();
         })
         .catch(function () {
-          /*
-           Handle Archive Channel Error;
-           */
+          $scope.serverError = true;
         });
     };
+
+    $scope.cancelEditMode = function () {
+      $scope.editMode = false;
+      setDetailsFormDatas();
+      clearCustomErrorMessages();
+    }
+
+    $scope.cancelAddingMembers = function () {
+      $scope.addMemberMode = false;
+      unselectAllChannelMemberItems();
+      clearCustomErrorMessages();
+    }
+
+    function unselectAllChannelMemberItems() {
+      $scope.channeMemberItems.forEach(function (item) {
+        item.isSelected = false;
+      });
+    }
+
+    function clearCustomErrorMessages() {
+      $scope.serverError = false;
+      $scope.forms.detailsForm.name.$error.duplicate = false;
+    }
   }
 ]);
