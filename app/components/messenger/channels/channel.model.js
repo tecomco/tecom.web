@@ -5,14 +5,15 @@ app.factory('Channel', [
   function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount, memberId, liveFileId, teamId) {
+                     notifCount, memberId, liveFileId, teamId) {
       this.setValues(name, slug, description, type, id, membersCount,
         notifCount, memberId, liveFileId, teamId);
       this.isTypingMemberIds = [];
     }
 
-    Channel.prototype.setValues = function (name, slug, description, type,
-      id, membersCount, notifCount, memberId, liveFileId, teamId) {
+    Channel.prototype.setValues = function (name, slug, description, type, id,
+                                            membersCount, notifCount, memberId,
+                                            liveFileId, teamId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -147,18 +148,19 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getChannelData = function () {
-      var data = {};
-      data.name = this.name;
-      data.slug = this.slug;
-      data.description = this.description;
-      data.type = this.type;
-      data.id = this.id;
-      data.membersCount = this.membersCount;
-      data.notifCount = this.notifCount;
-      data.memberId = this.memberId;
-      data.liveFileId = this.liveFileId;
-      data.teamId = this.teamId;
-      data.active = this.active;
+      var data = {
+        'name': this.name,
+        'slug': this.slug,
+        'description': this.description,
+        'type': this.type,
+        'id': this.id,
+        'membersCount': this.membersCount,
+        'notifCount': this.notifCount,
+        'memberId': this.memberId,
+        'liveFileId': this.liveFileId,
+        'teamId': this.teamId,
+        'active': this.active,
+      }
       return data;
     };
 
