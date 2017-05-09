@@ -41,6 +41,10 @@ app.controller('messagesController', [
       }
     });
 
+    $scope.$on('file:upload' , function (event, file) {
+      $scope.upload(file);
+    });
+
     $scope.sendMessage = function ($event) {
       $event.preventDefault();
       var messageBody = $scope.inputMessage.trim();
@@ -192,5 +196,3 @@ app.controller('messagesController', [
   }
 ])
 ;
-
-

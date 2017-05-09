@@ -1,8 +1,33 @@
 'use strict';
 
-app.controller('filesController', ['$window', 'filesService', '$scope',
-  '$timeout', '$rootScope',
-  function ($window, filesService, $scope, $timeout, $rootScope) {
+app.controller('filesController', [
+  '$window', 'filesService', '$stateParams', 'Upload',
+  'channelsService', '$q', '$scope', '$timeout', '$rootScope',
+  function ($window, filesService, $stateParams, Upload,
+    channelsService, $q, $scope, $timeout, $rootScope) {
+
+    if (!$stateParams.slug) {
+      channelsService.setCurrentChannelBySlug(null);
+      return;
+    } else if (channelsService.areChannelsReady()) {
+      initialize();
+    }
+
+    function initialize() {
+      var defer = $q.defer();
+      var slug = $stateParams.slug.replace('@', '');
+      channelsService.setCurrentChannelBySlug(slug).then(function () {
+        $scope.channel = channelsService.getCurrentChannel();
+        defer.resolve();
+      });
+      return defer.promise;
+    }
+
+    $scope.$on('channels:updated', function (event, data) {
+      if (data === 'init') {
+        initialize();
+      }
+    });
 
     $scope.vm = {};
     var selectTextMode = false;
@@ -47,7 +72,8 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
       broadcastViewState();
     });
 
-    $scope.$on('file:show:line', function (event, file, startLine, endLine) {
+    $scope.$on('file:show:line', function (event, file, startLine,
+      endLine) {
       if (file === $scope.vm.liveFile) {
         selectedFileType = 'live';
         file.selectPermLines(startLine, endLine);
@@ -131,6 +157,11 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
         return 'view';
     };
 
+    $scope.upload = function (file, errFiles) {
+      if (file)
+        $rootScope.$broadcast('file:upload', file);
+    };
+
     $scope.getFileDownloadData = function (type) {
       if ($scope.viewState() === 'live' && $scope.vm.liveFile)
         return (type === 'url') ? $scope.vm.liveFile.url : $scope.vm.liveFile
@@ -162,7 +193,8 @@ app.controller('filesController', ['$window', 'filesService', '$scope',
           middleLine = Math.ceil((start + end) / 2);
         else
           middleLine = start;
-        var middle = ((middleLine - 17) / file.lines.length) * codeView
+        var middle = ((middleLine - 17) / file.lines.length) *
+          codeView
           .scrollHeight;
         codeView.scrollTop = middle;
       }, 0, false);
