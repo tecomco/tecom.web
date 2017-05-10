@@ -160,7 +160,7 @@ app.factory('Channel', [
         'liveFileId': this.liveFileId,
         'teamId': this.teamId,
         'active': this.active,
-      }
+      };
       return data;
     };
 

@@ -238,8 +238,7 @@ app.factory('Message', [
     };
 
     Message.generateMessageWellFormedText = function (text) {
-      var wellFormedText;
-      wellFormedText = textUtil.htmlToPlaintext(text);
+      var wellFormedText = textUtil.htmlToPlaintext(text);
       wellFormedText = textUtil.urlify(wellFormedText);
       // wellFormedText = textUtil.hashtagify(wellFormedText);
       return wellFormedText;

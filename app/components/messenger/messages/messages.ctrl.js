@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('messagesController', [
-  '$scope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
+  '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
   'messagesService', 'channelsService', 'filesService', '$q', 'ArrayUtil',
-  function ($scope, $state, $stateParams, $window, $timeout, Upload,
+  function ($scope, $rootScope, $state, $stateParams, $window, $timeout, Upload,
             messagesService, channelsService, filesService, $q, ArrayUtil) {
 
     var self = this;
@@ -121,6 +121,7 @@ app.controller('messagesController', [
     function initialize() {
       setCurrentChannel().then(function () {
         if ($scope.channel) {
+          $rootScope.$broadcast('channel:ready', $scope.channel);
           bindMessages();
           $scope.inputMessage = '';
           self.isTabfocused = true;
