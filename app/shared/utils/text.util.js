@@ -21,6 +21,21 @@ app.factory('textUtil', function () {
     });
   }
 
+  function prettify(text) {
+    var pretty = /`(.*?)`/g;
+    return text.replace(pretty, function (backTickedText) {
+      return '<span class="msg-inline-code">' + backTickedText + '</span>';
+    });
+  }
+
+  function directionify(text) {
+    var direction = /([^\u0600-\u065F\u066E-\u06D5]+)[`(.*?)`]/g;
+    text = text.replace(direction, function (dirText) {
+      return '<span style="direction:ltr" dir="ltr">' + dirText + '</span> ';
+    });
+    return text.replace(/`/g,'');
+  }
+
   /**
    * @todo Fix this function.
    */
@@ -60,6 +75,8 @@ app.factory('textUtil', function () {
   return {
     isEnglish: isEnglish,
     urlify: urlify,
+    prettify: prettify,
+    directionify: directionify,
     hashtagify: hashtagify,
     persianify: persianify,
     htmlToPlaintext: htmlToPlaintext

@@ -240,6 +240,8 @@ app.factory('Message', [
     Message.generateMessageWellFormedText = function (text) {
       var wellFormedText = textUtil.htmlToPlaintext(text);
       wellFormedText = textUtil.urlify(wellFormedText);
+      wellFormedText = textUtil.prettify(wellFormedText);
+      wellFormedText = textUtil.directionify(wellFormedText);
       // wellFormedText = textUtil.hashtagify(wellFormedText);
       return wellFormedText;
     };

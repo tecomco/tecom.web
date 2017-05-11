@@ -124,7 +124,7 @@ app.service('channelsService', [
       if (channel.isDirect() && channel.isDirectExist() &&
         !CurrentMember.member.isTecomBot()) {
         channel.changeNameAndSlugFromId().then(function () {
-          if (!Team.isDirectActive(channel.slug)) {
+          if (!Team.isMemberActiveByUsername(channel.slug)) {
             channel.active = false;
           }
         });
