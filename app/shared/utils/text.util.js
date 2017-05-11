@@ -31,7 +31,10 @@ app.factory('textUtil', function () {
   function directionify(text) {
     var direction = /([^\u0600-\u065F\u066E-\u06D5]+)[`(.*?)`]/g;
     text = text.replace(direction, function (dirText) {
-      return '<span style="direction:ltr" dir="ltr">' + dirText + '</span> ';
+      if (dirText.indexOf('<') !== -1 && dirText.indexOf('`') !== -1) {
+        return '<span style="direction:ltr" dir="ltr">' + dirText + '</span> ';
+      }
+      return dirText;
     });
     return text.replace(/`/g,'');
   }
