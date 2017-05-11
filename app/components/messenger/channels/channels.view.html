@@ -69,8 +69,9 @@
           </div>
           <div class="col-sm-6 modal-left-part">
             <h3>اعضای گروه</h3>
-            <div class="modal-input">
+            <div class="modal-input search-user-input-holder">
               <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
+              <span class="sign">@</span>
             </div>
             <div class="g-members">
               <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'user.username' | filter : {username : $ctrl.newChannel.search}" class="g-m-one">

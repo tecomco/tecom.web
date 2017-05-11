@@ -1,5 +1,8 @@
 <div ng-controller="filesController">
   <div ng-show="viewState() === 'noFile'">
+    <div class="server-msg file-server-msg err" ng-hide="true">
+      <span>پیام محدودیت فایل</span>
+    </div>
     <div class="file-empty">
       <!-- <pre class="prettyprint linenums" dir="ltr">
 <ol class="linenums">
@@ -8,6 +11,8 @@
 <li>}</li>
 </ol>
 </pre> -->
+
+
       <div class="file-empty-card" ng-show="!fileLoading">
 
         <div class="em-fi-al">
@@ -27,8 +32,9 @@
           <span>رو بزن.</span>
         </div>
         <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active">
-          <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
+          <a type="file" class="upload-btn" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
             <i class="fa fa-paperclip"></i>
+            <span>آپلود فایل</span>
           </a>
         </div>
       </div>
@@ -108,6 +114,10 @@
 
     <div ng-show="viewState() === 'view'">
       <div class="doc-section-body" ng-show="!fileLoading">
+        <div class="server-msg file-server-msg" ng-hide="true">
+          <i class="fa fa-spinner fa-spin fa-fw"></i>
+          <span>در حال وصل شدن به سرور...</span>
+        </div>
         <pre id="codeView" class="prettyprint linenums-view code-view">
       <ol class="linenums-view">
         <li ng-repeat="line in vm.viewFile.lines track by $index" ng-bind-html="line.html" ng-class="line.getCssClass()"></li>
