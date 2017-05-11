@@ -9,15 +9,32 @@
       <form name="forms.detailsForm" ng-submit="submitChannelDetailsForm()" novalidate>
         <div class="g-title">
           <i ng-class="channel.isPrivate() ? 'fa fa-lock' : 'fa fa-globe'"></i>
-          <input type="text" name="name" ng-model="details.name" ng-maxlength="32" ng-disabled="!editMode" class="input-text title" value={{channel.name}} placeholder={{channel.name}} required>
+          <input type="text" name="name" class="form-control" ng-model="details.name" ng-maxlength="32" ng-disabled="!editMode" class="input-text title" value={{channel.name}} placeholder={{channel.name}} required>
           <div ng-messages="forms.detailsForm.name.$error">
             <span class="modal-err" ng-message="required" ng-show="forms.detailsForm.name.$touched">وارد کردن نام گروه الزامی است!</span>
             <span class="modal-err" ng-message="maxlength">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
             <span class="modal-err" ng-message="duplicate">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
           </div>
+
+          <button type="button" class="btn-modal" ng-click="editChannelClick()" ng-show="!editMode">
+                  <span class="zmdi zmdi-edit"></span>
+                  <span>ویرایش</span>
+                </button>
+          <div ng-show="editMode" class="submit-btns">
+            <div class="clearfix"></div>
+            <button type="submit" class="btn-modal no-style" ng-show="editMode">
+                    <span class="zmdi zmdi-check"></span>
+                    <span>ذخیره</span>
+                  </button>
+
+            <button type="button" class="btn-modal" ng-click="cancelEditMode()">
+                    <span class="zmdi zmdi-close"></span>
+                    <span>بی‌خیال</span>
+                  </button>
+          </div>
         </div>
         <div class="g-details">
-          <input type="text" name="description" ng-model="details.description" ng-maxlength="256" ng-disabled="!editMode" class="input-text" value={{channel.description}} placeholder={{channel.description}}>
+          <input type="text" name="description" class="form-control" ng-model="details.description" ng-maxlength="256" ng-disabled="!editMode" class="input-text" value={{channel.description}} placeholder={{channel.description}}>
           <div ng-messages="forms.detailsForm.description.$error">
             <span class="modal-err" ng-message="maxlength">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
           </div>
@@ -29,58 +46,44 @@
             <i class="fa fa-check"></i>
           </div>
         </label>
-
-        <div ng-show="editMode">
-          <div class="clearfix"></div>
-          <button type="submit" class="btn-modal" ng-show="editMode">
-            <span class="zmdi zmdi-check"></span>
-            <span>ذخیره</span>
-          </button>
-
-          <button type="button" class="btn-modal" ng-click="cancelEditMode()">
-            <span class="zmdi zmdi-close"></span>
-            <span>بی‌خیال</span>
-          </button>
-        </div>
-          <span class="modal-err" ng-show="details.serverError">خطا در اتصال به سرور</span>
+        <span class="modal-global-err" ng-show="details.serverError">خطا در اتصال به سرور</span>
       </form>
 
-      <button type="button" class="btn-modal" ng-click="editChannelClick()" ng-show="!editMode">
-        <span class="zmdi zmdi-edit"></span>
-        <span>ویرایش</span>
-      </button>
     </div>
     <div class="col-sm-6 modal-left-part">
       <div class="g-title">
         <i class="zmdi zmdi-accounts"></i>
         <h3>اعضای گروه</h3>
+
         <button type="button" class="btn-modal" ng-click="addMembersClick()" ng-hide="addMemberMode">
           <span class="zmdi zmdi-account-add"></span>
           <span>اضافه کردن به اعضای گروه</span>
         </button>
-        <button type="button" class="btn-modal" ng-click="submitAddedMembers()" ng-show="addMemberMode">
+        <div class="submit-btns">
+          <button type="button" class="btn-modal" ng-click="submitAddedMembers()" ng-show="addMemberMode">
           <span class="zmdi zmdi-check"></span>
           <span>ذخیره</span>
         </button>
-        <button type="button" class="btn-modal" ng-click="cancelAddingMembers()" ng-show="addMemberMode">
+          <button type="button" class="btn-modal" ng-click="cancelAddingMembers()" ng-show="addMemberMode">
           <span class="zmdi zmdi-close"></span>
           <span>بی‌خیال</span>
         </button>
+        </div>
       </div>
-      <div class="modal-input" ng-show="addMemberMode">
+      <div class="modal-input search-user-input-holder" ng-show="addMemberMode">
         <input type="text" name="search" class="form-control" placeholder="جستجو" ng-model="searchInput">
+        <span class="sign sign-lil-top">@</span>
       </div>
       <div class="g-members">
         <div ng-repeat="channelMemberItem in channeMemberItems | orderBy : 'channelMemberItem.member.user.username' | filter : {username : searchInput}" ng-click="channelMemberItem.click(addMemberMode)">
           <div class="g-m-one" ng-show="addMemberMode ? true : channelMemberItem.isChannelMember()">
             <div ng-class=channelMemberItem.getCssClass(addMemberMode)>
-              <img ng-src="{{channelMemberItem.member.user.image}}"/>
+              <img ng-src="{{channelMemberItem.member.user.image}}" />
               <span class="zmdi zmdi-check-circle" ng-show="addMemberMode"></span>
               <label>@{{channelMemberItem.member.user.username}}</label>
               <label class="hint" ng-show="addMemberMode && channelMemberItem.isChannelMember()">(عضو گروه)</label>
               <div ng-if="isAdmin && !addMemberMode" style="float: left">
-                <confirm-dialog class="btn modal-btn-details-remove" message="مطمئنی می خوای @{{channelMemberItem.username}} رو از گروه حذف کنی ؟" cancel="نه، حواسم نبود" ok="آره" args="[channelMemberItem]" confirm-func="removeMember"
-                                confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+                <confirm-dialog class="btn modal-btn-details-remove" message="مطمئنی می خوای @{{channelMemberItem.username}} رو از گروه حذف کنی ؟" cancel="نه، حواسم نبود" ok="آره" args="[channelMemberItem]" confirm-func="removeMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
               </div>
             </div>
           </div>
