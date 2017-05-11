@@ -92,7 +92,7 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
       });
     };
 
-    Team.isDirectActive = function (username) {
+    Team.isMemberActiveByUsername = function (username) {
       var member = Team.getMemberByUsername(username);
       if (member.id === Member.TECOM_BOT.id)
         return true;
