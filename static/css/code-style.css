@@ -35,3 +35,12 @@ li.L1,li.L3,li.L5,li.L7,li.L9 { }
   pre .atn, code .atn { color: #404 }
   pre .atv, code .atv { color: #060 }
 }
+
+.msg-inline-code{
+  font-family: monospace;
+  display: inline;
+  background: rgb(233, 233, 233);
+  color: rgb(82, 82, 82);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
