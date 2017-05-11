@@ -180,13 +180,13 @@ app.controller('channelDetailsController', [
       $scope.editMode = false;
       setDetailsFormDatas();
       clearCustomErrorMessages();
-    }
+    };
 
     $scope.cancelAddingMembers = function () {
       $scope.addMemberMode = false;
       unselectAllChannelMemberItems();
       clearCustomErrorMessages();
-    }
+    };
 
     function unselectAllChannelMemberItems() {
       $scope.channeMemberItems.forEach(function (item) {

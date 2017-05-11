@@ -1,33 +1,8 @@
 'use strict';
 
 app.controller('filesController', [
-  '$window', 'filesService', '$stateParams', 'Upload',
-  'channelsService', '$q', '$scope', '$timeout', '$rootScope',
-  function ($window, filesService, $stateParams, Upload,
-    channelsService, $q, $scope, $timeout, $rootScope) {
-
-    if (!$stateParams.slug) {
-      channelsService.setCurrentChannelBySlug(null);
-      return;
-    } else if (channelsService.areChannelsReady()) {
-      initialize();
-    }
-
-    function initialize() {
-      var defer = $q.defer();
-      var slug = $stateParams.slug.replace('@', '');
-      channelsService.setCurrentChannelBySlug(slug).then(function () {
-        $scope.channel = channelsService.getCurrentChannel();
-        defer.resolve();
-      });
-      return defer.promise;
-    }
-
-    $scope.$on('channels:updated', function (event, data) {
-      if (data === 'init') {
-        initialize();
-      }
-    });
+  '$window', 'filesService', 'Upload', '$scope', '$timeout', '$rootScope',
+  function ($window, filesService, Upload, $scope, $timeout, $rootScope) {
 
     $scope.vm = {};
     var selectTextMode = false;
@@ -37,6 +12,10 @@ app.controller('filesController', [
 
     var selectedFileType = 'none';
     filesService.updateLiveFile();
+
+    $scope.$on('channel:ready', function (event, data) {
+      $scope.channel = data;
+    });
 
     $scope.$on('file:loading', function () {
       $scope.fileLoading = true;

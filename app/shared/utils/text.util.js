@@ -5,7 +5,7 @@ app.factory('textUtil', function () {
   function isEnglish(text) {
     if (!text)
       return false;
-    var english = /^[a-zA-Z0-9.?></\\:;,{}()$[\]\-_+=!@#$%\^&*|']*$/;
+    var english = /^[a-zA-Z0-9.?></\\:;,{}()$[\]\-_+=!@#$%\^&*|'"]*$/;
     var isEnglish = true;
     text.split(' ').forEach(function (word) {
       isEnglish = isEnglish && english.test(word);
@@ -52,7 +52,8 @@ app.factory('textUtil', function () {
   }
 
   function htmlToPlaintext(text) {
-    var plainText = text ? String(text).replace(/<[^>]+>/gm, '') : '';
+    var plainText = text.replace(/</g,'&lt');
+    plainText = plainText.replace(/>/g,'&gt');
     return plainText;
   }
 
