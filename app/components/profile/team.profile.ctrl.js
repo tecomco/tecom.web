@@ -10,6 +10,10 @@ app.controller('teamProfileController', [
 
     initialize();
 
+    $scope.$on('members:updated', function () {
+      $scope.teamMembers = Team.getActiveMembers();
+    });
+
     $scope.inviteMember = function () {
       initializeInviteMemberForm();
       $scope.inviteMode = true;
@@ -114,10 +118,6 @@ app.controller('teamProfileController', [
       $scope.invitedEmail = '';
       $scope.forms.inviteMember.$setPristine();
     }
-
-    $scope.$on('members:updated', function () {
-      $scope.teamMembers = Team.getActiveMembers();
-    });
 
   }
 ]);
