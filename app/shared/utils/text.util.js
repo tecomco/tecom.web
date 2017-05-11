@@ -23,17 +23,17 @@ app.factory('textUtil', function () {
 
   function prettify(text) {
     var pretty = /`(.*?)`/g;
-    text = text.replace(pretty, function (url) {
-      return '<span class="msg-inline-code">' + url + '</span>';
+    return text.replace(pretty, function (backTickedText) {
+      return '<span class="msg-inline-code">' + backTickedText + '</span>';
     });
-    return text.replace(/`/g,' ');
   }
 
   function directionify(text) {
-    var direction = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
-    return text.replace(direction, function (url) {
-      return '<span style="direction:ltr" dir="ltr">' + url + '</span>';
+    var direction = /([^\u0600-\u065F\u066E-\u06D5]+)[`(.*?)`]/g;
+    text = text.replace(direction, function (dirText) {
+      return '<span style="direction:ltr" dir="ltr">' + dirText + '</span> ';
     });
+    return text.replace(/`/g,'');
   }
 
   /**
