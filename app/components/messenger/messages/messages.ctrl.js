@@ -1,10 +1,13 @@
 'use strict';
 
 app.controller('messagesController', [
-  '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout', 'Upload',
-  'messagesService', 'channelsService', 'filesService', '$q', 'ArrayUtil',
-  function ($scope, $rootScope, $state, $stateParams, $window, $timeout, Upload,
-            messagesService, channelsService, filesService, $q, ArrayUtil) {
+  '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
+  'Upload', 'messagesService', 'channelsService', 'filesService', '$q',
+  'ArrayUtil', 'textUtil',
+  function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
+    Upload, messagesService, channelsService, filesService, $q,
+    ArrayUtil, textUtil
+  ) {
 
     var self = this;
 
@@ -41,9 +44,20 @@ app.controller('messagesController', [
       }
     });
 
-    $scope.$on('file:upload' , function (event, file) {
+    $scope.$on('file:upload', function (event, file) {
       $scope.upload(file);
     });
+
+    $scope.getInputStyle = function () {
+      if (textUtil.isEnglish($scope.inputMessage)) {
+        return {
+          'text-align': 'left',
+          'direction': 'ltr'
+        };
+      } else {
+        return {};
+      }
+    };
 
     $scope.sendMessage = function ($event) {
       $event.preventDefault();
@@ -86,7 +100,8 @@ app.controller('messagesController', [
 
     $scope.upload = function (file, errFiles) {
       if (file) {
-        var message = messagesService.sendFileAndGetMessage($scope.channel.id,
+        var message = messagesService.sendFileAndGetMessage($scope.channel
+          .id,
           file, file.name);
         $scope.messages.push(message);
         scrollBottom();
@@ -134,10 +149,12 @@ app.controller('messagesController', [
         return true;
       else {
         var previousMessage =
-          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id - 1);
+          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
+            1);
         if (previousMessage) {
           var timeDiff =
-            Math.abs(message.datetime.getTime()-previousMessage.datetime.getTime());
+            Math.abs(message.datetime.getTime() - previousMessage.datetime
+              .getTime());
           var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
           return (diffDays === 0) ? false : true;
         }
@@ -191,9 +208,8 @@ app.controller('messagesController', [
         self.isTabfocused = true;
         seenLastUnSeenMessage();
       }).bind('blur', function () {
-      self.isTabfocused = false;
-    });
+        self.isTabfocused = false;
+      });
 
   }
-])
-;
+]);

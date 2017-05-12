@@ -5,7 +5,7 @@ app.factory('textUtil', function () {
   function isEnglish(text) {
     if (!text)
       return false;
-    var english = /^[a-zA-Z0-9.?></\\:;,{}()$[\]\-_+=!@#$%\^&*|'"]*$/;
+    var english = /^[a-zA-Z0-9.?></\\:;,{}()$[\]\-_+=!@#$%\^&*|'"` ]*$/;
     var isEnglish = true;
     text.split(' ').forEach(function (word) {
       isEnglish = isEnglish && english.test(word);
@@ -16,20 +16,20 @@ app.factory('textUtil', function () {
 
   function urlify(text) {
     var urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-    return text.replace(urlRegex, function (url) {
+      return text.replace(urlRegex, function (url) {
       return '<a href="' + url + '" target="_blank">' + url + '</a>';
     });
-  }
+    }
 
   function prettify(text) {
-    var pretty = /`(.*?)`/g;
+    var pretty = /`.*`/g;
     return text.replace(pretty, function (backTickedText) {
       return '<span class="msg-inline-code">' + backTickedText + '</span>';
     });
   }
 
   function directionify(text) {
-    var direction = /([^\u0600-\u065F\u066E-\u06D5]+)[`(.*?)`]/g;
+    var direction = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
     text = text.replace(direction, function (dirText) {
       if (dirText.indexOf('<') !== -1 && dirText.indexOf('`') !== -1) {
         return '<span style="direction:ltr" dir="ltr">' + dirText + '</span> ';

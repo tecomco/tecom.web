@@ -38,7 +38,7 @@
       <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
         <i class="fa fa-paperclip"></i>
       </a>
-      <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
+      <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-style="getInputStyle()" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
       <a class="send-btn" href="#" ng-click="sendMessage($event)">
         <i class="zmdi zmdi-mail-send"></i>
       </a>
