@@ -113,10 +113,9 @@
     </div>
 
     <div ng-show="viewState() === 'view'">
-      <div class="doc-section-body" ng-show="!fileLoading">
-        <div class="server-msg file-server-msg" ng-hide="true">
-          <i class="fa fa-spinner fa-spin fa-fw"></i>
-          <span>در حال وصل شدن به سرور...</span>
+      <div class="doc-section-body" ng-show="!fileLoading" ng-click="viewClick()">
+        <div class="server-msg file-server-msg" ng-show="viewClickNotif">
+          <span>برای انتخاب یه قسمت از کد و بحث کردن راجع بهش اول اون رو LIVE کن.</span>
         </div>
         <pre id="codeView" class="prettyprint linenums-view code-view">
       <ol class="linenums-view">

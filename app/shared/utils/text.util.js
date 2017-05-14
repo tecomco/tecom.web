@@ -15,16 +15,18 @@ app.factory('textUtil', function () {
   }
 
   function urlify(text) {
-    var urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-      return text.replace(urlRegex, function (url) {
+    var urlRegex =
+      /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+    return text.replace(urlRegex, function (url) {
       return '<a href="' + url + '" target="_blank">' + url + '</a>';
     });
-    }
+  }
 
   function prettify(text) {
     var pretty = /`.*`/g;
     return text.replace(pretty, function (backTickedText) {
-      return '<span class="msg-inline-code">' + backTickedText + '</span>';
+      return '<code class="msg-inline-code">' + backTickedText +
+        '</code>';
     });
   }
 
@@ -32,11 +34,12 @@ app.factory('textUtil', function () {
     var direction = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
     text = text.replace(direction, function (dirText) {
       if (dirText.indexOf('<') !== -1 && dirText.indexOf('`') !== -1) {
-        return '<span style="direction:ltr" dir="ltr">' + dirText + '</span> ';
+        return '<span style="direction:ltr" dir="ltr">' + dirText +
+          '</span> ';
       }
       return dirText;
     });
-    return text.replace(/`/g,'');
+    return text.replace(/`/g, '');
   }
 
   /**
@@ -70,8 +73,10 @@ app.factory('textUtil', function () {
   }
 
   function htmlToPlaintext(text) {
-    var plainText = text.replace(/</g,'&lt');
-    plainText = plainText.replace(/>/g,'&gt');
+    var plainText = text.replace(/</g, '&lt');
+    plainText = plainText.replace(/>/g, '&gt');
+    plainText = plainText.replace(/{/g, '&#123;&zwnj;');
+    plainText = plainText.replace(/}/g, '&zwnj;&#125;');
     return plainText;
   }
 

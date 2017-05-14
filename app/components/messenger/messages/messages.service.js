@@ -264,10 +264,16 @@ app.service('messagesService', [
             channelsService.updateChannelLastDatetime(message.channelId,
               message.datetime);
           });
-      }).catch(function (err) {
-        /**
-         * @todo Handle upload errors properly.
-         */
+      // }, function (error) {
+      // }, function (evt) {
+      //     console.log(evt);
+      //     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+      //     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+      }, function (resp) {
+          console.log('Error status: ' + resp.status);
+      }, function (evt) {
+          var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+          console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
       });
       return message;
     }

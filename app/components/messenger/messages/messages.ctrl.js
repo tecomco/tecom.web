@@ -44,9 +44,29 @@ app.controller('messagesController', [
       }
     });
 
-    $scope.$on('file:upload', function (event, file) {
-      $scope.upload(file);
+    $scope.$on('file:uploading', function (event, file) {
+      $scope.uploadErrNotif = false;
+      var message = messagesService.sendFileAndGetMessage($scope.channel.id,
+        file, file.name);
+      $scope.messages.push(message);
+      scrollBottom();
     });
+
+    $scope.$on('file:uploadError', function () {
+      if (self.uploadErrNotifTimeout) {
+        $timeout.cancel(self.uploadErrNotifTimeout);
+      }
+      if (!$scope.uploadErrNotif) {
+        $scope.uploadErrNotif = true;
+      }
+      self.uploadErrNotifTimeout = $timeout(function () {
+        $scope.uploadErrNotif = false;
+      }, 3000);
+    });
+
+    $scope.upload = function (file, errFiles) {
+      $rootScope.$broadcast('file:upload', file, errFiles);
+    };
 
     $scope.getInputStyle = function () {
       if (textUtil.isEnglish($scope.inputMessage)) {
@@ -98,15 +118,7 @@ app.controller('messagesController', [
       }, 0, false);
     }
 
-    $scope.upload = function (file, errFiles) {
-      if (file) {
-        var message = messagesService.sendFileAndGetMessage($scope.channel
-          .id,
-          file, file.name);
-        $scope.messages.push(message);
-        scrollBottom();
-      }
-    };
+
 
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);

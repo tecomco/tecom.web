@@ -9,6 +9,9 @@
         <i class="fa fa-spinner fa-spin fa-fw"></i>
         <span>در حال وصل شدن به سرور...</span>
       </div>
+      <div class="server-msg" ng-show="uploadErrNotif">
+        <span>اندازه فایل بیشتر از 1Mb هستش!</span>
+      </div>
       <div class="main">
         <div ng-repeat="message in messages | orderBy : 'datetime'">
           <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">

@@ -9,6 +9,7 @@ app.controller('filesController', [
     var startLine;
     var flagLineIsTemp = false;
     $scope.fileLoading = false;
+    $scope.viewClickNotif = false;
 
     var selectedFileType = 'none';
     filesService.updateLiveFile();
@@ -20,6 +21,8 @@ app.controller('filesController', [
     $scope.$on('file:loading', function () {
       $scope.fileLoading = true;
     });
+
+    var self = this;
 
     $scope.$on('file:ready', function () {
       $scope.fileLoading = false;
@@ -71,6 +74,25 @@ app.controller('filesController', [
       }
       broadcastViewState();
     });
+
+    $scope.$on('file:upload', function (event, file, errFiles) {
+      if (file)
+      $rootScope.$broadcast('file:uploading', file);
+      if (!file && errFiles[0])
+      $rootScope.$broadcast('file:uploadError');
+    });
+
+    $scope.viewClick = function () {
+      if (self.viewClickTimeout) {
+        $timeout.cancel(self.viewClickTimeout);
+      }
+      if (!$scope.viewClickNotif) {
+        $scope.viewClickNotif = true;
+      }
+      self.viewClickTimeout = $timeout(function () {
+        $scope.viewClickNotif = false;
+      }, 3000);
+    };
 
     $scope.mouseDownLine = function (lineNum) {
       selectTextMode = true;
@@ -137,8 +159,7 @@ app.controller('filesController', [
     };
 
     $scope.upload = function (file, errFiles) {
-      if (file)
-        $rootScope.$broadcast('file:upload', file);
+      $rootScope.$broadcast('file:upload', file, errFiles);
     };
 
     $scope.getFileDownloadData = function (type) {
