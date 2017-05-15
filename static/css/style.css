@@ -1735,7 +1735,7 @@ ol.linenums, ol.linenums-view {
 }
 
 .modal-body.two-part-modal .title.input-text.p-input[type="text"], .modal-body.two-part-modal .g-title .form-control[type="text"] {
-  width: 70%;
+  width: 60%;
   display: inline-block;
   color: #444;
   margin: 0;
@@ -2303,9 +2303,10 @@ label {
 
 .checkbox-holder {
   width: 70px;
-  margin: 0 auto;
+  margin: 0 auto 0 10px;
   text-align: center;
   position: relative;
+  float: right;
 }
 
 .ios-toggle, .ios-toggle:active {
