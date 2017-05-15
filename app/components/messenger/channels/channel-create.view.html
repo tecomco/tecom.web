@@ -1,10 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" ng-click="$close()">&times;</button>
+  <h4 class="modal-title">ایجاد گروه جدید</h4>
+</div>
+<div class="modal-body two-part-modal">
+  <form name="forms.newChannelForm" ng-submit="createChannelSubmit()" novalidate>
+    <div class="container-fluid">
+      <div class="col-sm-6">
+        <h3>مشخصات گروه</h3>
+        <div class="modal-input">
+          <input type="text" name="name" ng-model="newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
+          <span class="modal-err" ng-show="formNameCheckEmpty(forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
+          <span class="modal-err" ng-show="formNameCheckMax(forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+          <span class="modal-err" ng-show="newChannel.dublicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
+        </div>
+        <div class="modal-input">
+          <input type="text" name="description" ng-model="newChannel.description" ng-maxlength="256" placeholder="توضیح گروه">
+          <span class="modal-err" ng-show="forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
+        </div>
+
+        <div class="checkbox-holder">
+          <input type="checkbox" ng-model="details.isPrivate" id="checkboxPublicPrivate" class="ios-toggle" checked/>
+          <label for="checkboxPublicPrivate" class="checkbox-label"></label>
+          <label for="checkboxPublicPrivate"  class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-left-icon"></label>
+          <label for="checkboxPublicPrivate"  class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-right-icon"></label>
+        </div>
+
+      </div>
+      <div class="col-sm-6 modal-left-part">
+        <h3>اعضای گروه</h3>
+        <div class="modal-input search-user-input-holder">
+          <input type="text" name="search" ng-model="newChannel.search" placeholder="جستجو">
+          <span class="sign">@</span>
+        </div>
+        <div class="g-members">
+          <div ng-repeat="teamMember in teamMembers | orderBy : 'user.username' | filter : {username : newChannel.search}" class="g-m-one">
+            <img ng-src="{{teamMember.user.image || '/static/img/user-def.png'}}"/>
+            <label dir="rtl">@{{teamMember.user.username}}</label>
+            <label class="ws-checkbox">
+              <input type="checkbox" id="selectCheckbox" ng-model="teamMember.selected"/>
+              <div class="checkbox-stat">
+                <i class="fa fa-check"></i>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="modal-input">
+        <input type="submit" value="ایجاد گروه" class="btn btn-default">
+        <span class="modal-err" ng-show="newChannel.serverError">خطا در اتصال به سرور</span>
+      </div>
+    </div>
+  </form>
+</div>

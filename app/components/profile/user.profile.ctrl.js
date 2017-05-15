@@ -46,10 +46,6 @@ app.controller('userProfileController', [
       }
     };
 
-    $scope.closeModal = function () {
-      $uibModalInstance.close();
-    };
-
     $scope.uploadProfileImage = function (file, errorFiles) {
       if (file) {
         profileService.changeProfileImage(file).then(function (infoMsg) {
