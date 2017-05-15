@@ -2,10 +2,10 @@
 
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'Upload', 'socket',
-  'channelsService',
-  'Message', 'db', 'filesService', 'CurrentMember', 'Team',
+  'channelsService',  'Message', 'db', 'filesService', 'CurrentMember', 'Team',
+  'webNotification',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-    Message, db, filesService, CurrentMember, Team) {
+    Message, db, filesService, CurrentMember, Team, webNotification) {
 
     var self = this;
 
@@ -18,6 +18,27 @@ app.service('messagesService', [
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
       message.save();
+      Notification.requestPermission()
+      webNotification.showNotification(channelsService.findChannelById(data.channelId).name, {
+        body: CurrentMember.member.user.username + ': ' + data.body,
+        icon: 'favicon.png',
+        onClick: function onNotificationClicked() {
+          console.log('Notification clicked.');
+        },
+        autoClose: 4000 //auto close the notification after 4 seconds (you can manually close it via hide function)
+      }, function onShow(error, hide) {
+        if (error) {
+          window.alert('Unable to show notification: ' + error.message);
+        } else {
+          console.log('Notification Shown.');
+
+          setTimeout(function hideNotification() {
+            console.log('Hiding notification....');
+            hide(); //manually close the notification (you can skip this if you use the autoClose option)
+          }, 5000);
+        }
+      });
+
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
@@ -264,16 +285,17 @@ app.service('messagesService', [
             channelsService.updateChannelLastDatetime(message.channelId,
               message.datetime);
           });
-      // }, function (error) {
-      // }, function (evt) {
-      //     console.log(evt);
-      //     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-      //     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        // }, function (error) {
+        // }, function (evt) {
+        //     console.log(evt);
+        //     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+        //     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
       }, function (resp) {
-          console.log('Error status: ' + resp.status);
+        console.log('Error status: ' + resp.status);
       }, function (evt) {
-          var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-          console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+        console.log('progress: ' + progressPercentage + '% ' + evt.config
+          .data.file.name);
       });
       return message;
     }

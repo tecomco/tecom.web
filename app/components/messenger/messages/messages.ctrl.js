@@ -85,6 +85,7 @@ app.controller('messagesController', [
       if (!messageBody) return;
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody);
+      $rootScope.$emit('yes:yes');
       $scope.messages.push(message);
       scrollBottom();
       clearMessageInput();
