@@ -8,7 +8,14 @@
     <div class="col-sm-6">
       <form name="forms.detailsForm" ng-submit="submitChannelDetailsForm()" novalidate>
         <div class="g-title">
-          <i ng-class="channel.isPrivate() ? 'fa fa-lock' : 'fa fa-globe'"></i>
+          <i ng-class="channel.isPrivate() ? 'fa fa-lock' : 'fa fa-globe'" ng-show="!editMode"></i>
+          <div class="checkbox-holder" ng-show="editMode">
+            <input type="checkbox" ng-model="details.isPrivate" id="checkbox3" class="ios-toggle" checked/>
+            <label for="checkbox3" class="checkbox-label"></label>
+            <label for="checkbox3"  class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-right-icon"></label>
+            <label for="checkbox3"  class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-left-icon"></label>
+          </div>
+
           <input type="text" name="name" class="form-control" ng-model="details.name" ng-maxlength="32" ng-disabled="!editMode" class="input-text title" value={{channel.name}} placeholder={{channel.name}} required>
           <div ng-messages="forms.detailsForm.name.$error">
             <span class="modal-err" ng-message="required" ng-show="forms.detailsForm.name.$touched">وارد کردن نام گروه الزامی است!</span>
@@ -39,13 +46,7 @@
             <span class="modal-err" ng-message="maxlength">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
           </div>
         </div>
-        <label class="ws-checkbox" ng-show="editMode">
-          <span>این گروه خصوصی است.</span>
-          <input type="checkbox" ng-model="details.isPrivate">
-          <div class="checkbox-stat">
-            <i class="fa fa-check"></i>
-          </div>
-        </label>
+        
         <span class="modal-global-err" ng-show="details.serverError">خطا در اتصال به سرور</span>
       </form>
 

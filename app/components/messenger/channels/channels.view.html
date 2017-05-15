@@ -59,13 +59,14 @@
               <input type="text" name="description" ng-model="$ctrl.newChannel.description" ng-maxlength="256" placeholder="توضیح گروه">
               <span class="modal-err" ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
             </div>
-            <label class="ws-checkbox">
-                            <span>این گروه خصوصی است.</span>
-                            <input type="checkbox" ng-model="$ctrl.newChannel.isPrivate">
-                            <div class="checkbox-stat">
-                                <i class="fa fa-check"></i>
-                            </div>
-                        </label>
+
+            <div class="checkbox-holder">
+              <input type="checkbox" ng-model="$ctrl.newChannel.isPrivate" id="checkbox3" class="ios-toggle" checked/>
+              <label for="checkbox3" class="checkbox-label"></label>
+              <label for="checkbox3"  class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-right-icon"></label>
+              <label for="checkbox3"  class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-left-icon"></label>
+            </div>
+
           </div>
           <div class="col-sm-6 modal-left-part">
             <h3>اعضای گروه</h3>
