@@ -1,20 +1,7 @@
 <div ng-controller="filesController">
   <div ng-show="viewState() === 'noFile'">
-    <div class="server-msg file-server-msg err" ng-hide="true">
-      <span>پیام محدودیت فایل</span>
-    </div>
     <div class="file-empty">
-      <!-- <pre class="prettyprint linenums" dir="ltr">
-<ol class="linenums">
-<li>if(!fileIsSelected){</li>
-  <li>  OpenFileManager(); </li>
-<li>}</li>
-</ol>
-</pre> -->
-
-
       <div class="file-empty-card" ng-show="!fileLoading">
-
         <div class="em-fi-al">
           اینجا فایل‌های
           <div class="live-btn">
@@ -26,9 +13,9 @@
         <div class="up-fi">
           <span>یه فایل آپلود کن، بعد</span>
           <span class="live-btn">
-                        <label dir="ltr">LIVE</label>
-                        <i class="fa fa-circle"></i>
-                      </span>
+            <label dir="ltr">LIVE</label>
+            <i class="fa fa-circle"></i>
+          </span>
           <span>رو بزن.</span>
         </div>
         <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active">
@@ -38,9 +25,7 @@
           </a>
         </div>
       </div>
-
       <div class="file-empty-card" ng-show="fileLoading">
-
         <div class="em-fi-al">
           در حال بارگذاری فایل
           <br><br>
@@ -67,7 +52,6 @@
             </a>
           </div>
         </li>
-
         <li ng-show="vm.viewFile" ng-class="viewState()=='view' ? 'doc-tab doc-tab-active' : 'doc-tab'" ng-mouseup="viewFileTabClick()">
           <span class="doc-tab-title">{{vm.viewFile.name}}</span>
           <a ng-click="closeViewFile(vm.viewFile)" class="doc-tab-dl-btn">
@@ -86,7 +70,6 @@
             </a>
           </div>
         </li>
-
       </ul>
     </div>
     <div ng-show="viewState() === 'live'">
@@ -100,7 +83,6 @@
       </div>
       <div class="file-empty">
         <div class="file-empty-card" ng-show="fileLoading">
-
           <div class="em-fi-al">
             در حال بارگذاری فایل
             <br><br>
@@ -111,11 +93,17 @@
         </div>
       </div>
     </div>
-
     <div ng-show="viewState() === 'view'">
       <div class="doc-section-body" ng-show="!fileLoading" ng-click="viewClick()">
         <div class="server-msg file-server-msg" ng-show="viewClickNotif">
-          <span>برای انتخاب یه قسمت از کد و بحث کردن راجع بهش اول اون رو LIVE کن.</span>
+          <span>
+            برای انتخاب کردن یه قسمت از کد و چت کردن راجع بهش اوّل اون رو
+            <span class="live-btn" style="float: unset; margin-left: unset; position: unset;">
+              <i class="fa fa-circle"></i>
+              <label dir="ltr">LIVE</label>
+            </span>
+            کن.
+          </span>
         </div>
         <pre id="codeView" class="prettyprint linenums-view code-view">
       <ol class="linenums-view">
@@ -125,7 +113,6 @@
       </div>
       <div class="file-empty">
         <div class="file-empty-card" ng-show="fileLoading">
-
           <div class="em-fi-al">
             در حال بارگذاری فایل
             <br><br>
@@ -137,6 +124,4 @@
       </div>
     </div>
   </div>
-
-</div>
 </div>
