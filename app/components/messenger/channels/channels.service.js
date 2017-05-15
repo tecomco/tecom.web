@@ -2,11 +2,9 @@
 
 app.service('channelsService', [
   '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state',
-  'CurrentMember', 'Team',
-  'ArrayUtil',
+  'CurrentMember', 'Team', 'ArrayUtil',
   function ($rootScope, $http, $q, $log, socket, Channel, $state,
-    CurrentMember, Team,
-    ArrayUtil) {
+    CurrentMember, Team, ArrayUtil) {
 
     var self = this;
 

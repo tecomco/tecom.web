@@ -2,10 +2,10 @@
 
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'Upload', 'socket',
-  'channelsService',  'Message', 'db', 'filesService', 'CurrentMember', 'Team',
-  'webNotification',
+  'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
+  'Team',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-    Message, db, filesService, CurrentMember, Team, webNotification) {
+    Message, db, filesService, CurrentMember, Team) {
 
     var self = this;
 
@@ -14,31 +14,13 @@ app.service('messagesService', [
      */
 
     socket.on('message:send', function (data) {
+      // data.body = message.generateMessageWellFormedText(data.body);
       var message = new Message(data.body, data.type, data.senderId,
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
+      // console.log(message.body);
       message.save();
-      Notification.requestPermission()
-      webNotification.showNotification(channelsService.findChannelById(data.channelId).name, {
-        body: CurrentMember.member.user.username + ': ' + data.body,
-        icon: 'favicon.png',
-        onClick: function onNotificationClicked() {
-          console.log('Notification clicked.');
-        },
-        autoClose: 4000 //auto close the notification after 4 seconds (you can manually close it via hide function)
-      }, function onShow(error, hide) {
-        if (error) {
-          window.alert('Unable to show notification: ' + error.message);
-        } else {
-          console.log('Notification Shown.');
-
-          setTimeout(function hideNotification() {
-            console.log('Hiding notification....');
-            hide(); //manually close the notification (you can skip this if you use the autoClose option)
-          }, 5000);
-        }
-      });
-
+      // Notification.requestPermission()
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);

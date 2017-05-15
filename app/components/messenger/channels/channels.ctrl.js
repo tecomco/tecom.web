@@ -2,7 +2,9 @@
 
 app.controller('channelsController', [
   '$rootScope', '$scope', '$state', '$uibModal', 'channelsService',
-  function ($rootScope, $scope, $state, $uibModal, channelsService) {
+  'webNotification', 'textUtil',
+  function ($rootScope, $scope, $state, $uibModal, channelsService,
+    webNotification, textUtil) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
@@ -28,7 +30,40 @@ app.controller('channelsController', [
           incrementChannelNotification(message.channelId);
         }
       }
+      var channel = channelsService.findChannelById(message.channelId);
+      if (channel.hideNotif) {
+        channel.hideNotif();
+        channel.hideNotif = null;
+      }
+      if (!$rootScope.isTabFocused)
+        notification(channel);
+
     });
+
+    function notification(channel) {
+      webNotification.showNotification(channel.name, {
+        body: 'شما ' + channel.getLocaleNotifCount() + ' پیام خوانده نشده دارید',
+        icon: 'favicon.png',
+        onClick: function onNotificationClicked() {
+          channel.hideNotif();
+          channel.hideNotif = null;
+          window.focus();
+          $state.go('messenger.messages', {
+            slug: channel.getUrlifiedSlug()
+          });
+        },
+      }, function onShow(error, hide) {
+        if (error) {
+          window.alert('Unable to show notification: ' + error.message);
+        } else {
+          channel.hideNotif = hide;
+          setTimeout(function hideNotification() {
+            channel.hideNotif = null;
+            hide(); //manually close the notification (you can skip this if you use the autoClose option)
+          }, 5000);
+        }
+      });
+    }
 
     $scope.openModal = function (name) {
       var modalInstance = $uibModal.open({
