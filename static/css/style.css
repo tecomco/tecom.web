@@ -2396,7 +2396,7 @@ label {
 .ios-toggle:checked~.checkbox-holder-left-icon, .ios-toggle~.checkbox-holder-right-icon{
   color: #fff
 }
-#checkbox3+.checkbox-label {
+#checkboxPublicPrivate+.checkbox-label {
   /*box-shadow*/
   -webkit-box-shadow: inset 0 0 0 20px #24A772, 0 0 0 2px #24A772;
   -moz-box-shadow: inset 0 0 0 20px #24A772, 0 0 0 2px #24A772;
