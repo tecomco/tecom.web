@@ -55,8 +55,7 @@ app.factory('textUtil', function () {
   function directionify(text) {
     var directionRegex = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
     return text.replace(directionRegex, function (englishPart) {
-      // console.log(dirText);
-      if (dirText.indexOf('<') !== -1 && dirText.indexOf('`') !== -1) {
+      if (englishPart.indexOf('<') !== -1 && englishPart.indexOf('`') !== -1) {
         return '<span style="direction:ltr" dir="ltr">' + englishPart +
           '</span> ';
       }
