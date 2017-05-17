@@ -53,10 +53,6 @@ app.controller('teamProfileController', [
       $scope.editTeamNameActive = false;
     };
 
-    $scope.closeModal = function () {
-      $uibModalInstance.close();
-    };
-
     $scope.removeTeamMember = function (member) {
       profileService.removeTeamMember(member);
     };

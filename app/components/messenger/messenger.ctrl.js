@@ -6,14 +6,19 @@ app.controller('MessengerCtrl', [
 
     $scope.activeFile = false;
     $scope.isAdmin = CurrentMember.member.isAdmin;
-    $scope.openModal = function (name) {
+    $scope.openUserProfileModal = function () {
       var modalInstance = $uibModal.open({
         animation: true,
-        templateUrl: name + '.html',
-        controller: name + 'Controller',
-        controllerAs: '$ctrl'
+        templateUrl: 'app/components/profile/user.profile.view.html',
+        controller: 'userProfileController',
       });
-      modalInstance.result.then(function () {}, function () {});
+    };
+    $scope.openTeamProfileModal = function () {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'app/components/profile/team.profile.view.html',
+        controller: 'teamProfileController',
+      });
     };
 
     $scope.$on('view:state:changed', function (event, state) {

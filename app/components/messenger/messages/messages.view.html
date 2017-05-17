@@ -9,8 +9,8 @@
         <i class="fa fa-spinner fa-spin fa-fw"></i>
         <span>در حال وصل شدن به سرور...</span>
       </div>
-      <div class="server-msg" ng-show="uploadErrNotif">
-        <span>اندازه فایل بیشتر از 1Mb هستش!</span>
+      <div class="server-msg file-server-msg err" ng-show="uploadErrNotif">
+        <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
       </div>
       <div class="main">
         <div ng-repeat="message in messages | orderBy : 'datetime'">

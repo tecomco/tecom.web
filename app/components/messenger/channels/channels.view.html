@@ -2,7 +2,7 @@
   <div class="group-holder-header">
     <i class="fa fa-users"></i>
     <label>گروه‌ ها</label>
-    <a class="plus-g" tooltip-placement="right" uib-tooltip="ایجاد گروه جدید!" ng-click="openModal('createChannel')">
+    <a class="plus-g" tooltip-placement="right" uib-tooltip="ایجاد گروه جدید!" ng-click="openCreateChannelModal()">
       <i class="zmdi zmdi-plus"></i>
     </a>
   </div>
@@ -38,64 +38,6 @@
     </ul>
   </div>
 
-  <!-- Channel Create Modal -->
-  <script type="text/ng-template" id="createChannelModal.html">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeCreateChannel()">&times;</button>
-      <h4 class="modal-title">ایجاد گروه جدید</h4>
-    </div>
-    <div class="modal-body two-part-modal">
-      <form name="$ctrl.forms.newChannelForm" ng-submit="$ctrl.createChannelSubmit()" novalidate>
-        <div class="container-fluid">
-          <div class="col-sm-6">
-            <h3>مشخصات گروه</h3>
-            <div class="modal-input">
-              <input type="text" name="name" ng-model="$ctrl.newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
-              <span class="modal-err" ng-show="$ctrl.formNameCheckEmpty($ctrl.forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
-              <span class="modal-err" ng-show="$ctrl.formNameCheckMax($ctrl.forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
-              <span class="modal-err" ng-show="$ctrl.newChannel.dublicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
-            </div>
-            <div class="modal-input">
-              <input type="text" name="description" ng-model="$ctrl.newChannel.description" ng-maxlength="256" placeholder="توضیح گروه">
-              <span class="modal-err" ng-show="$ctrl.forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
-            </div>
-            <label class="ws-checkbox">
-                            <span>این گروه خصوصی است.</span>
-                            <input type="checkbox" ng-model="$ctrl.newChannel.isPrivate">
-                            <div class="checkbox-stat">
-                                <i class="fa fa-check"></i>
-                            </div>
-                        </label>
-          </div>
-          <div class="col-sm-6 modal-left-part">
-            <h3>اعضای گروه</h3>
-            <div class="modal-input search-user-input-holder">
-              <input type="text" name="search" ng-model="$ctrl.newChannel.search" placeholder="جستجو">
-              <span class="sign">@</span>
-            </div>
-            <div class="g-members">
-              <div ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'user.username' | filter : {username : $ctrl.newChannel.search}" class="g-m-one">
-                <img ng-src="{{teamMember.user.image || '/static/img/user-def.png'}}" />
-                <label dir="rtl">@{{teamMember.user.username}}</label>
-                <label class="ws-checkbox">
-                  <input type="checkbox" id="selectCheckbox" ng-model="teamMember.selected"/>
-                  <div class="checkbox-stat">
-                    <i class="fa fa-check"></i>
-                  </div>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="clearfix"></div>
-          <div class="modal-input">
-            <input type="submit" value="ایجاد گروه" class="btn btn-default">
-            <span class="modal-err" ng-show="$ctrl.newChannel.serverError">خطا در اتصال به سرور</span>
-          </div>
-        </div>
-      </form>
-    </div>
-  </script>
-
   <script type="text/ng-template" id="newDirectModal.html">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" ng-click="$ctrl.closeCreateChannel()">&times;</button>
@@ -111,7 +53,7 @@
             </div>
             <div class="g-members">
               <a ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'user.username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-click="$ctrl.directClick(teamMember)">
-                <img ng-src="static/img/user-def.png" />
+                <img ng-src="static/img/user-def.png"/>
                 <label>@{{teamMember.user.username}}</label>
               </a>
             </div>
