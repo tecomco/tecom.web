@@ -16,30 +16,52 @@ app.factory('textUtil', function () {
 
   function urlify(text) {
     var urlRegex =
-      /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+      /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#\?&//=]*)?/gi;
     return text.replace(urlRegex, function (url) {
-      return '<a href="' + url + '" target="_blank">' + url + '</a>';
+      // if (notBeCodedUrl(url, text)) {
+      if (validUrl(url))
+        return '<a href="' + url + '" target="_blank">' + url +
+          '</a>';
+      else
+        return url;
+      // }
+      // else
+      //   return url;
     });
   }
 
-  function prettify(text) {
-    var pretty = /`.*`/g;
-    return text.replace(pretty, function (backTickedText) {
-      return '<code class="msg-inline-code">' + backTickedText +
+  function validUrl(url) {
+    var tld = ['com', 'ir', 'net', 'org', 'biz', 'info', 'name', 'me', 'ws',
+      'us', 'tv', 'gov', 'co', 'edu', 'asia', 'int', 'tel', 'mil'
+    ];
+    url = url.split('.');
+    url = url[url.length - 1];
+    for (var i = 0; i < 18; i++) {
+      if (url.substring(0, tld[i].length) === tld[i])
+        return true;
+    }
+    return false;
+  }
+
+  function codify(text) {
+    var backtickRegex = /`.*`/g;
+    text = text.replace(backtickRegex, function (code) {
+      return '<code class="msg-inline-code">' + code +
         '</code>';
     });
+    return text.replace(/`/g, '');
   }
 
   function directionify(text) {
-    var direction = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
-    text = text.replace(direction, function (dirText) {
+    var directionRegex = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
+    return text.replace(directionRegex, function (englishPart) {
+      // console.log(dirText);
       if (dirText.indexOf('<') !== -1 && dirText.indexOf('`') !== -1) {
-        return '<span style="direction:ltr" dir="ltr">' + dirText +
+        return '<span style="direction:ltr" dir="ltr">' + englishPart +
           '</span> ';
       }
-      return dirText;
+      return englishPart;
     });
-    return text.replace(/`/g, '');
   }
 
   /**
@@ -83,7 +105,7 @@ app.factory('textUtil', function () {
   return {
     isEnglish: isEnglish,
     urlify: urlify,
-    prettify: prettify,
+    codify: codify,
     directionify: directionify,
     hashtagify: hashtagify,
     persianify: persianify,
