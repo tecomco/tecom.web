@@ -1,7 +1,8 @@
 'use strict';
 
 app.controller('channelsController', [
-  '$rootScope', '$scope', '$window', '$state', '$uibModal','channelsService',
+  '$rootScope', '$scope', '$window', '$state', '$uibModal',
+  'channelsService',
   'webNotification', 'textUtil', '$log',
   function ($rootScope, $scope, $window, $state, $uibModal, channelsService,
     webNotification, textUtil, $log) {
@@ -20,17 +21,20 @@ app.controller('channelsController', [
     });
 
     $scope.$on('message', function (event, message) {
-      if (!$scope.channels.current) {
+      if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
+        handleNotification(message.channelId);
       } else {
-        var belongsToCurrentChannel =
-          message.channelId === $scope.channels.current.id;
-        if (!belongsToCurrentChannel && !message.isFromMe()) {
+        if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
+        } else {
+          var belongsToCurrentChannel =
+            message.channelId === $scope.channels.current.id;
+          if (!belongsToCurrentChannel && !message.isFromMe()) {
+            incrementChannelNotification(message.channelId);
+          }
         }
       }
-      if (!$rootScope.isTabFocused)
-        handleNotification(message.channelId);
     });
 
     function handleNotification(channelId) {
