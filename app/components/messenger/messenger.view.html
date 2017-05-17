@@ -14,6 +14,9 @@
           <li ng-show="isAdmin" ng-click="openTeamProfileModal()">
             <a><i class="fa fa-users"></i>مدیریت تیم</a>
           </li>
+          <li ng-click="setNotificationPermission()" ng-show="shouldShowNotificationPermission()">
+            <a><i class="fa fa-bell"></i>درخواست دسترسی اعلان‌ها</a>
+          </li>
           <li ng-click="logout()">
             <a><i class="fa fa-sign-out"></i>خروج</a>
           </li>

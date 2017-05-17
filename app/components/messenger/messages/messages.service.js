@@ -2,8 +2,8 @@
 
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'Upload', 'socket',
-  'channelsService',
-  'Message', 'db', 'filesService', 'CurrentMember', 'Team',
+  'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
+  'Team',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
     Message, db, filesService, CurrentMember, Team) {
 
@@ -265,10 +265,11 @@ app.service('messagesService', [
               message.datetime);
           });
       }, function (resp) {
-          console.log('Error status: ' + resp.status);
+        console.log('Error status: ' + resp.status);
       }, function (evt) {
-          var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-          console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+        console.log('progress: ' + progressPercentage + '% ' + evt.config
+          .data.file.name);
       });
       return message;
     }

@@ -35,7 +35,7 @@ app.controller('messagesController', [
       if ($scope.channel.id == message.channelId) {
         $scope.messages.push(message);
         scrollBottom();
-        if (self.isTabfocused) {
+        if ($rootScope.isTabFocused) {
           messagesService.seenMessage($scope.channel.id, message.id,
             message.senderId);
         } else {
@@ -85,6 +85,7 @@ app.controller('messagesController', [
       if (!messageBody) return;
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody);
+      $rootScope.$emit('yes:yes');
       $scope.messages.push(message);
       scrollBottom();
       clearMessageInput();
@@ -151,7 +152,6 @@ app.controller('messagesController', [
           $rootScope.$broadcast('channel:ready', $scope.channel);
           bindMessages();
           $scope.inputMessage = '';
-          self.isTabfocused = true;
         }
       });
     }
@@ -215,13 +215,10 @@ app.controller('messagesController', [
       }
     };
 
-    angular.element($window)
-      .bind('focus', function () {
-        self.isTabfocused = true;
+    $scope.$on('tab:focus:changed', function () {
+      if ($rootScope.isTabFocused)
         seenLastUnSeenMessage();
-      }).bind('blur', function () {
-        self.isTabfocused = false;
-      });
+    });
 
   }
 ]);

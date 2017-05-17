@@ -19,7 +19,8 @@
     "angular-bootstrap-confirm": "^2.5.0",
     "angular-ismobile": "^1.1.0",
     "persian-date": "^0.1.8",
-    "angular-messages": "1.5.9"
+    "angular-messages": "1.5.9",
+    "angular-web-notification": "^1.2.22"
   },
   "resolutions": {
     "angular": "1.5.9"
