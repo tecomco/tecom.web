@@ -9,7 +9,7 @@ app.controller('filesController', [
     var startLine;
     var flagLineIsTemp = false;
     $scope.fileLoading = false;
-    $scope.viewClickNotif = false;
+    $scope.isViewedFileClicked = false;
 
     var selectedFileType = 'none';
     filesService.updateLiveFile();
@@ -82,7 +82,7 @@ app.controller('filesController', [
       $rootScope.$broadcast('file:uploadError');
     });
 
-    $scope.viewClick = function () {
+    $scope.showViewedFileClickedWarning = function () {
       if (self.viewClickTimeout) {
         $timeout.cancel(self.viewClickTimeout);
       }

@@ -1,13 +1,15 @@
 'use strict';
 
 app.controller('channelsController', [
-  '$rootScope', '$scope', '$state', '$uibModal', 'channelsService',
-  function ($rootScope, $scope, $state, $uibModal, channelsService) {
+  '$rootScope', '$scope', '$window', '$state', '$uibModal',
+  'channelsService',
+  'webNotification', 'textUtil', '$log',
+  function ($rootScope, $scope, $window, $state, $uibModal, channelsService,
+    webNotification, textUtil, $log) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
     $scope.channels.directs = [];
-
     $scope.$on('channels:updated', function () {
       updateChannels();
       updateFavicon();
@@ -19,18 +21,58 @@ app.controller('channelsController', [
     });
 
     $scope.$on('message', function (event, message) {
-      if (!$scope.channels.current) {
+      if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
+        handleNotification(message.channelId);
       } else {
-        var belongsToCurrentChannel =
-          message.channelId === $scope.channels.current.id;
-        if (!belongsToCurrentChannel && !message.isFromMe()) {
+        if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
+        } else {
+          var belongsToCurrentChannel =
+            message.channelId === $scope.channels.current.id;
+          if (!belongsToCurrentChannel && !message.isFromMe()) {
+            incrementChannelNotification(message.channelId);
+          }
         }
       }
     });
 
-    $scope.openCreateChannelModal = function () {
+    function handleNotification(channelId) {
+      var channel = channelsService.findChannelById(channelId);
+      if (channel.hideNotifFunction) {
+        channel.hideNotifFunction();
+        channel.hideNotifFunction = null;
+      }
+      sendBrowserNotification(channel);
+    }
+
+    function sendBrowserNotification(channel) {
+      webNotification.showNotification(channel.name, {
+        body: 'شما ' + channel.getLocaleNotifCount() +
+          ' پیام خوانده نشده دارید.',
+        icon: 'favicon.png',
+        onClick: function onNotificationClicked() {
+          channel.hideNotifFunction();
+          channel.hideNotifFunction = null;
+          $window.focus();
+          $state.go('messenger.messages', {
+            slug: channel.getUrlifiedSlug()
+          });
+        },
+      }, function onShow(error, hide) {
+        if (error) {
+          $log.error('Unable to show notification: ' + error.message);
+        } else {
+          channel.hideNotifFunction = hide;
+          setTimeout(function hideNotifFunctionication() {
+            channel.hideNotifFunction = null;
+            hide();
+          }, 5000);
+        }
+      });
+    }
+
+    $scope.openCreateChannelModal = function (name) {
       var modalInstance = $uibModal.open({
         animation: true,
         templateUrl: 'app/components/messenger/channels/channel-create.view.html',
