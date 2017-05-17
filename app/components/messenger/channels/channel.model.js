@@ -9,7 +9,7 @@ app.factory('Channel', [
       this.setValues(name, slug, description, type, id, membersCount,
         notifCount, memberId, liveFileId, teamId);
       this.isTypingMemberIds = [];
-      this.hideNotif = null;
+      this.hideNotifFunction = null;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,

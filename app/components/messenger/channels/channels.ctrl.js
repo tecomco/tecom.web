@@ -1,15 +1,14 @@
 'use strict';
 
 app.controller('channelsController', [
-  '$rootScope', '$scope', '$state', '$uibModal', 'channelsService',
-  'webNotification', 'textUtil',
-  function ($rootScope, $scope, $state, $uibModal, channelsService,
-    webNotification, textUtil) {
+  '$rootScope', '$scope', '$window', '$state', '$uibModal','channelsService',
+  'webNotification', 'textUtil', '$log',
+  function ($rootScope, $scope, $window, $state, $uibModal, channelsService,
+    webNotification, textUtil, $log) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
     $scope.channels.directs = [];
-
     $scope.$on('channels:updated', function () {
       updateChannels();
       updateFavicon();
@@ -30,36 +29,40 @@ app.controller('channelsController', [
           incrementChannelNotification(message.channelId);
         }
       }
-      var channel = channelsService.findChannelById(message.channelId);
-      if (channel.hideNotif) {
-        channel.hideNotif();
-        channel.hideNotif = null;
-      }
       if (!$rootScope.isTabFocused)
-        notification(channel);
-
+        handleNotification(message.channelId);
     });
 
-    function notification(channel) {
+    function handleNotification(channelId) {
+      var channel = channelsService.findChannelById(channelId);
+      if (channel.hideNotifFunction) {
+        channel.hideNotifFunction();
+        channel.hideNotifFunction = null;
+      }
+      sendBrowserNotification(channel);
+    }
+
+    function sendBrowserNotification(channel) {
       webNotification.showNotification(channel.name, {
-        body: 'شما ' + channel.getLocaleNotifCount() + ' پیام خوانده نشده دارید',
+        body: 'شما ' + channel.getLocaleNotifCount() +
+          ' پیام خوانده نشده دارید',
         icon: 'favicon.png',
         onClick: function onNotificationClicked() {
-          channel.hideNotif();
-          channel.hideNotif = null;
-          window.focus();
+          channel.hideNotifFunction();
+          channel.hideNotifFunction = null;
+          $window.focus();
           $state.go('messenger.messages', {
             slug: channel.getUrlifiedSlug()
           });
         },
       }, function onShow(error, hide) {
         if (error) {
-          window.alert('Unable to show notification: ' + error.message);
+          $log.error('Unable to show notification: ' + error.message);
         } else {
-          channel.hideNotif = hide;
-          setTimeout(function hideNotification() {
-            channel.hideNotif = null;
-            hide(); //manually close the notification (you can skip this if you use the autoClose option)
+          channel.hideNotifFunction = hide;
+          setTimeout(function hideNotifFunctionication() {
+            channel.hideNotifFunction = null;
+            hide();
           }, 5000);
         }
       });

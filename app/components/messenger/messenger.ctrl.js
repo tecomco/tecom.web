@@ -18,6 +18,8 @@ app.controller('MessengerCtrl', [
       modalInstance.result.then(function () {}, function () {});
     };
 
+    initialize();
+
     $scope.$on('view:state:changed', function (event, state) {
       $scope.activeFile = (state === 'noFile') ? false : true;
     });
@@ -44,6 +46,18 @@ app.controller('MessengerCtrl', [
         });
     };
 
+    $scope.setNotificationPermission = function () {
+      if($window.Notification.permission === 'default')
+      $window.Notification.requestPermission();
+      else if($window.Notification.permission === 'denied')
+      $window.Notification.requestPermission();
+      // TODO:create modal for instruction to reenable this boi
+    };
+
+    $scope.shouldShowNotificationPermission = function () {
+      return $window.Notification.permission !== 'granted';
+    };
+
     angular.element($window)
       .bind('focus', function () {
         $rootScope.isTabFocused = true;
@@ -53,5 +67,8 @@ app.controller('MessengerCtrl', [
         $rootScope.$broadcast('tab:focus:changed');
       });
 
+      function initialize () {
+        $window.Notification.requestPermission();
+      }
   }
 ]);

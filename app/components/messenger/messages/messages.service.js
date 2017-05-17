@@ -14,13 +14,10 @@ app.service('messagesService', [
      */
 
     socket.on('message:send', function (data) {
-      // data.body = message.generateMessageWellFormedText(data.body);
       var message = new Message(data.body, data.type, data.senderId,
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
-      // console.log(message.body);
       message.save();
-      // Notification.requestPermission()
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
