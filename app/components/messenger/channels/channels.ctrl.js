@@ -49,7 +49,7 @@ app.controller('channelsController', [
     function sendBrowserNotification(channel) {
       webNotification.showNotification(channel.name, {
         body: 'شما ' + channel.getLocaleNotifCount() +
-          ' پیام خوانده نشده دارید',
+          ' پیام خوانده نشده دارید.',
         icon: 'favicon.png',
         onClick: function onNotificationClicked() {
           channel.hideNotifFunction();

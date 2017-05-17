@@ -217,9 +217,8 @@ app.controller('messagesController', [
 
     $scope.$on('tab:focus:changed', function () {
       if ($rootScope.isTabFocused)
-      seenLastUnSeenMessage();
+        seenLastUnSeenMessage();
     });
-
 
   }
 ]);
