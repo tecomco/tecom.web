@@ -18,15 +18,11 @@ app.factory('textUtil', function () {
     var urlRegex =
       /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#\?&//=]*)?/gi;
     return text.replace(urlRegex, function (url) {
-      // if (notBeCodedUrl(url, text)) {
       if (validUrl(url))
         return '<a href="' + url + '" target="_blank">' + url +
           '</a>';
       else
         return url;
-      // }
-      // else
-      //   return url;
     });
   }
 
@@ -36,7 +32,7 @@ app.factory('textUtil', function () {
     ];
     url = url.split('.');
     url = url[url.length - 1];
-    for (var i = 0; i < 18; i++) {
+    for (var i = 0; i < tld.length; i++) {
       if (url.substring(0, tld[i].length) === tld[i])
         return true;
     }
@@ -44,12 +40,8 @@ app.factory('textUtil', function () {
   }
 
   function codify(text) {
-    var backtickRegex = /`.*`/g;
-    text = text.replace(backtickRegex, function (code) {
-      return '<code class="msg-inline-code">' + code +
+      return '<code class="msg-inline-code">' + text +
         '</code>';
-    });
-    return text.replace(/`/g, '');
   }
 
   function directionify(text) {
