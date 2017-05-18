@@ -23,9 +23,7 @@ app.controller('channelsController', [
       var channel = channelsService.findChannelById(message.channelId);
       if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
-        if (channel.isCurrentMemberPublicChannelMember() && CurrentMember.member
-          .notificationPermission)
-          handleNotification(channel);
+        handleNotification(channel);
       } else {
         if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
@@ -44,7 +42,9 @@ app.controller('channelsController', [
         channel.hideNotifFunction();
         channel.hideNotifFunction = null;
       }
-      sendBrowserNotification(channel);
+      if (channel.isCurrentMemberPublicChannelMember() && !CurrentMember.member
+        .dontDisturbMode)
+        sendBrowserNotification(channel);
     }
 
     function sendBrowserNotification(channel) {
@@ -81,13 +81,6 @@ app.controller('channelsController', [
       });
       modalInstance.result.then(function () {}, function () {});
     };
-
-    // $scope.isCurrentMemberPublicChannelMember = function (name) {
-    //   if ($scope.channel.isPublic())
-    //   return $scope.channel.isCurrentMemberChannelMember;
-    //   else
-    //   return true;
-    // };
 
     function validateUrlChannel() {
       if (!$scope.channels.current) {

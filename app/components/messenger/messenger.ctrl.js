@@ -5,7 +5,7 @@ app.controller('MessengerCtrl', [
   'CurrentMember',
   function ($rootScope, $scope, $window, $uibModal, AuthService,
     CurrentMember) {
-    $scope.notifCheckBox = CurrentMember.member.notificationPermission
+    $scope.dontDisturbMode = CurrentMember.member.dontDisturbMode;
     $rootScope.isTabFocused = true;
     $scope.activeFile = false;
     $scope.isAdmin = CurrentMember.member.isAdmin;
@@ -45,8 +45,8 @@ app.controller('MessengerCtrl', [
       }
     };
 
-    $scope.saveNotifPermission = function () {
-      CurrentMember.member.notificationPermission = $scope.notifCheckBox ;
+    $scope.toggleDontDisturbMode = function () {
+      CurrentMember.member.dontDisturbMode = $scope.dontDisturbMode;
     };
 
     $scope.logout = function () {
@@ -57,10 +57,10 @@ app.controller('MessengerCtrl', [
     };
 
     $scope.setNotificationPermission = function () {
-      if($window.Notification.permission === 'default')
-      $window.Notification.requestPermission();
-      else if($window.Notification.permission === 'denied')
-      $window.Notification.requestPermission();
+      if ($window.Notification.permission === 'default')
+        $window.Notification.requestPermission();
+      else if ($window.Notification.permission === 'denied')
+        $window.Notification.requestPermission();
       // TODO:create modal for instruction to reenable this boi
     };
 
@@ -77,8 +77,8 @@ app.controller('MessengerCtrl', [
         $rootScope.$broadcast('tab:focus:changed');
       });
 
-      function initialize () {
-        $window.Notification.requestPermission();
-      }
+    function initialize() {
+      $window.Notification.requestPermission();
+    }
   }
 ]);

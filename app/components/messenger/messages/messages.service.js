@@ -18,14 +18,13 @@ app.service('messagesService', [
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
       message.save();
-      if (message.type === Message.TYPE.NOTIF.USER_ADDED) {
+      if (message.type === Message.TYPE.NOTIF) {
         var channel = channelsService.findChannelById(message.channelId);
-        channel.membersCount = channel.membersCount + message.additionalData
+        if (message.type === Message.TYPE.NOTIF.USER_ADDED)
+          channel.membersCount = channel.membersCount + message.additionalData
           .length;
-      }
-      if (message.type === Message.TYPE.NOTIF.USER_REMOVED) {
-        var channel = channelsService.findChannelById(message.channelId);
-        channel.membersCount--;
+        else if (message.type === Message.TYPE.NOTIF.USER_REMOVED)
+          channel.membersCount--;
       }
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,

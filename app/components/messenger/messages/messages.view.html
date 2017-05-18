@@ -55,7 +55,7 @@
     </div>
     <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && !channel.isCurrentMemberPublicChannelMember()" class="input-holder">
       <label>شما اولدوم نیستید!</label>
-      <button class="btn" ng-click="JoinPublicChannel()">عضو شو</button>
+      <button class="btn" ng-click="joinPublicChannel()">عضو شو</button>
     </div>
     <div ng-show="!channel.active" class="input-holder">
       <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>
