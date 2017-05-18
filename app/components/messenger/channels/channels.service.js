@@ -38,6 +38,8 @@ app.service('channelsService', [
       var channel = findChannelById(result.channel.id);
       var isChannelSelected = channel.isSelected();
       channel.updateFromJson(result.channel);
+      if (channel.isPublic())
+      channel.isRemoved = false;
       if (isChannelSelected) {
         $state.go('messenger.messages', {
           slug: channel.slug
@@ -47,6 +49,10 @@ app.service('channelsService', [
     });
 
     socket.on('channel:members:add', function (result) {
+      if (result.channel.type === Channel.TYPE.PUBLIC) {
+        var channel = findChannelById(result.channel.id);
+        channel.isCurrentMemberChannelMember = true;
+      }
       $log.info('add member:', result);
       if (result.channel.type === Channel.TYPE.PRIVATE) {
         createAndPushChannel(result.channel);
@@ -55,6 +61,10 @@ app.service('channelsService', [
     });
 
     socket.on('channel:members:remove', function (result) {
+      if (result.channel.type === Channel.TYPE.PUBLIC) {
+        var channel = findChannelById(result.channel.id);
+        channel.isCurrentMemberChannelMember = false;
+        }
       if (result.channel.type === Channel.TYPE.PRIVATE) {
         var channel = findChannelById(result.channel.id);
         channel.setIsRemoved();
@@ -118,7 +128,7 @@ app.service('channelsService', [
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
-        data.liveFileId, data.teamId);
+        data.liveFileId, data.teamId, data.isCurrentMemberChannelMember);
       if (channel.isDirect() && channel.isDirectExist() &&
         !CurrentMember.member.isTecomBot()) {
         channel.changeNameAndSlugFromId().then(function () {
@@ -323,7 +333,7 @@ app.service('channelsService', [
 
     function anyChannelHasUnread() {
       for (var i = 0; i < self.channels.length; i++) {
-        if (self.channels[i].hasUnread()) {
+        if (self.channels[i].hasUnread() && self.channels[i].isCurrentMemberPublicChannelMember()) {
           return true;
         }
       }

@@ -2,10 +2,9 @@
 
 app.controller('channelsController', [
   '$rootScope', '$scope', '$window', '$state', '$uibModal',
-  'channelsService',
-  'webNotification', 'textUtil', '$log',
+  'channelsService', 'webNotification', 'textUtil', '$log', 'CurrentMember',
   function ($rootScope, $scope, $window, $state, $uibModal, channelsService,
-    webNotification, textUtil, $log) {
+    webNotification, textUtil, $log, CurrentMember) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
@@ -21,9 +20,12 @@ app.controller('channelsController', [
     });
 
     $scope.$on('message', function (event, message) {
+      var channel = channelsService.findChannelById(message.channelId);
       if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
-        handleNotification(message.channelId);
+        if (channel.isCurrentMemberPublicChannelMember() && CurrentMember.member
+          .notificationPermission)
+          handleNotification(channel);
       } else {
         if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
@@ -37,8 +39,7 @@ app.controller('channelsController', [
       }
     });
 
-    function handleNotification(channelId) {
-      var channel = channelsService.findChannelById(channelId);
+    function handleNotification(channel) {
       if (channel.hideNotifFunction) {
         channel.hideNotifFunction();
         channel.hideNotifFunction = null;
@@ -80,6 +81,13 @@ app.controller('channelsController', [
       });
       modalInstance.result.then(function () {}, function () {});
     };
+
+    // $scope.isCurrentMemberPublicChannelMember = function (name) {
+    //   if ($scope.channel.isPublic())
+    //   return $scope.channel.isCurrentMemberChannelMember;
+    //   else
+    //   return true;
+    // };
 
     function validateUrlChannel() {
       if (!$scope.channels.current) {

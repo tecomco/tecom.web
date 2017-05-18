@@ -5,6 +5,7 @@ app.controller('channelDetailsController', [
   'ArrayUtil', 'Channel', 'ChannelMemberItem', 'CurrentMember', 'Team',
   function ($scope, $uibModalInstance, $log, channelsService,
             ArrayUtil, Channel, ChannelMemberItem, CurrentMember, Team) {
+
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
@@ -108,7 +109,6 @@ app.controller('channelDetailsController', [
         .then(function () {
           channelMember.removeChannelMemberId();
           $log.info('Member Removed from Channel');
-          $scope.channel.membersCount = $scope.channel.membersCount - 1;
         }).catch(function (message) {
         $log.error('Error Removing member from channel:', message);
       });
@@ -137,8 +137,6 @@ app.controller('channelDetailsController', [
       channelsService.addMembersToChannel(teamMemberIds, $scope.channel.id)
         .then(function (channelMembersData) {
           setAddedMembersChannelIds(channelMembersData);
-          $scope.channel.membersCount =
-            $scope.channel.membersCount + teamMemberIds.length;
         })
         .catch(function () {
           $scope.serverError = true;
