@@ -17,6 +17,14 @@
           <li ng-click="setNotificationPermission()" ng-show="shouldShowNotificationPermission()">
             <a><i class="fa fa-bell"></i>درخواست دسترسی اعلان‌ها</a>
           </li>
+          <li>
+            <i class="fa fa-bell"></i>
+            اعلان
+            <input type="checkbox" id="selectCheckbox" ng-model="notifCheckBox" ng-change="saveNotifPermission()"/>
+            <div class="checkbox-stat">
+              <i class="fa fa-check"></i>
+            </div>
+          </li>
           <li ng-click="logout()">
             <a><i class="fa fa-sign-out"></i>خروج</a>
           </li>

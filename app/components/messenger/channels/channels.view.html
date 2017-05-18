@@ -12,7 +12,7 @@
         <a ui-sref="messenger.messages({slug: channel.getUrlifiedSlug()})">
           <i ng-class="channel.getIconClass()"></i>
           <span class="channel-name">{{channel.name}}</span>
-          <span ng-show="channel.hasUnread()" class="badge">{{channel.getLocaleNotifCount()}}</span>
+          <span ng-show="channel.hasUnread()" ng-class="channel.getNotifCountClass()">{{channel.getLocaleNotifCount()}}</span>
         </a>
       </li>
     </ul>
@@ -53,7 +53,7 @@
             </div>
             <div class="g-members">
               <a ng-repeat="teamMember in $ctrl.teamMembers | orderBy : 'user.username' | filter : {username : $ctrl.searchBox}" class="g-m-one" ng-click="$ctrl.directClick(teamMember)">
-                <img ng-src="static/img/user-def.png"/>
+                <img ng-src="static/img/user-def.png" />
                 <label>@{{teamMember.user.username}}</label>
               </a>
             </div>

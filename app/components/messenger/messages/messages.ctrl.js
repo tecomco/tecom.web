@@ -3,10 +3,10 @@
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Upload', 'messagesService', 'channelsService', 'filesService', '$q',
-  'ArrayUtil', 'textUtil',
+  'ArrayUtil', 'textUtil','CurrentMember',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Upload, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil
+    ArrayUtil, textUtil, CurrentMember
   ) {
 
     var self = this;
@@ -142,6 +142,11 @@ app.controller('messagesController', [
     $scope.removeAndCloseChannel = function (channel) {
       channelsService.removeChannel(channel.id);
       $state.go('messenger.home');
+    };
+
+    $scope.JoinPublicChannel = function () {
+      channelsService.addMembersToChannel([CurrentMember.member.id],$scope.channel.id);
+      $scope.channel.isCurrentMemberChannelMember = true ;
     };
 
     function initialize() {

@@ -5,7 +5,8 @@ app.controller('MessengerCtrl', [
   'CurrentMember',
   function ($rootScope, $scope, $window, $uibModal, AuthService,
     CurrentMember) {
-
+    $scope.notifCheckBox = CurrentMember.member.notificationPermission
+    $rootScope.isTabFocused = true;
     $scope.activeFile = false;
     $scope.isAdmin = CurrentMember.member.isAdmin;
     $scope.openUserProfileModal = function () {
@@ -42,6 +43,10 @@ app.controller('MessengerCtrl', [
         else
           return 'col-sm-4 col-lg- no-padding';
       }
+    };
+
+    $scope.saveNotifPermission = function () {
+      CurrentMember.member.notificationPermission = $scope.notifCheckBox ;
     };
 
     $scope.logout = function () {
