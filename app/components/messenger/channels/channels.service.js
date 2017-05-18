@@ -38,8 +38,6 @@ app.service('channelsService', [
       var channel = findChannelById(result.channel.id);
       var isChannelSelected = channel.isSelected();
       channel.updateFromJson(result.channel);
-      if (channel.isPublic())
-      channel.isRemoved = false;
       if (isChannelSelected) {
         $state.go('messenger.messages', {
           slug: channel.slug
@@ -49,26 +47,23 @@ app.service('channelsService', [
     });
 
     socket.on('channel:members:add', function (result) {
-      if (result.channel.type === Channel.TYPE.PUBLIC) {
-        var channel = findChannelById(result.channel.id);
-        channel.isCurrentMemberChannelMember = true;
-      }
       $log.info('add member:', result);
-      if (result.channel.type === Channel.TYPE.PRIVATE) {
+      var channel = findChannelById(result.channel.id);
+      if (result.channel.type === Channel.TYPE.PUBLIC)
+        channel.isCurrentMemberChannelMember = true;
+      else if (result.channel.type === Channel.TYPE.PRIVATE) {
         createAndPushChannel(result.channel);
-        $rootScope.$broadcast('channels:updated');
+      $rootScope.$broadcast('channels:updated');
       }
     });
 
     socket.on('channel:members:remove', function (result) {
-      if (result.channel.type === Channel.TYPE.PUBLIC) {
-        var channel = findChannelById(result.channel.id);
+      var channel = findChannelById(result.channel.id);
+      if (result.channel.type === Channel.TYPE.PUBLIC)
         channel.isCurrentMemberChannelMember = false;
-        }
-      if (result.channel.type === Channel.TYPE.PRIVATE) {
-        var channel = findChannelById(result.channel.id);
+      else if (result.channel.type === Channel.TYPE.PRIVATE) {
         channel.setIsRemoved();
-        $rootScope.$broadcast('channels:updated');
+      $rootScope.$broadcast('channels:updated');
       }
     });
 

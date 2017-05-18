@@ -146,7 +146,7 @@ app.controller('messagesController', [
       $state.go('messenger.home');
     };
 
-    $scope.JoinPublicChannel = function () {
+    $scope.joinPublicChannel = function () {
       channelsService.addMembersToChannel([CurrentMember.member.id],$scope.channel.id);
       $scope.channel.isCurrentMemberChannelMember = true ;
     };
