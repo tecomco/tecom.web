@@ -33,6 +33,9 @@ app.factory('Message', [
     };
 
     Message.prototype.getUsername = function () {
+      if (CurrentMember.member.isTecomBot()) {
+        return '';
+      }
       var username = Team.getUsernameByMemberId(this.senderId);
       if (!this.isNotif() && username === '') {
 
