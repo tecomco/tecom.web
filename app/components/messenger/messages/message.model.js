@@ -238,18 +238,8 @@ app.factory('Message', [
     };
 
     Message.generateMessageWellFormedText = function (text) {
-      var textParts = text.split('`');
-      var wellFormedText = '';
-      var flagCodifyOrUrlify = true;
-      for (var i = 0; i < textParts.length - 1; i++) {
-        if (flagCodifyOrUrlify === true)
-          wellFormedText += textUtil.urlify(textParts[i]);
-        else
-          wellFormedText += textUtil.codify(textParts[i]);
-        flagCodifyOrUrlify = !flagCodifyOrUrlify;
-      }
-      wellFormedText += textUtil.urlify(textParts[textParts.length-1]);
-      wellFormedText = textUtil.directionify(wellFormedText);
+      var wellFormedText = textUtil.htmlToPlaintext(text);
+      wellFormedText = textUtil.directionifyAndUrlifyOrCodify(wellFormedText);
       // wellFormedText = textUtil.hashtagify(wellFormedText);
       return wellFormedText;
     };
