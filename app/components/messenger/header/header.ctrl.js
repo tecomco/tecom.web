@@ -13,7 +13,7 @@ app.controller('headerController',
       $scope.openChannelDetailsModal = function () {
         if ($scope.channel) {
           var modalInstance = $uibModal.open({
-            templateUrl: 'app/components/messenger/channels/channel-details.view.html',
+            templateUrl: 'app/components/messenger/channels/channel-details.view.html?v=1.0.0',
             controller: 'channelDetailsController'
           });
         }
