@@ -14,6 +14,25 @@ app.factory('textUtil', function () {
     return isEnglish;
   }
 
+  function directionifyAndUrlifyOrCodify(text) {
+    var wellFormedText = '';
+    var isUrlifyTurn = true;
+    var temp;
+    var textParts = text.split('`');
+    for (var i = 0; i < textParts.length - 1; i++) {
+      if (isUrlifyTurn) {
+        temp = directionify(textParts[i]);
+        wellFormedText += urlify(temp);
+      }
+      else
+        wellFormedText += codify(textParts[i]);
+      isUrlifyTurn = !isUrlifyTurn;
+    }
+    temp = directionify(textParts[textParts.length - 1]);
+    wellFormedText += urlify(temp);
+    return wellFormedText;
+  }
+
   function urlify(text) {
     var urlRegex =
       /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#\?&//=]*)?/gi;
@@ -40,18 +59,20 @@ app.factory('textUtil', function () {
   }
 
   function codify(text) {
-      return '<code class="msg-inline-code">' + text +
-        '</code>';
+    return '<code class="msg-inline-code" dir="ltr">' + text +
+      '</code>';
   }
 
   function directionify(text) {
     var directionRegex = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
     return text.replace(directionRegex, function (englishPart) {
-      if (englishPart.indexOf('<') !== -1 && englishPart.indexOf('`') !== -1) {
-        return '<span style="direction:ltr" dir="ltr">' + englishPart +
-          '</span> ';
-      }
-      return englishPart;
+      if (englishPart === ' ')
+        return englishPart;
+      var hasFirstSpace = englishPart[0] === ' ';
+      var hasLastSpace = englishPart[englishPart.length - 1] === ' ';
+      return (hasFirstSpace ? ' ' : '') +
+        '<span style="direction:ltr" dir="ltr">' + englishPart.trim() +
+        '</span> ' + (hasLastSpace ? ' ' : '');
     });
   }
 
@@ -95,9 +116,7 @@ app.factory('textUtil', function () {
 
   return {
     isEnglish: isEnglish,
-    urlify: urlify,
-    codify: codify,
-    directionify: directionify,
+    directionifyAndUrlifyOrCodify: directionifyAndUrlifyOrCodify,
     hashtagify: hashtagify,
     persianify: persianify,
     htmlToPlaintext: htmlToPlaintext
