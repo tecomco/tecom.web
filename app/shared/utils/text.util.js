@@ -14,22 +14,18 @@ app.factory('textUtil', function () {
     return isEnglish;
   }
 
-  function directionifyAndUrlifyOrCodify(text) {
+  function htmlify(text) {
     var wellFormedText = '';
     var isUrlifyTurn = true;
-    var temp;
     var textParts = text.split('`');
     for (var i = 0; i < textParts.length - 1; i++) {
-      if (isUrlifyTurn) {
-        temp = directionify(textParts[i]);
-        wellFormedText += urlify(temp);
-      }
+      if (isUrlifyTurn)
+        wellFormedText += urlify(directionify(textParts[i]));
       else
         wellFormedText += codify(textParts[i]);
       isUrlifyTurn = !isUrlifyTurn;
     }
-    temp = directionify(textParts[textParts.length - 1]);
-    wellFormedText += urlify(temp);
+    wellFormedText += urlify(directionify(textParts[textParts.length - 1]));
     return wellFormedText;
   }
 
@@ -116,7 +112,7 @@ app.factory('textUtil', function () {
 
   return {
     isEnglish: isEnglish,
-    directionifyAndUrlifyOrCodify: directionifyAndUrlifyOrCodify,
+    htmlify: htmlify,
     hashtagify: hashtagify,
     persianify: persianify,
     htmlToPlaintext: htmlToPlaintext
