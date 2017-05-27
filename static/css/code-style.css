@@ -43,4 +43,5 @@ li.L1,li.L3,li.L5,li.L7,li.L9 { }
   color: rgb(82, 82, 82);
   padding: 2px 4px;
   border-radius: 4px;
+  direction: ltr !important;
 }

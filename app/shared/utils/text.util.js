@@ -14,19 +14,30 @@ app.factory('textUtil', function () {
     return isEnglish;
   }
 
+  function htmlify(text) {
+    var wellFormedText = '';
+    var isUrlifyTurn = true;
+    var textParts = text.split('`');
+    for (var i = 0; i < textParts.length - 1; i++) {
+      if (isUrlifyTurn)
+        wellFormedText += urlify(directionify(textParts[i]));
+      else
+        wellFormedText += codify(textParts[i]);
+      isUrlifyTurn = !isUrlifyTurn;
+    }
+    wellFormedText += urlify(directionify(textParts[textParts.length - 1]));
+    return wellFormedText;
+  }
+
   function urlify(text) {
     var urlRegex =
       /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#\?&//=]*)?/gi;
     return text.replace(urlRegex, function (url) {
-      // if (notBeCodedUrl(url, text)) {
       if (validUrl(url))
         return '<a href="' + url + '" target="_blank">' + url +
           '</a>';
       else
         return url;
-      // }
-      // else
-      //   return url;
     });
   }
 
@@ -36,7 +47,7 @@ app.factory('textUtil', function () {
     ];
     url = url.split('.');
     url = url[url.length - 1];
-    for (var i = 0; i < 18; i++) {
+    for (var i = 0; i < tld.length; i++) {
       if (url.substring(0, tld[i].length) === tld[i])
         return true;
     }
@@ -44,22 +55,20 @@ app.factory('textUtil', function () {
   }
 
   function codify(text) {
-    var backtickRegex = /`.*`/g;
-    text = text.replace(backtickRegex, function (code) {
-      return '<code class="msg-inline-code">' + code +
-        '</code>';
-    });
-    return text.replace(/`/g, '');
+    return '<code class="msg-inline-code" dir="ltr">' + text +
+      '</code>';
   }
 
   function directionify(text) {
     var directionRegex = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
     return text.replace(directionRegex, function (englishPart) {
-      if (englishPart.indexOf('<') !== -1 && englishPart.indexOf('`') !== -1) {
-        return '<span style="direction:ltr" dir="ltr">' + englishPart +
-          '</span> ';
-      }
-      return englishPart;
+      if (englishPart === ' ')
+        return englishPart;
+      var hasFirstSpace = englishPart[0] === ' ';
+      var hasLastSpace = englishPart[englishPart.length - 1] === ' ';
+      return (hasFirstSpace ? ' ' : '') +
+        '<span style="direction:ltr" dir="ltr">' + englishPart.trim() +
+        '</span> ' + (hasLastSpace ? ' ' : '');
     });
   }
 
@@ -103,9 +112,7 @@ app.factory('textUtil', function () {
 
   return {
     isEnglish: isEnglish,
-    urlify: urlify,
-    codify: codify,
-    directionify: directionify,
+    htmlify: htmlify,
     hashtagify: hashtagify,
     persianify: persianify,
     htmlToPlaintext: htmlToPlaintext
