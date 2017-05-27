@@ -8,6 +8,7 @@ app.factory('Member', ['User', function(User) {
     this.isAdmin = isAdmin;
     this.active = active;
     this.user = new User(userId, username, email, image);
+    this.dontDisturbMode = true;
   }
 
   Member.prototype.isTecomBot = function() {

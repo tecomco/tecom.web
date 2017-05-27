@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active" class="input-holder" id="inputHolder">
+    <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && channel.isCurrentMemberPublicChannelMember()" class="input-holder" id="inputHolder">
       <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
         <i class="fa fa-paperclip"></i>
       </a>
@@ -46,12 +46,16 @@
         <i class="zmdi zmdi-mail-send"></i>
       </a>
     </div>
-    <div ng-show="channel.getIsRemoved()" class="input-holder">
+    <div ng-show="channel.getIsRemoved() && !channel.isPublic()" class="input-holder">
       <label>شما از این گروه حذف شدین.</label>
     </div>
     <div ng-show="channel.getIsArchived() && channel.active" class="input-holder">
       <label>این گروه توسط ادمین حذف شده و دیگر به آن دسترسی ندارید.</label>
       <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
+    </div>
+    <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && !channel.isCurrentMemberPublicChannelMember()" class="input-holder">
+      <label>شما در این گروه عمومی عضو نیستید.</label>
+      <button class="btn" ng-click="joinPublicChannel()">همین الان عضو شو!</button>
     </div>
     <div ng-show="!channel.active" class="input-holder">
       <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>

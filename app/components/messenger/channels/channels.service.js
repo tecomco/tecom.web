@@ -48,17 +48,22 @@ app.service('channelsService', [
 
     socket.on('channel:members:add', function (result) {
       $log.info('add member:', result);
-      if (result.channel.type === Channel.TYPE.PRIVATE) {
+      var channel = findChannelById(result.channel.id);
+      if (result.channel.type === Channel.TYPE.PUBLIC)
+        channel.isCurrentMemberChannelMember = true;
+      else if (result.channel.type === Channel.TYPE.PRIVATE) {
         createAndPushChannel(result.channel);
-        $rootScope.$broadcast('channels:updated');
+      $rootScope.$broadcast('channels:updated');
       }
     });
 
     socket.on('channel:members:remove', function (result) {
-      if (result.channel.type === Channel.TYPE.PRIVATE) {
-        var channel = findChannelById(result.channel.id);
+      var channel = findChannelById(result.channel.id);
+      if (result.channel.type === Channel.TYPE.PUBLIC)
+        channel.isCurrentMemberChannelMember = false;
+      else if (result.channel.type === Channel.TYPE.PRIVATE) {
         channel.setIsRemoved();
-        $rootScope.$broadcast('channels:updated');
+      $rootScope.$broadcast('channels:updated');
       }
     });
 
@@ -118,7 +123,7 @@ app.service('channelsService', [
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
-        data.liveFileId, data.teamId);
+        data.liveFileId, data.teamId, data.isCurrentMemberChannelMember);
       if (channel.isDirect() && channel.isDirectExist() &&
         !CurrentMember.member.isTecomBot()) {
         channel.changeNameAndSlugFromId().then(function () {
@@ -323,7 +328,7 @@ app.service('channelsService', [
 
     function anyChannelHasUnread() {
       for (var i = 0; i < self.channels.length; i++) {
-        if (self.channels[i].hasUnread()) {
+        if (self.channels[i].hasUnread() && self.channels[i].isCurrentMemberPublicChannelMember()) {
           return true;
         }
       }
