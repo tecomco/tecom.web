@@ -8,6 +8,16 @@
           <i class="zmdi zmdi-more-vert"></i>
         </a>
         <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
+          <li>
+            <!-- <a> -->
+              <div class="checkbox-holder" style="margin: 10px 15px -15px">
+                <input type="checkbox" ng-model="dontDisturbMode" id="checkboxPublicPrivate" ng-change="toggleDontDisturbMode()" class="ios-toggle" />
+                <label for="checkboxPublicPrivate" class="checkbox-label"></label>
+                <label for="checkboxPublicPrivate"  class="zmdi zmdi-notifications-active checkbox-holder-icon checkbox-holder-left-icon"></label>
+                <label for="checkboxPublicPrivate"  class="zmdi zmdi-notifications-off checkbox-holder-icon checkbox-holder-right-icon"></label>
+              </div>
+            <!-- </a> -->
+          </li>
           <li ng-click="openUserProfileModal()">
             <a><i class="fa fa-user"></i>پروفایل من</a>
           </li>
@@ -16,14 +26,6 @@
           </li>
           <li ng-click="setNotificationPermission()" ng-show="shouldShowNotificationPermission()">
             <a><i class="fa fa-bell"></i>درخواست دسترسی اعلان‌ها</a>
-          </li>
-          <li>
-            <i class="fa fa-bell"></i>
-            خفهههه اولدوم
-            <input type="checkbox" id="selectCheckbox" ng-model="dontDisturbMode" ng-change="toggleDontDisturbMode()"/>
-            <div class="checkbox-stat">
-              <i class="fa fa-check"></i>
-            </div>
           </li>
           <li ng-click="logout()">
             <a><i class="fa fa-sign-out"></i>خروج</a>

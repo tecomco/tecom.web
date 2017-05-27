@@ -54,8 +54,8 @@
       <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
     </div>
     <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && !channel.isCurrentMemberPublicChannelMember()" class="input-holder">
-      <label>شما عضو این گروه عمومی نیستید</label>
-      <button class="btn" ng-click="joinPublicChannel()">همین الان عضو شو</button>
+      <label>شما در این گروه عمومی عضو نیستید.</label>
+      <button class="btn" ng-click="joinPublicChannel()">همین الان عضو شو!</button>
     </div>
     <div ng-show="!channel.active" class="input-holder">
       <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>
