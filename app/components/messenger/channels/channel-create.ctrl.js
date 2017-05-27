@@ -1,8 +1,9 @@
 'use strict';
 
-app.controller('createChannelController', ['$scope', '$uibModalInstance', '$log',
+app.controller('createChannelController', ['$scope', '$uibModalInstance',
+  '$log',
   'channelsService', 'Channel', 'ArrayUtil', 'CurrentMember', 'Team',
-  function($scope, $uibModalInstance, $log, channelsService, Channel,
+  function ($scope, $uibModalInstance, $log, channelsService, Channel,
     ArrayUtil, CurrentMember, Team) {
 
     $scope.forms = {};
@@ -11,7 +12,7 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance', '$log'
     $scope.teamMembers = [];
     var selectedMembers = [];
 
-    var makeSelectedMembersArray = function() {
+    var makeSelectedMembersArray = function () {
       selectedMembers = [];
       selectedMembers.push(CurrentMember.member.id.toString());
       for (var i = 0; i < $scope.teamMembers.length; i++) {
@@ -20,27 +21,30 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance', '$log'
       }
     };
 
-    $scope.formNameCheckEmpty = function(form) {
+    $scope.formNameCheckEmpty = function (form) {
       return ((form.name.$touched || form.$submitted) && (!form.name.$viewValue));
     };
 
-    $scope.formNameCheckMax = function(form) {
+    $scope.formNameCheckMax = function (form) {
       return (form.name.$viewValue && form.name.$invalid);
     };
 
 
-    $scope.closeCreateChannel = function() {
+    $scope.closeCreateChannel = function () {
       $uibModalInstance.close();
+      $scope.teamMembers.forEach(function (member) {
+        member.selected = false;
+      });
     };
 
-    $scope.createChannelSubmit = function() {
+    $scope.createChannelSubmit = function () {
       $scope.newChannel.serverError = false;
       if ($scope.forms.newChannelForm.$valid === true) {
         sendNewChannelData();
       }
     };
 
-    var sendNewChannelData = function() {
+    var sendNewChannelData = function () {
       makeSelectedMembersArray();
       var newChannelType = $scope.newChannel.isPrivate ?
         Channel.TYPE.PRIVATE : Channel.TYPE.PUBLIC;
@@ -53,10 +57,10 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance', '$log'
         team: Team.id
       };
       channelsService.createChannel(newChannelData)
-        .then(function() {
+        .then(function () {
           $scope.closeCreateChannel();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           if (err.indexOf('Duplicate slug in team.') != -1) {
             $log.error('Error Creating new Channel:', err);
             $scope.newChannel.dublicateError = true;
@@ -67,18 +71,19 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance', '$log'
     };
 
     function makeTeamMembersArray() {
-      Team.getActiveMembers().forEach(function(member) {
+      Team.getActiveMembers().forEach(function (member) {
         $scope.teamMembers.push(member);
+        member.selected = false;
       });
       ArrayUtil.removeElementByKeyValue($scope.teamMembers,
         'id', CurrentMember.member.id);
     }
 
-    angular.element(document).ready(function() {
+    angular.element(document).ready(function () {
       initializeNewChannelForm();
     });
 
-    var initializeNewChannelForm = function() {
+    var initializeNewChannelForm = function () {
       $scope.newChannel.name = '';
       $scope.newChannel.description = '';
       $scope.newChannel.isPrivate = false;

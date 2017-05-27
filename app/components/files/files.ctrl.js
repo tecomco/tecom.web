@@ -128,6 +128,7 @@ app.controller('filesController', [
     };
 
     $scope.closeLiveFile = function () {
+      $scope.vm.liveFile.deselectTempLines();
       filesService.killLiveFile($scope.vm.liveFile);
       $scope.vm.liveFile = null;
       broadcastViewState();
