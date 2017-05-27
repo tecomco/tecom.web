@@ -76,7 +76,7 @@ app.controller('channelsController', [
     $scope.openCreateChannelModal = function (name) {
       var modalInstance = $uibModal.open({
         animation: true,
-        templateUrl: 'app/components/messenger/channels/channel-create.view.html',
+        templateUrl: 'app/components/messenger/channels/channel-create.view.htm?v=1.0.0',
         controller: 'createChannelController'
       });
       modalInstance.result.then(function () {}, function () {});
