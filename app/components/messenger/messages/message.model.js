@@ -33,7 +33,7 @@ app.factory('Message', [
     };
 
     Message.prototype.getUsername = function () {
-      if (CurrentMember.member.isTecomBot()) {
+      if (CurrentMember.member.isTecomBot() || this.type === Message.TYPE.LOADING) {
         return '';
       }
       var username = Team.getUsernameByMemberId(this.senderId);
@@ -112,6 +112,11 @@ app.factory('Message', [
         body = 'فایل "' + this.additionalData.fileName + '"، از حالت ' +
           '<span class="live-btn"><label dir="ltr">LIVE</label>' +
           '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
+      } else if(this.type === Message.TYPE.LOADING){
+        body = '<div class="cssload-container" ng-click="getLoadingMessages('
+          + this.additionalData.channelId + ',' + this.additionalData.from + ','
+          + this.additionalData.to + ')">' +
+          '<div class="cssload-speeding-wheel"></div></div>'
       }
       return body;
     };
@@ -188,6 +193,10 @@ app.factory('Message', [
       this._id = _id;
       this.id = Message.generateIntegerId(_id);
       this.datetime = new Date(datetime);
+    };
+
+    Message.prototype.setId = function (id) {
+      this.id = id;
     };
 
     Message.generateIntegerId = function (stringId) {
@@ -271,7 +280,8 @@ app.factory('Message', [
         CHANNEL_CREATED: 5,
         CHANNEL_EDITED: 6,
         FILE_DIED: 7
-      }
+      },
+      LOADING: 8
     };
 
     Message.STATUS_TYPE = {
@@ -279,6 +289,8 @@ app.factory('Message', [
       SENT: 1,
       SEEN: 2
     };
+
+    Message.MAX_PACKET_LENGTH = 16;
 
     return Message;
 

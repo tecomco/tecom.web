@@ -2,12 +2,11 @@
 
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
-  'Upload', 'messagesService', 'channelsService', 'filesService', '$q',
-  'ArrayUtil', 'textUtil',
+  'Upload', 'Message', 'messagesService', 'channelsService', 'filesService', '$q',
+  'ArrayUtil', 'textUtil', 'CurrentMember',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
-    Upload, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil
-  ) {
+            Upload, Message, messagesService, channelsService, filesService, $q,
+            ArrayUtil, textUtil, CurrentMember) {
 
     var self = this;
 
@@ -119,6 +118,16 @@ app.controller('messagesController', [
       }, 0, false);
     }
 
+    function scrollToUnseenMessage() {
+      var channel = channelsService.getCurrentChannel();
+      $timeout(function () {
+        var holder = document.getElementById('messagesHolder');
+        var lastSeenMessage =
+          document.getElementById('message_' + channel.memberLastSeenId);
+        holder.scrollTop = lastSeenMessage.scrollHeight;
+      }, 0, false);
+    }
+
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
@@ -164,11 +173,25 @@ app.controller('messagesController', [
         if (previousMessage) {
           var timeDiff =
             Math.abs(message.datetime.getTime() - previousMessage.datetime
-              .getTime());
+                .getTime());
           var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
           return (diffDays === 0) ? false : true;
         }
       }
+    };
+
+    $scope.getLoadingMessages = function (channelId, from, to) {
+      removeLoadingMessage(from);
+      messagesService.getMessagePacketFromServer(channelId,
+        CurrentMember.member.teamId, from, to).then(function (messages) {
+        messages.forEach(function (message) {
+          console.log(message);
+          if (!ArrayUtil.containsKeyValue($scope.messages, 'id', message.id)) {
+            $scope.messages.push(message);
+          }
+        });
+        console.log('Loading Messages', messages);
+      });
     };
 
     function setCurrentChannel() {
@@ -186,6 +209,8 @@ app.controller('messagesController', [
         .then(function (messages) {
           $scope.messages = messages;
           scrollBottom();
+          //scrollToUnseenMessage();
+          handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
             messagesService.seenLastMessageByChannelId($scope.channel.id);
           }
@@ -202,6 +227,54 @@ app.controller('messagesController', [
 
     function clearMessageInput() {
       $scope.inputMessage = '';
+    }
+
+    function handleLoadingMessages() {
+      var packetStartPoint;
+      var firstDbMessageId = $scope.messages[0].id
+      var lastDbMessageId = $scope.messages[$scope.messages.length - 1].id
+
+      var channel = channelsService.getCurrentChannel();
+      for (var i = 0; i < $scope.messages.length; i++) {
+        if (i !== $scope.messages.length - 1) {
+          if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
+            // generateLoadingMessage(channel.id, $scope.messages[i].id + 1,
+            //   $scope.messages[i + 1].id - 1);
+            console.log('Middle GAP:', $scope.messages[i].id + 1, $scope.messages[i + 1].id - 1);
+          }
+        }
+      }
+
+      packetStartPoint = firstDbMessageId - 1;
+      for (var i = firstDbMessageId-1; i > 0; i--) {
+        if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH-1 || (i === 1))
+        {
+          generateLoadingMessage(channel.id, i, packetStartPoint);
+          console.log('Start GAP:', i, packetStartPoint);
+          packetStartPoint = i - 1;
+        }
+      }
+      packetStartPoint = lastDbMessageId + 1;
+      for (var i = lastDbMessageId + 1; i <= channel.lastMessageId; i++) {
+        if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH-1 ||
+          (i === channel.lastMessageId - 1)) {
+          generateLoadingMessage(channel.id, packetStartPoint, i);
+          console.log('End GAP:', packetStartPoint, i);
+          packetStartPoint = i + 1;
+        }
+      }
+    }
+
+    function generateLoadingMessage(channelId, fromId, toId) {
+      var additionalData = {'channelId': channelId, 'from': fromId, 'to': toId};
+      var loadingMessage = new Message(null, Message.TYPE.LOADING, null, channelId, null, null,
+        additionalData, null, null);
+      loadingMessage.setId(fromId);
+      $scope.messages.push(loadingMessage);
+    }
+
+    function removeLoadingMessage(messageId) {
+      ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
     }
 
     document.getElementById('inputPlaceHolder').focus();

@@ -13,7 +13,7 @@
         <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
       </div>
       <div class="main">
-        <div ng-repeat="message in messages | orderBy : 'datetime'">
+        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}">
           <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
             <label>{{message.getLocaleDate()}}</label>
           </div>

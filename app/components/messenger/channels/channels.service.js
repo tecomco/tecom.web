@@ -89,19 +89,27 @@ app.service('channelsService', [
     }
 
     function getInitialChannels() {
-      socket.emit('channel:init', null, function (results) {
-        self.channels = [];
-        self.initChannelsCount = results.length;
-        if (self.initChannelsCount === 0) {
-          $rootScope.isLoading = false;
-        }
-        results.forEach(function (result) {
-          var channel = createAndPushChannel(result);
-          $rootScope.$emit('channel:new', channel);
+      console.log('getInitialChannels');
+      try {
+        socket.emit('channel:init', null, function (results) {
+          console.log(results);
+          self.channels = [];
+          self.initChannelsCount = results.length;
+          if (self.initChannelsCount === 0) {
+            $rootScope.isLoading = false;
+          }
+          results.forEach(function (result) {
+            var channel = createAndPushChannel(result);
+            console.log('channel:', channel);
+            $rootScope.$emit('channel:new', channel);
+          });
+          $rootScope.$broadcast('channels:updated', 'init');
+          self.initialChannelsGottenForFirstTime = true;
         });
-        $rootScope.$broadcast('channels:updated', 'init');
-        self.initialChannelsGottenForFirstTime = true;
-      });
+      } catch (err) {
+        console.log('err', err);
+      }
+      console.log('finish');
     }
 
     function setChannelLivedFileId(channelId, fileId) {
@@ -116,9 +124,11 @@ app.service('channelsService', [
     }
 
     function createAndPushChannel(data) {
+      console.log('DATA:', data);
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
-        data.liveFileId, data.teamId);
+        data.liveFileId, data.teamId, data.lastSeenMessageId,
+        data.lastMessageDatetime, data.lastMessageId, data.memberLastSeenMessageId);
       if (channel.isDirect() && channel.isDirectExist() &&
         !CurrentMember.member.isTecomBot()) {
         channel.changeNameAndSlugFromId().then(function () {

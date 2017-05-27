@@ -5,27 +5,35 @@ app.factory('Channel', [
   function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team) {
 
     function Channel(name, slug, description, type, id, membersCount,
-                     notifCount, memberId, liveFileId, teamId) {
+                     notifCount, memberId, liveFileId, teamId,
+                     lastSeenId, lastDatetime, lastMessageId, memberLastSeenId) {
       this.setValues(name, slug, description, type, id, membersCount,
-        notifCount, memberId, liveFileId, teamId);
+        notifCount, memberId, liveFileId, teamId, lastSeenId, lastDatetime,
+        lastMessageId, memberLastSeenId);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
                                             membersCount, notifCount, memberId,
-                                            liveFileId, teamId) {
+                                            liveFileId, teamId, lastSeenId,
+                                            lastDatetime, lastMessageId,
+                                            memberLastSeenId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
       this.type = type;
       this.id = id;
       this.membersCount = membersCount;
-      this.notifCount = notifCount || null;
       this.memberId = memberId;
       this.liveFileId = liveFileId;
       this.teamId = teamId;
       this.active = true;
+      this.lastSeenId = lastSeenId;
+      this.lastDatetime = new Date(lastDatetime);
+      this.lastMessageId = lastMessageId;
+      this.memberLastSeenId = memberLastSeenId;
+      this.notifCount = lastMessageId - memberLastSeenId;
     };
 
     Channel.prototype.hasUnread = function () {
@@ -90,12 +98,12 @@ app.factory('Channel', [
 
     Channel.prototype.getIconClass = function () {
       switch (this.type) {
-      case Channel.TYPE.PUBLIC:
-        return 'fa fa-globe';
-      case Channel.TYPE.PRIVATE:
-        return 'fa fa-lock';
-      case Channel.TYPE.DIRECT:
-        return 'fa fa-at';
+        case Channel.TYPE.PUBLIC:
+          return 'fa fa-globe';
+        case Channel.TYPE.PRIVATE:
+          return 'fa fa-lock';
+        case Channel.TYPE.DIRECT:
+          return 'fa fa-at';
       }
     };
 
