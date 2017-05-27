@@ -80,6 +80,7 @@ app.controller('messagesController', [
     };
 
     $scope.sendMessage = function ($event) {
+      console.log('send');
       $event.preventDefault();
       var messageBody = $scope.inputMessage.trim();
       if (!messageBody) return;
