@@ -3,10 +3,10 @@
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Upload', 'messagesService', 'channelsService', 'filesService', '$q',
-  'ArrayUtil', 'textUtil','CurrentMember',
+  'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Upload, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil, CurrentMember
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
 
     var self = this;
@@ -44,12 +44,28 @@ app.controller('messagesController', [
       }
     });
 
+    $scope.$on('percent', function (event, percent) {
+      if (percent === 100)
+        $scope.progress.complete();
+      else
+      $scope.progress.set(percent);
+    });
+
     $scope.$on('file:uploading', function (event, file) {
       $scope.uploadErrNotif = false;
-      var message = messagesService.sendFileAndGetMessage($scope.channel.id,
+      var message = messagesService.sendFileAndGetMessage($scope.channel
+        .id,
         file, file.name);
       $scope.messages.push(message);
       scrollBottom();
+      $timeout(function () {
+        $scope.progress = ngProgressFactory.createInstance();
+        $scope.progress.setColor('#24A772');
+        var parentId = 'file-' + message.fileTimestamp;
+        $scope.progress.setParent(document.getElementById(parentId));
+        $scope.progress.setAbsolute();
+        $scope.progress.start();
+      }, 0, false);
     });
 
     $scope.$on('file:uploadError', function () {
@@ -80,7 +96,6 @@ app.controller('messagesController', [
     };
 
     $scope.sendMessage = function ($event) {
-      console.log('send');
       $event.preventDefault();
       var messageBody = $scope.inputMessage.trim();
       if (!messageBody) return;
@@ -145,8 +160,9 @@ app.controller('messagesController', [
     };
 
     $scope.joinPublicChannel = function () {
-      channelsService.addMembersToChannel([CurrentMember.member.id],$scope.channel.id);
-      $scope.channel.isCurrentMemberChannelMember = true ;
+      channelsService.addMembersToChannel([CurrentMember.member.id],
+        $scope.channel.id);
+      $scope.channel.isCurrentMemberChannelMember = true;
     };
 
     function initialize() {

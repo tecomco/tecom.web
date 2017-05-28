@@ -251,6 +251,7 @@ app.service('messagesService', [
       var message = new Message(null, Message.TYPE.FILE, CurrentMember.member
         .id,
         channelId, null, null, additionalData, null, true);
+      message.fileTimestamp = + new Date();
       Upload.upload({
         url: 'api/v1/files/upload/' + fileName,
         data: {
@@ -276,8 +277,7 @@ app.service('messagesService', [
         console.log('Error status: ' + resp.status);
       }, function (evt) {
         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-        console.log('progress: ' + progressPercentage + '% ' + evt.config
-          .data.file.name);
+        $rootScope.$broadcast('percent',progressPercentage);
       });
       return message;
     }
