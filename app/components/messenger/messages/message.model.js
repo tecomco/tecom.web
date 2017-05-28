@@ -62,8 +62,7 @@ app.factory('Message', [
         body += Message.generateMessageWellFormedText(this.body);
       } else if (this.type === Message.TYPE.FILE) {
         this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
-        var fileNameById = 'file-' + this.fileTimestamp;
-        body = '<div id="' + fileNameById + '" class="ng-scope" dir="rtl">';
+        body = '<div id="' + this.getFileTimestampId() + '" class="ng-scope" dir="rtl">';
         body += '<label class="file-name">' + this.additionalData.name +
           '</label>';
         body +=
@@ -151,6 +150,10 @@ app.factory('Message', [
         return Message.STATUS_TYPE.SEEN;
       }
       return Message.STATUS_TYPE.SENT;
+    };
+
+    Message.prototype.getFileTimestampId = function () {
+      return 'file-' + this.fileTimestamp;
     };
 
     Message.prototype.getStatusIcon = function () {

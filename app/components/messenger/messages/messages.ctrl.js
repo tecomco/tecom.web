@@ -44,28 +44,20 @@ app.controller('messagesController', [
       }
     });
 
-    $scope.$on('percent', function (event, percent) {
+    $scope.$on('file:upload:progress', function (event, percent) {
       if (percent === 100)
-        $scope.progress.complete();
+        self.uploadProgressBar.complete();
       else
-      $scope.progress.set(percent);
+        self.uploadProgressBar.set(percent);
     });
 
     $scope.$on('file:uploading', function (event, file) {
       $scope.uploadErrNotif = false;
       var message = messagesService.sendFileAndGetMessage($scope.channel
-        .id,
-        file, file.name);
+        .id, file, file.name);
       $scope.messages.push(message);
       scrollBottom();
-      $timeout(function () {
-        $scope.progress = ngProgressFactory.createInstance();
-        $scope.progress.setColor('#24A772');
-        var parentId = 'file-' + message.fileTimestamp;
-        $scope.progress.setParent(document.getElementById(parentId));
-        $scope.progress.setAbsolute();
-        $scope.progress.start();
-      }, 0, false);
+      generateUploadProgressBar(message.getFileTimestampId());
     });
 
     $scope.$on('file:uploadError', function () {
@@ -173,6 +165,16 @@ app.controller('messagesController', [
           $scope.inputMessage = '';
         }
       });
+    }
+
+    function generateUploadProgressBar(parentId) {
+      $timeout(function () {
+        self.uploadProgressBar = ngProgressFactory.createInstance();
+        self.uploadProgressBar.setColor('#24A772');
+        self.uploadProgressBar.setParent(document.getElementById(parentId));
+        self.uploadProgressBar.setAbsolute();
+        self.uploadProgressBar.start();
+      }, 0, false);
     }
 
     $scope.isMessageDateInAnotherDay = function (message) {
