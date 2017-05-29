@@ -44,7 +44,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getDescription = function () {
-      return this.description || 'این گروه توضیح ندارد';
+      return this.description || 'این گروه توضیحی ندارد.';
     };
 
     Channel.prototype.shouldSendNotification = function () {

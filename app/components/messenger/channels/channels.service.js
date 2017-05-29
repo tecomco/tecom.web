@@ -199,7 +199,7 @@ app.service('channelsService', [
       return !$rootScope.isLoading;
     }
 
-    function toggleChannelDontDisturbMode(channelId) {
+    function toggleisMuted(channelId) {
       var deferred = $q.defer();
       var data = {
         channelId: channelId
@@ -411,7 +411,7 @@ app.service('channelsService', [
       setCurrentChannelBySlug: setCurrentChannelBySlug,
       getCurrentChannel: getCurrentChannel,
       areChannelsReady: areChannelsReady,
-      toggleChannelDontDisturbMode: toggleChannelDontDisturbMode,
+      toggleisMuted: toggleisMuted,
       createChannel: createChannel,
       sendEditedChannel: sendEditedChannel,
       addMembersToChannel: addMembersToChannel,
