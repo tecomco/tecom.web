@@ -538,6 +538,10 @@ ul.dropdown-menu {
   padding: 4px 7px 2px;
 }
 
+.group-holder ul li a .badge-grey {
+  background: #8e8e8e;
+}
+
 .group-holder ul li a:hover {
   color: rgba(255, 255, 255, 1);
   background: rgba(17, 17, 17, 0.1);
