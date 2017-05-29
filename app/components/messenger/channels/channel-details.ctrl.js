@@ -5,10 +5,10 @@ app.controller('channelDetailsController', [
   'ArrayUtil', 'Channel', 'ChannelMemberItem', 'CurrentMember', 'Team',
   function ($scope, $uibModalInstance, $log, channelsService,
             ArrayUtil, Channel, ChannelMemberItem, CurrentMember, Team) {
-
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
+    $scope.channelDontDisturbMode = $scope.channel.isMuted;
     $scope.isAdmin = CurrentMember.member.isAdmin;
     $scope.details = {};
     $scope.forms = {};
@@ -91,6 +91,11 @@ app.controller('channelDetailsController', [
           }
         });
     }
+
+    $scope.toggleChannelDontDisturbMode = function () {
+      $scope.channel.isMuted = $scope.channelDontDisturbMode;
+      channelsService.toggleChannelDontDisturbMode($scope.channel.id);
+    };
 
     function findChanneMemberItemById(id) {
       var item = ArrayUtil.getElementByKeyValue($scope.channeMemberItems,

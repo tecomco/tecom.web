@@ -6,19 +6,17 @@ app.factory('Channel', [
 
     function Channel(name, slug, description, type, id, membersCount,
       notifCount, memberId, liveFileId, teamId,
-      isCurrentMemberChannelMember) {
+      isCurrentMemberChannelMember, isMuted) {
       this.setValues(name, slug, description, type, id, membersCount,
         notifCount, memberId, liveFileId, teamId,
-        isCurrentMemberChannelMember);
+        isCurrentMemberChannelMember, isMuted);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,
-      id,
-      membersCount, notifCount, memberId,
-      liveFileId, teamId,
-      isCurrentMemberChannelMember) {
+      id, membersCount, notifCount, memberId, liveFileId, teamId,
+      isCurrentMemberChannelMember, isMuted) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -31,6 +29,7 @@ app.factory('Channel', [
       this.teamId = teamId;
       this.active = true;
       this.isCurrentMemberChannelMember = isCurrentMemberChannelMember;
+      this.isMuted = isMuted;
     };
 
     Channel.prototype.hasUnread = function () {
@@ -50,8 +49,7 @@ app.factory('Channel', [
         this.hideNotifFunction = null;
       }
       return (this.isCurrentMemberPublicChannelMember() && !CurrentMember
-        .member
-        .dontDisturbMode)
+        .member.dontDisturbMode && !this.isMuted);
     };
 
     Channel.prototype.updateFromJson = function (json) {

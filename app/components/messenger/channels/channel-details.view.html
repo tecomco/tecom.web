@@ -50,6 +50,13 @@
         <span class="modal-global-err" ng-show="details.serverError">خطا در اتصال به سرور</span>
       </form>
 
+      <div class="checkbox-holder">
+        <input type="checkbox" ng-model="channelDontDisturbMode" id="channelDontDisturbMode" ng-change="toggleChannelDontDisturbMode()" class="ios-toggle" />
+        <label for="channelDontDisturbMode" class="checkbox-label"></label>
+        <label for="channelDontDisturbMode"  class="zmdi zmdi-notifications-active checkbox-holder-icon checkbox-holder-left-icon"></label>
+        <label for="channelDontDisturbMode"  class="zmdi zmdi-notifications-off checkbox-holder-icon checkbox-holder-right-icon"></label>
+      </div>
+
     </div>
     <div class="col-sm-6 modal-left-part">
       <div class="g-title">

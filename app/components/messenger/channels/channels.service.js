@@ -53,7 +53,7 @@ app.service('channelsService', [
         channel.isCurrentMemberChannelMember = true;
       else if (result.channel.type === Channel.TYPE.PRIVATE) {
         createAndPushChannel(result.channel);
-      $rootScope.$broadcast('channels:updated');
+        $rootScope.$broadcast('channels:updated');
       }
     });
 
@@ -63,7 +63,7 @@ app.service('channelsService', [
         channel.isCurrentMemberChannelMember = false;
       else if (result.channel.type === Channel.TYPE.PRIVATE) {
         channel.setIsRemoved();
-      $rootScope.$broadcast('channels:updated');
+        $rootScope.$broadcast('channels:updated');
       }
     });
 
@@ -73,6 +73,12 @@ app.service('channelsService', [
         channel.setIsArchived();
         $rootScope.$broadcast('channels:updated');
       }
+    });
+
+    socket.on('channel:mute:toggle', function (channelId) {
+      var channel = findChannelById(channelId);
+      if (channel)
+        channel.isMuted = !channel.isMuted;
     });
 
     /**
@@ -96,6 +102,7 @@ app.service('channelsService', [
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
         self.channels = [];
+        console.log(results);
         self.initChannelsCount = results.length;
         if (self.initChannelsCount === 0) {
           $rootScope.isLoading = false;
@@ -123,7 +130,8 @@ app.service('channelsService', [
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
-        data.liveFileId, data.teamId, data.isCurrentMemberChannelMember);
+        data.liveFileId, data.teamId, data.isCurrentMemberChannelMember,
+        data.isMuted);
       if (channel.isDirect() && channel.isDirectExist() &&
         !CurrentMember.member.isTecomBot()) {
         channel.changeNameAndSlugFromId().then(function () {
@@ -190,6 +198,22 @@ app.service('channelsService', [
 
     function areChannelsReady() {
       return !$rootScope.isLoading;
+    }
+
+    function toggleChannelDontDisturbMode(channelId) {
+      var deferred = $q.defer();
+      var data = {
+        channelId: channelId
+      };
+      socket.emit('channel:mute:toggle', data, function (res) {
+        if (res.status) {
+          deferred.resolve();
+        } else {
+          deferred.reject(res.message);
+          $log.error('Toggle Channel Disturb Mode failed.', res.message);
+        }
+      });
+      return deferred.promise;
     }
 
     function createChannel(channel) {
@@ -388,6 +412,7 @@ app.service('channelsService', [
       setCurrentChannelBySlug: setCurrentChannelBySlug,
       getCurrentChannel: getCurrentChannel,
       areChannelsReady: areChannelsReady,
+      toggleChannelDontDisturbMode: toggleChannelDontDisturbMode,
       createChannel: createChannel,
       sendEditedChannel: sendEditedChannel,
       addMembersToChannel: addMembersToChannel,
