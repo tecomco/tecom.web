@@ -5,18 +5,20 @@ app.factory('Channel', [
   function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team) {
 
     function Channel(name, slug, description, type, id, membersCount,
-                     notifCount, memberId, liveFileId, teamId,
-                     isCurrentMemberChannelMember) {
+      notifCount, memberId, liveFileId, teamId,
+      isCurrentMemberChannelMember) {
       this.setValues(name, slug, description, type, id, membersCount,
-        notifCount, memberId, liveFileId, teamId, isCurrentMemberChannelMember);
+        notifCount, memberId, liveFileId, teamId,
+        isCurrentMemberChannelMember);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
     }
 
-    Channel.prototype.setValues = function (name, slug, description, type, id,
-                                            membersCount, notifCount, memberId,
-                                            liveFileId, teamId,
-                                            isCurrentMemberChannelMember) {
+    Channel.prototype.setValues = function (name, slug, description, type,
+      id,
+      membersCount, notifCount, memberId,
+      liveFileId, teamId,
+      isCurrentMemberChannelMember) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -40,6 +42,16 @@ app.factory('Channel', [
         return this.isCurrentMemberChannelMember;
       else
         return true;
+    };
+
+    Channel.prototype.shouldSendNotification = function () {
+      if (this.hideNotifFunction) {
+        this.hideNotifFunction();
+        this.hideNotifFunction = null;
+      }
+      return (this.isCurrentMemberPublicChannelMember() && !CurrentMember
+        .member
+        .dontDisturbMode)
     };
 
     Channel.prototype.updateFromJson = function (json) {

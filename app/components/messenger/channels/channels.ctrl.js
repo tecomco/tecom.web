@@ -23,7 +23,8 @@ app.controller('channelsController', [
       var channel = channelsService.findChannelById(message.channelId);
       if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
-        handleNotification(channel);
+        if (channel.shouldSendNotification())
+        sendBrowserNotification(channel);
       } else {
         if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
@@ -36,16 +37,6 @@ app.controller('channelsController', [
         }
       }
     });
-
-    function handleNotification(channel) {
-      if (channel.hideNotifFunction) {
-        channel.hideNotifFunction();
-        channel.hideNotifFunction = null;
-      }
-      if (channel.isCurrentMemberPublicChannelMember() && !CurrentMember.member
-        .dontDisturbMode)
-        sendBrowserNotification(channel);
-    }
 
     function sendBrowserNotification(channel) {
       webNotification.showNotification(channel.name, {
