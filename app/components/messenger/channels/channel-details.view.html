@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="g-details">
-          <input type="text" name="description" class="form-control" ng-model="details.description" ng-maxlength="256" ng-disabled="!editMode" class="input-text" value={{channel.description}} placeholder={{channel.description}}>
+          <input type="text" name="description" class="form-control" ng-model="details.description" ng-maxlength="256" ng-disabled="!editMode" class="input-text" placeholder="{{editMode ? channel.description : channel.getDescription()}}">
           <div ng-messages="forms.detailsForm.description.$error">
             <span class="modal-err" ng-message="maxlength">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
           </div>

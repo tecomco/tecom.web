@@ -102,7 +102,6 @@ app.service('channelsService', [
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
         self.channels = [];
-        console.log(results);
         self.initChannelsCount = results.length;
         if (self.initChannelsCount === 0) {
           $rootScope.isLoading = false;

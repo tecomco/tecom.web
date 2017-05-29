@@ -43,6 +43,10 @@ app.factory('Channel', [
         return true;
     };
 
+    Channel.prototype.getDescription = function () {
+      return this.description || 'این گروه توضیح ندارد';
+    };
+
     Channel.prototype.shouldSendNotification = function () {
       if (this.hideNotifFunction) {
         this.hideNotifFunction();
