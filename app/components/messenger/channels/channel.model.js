@@ -110,7 +110,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getNotifCountClass = function () {
-      return this.isCurrentMemberChannelMember ? 'badge' : 'badge-grey';
+      return this.isCurrentMemberChannelMember ? 'badge' : 'badge badge-grey';
     };
 
     Channel.prototype.getCssClass = function () {
