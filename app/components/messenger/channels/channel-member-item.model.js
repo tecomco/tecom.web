@@ -38,7 +38,7 @@ app.factory('ChannelMemberItem', ['CurrentMember', 'Team',
           return 'selectable';
       }
       else
-        return 'disabled';
+        return '';
     };
 
     ChannelMemberItem.prototype.getImage = function () {

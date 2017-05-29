@@ -7,13 +7,13 @@ app.factory('Message', [
             CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-                     additionalData, about, isPending) {
+                     additionalData, about, isPending, fileTimestamp) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
-        additionalData, about, isPending);
+        additionalData, about, isPending, fileTimestamp);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-                                            _id, datetime, additionalData, about, isPending) {
+                                            _id, datetime, additionalData, about, isPending, fileTimestamp) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -30,6 +30,7 @@ app.factory('Message', [
       if (currentChannel) {
         this.teamId = currentChannel.teamId;
       }
+      this.fileTimestamp = fileTimestamp;
     };
 
     Message.prototype.getUsername = function () {
@@ -61,7 +62,7 @@ app.factory('Message', [
         body += Message.generateMessageWellFormedText(this.body);
       } else if (this.type === Message.TYPE.FILE) {
         this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
-        body = '<div class="ng-scope" dir="rtl">';
+        body = '<div id="' + this.getFileTimestampId() + '" class="ng-scope" dir="rtl">';
         body += '<label class="file-name">' + this.additionalData.name +
           '</label>';
         body +=
@@ -149,6 +150,10 @@ app.factory('Message', [
         return Message.STATUS_TYPE.SEEN;
       }
       return Message.STATUS_TYPE.SENT;
+    };
+
+    Message.prototype.getFileTimestampId = function () {
+      return 'file-' + this.fileTimestamp;
     };
 
     Message.prototype.getStatusIcon = function () {

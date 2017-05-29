@@ -3,10 +3,10 @@
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Upload', 'messagesService', 'channelsService', 'filesService', '$q',
-  'ArrayUtil', 'textUtil',
+  'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Upload, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
 
     var self = this;
@@ -44,12 +44,20 @@ app.controller('messagesController', [
       }
     });
 
+    $scope.$on('file:upload:progress', function (event, percent) {
+      if (percent === 100)
+        self.uploadProgressBar.complete();
+      else
+        self.uploadProgressBar.set(percent);
+    });
+
     $scope.$on('file:uploading', function (event, file) {
       $scope.uploadErrNotif = false;
-      var message = messagesService.sendFileAndGetMessage($scope.channel.id,
-        file, file.name);
+      var message = messagesService.sendFileAndGetMessage($scope.channel
+        .id, file, file.name);
       $scope.messages.push(message);
       scrollBottom();
+      generateUploadProgressBar(message.getFileTimestampId());
     });
 
     $scope.$on('file:uploadError', function () {
@@ -85,7 +93,6 @@ app.controller('messagesController', [
       if (!messageBody) return;
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody);
-      $rootScope.$emit('yes:yes');
       $scope.messages.push(message);
       scrollBottom();
       clearMessageInput();
@@ -144,6 +151,12 @@ app.controller('messagesController', [
       $state.go('messenger.home');
     };
 
+    $scope.joinPublicChannel = function () {
+      channelsService.addMembersToChannel([CurrentMember.member.id],
+        $scope.channel.id);
+      $scope.channel.isCurrentMemberChannelMember = true;
+    };
+
     function initialize() {
       setCurrentChannel().then(function () {
         if ($scope.channel) {
@@ -152,6 +165,16 @@ app.controller('messagesController', [
           $scope.inputMessage = '';
         }
       });
+    }
+
+    function generateUploadProgressBar(parentId) {
+      $timeout(function () {
+        self.uploadProgressBar = ngProgressFactory.createInstance();
+        self.uploadProgressBar.setColor('#24A772');
+        self.uploadProgressBar.setParent(document.getElementById(parentId));
+        self.uploadProgressBar.setAbsolute();
+        self.uploadProgressBar.start();
+      }, 0, false);
     }
 
     $scope.isMessageDateInAnotherDay = function (message) {

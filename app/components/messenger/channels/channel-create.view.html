@@ -17,9 +17,8 @@
           <input type="text" name="description" ng-model="newChannel.description" ng-maxlength="256" placeholder="توضیح گروه">
           <span class="modal-err" ng-show="forms.newChannelForm.description.$invalid">توضیح گروه حداکثر باید شامل ۲۵۶ حرف باشد.</span>
         </div>
-
         <div class="checkbox-holder">
-          <input type="checkbox" ng-model="details.isPrivate" id="checkboxPublicPrivate" class="ios-toggle" checked/>
+          <input type="checkbox" ng-model="newChannel.isPrivate" id="checkboxPublicPrivate" class="ios-toggle" checked/>
           <label for="checkboxPublicPrivate" class="checkbox-label"></label>
           <label for="checkboxPublicPrivate"  class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-left-icon"></label>
           <label for="checkboxPublicPrivate"  class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-right-icon"></label>

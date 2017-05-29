@@ -18,6 +18,14 @@ app.service('messagesService', [
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
       message.save();
+      if (message.type === Message.TYPE.NOTIF) {
+        var channel = channelsService.findChannelById(message.channelId);
+        if (message.type === Message.TYPE.NOTIF.USER_ADDED)
+          channel.membersCount = channel.membersCount + message.additionalData
+          .length;
+        else if (message.type === Message.TYPE.NOTIF.USER_REMOVED)
+          channel.membersCount--;
+      }
       $rootScope.$broadcast('message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
@@ -241,8 +249,8 @@ app.service('messagesService', [
         name: fileName
       };
       var message = new Message(null, Message.TYPE.FILE, CurrentMember.member
-        .id,
-        channelId, null, null, additionalData, null, true);
+        .id, channelId, null, null, additionalData, null, true, +new Date()
+      );
       Upload.upload({
         url: 'api/v1/files/upload/' + fileName,
         data: {
@@ -268,8 +276,8 @@ app.service('messagesService', [
         console.log('Error status: ' + resp.status);
       }, function (evt) {
         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-        console.log('progress: ' + progressPercentage + '% ' + evt.config
-          .data.file.name);
+        $rootScope.$broadcast('file:upload:progress',
+          progressPercentage);
       });
       return message;
     }

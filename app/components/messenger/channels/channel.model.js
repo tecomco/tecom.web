@@ -5,16 +5,18 @@ app.factory('Channel', [
   function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team) {
 
     function Channel(name, slug, description, type, id, membersCount,
-                     notifCount, memberId, liveFileId, teamId) {
+                     notifCount, memberId, liveFileId, teamId,
+                     isCurrentMemberChannelMember) {
       this.setValues(name, slug, description, type, id, membersCount,
-        notifCount, memberId, liveFileId, teamId);
+        notifCount, memberId, liveFileId, teamId, isCurrentMemberChannelMember);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type, id,
                                             membersCount, notifCount, memberId,
-                                            liveFileId, teamId) {
+                                            liveFileId, teamId,
+                                            isCurrentMemberChannelMember) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -26,10 +28,18 @@ app.factory('Channel', [
       this.liveFileId = liveFileId;
       this.teamId = teamId;
       this.active = true;
+      this.isCurrentMemberChannelMember = isCurrentMemberChannelMember;
     };
 
     Channel.prototype.hasUnread = function () {
       return this.notifCount && this.notifCount !== 0;
+    };
+
+    Channel.prototype.isCurrentMemberPublicChannelMember = function () {
+      if (this.isPublic())
+        return this.isCurrentMemberChannelMember;
+      else
+        return true;
     };
 
     Channel.prototype.updateFromJson = function (json) {
@@ -99,12 +109,16 @@ app.factory('Channel', [
       }
     };
 
+    Channel.prototype.getNotifCountClass = function () {
+      return this.isCurrentMemberChannelMember ? 'badge' : 'badge-grey';
+    };
+
     Channel.prototype.getCssClass = function () {
       return this.isSelected() ? 'active' : '';
     };
 
     Channel.prototype.isDirectExist = function () {
-      return this.memberId === undefined;
+      return this.memberId === null;
     };
 
     Channel.prototype.isPrivate = function () {
@@ -171,6 +185,7 @@ app.factory('Channel', [
 
     Channel.prototype.setIsRemoved = function () {
       this.isRemoved = true;
+      this.isCurrentMemberChannelMember = false;
     };
 
     Channel.prototype.getIsRemoved = function () {
