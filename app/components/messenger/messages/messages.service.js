@@ -58,7 +58,7 @@ app.service('messagesService', [
 
     $rootScope.$on('channel:new', function (event, channel) {
       var promise;
-      if (channel.isDirect() && !channel.isDirectExist()) {
+      if (channel.isDirect() && channel.isFakeDirect) {
         var deferred = $q.defer();
         deferred.resolve();
         promise = deferred.promise;

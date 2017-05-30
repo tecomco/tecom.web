@@ -5,17 +5,17 @@ app.factory('Channel', [
   function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount, memberId, liveFileId, teamId,
+      notifCount, memberId, isFakeDirect, liveFileId, teamId,
       isCurrentMemberChannelMember, isMuted) {
       this.setValues(name, slug, description, type, id, membersCount,
-        notifCount, memberId, liveFileId, teamId,
+        notifCount, memberId, isFakeDirect, liveFileId, teamId,
         isCurrentMemberChannelMember, isMuted);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,
-      id, membersCount, notifCount, memberId, liveFileId, teamId,
+      id, membersCount, notifCount, memberId, isFakeDirect, liveFileId, teamId,
       isCurrentMemberChannelMember, isMuted) {
       this.name = name;
       this.slug = slug;
@@ -24,7 +24,9 @@ app.factory('Channel', [
       this.id = id;
       this.membersCount = membersCount;
       this.notifCount = notifCount || null;
-      this.memberId = memberId;
+      if(memberId)
+      this.member = Team.getMemberByMemberId(memberId)
+      this.isFakeDirect = isFakeDirect;
       this.liveFileId = liveFileId;
       this.teamId = teamId;
       this.active = true;
@@ -61,10 +63,6 @@ app.factory('Channel', [
       this.slug = json.slug || null;
       this.description = json.description || null;
       this.type = json.type;
-      this.id = json.id || null;
-      this.membersCount = json.membersCount || null;
-      this.notifCount = json.notifCount || null;
-      this.memberId = json.memberId || null;
     };
 
     Channel.prototype.getLocaleNotifCount = function () {
@@ -131,10 +129,6 @@ app.factory('Channel', [
       return this.isSelected() ? 'active' : '';
     };
 
-    Channel.prototype.isDirectExist = function () {
-      return this.memberId === null;
-    };
-
     Channel.prototype.isPrivate = function () {
       return this.type === Channel.TYPE.PRIVATE;
     };
@@ -179,16 +173,8 @@ app.factory('Channel', [
     Channel.prototype.getChannelData = function () {
       var data = {
         'name': this.name,
-        'slug': this.slug,
         'description': this.description,
         'type': this.type,
-        'id': this.id,
-        'membersCount': this.membersCount,
-        'notifCount': this.notifCount,
-        'memberId': this.memberId,
-        'liveFileId': this.liveFileId,
-        'teamId': this.teamId,
-        'active': this.active,
       };
       return data;
     };

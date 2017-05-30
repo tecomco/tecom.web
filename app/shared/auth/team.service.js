@@ -16,7 +16,8 @@ app.factory('teamService', [
         name: member.user.username,
         slug: member.user.username,
         type: Channel.TYPE.DIRECT,
-        memberId: member.id
+        memberId: member.id,
+        isFakeDirect: true
       });
       $rootScope.$broadcast('channels:updated');
     });

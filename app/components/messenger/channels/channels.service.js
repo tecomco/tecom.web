@@ -128,11 +128,11 @@ app.service('channelsService', [
 
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
-        data.type, data.id, data.membersCount, null, data.memberId,
-        data.liveFileId, data.teamId, data.isCurrentMemberChannelMember,
-        data.isMuted);
-      if (channel.isDirect() && channel.isDirectExist() &&
-        !CurrentMember.member.isTecomBot()) {
+        data.type, data.id, data.membersCount, null,
+        data.memberId, data.isFakeDirect, data.liveFileId, data.teamId,
+        data.isCurrentMemberChannelMember, data.isMuted);
+      if (channel.isDirect() && !channel.isFakeDirect && !CurrentMember.member
+        .isTecomBot()) {
         channel.changeNameAndSlugFromId().then(function () {
           if (!Team.isMemberActiveByUsername(channel.slug)) {
             channel.active = false;
@@ -142,7 +142,7 @@ app.service('channelsService', [
         if (fakeDirect) {
           fakeDirect.setValues(channel.name, channel.slug, channel.description,
             channel.type, channel.id, channel.membersCount, null,
-            channel.memberId, channel.liveFileId);
+            channel.memberId, false, channel.liveFileId);
           return fakeDirect;
         }
       }
@@ -172,8 +172,8 @@ app.service('channelsService', [
         if (!channel) {
           setCurrentChannel(null);
           defer.resolve();
-        } else if (channel.isDirect() && !channel.isDirectExist()) {
-          createDirect(channel.memberId)
+        } else if (channel.isDirect() && channel.isFakeDirect) {
+          createDirect(channel.member.id)
             .then(function () {
               setCurrentChannel(channel);
               defer.resolve();
