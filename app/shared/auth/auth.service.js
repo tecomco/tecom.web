@@ -6,6 +6,7 @@ app.factory('AuthService', [
   '$rootElement',
   function ($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
     CurrentMember, $injector, domainUtil, validationUtil, $rootElement) {
+
     var Team;
     if ($rootElement.attr('ng-app') === 'tecomApp') {
       Team = $injector.get('Team');

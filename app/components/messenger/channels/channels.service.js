@@ -154,7 +154,6 @@ app.service('channelsService', [
           return fakeDirect;
         }
       }
-      console.log(channel);
       self.channels.push(channel);
       return channel;
     }

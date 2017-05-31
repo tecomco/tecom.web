@@ -58,8 +58,7 @@ app.factory('Channel', [
         this.hideNotifFunction = null;
       }
       return (this.isCurrentMemberPublicChannelMember() && !
-        CurrentMember
-        .member.dontDisturbMode && !this.isMuted);
+        CurrentMember.member.dontDisturbMode && !this.isMuted);
     };
 
     Channel.prototype.updateFromJson = function (json) {
@@ -114,7 +113,13 @@ app.factory('Channel', [
       return $stateParams.slug === slug;
     };
 
-    Channel.prototype.getStatusIconClass = function () {
+    Channel.prototype.getIconClass = function () {
+      switch (this.type) {
+      case Channel.TYPE.PUBLIC:
+        return 'fa fa-globe';
+      case Channel.TYPE.PRIVATE:
+        return 'fa fa-lock';
+      case Channel.TYPE.DIRECT:
       if (this.slug === Member.TECOM_BOT.username)
         return 'fa fa-heart-o';
       switch (this.member.status) {
@@ -125,16 +130,6 @@ app.factory('Channel', [
       case Member.STATUS.DEACTIVE:
         return 'fa fa-wheelchair';
       }
-    };
-
-    Channel.prototype.getIconClass = function () {
-      switch (this.type) {
-      case Channel.TYPE.PUBLIC:
-        return 'fa fa-globe';
-      case Channel.TYPE.PRIVATE:
-        return 'fa fa-lock';
-      case Channel.TYPE.DIRECT:
-        return 'fa fa-at';
       }
     };
 

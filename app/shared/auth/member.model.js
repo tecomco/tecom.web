@@ -15,6 +15,10 @@ app.factory('Member', ['User', function (User) {
     return this.id === Member.TECOM_BOT.id;
   };
 
+  Member.prototype.isActive = function () {
+    return this.status !== Member.STATUS.DEACTIVE;
+  };
+
   Member.TECOM_BOT = {
     id: 0,
     username: 'تیک-بات'

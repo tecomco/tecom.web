@@ -80,7 +80,7 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
 
     Team.getActiveMembers = function () {
       return Team.members.filter(function (member) {
-        return member.status !== Member.STATUS.DEACTIVE;
+        return member.isActive();
       });
     };
 
@@ -88,7 +88,7 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
       var member = Team.getMemberByUsername(username);
       if (member.id === Member.TECOM_BOT.id)
         return true;
-      return member.status !== Member.STATUS.DEACTIVE;
+      return member.isActive();
     };
 
     Team.getImageByMemberId = function (memberId) {
