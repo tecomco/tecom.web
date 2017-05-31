@@ -68,15 +68,19 @@ app.service('messagesService', [
       var deferred = $q.defer();
       var allMessages = [];
       getMessagesByChannelId(channel.id).then(function (messages) {
-        var period = [];
-        period = findPeriodOfNeededInitMessages(channel, messages);
-        console.log('channel: ', channel.name, ' period: ', period);
-        getMessagePacketFromServer(channel.id, channel.teamId,
-          period[0], period[1]).then(function (channelMessages) {
+        if (channel.memberLastSeenId) {
+          var period = [];
+          period = findPeriodOfNeededInitMessages(channel, messages);
+          console.log('channel: ', channel.name, ' period: ', period);
+          getMessagePacketFromServer(channel.id, channel.teamId,
+            period[0], period[1]).then(function (channelMessages) {
+            deferred.resolve();
+          }).catch(function (err) {
+            $log.error('Error Getting Initial Messages From Server', err);
+          });
+        }
+        else
           deferred.resolve();
-        }).catch(function (err) {
-          $log.error('Error Getting Initial Messages From Server', err);
-        });
       });
       return deferred.promise;
     }
@@ -100,8 +104,6 @@ app.service('messagesService', [
       var from = Math.max(channel.memberLastSeenId - Message.MAX_PACKET_LENGTH / 4, 1);
       var to = Math.min(channel.memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
         channel.lastMessageId);
-
-      console.log(from, to);
       var inPeriodMessages = messages.filter(function (message) {
         return (message.id > from && message.id < to);
       });
@@ -146,7 +148,7 @@ app.service('messagesService', [
               $log.error('Error Saving Initila Messages To DB', err);
             });
           }
-          else{
+          else {
             deferred.resolve(messagesForView);
           }
         }
@@ -293,7 +295,7 @@ app.service('messagesService', [
               message.datetime);
           });
       }, function (resp) {
-        console.log('Error status: ' + resp.status);
+        $log.error('Error status: ' + resp.status);
       }, function (evt) {
         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
         console.log('progress: ' + progressPercentage + '% ' + evt.config

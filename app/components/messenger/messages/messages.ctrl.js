@@ -2,11 +2,11 @@
 
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
-  'Upload', 'Message', 'messagesService', 'channelsService', 'filesService', '$q',
-  'ArrayUtil', 'textUtil', 'CurrentMember',
+  'Upload', 'Message', 'messagesService', 'channelsService', 'filesService',
+  '$q', 'ArrayUtil', 'textUtil', 'CurrentMember',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
-            Upload, Message, messagesService, channelsService, filesService, $q,
-            ArrayUtil, textUtil, CurrentMember) {
+            Upload, Message, messagesService, channelsService, filesService,
+            $q, ArrayUtil, textUtil, CurrentMember) {
 
     var self = this;
 
@@ -120,12 +120,7 @@ app.controller('messagesController', [
 
     function scrollToUnseenMessage() {
       var channel = channelsService.getCurrentChannel();
-      $timeout(function () {
-        var holder = document.getElementById('messagesHolder');
-        var lastSeenMessage =
-          document.getElementById('message_' + channel.memberLastSeenId);
-        holder.scrollTop = lastSeenMessage.scrollHeight;
-      }, 0, false);
+      scrollToElementById('message_' + channel.memberLastSeenId);
     }
 
     $scope.goLive = function (fileId, fileName) {
@@ -180,7 +175,7 @@ app.controller('messagesController', [
       }
     };
 
-    $scope.getLoadingMessages = function (channelId, from, to) {
+    function getLoadingMessages(channelId, from, to) {
       removeLoadingMessage(from);
       messagesService.getMessagePacketFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
@@ -192,6 +187,15 @@ app.controller('messagesController', [
         });
         console.log('Loading Messages', messages);
       });
+    };
+
+    $scope.isMessageFirstUnread = function (message) {
+      var channel = channelsService.getCurrentChannel();
+      if (message.id === channel.memberLastSeenId + 1 &&
+        message.id !== channel.lastMessageId + 1)
+        return true;
+      else
+        return false;
     };
 
     function setCurrentChannel() {
@@ -209,7 +213,7 @@ app.controller('messagesController', [
         .then(function (messages) {
           $scope.messages = messages;
           scrollBottom();
-          //scrollToUnseenMessage();
+          scrollToUnseenMessage();
           handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
             messagesService.seenLastMessageByChannelId($scope.channel.id);
@@ -231,38 +235,51 @@ app.controller('messagesController', [
 
     function handleLoadingMessages() {
       var packetStartPoint;
-      var firstDbMessageId = $scope.messages[0].id
-      var lastDbMessageId = $scope.messages[$scope.messages.length - 1].id
-
       var channel = channelsService.getCurrentChannel();
-      for (var i = 0; i < $scope.messages.length; i++) {
-        if (i !== $scope.messages.length - 1) {
-          if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
-            // generateLoadingMessage(channel.id, $scope.messages[i].id + 1,
-            //   $scope.messages[i + 1].id - 1);
-            console.log('Middle GAP:', $scope.messages[i].id + 1, $scope.messages[i + 1].id - 1);
+
+      if ($scope.messages.length > 0) {
+        var firstDbMessageId = $scope.messages[0].id
+        var lastDbMessageId = $scope.messages[$scope.messages.length - 1].id
+
+        for (var i = 0; i < $scope.messages.length; i++) {
+          if (i !== $scope.messages.length - 1) {
+            if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
+              generateLoadingMessage(channel.id, $scope.messages[i].id + 1,
+                $scope.messages[i + 1].id - 1);
+              // console.log('Middle GAP:', $scope.messages[i].id + 1, $scope.messages[i + 1].id - 1);
+            }
+          }
+        }
+
+        packetStartPoint = firstDbMessageId - 1;
+        for (var i = firstDbMessageId - 1; i > 0; i--) {
+          if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
+            generateLoadingMessage(channel.id, i, packetStartPoint);
+            // console.log('Start GAP:', i, packetStartPoint);
+            packetStartPoint = i - 1;
+          }
+        }
+        packetStartPoint = lastDbMessageId + 1;
+        for (var i = lastDbMessageId + 1; i <= channel.lastMessageId; i++) {
+          if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH - 1 ||
+            (i === channel.lastMessageId - 1)) {
+            generateLoadingMessage(channel.id, packetStartPoint, i);
+            // console.log('End GAP:', packetStartPoint, i);
+            packetStartPoint = i + 1;
+          }
+        }
+      }
+      else {
+        packetStartPoint = channel.lastMessageId - 1;
+        for (var i = channel.lastMessageId - 1; i > 0; i--) {
+          if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
+            generateLoadingMessage(channel.id, i, packetStartPoint);
+            // console.log('Start GAP:', i, packetStartPoint);
+            packetStartPoint = i - 1;
           }
         }
       }
 
-      packetStartPoint = firstDbMessageId - 1;
-      for (var i = firstDbMessageId-1; i > 0; i--) {
-        if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH-1 || (i === 1))
-        {
-          generateLoadingMessage(channel.id, i, packetStartPoint);
-          console.log('Start GAP:', i, packetStartPoint);
-          packetStartPoint = i - 1;
-        }
-      }
-      packetStartPoint = lastDbMessageId + 1;
-      for (var i = lastDbMessageId + 1; i <= channel.lastMessageId; i++) {
-        if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH-1 ||
-          (i === channel.lastMessageId - 1)) {
-          generateLoadingMessage(channel.id, packetStartPoint, i);
-          console.log('End GAP:', packetStartPoint, i);
-          packetStartPoint = i + 1;
-        }
-      }
     }
 
     function generateLoadingMessage(channelId, fromId, toId) {
@@ -277,7 +294,46 @@ app.controller('messagesController', [
       ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
     }
 
+    $scope.test = function () {
+      console.log('salam');
+    };
+
+    function scrollToElementById(elementId) {
+      $timeout(function () {
+        var holder = document.getElementById('messagesHolder');
+        var element = document.getElementById(elementId);
+        if (element)
+          holder.scrollTop = element.offsetTop - 80;
+      }, 0, false);
+    }
+
+    function elementInViewport(el) {
+      var messageHolder = document.getElementById('messagesHolder');
+      var messagesWindow = document.getElementById('messagesWindow');
+      if (el) {
+        if (el.offsetTop > messageHolder.scrollTop &&
+          el.offsetTop < messageHolder.scrollTop + messagesWindow.scrollHeight)
+          return true;
+        else
+          return false;
+      }
+      return false;
+    }
+
     document.getElementById('inputPlaceHolder').focus();
+
+    angular.element(document.getElementById('messagesHolder'))
+      .bind('scroll', function () {
+        $scope.messages.forEach(function (message) {
+          if (message.type === Message.TYPE.LOADING) {
+            var element = document.getElementById('message_' + message.id)
+            if (elementInViewport(element)) {
+              getLoadingMessages(message.additionalData.channelId,
+                message.additionalData.from, message.additionalData.to);
+            }
+          }
+        });
+      });
 
     document.onkeydown = function (evt) {
       evt = evt || window.event;

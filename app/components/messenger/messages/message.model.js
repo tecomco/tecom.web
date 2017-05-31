@@ -113,9 +113,7 @@ app.factory('Message', [
           '<span class="live-btn"><label dir="ltr">LIVE</label>' +
           '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
       } else if(this.type === Message.TYPE.LOADING){
-        body = '<div class="cssload-container" ng-click="getLoadingMessages('
-          + this.additionalData.channelId + ',' + this.additionalData.from + ','
-          + this.additionalData.to + ')">' +
+        body = '<div class="cssload-container">' +
           '<div class="cssload-speeding-wheel"></div></div>'
       }
       return body;
