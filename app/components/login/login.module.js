@@ -1,13 +1,13 @@
 'use strict';
 
 var app = angular.module('LoginApp', [
-    'ui.router', 'ngStorage', 'angular-jwt', 'ismobile'
+    'ui.router', 'ngStorage', 'angular-jwt', 'ismobile', 'socket',
   ])
   .config(['$locationProvider', function ($locationProvider) {
     $locationProvider.html5Mode(true);
   }])
   .config(['$stateProvider', '$urlRouterProvider', 'isMobileProvider',
-    function ($stateProvider, $urlRouterProvider, isMobile) {
+    function ($stateProvider, $urlRouterProvider, isMobile, socket) {
       $urlRouterProvider.otherwise('/login');
       $stateProvider
         .state('login', {
@@ -98,7 +98,7 @@ var app = angular.module('LoginApp', [
         switch (error) {
         case 'InvalidToken':
           return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
-          case 'UserRemoved':
+        case 'UserRemoved':
           /* jshint -W100 */
           return 'شما توسط یکی از ادمین‌ها از تیم حذف شدید!';
         default:
