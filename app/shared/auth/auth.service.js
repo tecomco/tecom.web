@@ -1,12 +1,16 @@
 'use strict';
 
 app.factory('AuthService', [
-  '$log', '$http', '$q', '$window', '$localStorage', 'jwtHelper', 'ArrayUtil',
-  'CurrentMember', 'Team', 'domainUtil', 'validationUtil',
-  function($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
-    CurrentMember, Team, domainUtil, validationUtil) {
-
-    initialize();
+  '$log', '$http', '$q', '$window', '$localStorage', 'jwtHelper',
+  'ArrayUtil', 'CurrentMember', '$injector', 'domainUtil', 'validationUtil',
+  '$rootElement',
+  function ($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
+    CurrentMember, $injector, domainUtil, validationUtil, $rootElement) {
+    var Team;
+    if ($rootElement.attr('ng-app') === 'tecomApp') {
+      Team = $injector.get('Team');
+      initialize();
+    }
 
     function initialize() {
       var token = $localStorage.token;
@@ -48,7 +52,7 @@ app.factory('AuthService', [
         url: '/api/v1/auth/login/',
         data: data,
         skipAuthorization: true
-      }).then(function(response) {
+      }).then(function (response) {
         var token = response.data.token;
         if (token) {
           persistToken(token);
@@ -56,7 +60,7 @@ app.factory('AuthService', [
         } else {
           defer.reject();
         }
-      }).catch(function(err) {
+      }).catch(function (err) {
         defer.reject(err);
       });
       return defer.promise;
@@ -65,11 +69,11 @@ app.factory('AuthService', [
     function logout() {
       var defer = $q.defer();
       $http.post('/api/v1/auth/logout/')
-        .then(function(res) {
+        .then(function (res) {
           $log.info(res);
           defer.resolve();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           $log.info('Logout error.', err);
           defer.reject();
         });

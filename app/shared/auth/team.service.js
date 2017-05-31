@@ -7,10 +7,9 @@ app.factory('teamService', [
     AuthService, Channel, Member, CurrentMember) {
 
     socket.on('member:new', function (memberData) {
-      memberData.active = true;
-      var member = new Member(memberData.id, memberData.is_admin,
-        memberData.active, memberData.user_id, memberData.username,
-        memberData.email, memberData.image);
+      var member = new Member(memberData.id, memberData.isAdmin,
+        memberData.user_id, memberData.username, memberData.email,
+        memberData.image, Member.STATUS.ONLINE);
       Team.members.push(member);
       channelsService.createAndPushChannel({
         name: member.user.username,
@@ -38,10 +37,15 @@ app.factory('teamService', [
       }
     });
 
+    socket.on('member:status:change', function (data) {
+      var member = Team.getMemberByMemberId(data.memberId);
+      member.status = data.status;
+    });
+
     function deactiveTeamMember(memberId) {
       var member = Team.getMemberByMemberId(memberId);
       if (member)
-        member.active = false;
+        member.status = Member.STATUS.DEACTIVE;
     }
 
     return {

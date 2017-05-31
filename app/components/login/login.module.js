@@ -1,13 +1,13 @@
 'use strict';
 
 var app = angular.module('LoginApp', [
-    'ui.router', 'ngStorage', 'angular-jwt', 'ismobile', 'socket',
+    'ui.router', 'ngStorage', 'angular-jwt', 'ismobile',
   ])
   .config(['$locationProvider', function ($locationProvider) {
     $locationProvider.html5Mode(true);
   }])
   .config(['$stateProvider', '$urlRouterProvider', 'isMobileProvider',
-    function ($stateProvider, $urlRouterProvider, isMobile, socket) {
+    function ($stateProvider, $urlRouterProvider, isMobile) {
       $urlRouterProvider.otherwise('/login');
       $stateProvider
         .state('login', {

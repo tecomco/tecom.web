@@ -2474,3 +2474,11 @@ label {
     transform: rotate(360deg);
   }
 }
+
+.status-online {
+  color: #4fd5ff;
+}
+
+.status-offline {
+  color: #6b6b6b;
+}

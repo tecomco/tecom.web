@@ -30,7 +30,7 @@
     <ul>
       <li ng-repeat="direct in channels.directs | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="direct.getCssClass()">
         <a ui-sref="messenger.messages({slug: direct.getUrlifiedSlug()})">
-          <i ng-class="direct.getIconClass()"></i>
+          <i ng-class="direct.getStatusIconClass()"></i>
           <span class="channel-name">{{direct.name}}</span>
           <span ng-show="direct.hasUnread()" class="badge">{{direct.getLocaleNotifCount()}}</span>
         </a>

@@ -43,8 +43,7 @@ app.factory('Message', [
         /**
          * @todo Please fix this shit boi.
          */
-        $log.error('Empty username problem. Team members:',
-          Team.getTeamMembers());
+        $log.error('Empty username problem. Team members:');
       }
       return username;
     };

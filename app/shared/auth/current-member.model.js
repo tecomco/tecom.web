@@ -6,9 +6,8 @@ app.factory('CurrentMember', ['Member', function (Member) {
 
   CurrentMember.initialize = function (id, isAdmin, userId, username,
     email, image) {
-    CurrentMember.member = new Member(id, isAdmin, true, userId,
-      username,
-      email, image);
+    CurrentMember.member = new Member(id, isAdmin, userId, username,
+      email, image, Member.STATUS.ONLINE);
   };
 
   CurrentMember.exists = function () {

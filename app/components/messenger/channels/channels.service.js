@@ -106,10 +106,19 @@ app.service('channelsService', [
         if (self.initChannelsCount === 0) {
           $rootScope.isLoading = false;
         }
-        results.forEach(function (result) {
-          var channel = createAndPushChannel(result);
-          $rootScope.$emit('channel:new', channel);
-        });
+        if (Team.areMembersReady) {
+          results.forEach(function (result) {
+            var channel = createAndPushChannel(result);
+            $rootScope.$emit('channel:new', channel);
+          });
+        } else {
+          Team.membersPromise.then(function () {
+            results.forEach(function (result) {
+              var channel = createAndPushChannel(result);
+              $rootScope.$emit('channel:new', channel);
+            });
+          });
+        }
         $rootScope.$broadcast('channels:updated', 'init');
         self.initialChannelsGottenForFirstTime = true;
       });
@@ -128,16 +137,15 @@ app.service('channelsService', [
 
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
-        data.type, data.id, data.membersCount, null,
-        data.memberId, data.isFakeDirect, data.liveFileId, data.teamId,
+        data.type, data.id, data.membersCount, null, data.memberId,
+        data.isFakeDirect, data.liveFileId, data.teamId,
         data.isCurrentMemberChannelMember, data.isMuted);
       if (channel.isDirect() && !channel.isFakeDirect && !CurrentMember.member
         .isTecomBot()) {
-        channel.changeNameAndSlugFromId().then(function () {
-          if (!Team.isMemberActiveByUsername(channel.slug)) {
-            channel.active = false;
-          }
-        });
+        channel.changeNameAndSlugFromId();
+        if (!Team.isMemberActiveByUsername(channel.slug)) {
+          channel.active = false;
+        }
         var fakeDirect = findChannelBySlug(channel.slug);
         if (fakeDirect) {
           fakeDirect.setValues(channel.name, channel.slug, channel.description,
@@ -146,6 +154,7 @@ app.service('channelsService', [
           return fakeDirect;
         }
       }
+      console.log(channel);
       self.channels.push(channel);
       return channel;
     }

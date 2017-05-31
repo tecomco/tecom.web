@@ -1,23 +1,29 @@
 'use strict';
 
-app.factory('Member', ['User', function(User) {
+app.factory('Member', ['User', function (User) {
 
-  function Member(teamMemberId, isAdmin, active, userId, username, email,
-    image) {
+  function Member(teamMemberId, isAdmin, userId, username, email,
+    image, status) {
     this.id = teamMemberId;
     this.isAdmin = isAdmin;
-    this.active = active;
     this.user = new User(userId, username, email, image);
     this.dontDisturbMode = true;
+    this.status = status;
   }
 
-  Member.prototype.isTecomBot = function() {
+  Member.prototype.isTecomBot = function () {
     return this.id === Member.TECOM_BOT.id;
   };
 
   Member.TECOM_BOT = {
     id: 0,
     username: 'تیک-بات'
+  };
+
+  Member.STATUS = {
+    OFFLINE: 0,
+    ONLINE: 1,
+    DEACTIVE: 2
   };
 
   return Member;

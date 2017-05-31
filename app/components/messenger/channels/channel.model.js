@@ -2,7 +2,9 @@
 
 app.factory('Channel', [
   '$stateParams', 'textUtil', 'ArrayUtil', '$q', 'CurrentMember', 'Team',
-  function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team) {
+  'Member',
+  function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team,
+    Member) {
 
     function Channel(name, slug, description, type, id, membersCount,
       notifCount, memberId, isFakeDirect, liveFileId, teamId,
@@ -15,8 +17,8 @@ app.factory('Channel', [
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,
-      id, membersCount, notifCount, memberId, isFakeDirect, liveFileId, teamId,
-      isCurrentMemberChannelMember, isMuted) {
+      id, membersCount, notifCount, memberId, isFakeDirect, liveFileId,
+      teamId, isCurrentMemberChannelMember, isMuted) {
       this.name = name;
       this.slug = slug;
       this.description = description;
@@ -24,8 +26,9 @@ app.factory('Channel', [
       this.id = id;
       this.membersCount = membersCount;
       this.notifCount = notifCount || null;
-      if(memberId)
-      this.member = Team.getMemberByMemberId(memberId)
+      if (memberId) {
+        this.member = Team.getMemberByMemberId(memberId);
+      }
       this.isFakeDirect = isFakeDirect;
       this.liveFileId = liveFileId;
       this.teamId = teamId;
@@ -54,7 +57,8 @@ app.factory('Channel', [
         this.hideNotifFunction();
         this.hideNotifFunction = null;
       }
-      return (this.isCurrentMemberPublicChannelMember() && !CurrentMember
+      return (this.isCurrentMemberPublicChannelMember() && !
+        CurrentMember
         .member.dontDisturbMode && !this.isMuted);
     };
 
@@ -110,6 +114,19 @@ app.factory('Channel', [
       return $stateParams.slug === slug;
     };
 
+    Channel.prototype.getStatusIconClass = function () {
+      if (this.slug === Member.TECOM_BOT.username)
+        return 'fa fa-heart-o';
+      switch (this.member.status) {
+      case Member.STATUS.OFFLINE:
+        return 'fa fa-at status-offline';
+      case Member.STATUS.ONLINE:
+        return 'fa fa-at status-online';
+      case Member.STATUS.DEACTIVE:
+        return 'fa fa-wheelchair';
+      }
+    };
+
     Channel.prototype.getIconClass = function () {
       switch (this.type) {
       case Channel.TYPE.PUBLIC:
@@ -122,7 +139,8 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getNotifCountClass = function () {
-      return this.isCurrentMemberChannelMember ? 'badge' : 'badge badge-grey';
+      return this.isCurrentMemberChannelMember ? 'badge' :
+        'badge badge-grey';
     };
 
     Channel.prototype.getCssClass = function () {
@@ -142,7 +160,6 @@ app.factory('Channel', [
     };
 
     Channel.prototype.changeNameAndSlugFromId = function () {
-      var deferred = $q.defer();
       var that = this;
       var ids = [];
       ids.push(parseInt(this.slug.slice(0, this.slug.indexOf(':'))));
@@ -150,18 +167,9 @@ app.factory('Channel', [
         this.slug.length)));
       ids.forEach(function (id) {
         if (id !== CurrentMember.member.id) {
-          if (Team.areMembersReady) {
-            that.setNameAndSlugById(id);
-            deferred.resolve();
-          } else {
-            Team.membersPromise.then(function () {
-              that.setNameAndSlugById(id);
-              deferred.resolve();
-            });
-          }
+          that.setNameAndSlugById(id);
         }
       });
-      return deferred.promise;
     };
 
     Channel.prototype.setNameAndSlugById = function (id) {

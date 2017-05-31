@@ -1,8 +1,8 @@
 'use strict';
 
-app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
-  'Member',
-  function ($http, $q, $log, $localStorage, ArrayUtil, Member) {
+app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
+  'ArrayUtil', 'Member',
+  function ($http, socket, $q, $log, $localStorage, ArrayUtil, Member) {
 
     function Team() {}
 
@@ -19,24 +19,16 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
 
     Team.getTeamMembers = function () {
       var deferred = $q.defer();
-      $http({
-        method: 'GET',
-        url: '/api/v1/teams/' + Team.id + '/members/',
-        headers: {
-          'Authorization': 'JWT ' + $localStorage.token
-        }
-      }).success(function (res) {
+      socket.emit('team:members', null, function (res) {
         res.forEach(function (memberData) {
-          var member = new Member(memberData.id, memberData.is_admin,
-            memberData.active, memberData.user_id, memberData.username,
-            memberData.email, memberData.image);
+          var member = new Member(memberData.id, memberData.isAdmin,
+            memberData.user_id, memberData.username, memberData.email,
+            memberData.image, memberData.status
+          );
           Team.members.push(member);
         });
         Team.areMembersReady = true;
         deferred.resolve(res);
-      }).error(function (err) {
-        $log.error('Getting team members failed.', err);
-        deferred.reject();
       });
       return deferred.promise;
     };
@@ -88,7 +80,7 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
 
     Team.getActiveMembers = function () {
       return Team.members.filter(function (member) {
-        return member.active === true;
+        return member.status !== Member.STATUS.DEACTIVE;
       });
     };
 
@@ -96,7 +88,7 @@ app.factory('Team', ['$http', '$q', '$log', '$localStorage', 'ArrayUtil',
       var member = Team.getMemberByUsername(username);
       if (member.id === Member.TECOM_BOT.id)
         return true;
-      return member.active;
+      return member.status !== Member.STATUS.DEACTIVE;
     };
 
     Team.getImageByMemberId = function (memberId) {
