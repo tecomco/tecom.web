@@ -12,8 +12,8 @@
           <div class="checkbox-holder" ng-show="editMode">
             <input type="checkbox" ng-model="details.isPrivate" id="checkboxPublicPrivate" class="ios-toggle" checked/>
             <label for="checkboxPublicPrivate" class="checkbox-label"></label>
-            <label for="checkboxPublicPrivate"  class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-left-icon"></label>
-            <label for="checkboxPublicPrivate"  class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-right-icon"></label>
+            <label for="checkboxPublicPrivate" class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-left-icon"></label>
+            <label for="checkboxPublicPrivate" class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-right-icon"></label>
           </div>
 
           <input type="text" name="name" class="form-control" ng-model="details.name" ng-maxlength="32" ng-disabled="!editMode" class="input-text title" value={{channel.name}} placeholder={{channel.name}} required>
@@ -53,8 +53,8 @@
       <div class="checkbox-holder">
         <input type="checkbox" ng-model="isMuted" id="isMuted" ng-change="toggleisMuted()" class="ios-toggle" />
         <label for="isMuted" class="checkbox-label"></label>
-        <label for="isMuted"  class="zmdi zmdi-notifications-active checkbox-holder-icon checkbox-holder-left-icon"></label>
-        <label for="isMuted"  class="zmdi zmdi-notifications-off checkbox-holder-icon checkbox-holder-right-icon"></label>
+        <label for="isMuted" class="zmdi zmdi-notifications-active checkbox-holder-icon checkbox-holder-left-icon"></label>
+        <label for="isMuted" class="zmdi zmdi-notifications-off checkbox-holder-icon checkbox-holder-right-icon"></label>
       </div>
 
     </div>
@@ -83,7 +83,7 @@
         <span class="sign sign-lil-top">@</span>
       </div>
       <div class="g-members">
-        <div ng-repeat="channelMemberItem in channeMemberItems | orderBy : 'channelMemberItem.member.user.username' | filter : {username : searchInput}" ng-click="channelMemberItem.click(addMemberMode)">
+        <div ng-repeat="channelMemberItem in channelMemberItems | orderBy : 'channelMemberItem.member.user.username' | filter : {username : searchInput}" ng-click="channelMemberItem.click(addMemberMode)">
           <div class="g-m-one" ng-show="addMemberMode ? true : channelMemberItem.isChannelMember()">
             <div ng-class=channelMemberItem.getCssClass(addMemberMode)>
               <img ng-src="{{channelMemberItem.member.user.image}}" />

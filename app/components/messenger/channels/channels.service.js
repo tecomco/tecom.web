@@ -111,15 +111,16 @@ app.service('channelsService', [
             var channel = createAndPushChannel(result);
             $rootScope.$emit('channel:new', channel);
           });
+          $rootScope.$broadcast('channels:updated', 'init');
         } else {
           Team.membersPromise.then(function () {
             results.forEach(function (result) {
               var channel = createAndPushChannel(result);
               $rootScope.$emit('channel:new', channel);
             });
+            $rootScope.$broadcast('channels:updated', 'init');
           });
         }
-        $rootScope.$broadcast('channels:updated', 'init');
         self.initialChannelsGottenForFirstTime = true;
       });
     }
