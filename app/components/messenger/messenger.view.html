@@ -8,15 +8,15 @@
           <i class="zmdi zmdi-more-vert"></i>
         </a>
         <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
-          <li>
-            <!-- <a> -->
+          <li style="display:block">
+            <!-- <a>
               <div class="checkbox-holder" style="margin: 10px 15px -15px">
                 <input type="checkbox" ng-model="dontDisturbMode" id="dontDisturbMode" ng-change="toggleDontDisturbMode()" class="ios-toggle" />
                 <label for="dontDisturbMode" class="checkbox-label"></label>
                 <label for="dontDisturbMode"  class="zmdi zmdi-notifications-active checkbox-holder-icon checkbox-holder-left-icon"></label>
                 <label for="dontDisturbMode"  class="zmdi zmdi-notifications-off checkbox-holder-icon checkbox-holder-right-icon"></label>
               </div>
-            <!-- </a> -->
+             </a> -->
           </li>
           <li ng-click="openUserProfileModal()">
             <a><i class="fa fa-user"></i>پروفایل من</a>
@@ -31,6 +31,11 @@
             <a><i class="fa fa-sign-out"></i>خروج</a>
           </li>
         </ul>
+        <div class="header-notif">
+          <input type="checkbox" ng-model="dontDisturbMode" id="dontDisturbMode" ng-change="toggleDontDisturbMode()" class="" />
+          <label for="dontDisturbMode" class="zmdi zmdi-notifications-active"></label>
+          <label for="dontDisturbMode" class="zmdi zmdi-notifications-off"></label>
+        </div>
       </div>
       <div class="right-section-main">
         <div ui-view="channels"></div>
