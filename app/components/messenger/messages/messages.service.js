@@ -69,11 +69,10 @@ app.service('messagesService', [
       var allMessages = [];
       getMessagesByChannelId(channel.id).then(function (messages) {
         if (channel.memberLastSeenId) {
-          var period = [];
-          period = findPeriodOfNeededInitMessages(channel, messages);
+          var period = findPeriodOfNeededInitMessages(channel, messages);
           console.log('channel: ', channel.name, ' period: ', period);
           getMessagePacketFromServer(channel.id, channel.teamId,
-            period[0], period[1]).then(function (channelMessages) {
+            period.from, period.to).then(function (channelMessages) {
             deferred.resolve();
           }).catch(function (err) {
             $log.error('Error Getting Initial Messages From Server', err);
@@ -110,15 +109,17 @@ app.service('messagesService', [
       if (inPeriodMessages) {
         inPeriodMessages.forEach(function (inPeriodMessage) {
           if (ArrayUtil.containsKeyValue(messages, 'id', inPeriodMessage.id)) {
-            if (inPeriodMessage.id > from)
+            if (inPeriodMessage.id < from)
               from = inPeriodMessage.id;
-            if (inPeriodMessage.id < to)
+            if (inPeriodMessage.id > to)
               to = inPeriodMessage.id;
           }
         });
       }
-      var period = [from, to];
-      return period;
+      return {
+        'from': from,
+        'to': to
+      };
     }
 
     function getMessagePacketFromServer(channelId, teamId, fromId, toId) {
