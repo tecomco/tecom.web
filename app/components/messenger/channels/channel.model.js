@@ -124,11 +124,11 @@ app.factory('Channel', [
         return 'fa fa-heart-o';
       switch (this.member.status) {
       case Member.STATUS.OFFLINE:
-        return 'fa fa-at status-offline';
+        return 'zmdi zmdi-circle member-status status-offline';
       case Member.STATUS.ONLINE:
-        return 'fa fa-at status-online';
+        return 'zmdi zmdi-circle member-status status-online';
       case Member.STATUS.DEACTIVE:
-        return 'fa fa-wheelchair';
+        return 'zmdi zmdi-circle member-status status-deactive';
       }
       }
     };
