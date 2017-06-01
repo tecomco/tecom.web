@@ -8,7 +8,7 @@
       <div class="t-info">
         <div class="g-members">
           <div ng-repeat="member in teamMembers | orderBy : 'user.username'" class="g-m-one">
-            <img ng-src="{{member.user.image || '/static/img/user-def.png'}}"/>
+            <img ng-src="{{member.user.image}}"/>
             <label>@{{member.user.username}}</label>
             <div ng-hide="isMe(member)" style="float: left">
               <confirm-dialog ng-class="getAdminButtonCSS(member)" class="t-m-btn" message='{{member.isAdmin ? "مطمئنی میخوای \"@" + member.user.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + member.user.username + "\"  ادمین بشه؟"}}'

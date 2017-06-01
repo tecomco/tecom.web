@@ -80,7 +80,6 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
 
     function makeTeamMembersArray() {
       Team.getActiveMembers().forEach(function (member) {
-        member.username = member.user.username;
         $scope.teamMembers.push(member);
         member.selected = false;
       });

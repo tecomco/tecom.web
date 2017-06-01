@@ -32,9 +32,9 @@
           <span class="sign">@</span>
         </div>
         <div class="g-members">
-          <div ng-repeat="teamMember in teamMembers | orderBy : 'user.username' | filter : {username : newChannel.search}" class="g-m-one" ng-click="teamMemberClick(teamMember)">
+          <div ng-repeat="teamMember in teamMembers | orderBy : 'user.username' | filter : {user: {username : newChannel.search}}" class="g-m-one" ng-click="teamMemberClick(teamMember)">
             <div ng-class=getCssClass(teamMember)>
-              <img ng-src="{{teamMember.user.image || '/static/img/user-def.png'}}" />
+              <img ng-src="{{teamMember.user.image}}" />
               <span class="zmdi zmdi-check-circle"></span>
               <label dir="rtl">@{{teamMember.user.username}}</label>
             </div>

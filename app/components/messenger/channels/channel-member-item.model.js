@@ -41,13 +41,6 @@ app.factory('ChannelMemberItem', ['CurrentMember', 'Team',
         return '';
     };
 
-    ChannelMemberItem.prototype.getImage = function () {
-      if (this.member.image)
-        return this.member.image;
-      else
-        return 'static/img/user-def.png';
-    };
-
     ChannelMemberItem.prototype.click = function (addMemberMode) {
       if (addMemberMode)
         this.isSelected = !this.isSelected;
