@@ -43,7 +43,8 @@ app.factory('textUtil', function () {
 
   function validUrl(url) {
     var tld = ['com', 'ir', 'net', 'org', 'biz', 'info', 'name', 'me', 'ws',
-      'us', 'tv', 'gov', 'co', 'edu', 'asia', 'int', 'tel', 'mil'
+      'us', 'tv', 'gov', 'co', 'edu', 'asia', 'int', 'tel', 'mil', 'coop',
+      'io', 'jobs', 'mobi', 'pro'
     ];
     url = url.split('.');
     url = url[url.length - 1];

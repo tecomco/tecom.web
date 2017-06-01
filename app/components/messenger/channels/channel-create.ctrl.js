@@ -32,9 +32,6 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
 
     $scope.closeCreateChannel = function () {
       $uibModalInstance.close();
-      $scope.teamMembers.forEach(function (member) {
-        member.selected = false;
-      });
     };
 
     $scope.createChannelSubmit = function () {
@@ -42,6 +39,17 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
       if ($scope.forms.newChannelForm.$valid === true) {
         sendNewChannelData();
       }
+    };
+
+    $scope.teamMemberClick = function (teamMember) {
+      teamMember.selected = !teamMember.selected;
+    };
+
+    $scope.getCssClass = function (teamMember) {
+      if (teamMember.selected)
+        return 'selected';
+      else
+        return 'selectable';
     };
 
     var sendNewChannelData = function () {
@@ -72,6 +80,7 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
 
     function makeTeamMembersArray() {
       Team.getActiveMembers().forEach(function (member) {
+        member.username = member.user.username;
         $scope.teamMembers.push(member);
         member.selected = false;
       });

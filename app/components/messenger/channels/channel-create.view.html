@@ -20,8 +20,8 @@
         <div class="checkbox-holder">
           <input type="checkbox" ng-model="newChannel.isPrivate" id="checkboxPublicPrivate" class="ios-toggle" checked/>
           <label for="checkboxPublicPrivate" class="checkbox-label"></label>
-          <label for="checkboxPublicPrivate"  class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-left-icon"></label>
-          <label for="checkboxPublicPrivate"  class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-right-icon"></label>
+          <label for="checkboxPublicPrivate" class="zmdi zmdi-globe checkbox-holder-icon checkbox-holder-left-icon"></label>
+          <label for="checkboxPublicPrivate" class="zmdi zmdi-lock checkbox-holder-icon checkbox-holder-right-icon"></label>
         </div>
         <div class="public-private-dsc">
           <span><i class="zmdi zmdi-globe"></i>گروه عمومی</span>
@@ -31,19 +31,16 @@
       <div class="col-sm-6 modal-left-part">
         <h3>اعضای گروه</h3>
         <div class="modal-input search-user-input-holder">
-          <input type="text" name="search" ng-model="newChannel.search" placeholder="جستجو">
+          <input type="text" name="search" class="form-control" ng-model="newChannel.search" placeholder="جستجو">
           <span class="sign">@</span>
         </div>
         <div class="g-members">
-          <div ng-repeat="teamMember in teamMembers | orderBy : 'user.username' | filter : {username : newChannel.search}" class="g-m-one">
-            <img ng-src="{{teamMember.user.image || '/static/img/user-def.png'}}"/>
-            <label dir="rtl">@{{teamMember.user.username}}</label>
-            <label class="ws-checkbox">
-              <input type="checkbox" id="selectCheckbox" ng-model="teamMember.selected"/>
-              <div class="checkbox-stat">
-                <i class="fa fa-check"></i>
-              </div>
-            </label>
+          <div ng-repeat="teamMember in teamMembers | orderBy : 'user.username' | filter : {username : newChannel.search}" class="g-m-one" ng-click="teamMemberClick(teamMember)">
+            <div ng-class=getCssClass(teamMember)>
+              <img ng-src="{{teamMember.user.image || '/static/img/user-def.png'}}" />
+              <span class="zmdi zmdi-check-circle"></span>
+              <label dir="rtl">@{{teamMember.user.username}}</label>
+            </div>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@
           </span>
           <span>رو بزن.</span>
         </div>
-        <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active">
+        <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && channel.isCurrentMemberPublicChannelMember()">
           <a type="file" class="upload-btn" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
             <i class="fa fa-paperclip"></i>
             <span>آپلود فایل</span>
@@ -101,8 +101,7 @@
             <span class="live-btn">
               <i class="fa fa-circle"></i>
               <label dir="ltr">LIVE</label>
-            </span>
-            کن.
+            </span> کن.
           </span>
         </div>
         <pre class="prettyprint linenums-view code-view">
