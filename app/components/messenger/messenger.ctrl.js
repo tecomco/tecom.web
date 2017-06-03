@@ -2,10 +2,10 @@
 
 app.controller('MessengerCtrl', [
   '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
-  'CurrentMember',
+  'CurrentMember', '$localStorage',
   function ($rootScope, $scope, $window, $uibModal, AuthService,
-    CurrentMember) {
-    $scope.dontDisturbMode = CurrentMember.member.dontDisturbMode;
+    CurrentMember, $localStorage) {
+    $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
     $rootScope.isTabFocused = true;
     $scope.activeFile = false;
     $scope.isAdmin = CurrentMember.member.isAdmin;
@@ -46,7 +46,8 @@ app.controller('MessengerCtrl', [
     };
 
     $scope.toggleDontDisturbMode = function () {
-      CurrentMember.member.dontDisturbMode = $scope.dontDisturbMode;
+      CurrentMember.dontDisturbMode = $scope.dontDisturbMode;
+      $localStorage.dontDisturbMode = $scope.dontDisturbMode;
     };
 
     $scope.logout = function () {

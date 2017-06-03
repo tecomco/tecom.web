@@ -7,7 +7,6 @@ app.factory('Member', ['User', function (User) {
     this.id = teamMemberId;
     this.isAdmin = isAdmin;
     this.user = new User(userId, username, email, image);
-    this.dontDisturbMode = true;
     this.status = status;
   }
 
