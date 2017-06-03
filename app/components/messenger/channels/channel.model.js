@@ -154,6 +154,10 @@ app.factory('Channel', [
       return this.type === Channel.TYPE.PUBLIC;
     };
 
+    Channel.prototype.haveLiveAndUploadPermission = function () {
+      return !this.getIsRemoved() && !this.getIsArchived() && this.active && this.isCurrentMemberPublicChannelMember()
+    };
+
     Channel.prototype.changeNameAndSlugFromId = function () {
       var that = this;
       var ids = [];

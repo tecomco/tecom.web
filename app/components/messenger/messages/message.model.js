@@ -4,16 +4,16 @@ app.factory('Message', [
   '$log', 'db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
   'CurrentMember', 'Team',
   function ($log, db, textUtil, channelsService, fileUtil, dateUtil,
-            CurrentMember, Team) {
+    CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-                     additionalData, about, isPending, fileTimestamp) {
+      additionalData, about, isPending, fileTimestamp) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
         additionalData, about, isPending, fileTimestamp);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-                                            _id, datetime, additionalData, about, isPending, fileTimestamp) {
+      _id, datetime, additionalData, about, isPending, fileTimestamp) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -26,9 +26,9 @@ app.factory('Message', [
         this.id = Message.generateIntegerId(_id);
       }
       this.isPending = isPending || false;
-      var currentChannel = channelsService.getCurrentChannel();
-      if (currentChannel) {
-        this.teamId = currentChannel.teamId;
+      this.currentChannel = channelsService.getCurrentChannel();
+      if (this.currentChannel) {
+        this.teamId = this.currentChannel.teamId;
       }
       this.fileTimestamp = fileTimestamp;
     };
@@ -61,20 +61,24 @@ app.factory('Message', [
         body += Message.generateMessageWellFormedText(this.body);
       } else if (this.type === Message.TYPE.FILE) {
         this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
-        body = '<div id="' + this.getFileTimestampId() + '" class="ng-scope" dir="rtl">';
+        body = '<div id="' + this.getFileTimestampId() +
+          '" class="ng-scope" dir="rtl">';
         body += '<label class="file-name">' + this.additionalData.name +
           '</label>';
         body +=
           '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
         if (this.canBeLived) {
-          body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
-            this.additionalData.fileId + ', \'' + this.additionalData.name +
-            '\')">';
-          body += '<label dir="ltr">LIVE</label>';
-          body += '<i class="fa fa-circle"></i>';
-          body += '</a>';
+          if (this.currentChannel.haveLiveAndUploadPermission())
+          {
+            body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
+              this.additionalData.fileId + ', \'' + this.additionalData.name +
+              '\')">';
+            body += '<label dir="ltr">LIVE</label>';
+            body += '<i class="fa fa-circle"></i>';
+            body += '</a>';
+          }
           body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData
-              .fileId +
+            .fileId +
             ')" tooltip-placement="top" uib-tooltip="مشاهده">';
           body += '<i class="fa fa-eye"></i>';
         }
@@ -158,33 +162,33 @@ app.factory('Message', [
     Message.prototype.getStatusIcon = function () {
       var status = this.getStatus();
       switch (status) {
-        case Message.STATUS_TYPE.PENDING:
-          return 'zmdi zmdi-time';
-        case Message.STATUS_TYPE.SENT:
-          return 'zmdi zmdi-check';
-        case Message.STATUS_TYPE.SEEN:
-          return 'zmdi zmdi-check-all';
+      case Message.STATUS_TYPE.PENDING:
+        return 'zmdi zmdi-time';
+      case Message.STATUS_TYPE.SENT:
+        return 'zmdi zmdi-check';
+      case Message.STATUS_TYPE.SEEN:
+        return 'zmdi zmdi-check-all';
       }
     };
 
     Message.prototype.getCssClass = function () {
       switch (this.type) {
-        case Message.TYPE.TEXT:
-          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
-        case Message.TYPE.FILE:
-          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
-        case Message.TYPE.NOTIF.USER_ADDED:
-          return 'notif';
-        case Message.TYPE.NOTIF.USER_REMOVED:
-          return 'notif';
-        case Message.TYPE.NOTIF.FILE_LIVED:
-          return 'notif';
-        case Message.TYPE.NOTIF.FILE_DIED:
-          return 'notif';
-        case Message.TYPE.NOTIF.CHANNEL_CREATED:
-          return 'notif';
-        case Message.TYPE.NOTIF.CHANNEL_EDITED:
-          return 'notif';
+      case Message.TYPE.TEXT:
+        return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+      case Message.TYPE.FILE:
+        return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+      case Message.TYPE.NOTIF.USER_ADDED:
+        return 'notif';
+      case Message.TYPE.NOTIF.USER_REMOVED:
+        return 'notif';
+      case Message.TYPE.NOTIF.FILE_LIVED:
+        return 'notif';
+      case Message.TYPE.NOTIF.FILE_DIED:
+        return 'notif';
+      case Message.TYPE.NOTIF.CHANNEL_CREATED:
+        return 'notif';
+      case Message.TYPE.NOTIF.CHANNEL_EDITED:
+        return 'notif';
       }
     };
 
@@ -253,11 +257,11 @@ app.factory('Message', [
 
     Message.prototype.isNotif = function () {
       return (this.type === Message.TYPE.NOTIF.USER_ADDED ||
-      this.type === Message.TYPE.NOTIF.USER_REMOVED ||
-      this.type === Message.TYPE.NOTIF.FILE_LIVED ||
-      this.type === Message.TYPE.NOTIF.CHANNEL_CREATED ||
-      this.type === Message.TYPE.NOTIF.CHANNEL_EDITED ||
-      this.type === Message.TYPE.NOTIF.FILE_DIED);
+        this.type === Message.TYPE.NOTIF.USER_REMOVED ||
+        this.type === Message.TYPE.NOTIF.FILE_LIVED ||
+        this.type === Message.TYPE.NOTIF.CHANNEL_CREATED ||
+        this.type === Message.TYPE.NOTIF.CHANNEL_EDITED ||
+        this.type === Message.TYPE.NOTIF.FILE_DIED);
     };
 
     Message.prototype.getLocaleDate = function () {
