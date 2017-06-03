@@ -121,7 +121,7 @@ app.factory('Channel', [
         return 'fa fa-lock';
       case Channel.TYPE.DIRECT:
       if (this.slug === Member.TECOM_BOT.username)
-        return 'fa fa-heart-o';
+        return 'fa fa-heart';
       switch (this.member.status) {
       case Member.STATUS.OFFLINE:
         return 'zmdi zmdi-circle member-status status-offline';

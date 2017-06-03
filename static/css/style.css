@@ -634,6 +634,15 @@ ul.dropdown-menu {
 .direct-holder ul li.active a i.zmdi-circle {
   color: rgba(61, 61, 61, 0.53)
 }
+
+.direct-holder ul li a i.fa-heart {
+  font-size: 10px;
+  position: relative;
+  top: -4px;
+  right: -1px;
+  color: rgba(129, 255, 210, 0.9);
+}
+
 .member-status {
   font-size: 10px;
   position: relative;
@@ -654,10 +663,10 @@ ul.dropdown-menu {
 .direct-holder ul li a i.zmdi-circle.status-deactive:after{
     content: "+";
     position: absolute;
-    top: -3px;
+    top: -2px;
     color: #24A772;
-    font-size: 16px;
-    right: -1px;
+    font-size: 13px;
+    right: 0px;
     transform: rotateZ(45deg);
     -o-transform: rotateZ(45deg);
     -moz-transform: rotateZ(45deg);
