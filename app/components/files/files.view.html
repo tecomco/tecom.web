@@ -18,7 +18,7 @@
           </span>
           <span>رو بزن.</span>
         </div>
-        <div ng-show="channel.haveLiveAndUploadPermission()">
+        <div ng-show="channel.canMemberSendMessage()">
           <a type="file" class="upload-btn" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
             <i class="fa fa-paperclip"></i>
             <span>آپلود فایل</span>

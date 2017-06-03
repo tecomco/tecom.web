@@ -68,7 +68,7 @@ app.factory('Message', [
         body +=
           '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
         if (this.canBeLived) {
-          if (this.currentChannel.haveLiveAndUploadPermission())
+          if (this.currentChannel.canMemberSendMessage())
           {
             body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
               this.additionalData.fileId + ', \'' + this.additionalData.name +
