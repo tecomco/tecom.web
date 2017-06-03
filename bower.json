@@ -2,7 +2,7 @@
   "name": "tecom.web",
   "version": "0.0.1",
   "dependencies": {
-    "angular": "~1.5.9",
+    "angular": "~1.6.4",
     "angular-ui-router": "~1.0.0",
     "bootstrap-rtl": "~3.4.0",
     "font-awesome": "~4.6.3",
@@ -11,7 +11,6 @@
     "angular-bootstrap": "^2.1.4",
     "angular-jwt": "^0.1.7",
     "ngstorage": "^0.3.11",
-    "angular-moment": "^1.0.0",
     "pouchdb-find": "^0.10.3",
     "pouchdb": "^6.0.7",
     "ng-file-upload": "^12.2.13",
@@ -19,7 +18,7 @@
     "angular-bootstrap-confirm": "^2.5.0",
     "angular-ismobile": "^1.1.0",
     "persian-date": "^0.1.8",
-    "angular-messages": "1.5.9",
+    "angular-messages": "1.6.4",
     "angular-web-notification": "^1.2.22",
     "ngprogress": "^1.1.3"
   },

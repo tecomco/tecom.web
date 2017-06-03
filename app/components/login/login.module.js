@@ -99,7 +99,6 @@ var app = angular.module('LoginApp', [
         case 'InvalidToken':
           return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
         case 'UserRemoved':
-          /* jshint -W100 */
           return 'شما توسط یکی از ادمین‌ها از تیم حذف شدید!';
         default:
           return null;

@@ -22,7 +22,7 @@
             <label class="status" ng-show="message.isFromMe()">
               <i ng-class="message.getStatusIcon()"></i>
             </label>
-            <label class="time">{{message.datetime | amDateFormat:'HH:mm'}}</label>
+            <label class="time">{{message.getLocaleTime()}}</label>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
           </div>
         </div>

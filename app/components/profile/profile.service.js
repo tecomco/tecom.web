@@ -15,7 +15,7 @@ app.service('profileService', [
         data: {
           username: username
         }
-      }).success(function (data) {
+      }).then(function (data) {
         $localStorage.token = data.token;
         CurrentMember.username = username;
         var userInTeam = ArrayUtil.getElementByKeyValue(
@@ -23,7 +23,7 @@ app.service('profileService', [
         userInTeam.username = username;
         AuthService.initialize();
         defered.resolve('نام کاربری با موفقیت تغییر کرد.');
-      }).error(function (err) {
+      }).catch(function (err) {
         $log.error('Error Changing Username', err);
         if (err.username) {
           if (ArrayUtil.contains(err.username,
@@ -56,9 +56,9 @@ app.service('profileService', [
           new_password1: newPass,
           new_password2: confirm
         }
-      }).success(function (data) {
+      }).then(function (data) {
         defered.resolve('رمز عبور با موفقیت تغییر کرد.');
-      }).error(function (err) {
+      }).catch(function (err) {
         $log.error('Error Changing Password', err);
         defered.reject('خطا در تغییر رمز عبور');
       });
@@ -107,9 +107,9 @@ app.service('profileService', [
         method: 'POST',
         url: '/api/v1/teams/' + Team.id + '/member/' +
           member.id + '/admin/'
-      }).success(function () {
+      }).then(function () {
         defered.resolve();
-      }).error(function (err) {
+      }).catch(function (err) {
         $log.error('Error Making Admin', err);
         defered.reject();
       });
@@ -122,9 +122,9 @@ app.service('profileService', [
         method: 'POST',
         url: '/api/v1/teams/' + Team.id + '/member/' +
           member.id + '/disadmin/'
-      }).success(function () {
+      }).then(function () {
         defered.resolve();
-      }).error(function (err) {
+      }).catch(function (err) {
         $log.error('Error deAdmining', err);
         defered.reject();
       });
