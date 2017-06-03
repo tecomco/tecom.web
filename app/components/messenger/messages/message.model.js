@@ -264,6 +264,9 @@ app.factory('Message', [
       return dateUtil.getPersianDateString(this.datetime);
     };
 
+    Message.prototype.getLocaleTime = function () {
+      return dateUtil.getPersianTime(this.datetime);
+    };
 
     Message.TYPE = {
       TEXT: 0,

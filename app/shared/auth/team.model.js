@@ -12,7 +12,7 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
       Team.areMembersReady = false;
       Team.membersPromise = Team.getTeamMembers();
       Team.getName()
-        .success(function (res) {
+        .then(function (res) {
           Team._name = res.name;
         });
     };

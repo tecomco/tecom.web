@@ -2,7 +2,7 @@
 
 var app = angular.module('tecomApp', [
   'ui.router', 'ngStorage', 'angular-jwt', 'ui.bootstrap', 'config',
-  'angularMoment', 'ngFileUpload', 'ngSanitize', 'mwl.confirm', 'ngMessages',
+  'ngFileUpload', 'ngSanitize', 'mwl.confirm', 'ngMessages',
   'angular-web-notification','ngProgress'
 ]);
 
@@ -24,10 +24,6 @@ app.config(['$httpProvider', 'jwtInterceptorProvider',
     jwtInterceptorProvider.authPrefix = 'JWT ';
   }
 ]);
-
-app.run(['amMoment', function (amMoment) {
-  amMoment.changeLocale('fa');
-}]);
 
 app.run(['$rootScope', function ($rootScope) {
   $rootScope.isLoading = true;
