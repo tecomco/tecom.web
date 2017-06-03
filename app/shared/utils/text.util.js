@@ -33,9 +33,13 @@ app.factory('textUtil', function () {
     var urlRegex =
       /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#\?&//=]*)?/gi;
     return text.replace(urlRegex, function (url) {
-      if (validUrl(url))
-        return '<a href="' + url + '" target="_blank">' + url +
+      if (validUrl(url)) {
+        var href = url;
+        if (url.indexOf('//') === -1)
+           href = '//' + url;
+        return '<a href="' + href + '" target="_blank">' + url +
           '</a>';
+      }
       else
         return url;
     });
