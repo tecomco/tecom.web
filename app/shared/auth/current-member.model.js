@@ -1,6 +1,7 @@
 'use strict';
 
-app.factory('CurrentMember', ['Member', function (Member) {
+app.factory('CurrentMember', ['Member', '$localStorage', function (Member,
+  $localStorage) {
 
   function CurrentMember() {}
 
@@ -8,6 +9,7 @@ app.factory('CurrentMember', ['Member', function (Member) {
     email, image) {
     CurrentMember.member = new Member(id, isAdmin, userId, username,
       email, image, Member.STATUS.ONLINE);
+    CurrentMember.dontDisturbMode = $localStorage.dontDisturbMode || false;
   };
 
   CurrentMember.exists = function () {
