@@ -92,7 +92,6 @@ app.service('channelsService', [
       console.log('getInitialChannels');
       try {
         socket.emit('channel:init', null, function (results) {
-          console.log(results);
           self.channels = [];
           self.initChannelsCount = results.length;
           if (self.initChannelsCount === 0) {
@@ -100,7 +99,6 @@ app.service('channelsService', [
           }
           results.forEach(function (result) {
             var channel = createAndPushChannel(result);
-            console.log('channel:', channel);
             $rootScope.$emit('channel:new', channel);
           });
           $rootScope.$broadcast('channels:updated', 'init');
@@ -124,7 +122,6 @@ app.service('channelsService', [
     }
 
     function createAndPushChannel(data) {
-      console.log('DATA:', data);
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
         data.liveFileId, data.teamId, data.lastSeenMessageId,

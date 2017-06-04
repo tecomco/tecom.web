@@ -114,7 +114,7 @@ app.factory('Message', [
           '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
       } else if(this.type === Message.TYPE.LOADING){
         body = '<div class="cssload-container">' +
-          '<div class="cssload-speeding-wheel"></div></div>'
+          '<div class="cssload-speeding-wheel"></div></div>';
       }
       return body;
     };

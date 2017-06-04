@@ -66,11 +66,13 @@ app.service('messagesService', [
 
     function getAndSaveNewMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
-      var allMessages = [];
       getMessagesByChannelId(channel.id).then(function (messages) {
-        if (channel.memberLastSeenId) {
+        if(messages.length > 0 &&
+          messages[messages.length-1].id === channel.lastMessageId) {
+          deferred.resolve();
+        }
+        else if (channel.memberLastSeenId) {
           var period = findPeriodOfNeededInitMessages(channel, messages);
-          console.log('channel: ', channel.name, ' period: ', period);
           getMessagePacketFromServer(channel.id, channel.teamId,
             period.from, period.to).then(function (channelMessages) {
             deferred.resolve();

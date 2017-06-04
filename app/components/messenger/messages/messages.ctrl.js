@@ -179,14 +179,14 @@ app.controller('messagesController', [
       messagesService.getMessagePacketFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
         removeLoadingMessage(from);
-        updateScrollLimits();
         messages.forEach(function (message) {
           if (!ArrayUtil.containsKeyValue($scope.messages, 'id', message.id)) {
             $scope.messages.push(message);
           }
         });
+        // updateScrollLimits();
       });
-    };
+    }
 
     $scope.isMessageFirstUnread = function (message) {
       var channel = channelsService.getCurrentChannel();
@@ -235,12 +235,13 @@ app.controller('messagesController', [
     function handleLoadingMessages() {
       var packetStartPoint;
       var channel = channelsService.getCurrentChannel();
+      var i;
 
       if ($scope.messages.length > 0) {
-        var firstDbMessageId = $scope.messages[0].id
-        var lastDbMessageId = $scope.messages[$scope.messages.length - 1].id
+        var firstDbMessageId = $scope.messages[0].id;
+        var lastDbMessageId = $scope.messages[$scope.messages.length - 1].id;
 
-        for (var i = 0; i < $scope.messages.length; i++) {
+        for (i = 0; i < $scope.messages.length; i++) {
           if (i !== $scope.messages.length - 1) {
             if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
               generateLoadingMessage(channel.id, $scope.messages[i].id + 1,
@@ -251,7 +252,7 @@ app.controller('messagesController', [
         }
 
         packetStartPoint = firstDbMessageId - 1;
-        for (var i = firstDbMessageId - 1; i > 0; i--) {
+        for (i = firstDbMessageId - 1; i > 0; i--) {
           if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
             generateLoadingMessage(channel.id, i, packetStartPoint);
             // console.log('Start GAP:', i, packetStartPoint);
@@ -259,7 +260,7 @@ app.controller('messagesController', [
           }
         }
         packetStartPoint = lastDbMessageId + 1;
-        for (var i = lastDbMessageId + 1; i <= channel.lastMessageId; i++) {
+        for (i = lastDbMessageId + 1; i <= channel.lastMessageId; i++) {
           if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH - 1 ||
             (i === channel.lastMessageId - 1)) {
             generateLoadingMessage(channel.id, packetStartPoint, i);
@@ -270,7 +271,7 @@ app.controller('messagesController', [
       }
       else {
         packetStartPoint = channel.lastMessageId - 1;
-        for (var i = channel.lastMessageId - 1; i > 0; i--) {
+        for (i = channel.lastMessageId - 1; i > 0; i--) {
           if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
             generateLoadingMessage(channel.id, i, packetStartPoint);
             // console.log('Start GAP:', i, packetStartPoint);
@@ -278,7 +279,8 @@ app.controller('messagesController', [
           }
         }
       }
-      updateScrollLimits();
+      //updateScrollLimits();
+      getMessagePackagesIfLoadingsInView();
     }
 
     function generateLoadingMessage(channelId, fromId, toId) {
@@ -339,50 +341,51 @@ app.controller('messagesController', [
       });
     }
 
-    function updateScrollLimits() {
-      var holder = document.getElementById('messagesHolder');
-      var top = 0;
-      var button = holder.scrollHeight;
-      var loadingMessages = filterAndGetLoadingMessages();
-      if (loadingMessages.length > 0) {
-        loadingMessages.forEach(function (LoadingMessage) {
-          var loadingElement = getMessageElementById(LoadingMessage.id);
-          if (loadingElement.offsetTop > top &&
-            loadingElement.offsetTop < holder.scrollTop)
-            top = loadingElement.offsetTop;
-          if (loadingElement.offsetTop < button &&
-            loadingElement.offsetTop > holder.scrollTop)
-            button = loadingElement.offsetTop;
-        });
-      }
-      scrollLimits = {
-        'top': top,
-        'button': button
-      };
-    }
+    // function updateScrollLimits() {
+    //   var holder = document.getElementById('messagesHolder');
+    //   var top = 0;
+    //   var button = holder.scrollHeight;
+    //   var loadingMessages = filterAndGetLoadingMessages();
+    //   if (loadingMessages.length > 0) {
+    //     loadingMessages.forEach(function (LoadingMessage) {
+    //       var loadingElement = getMessageElementById(LoadingMessage.id);
+    //       if (loadingElement.offsetTop > top &&
+    //         loadingElement.offsetTop < holder.scrollTop)
+    //         top = loadingElement.offsetTop;
+    //       if (loadingElement.offsetTop < button &&
+    //         loadingElement.offsetTop > holder.scrollTop)
+    //         button = loadingElement.offsetTop;
+    //     });
+    //   }
+    //   scrollLimits = {
+    //     'top': top,
+    //     'button': button
+    //   };
+    // }
 
     document.getElementById('inputPlaceHolder').focus();
 
     angular.element(document.getElementById('messagesHolder'))
       .bind('scroll', function () {
-        if (scrollLimits) {
-          var holder = document.getElementById('messagesHolder');
-          console.log('scroll top:', holder.scrollTop);
-          console.log('scroll height:', holder.scrollHeight);
-          console.log('limits:', scrollLimits);
-
-          if (holder.scrollTop < scrollLimits.top) {
-            holder.scrollTop = scrollLimits.top;
-            getMessagePackagesIfLoadingsInView();
-            console.log('TOP LIMIT EXCEEDED');
-          }
-          if (holder.scrollTop > scrollLimits.button) {
-            holder.scrollTop = scrollLimits.button;
-            getMessagePackagesIfLoadingsInView();
-            console.log('BUTTON LIMIT EXCEEDED');
-          }
-          console.log('Scroll Limits:', scrollLimits);
-        }
+        // if (scrollLimits) {
+        //   var holder = document.getElementById('messagesHolder');
+        //   console.log('scroll top:', holder.scrollTop);
+        //   console.log('scroll height:', holder.scrollHeight);
+        //   console.log('limits:', scrollLimits);
+        //
+        //   if (holder.scrollTop < scrollLimits.top) {
+        //     holder.scrollTop = scrollLimits.top;
+        //     getMessagePackagesIfLoadingsInView();
+        //     console.log('TOP LIMIT EXCEEDED');
+        //   }
+        //   if (holder.scrollTop > scrollLimits.button) {
+        //     holder.scrollTop = scrollLimits.button;
+        //     getMessagePackagesIfLoadingsInView();
+        //     console.log('BUTTON LIMIT EXCEEDED');
+        //   }
+        //   console.log('Scroll Limits:', scrollLimits);
+        // }
+        getMessagePackagesIfLoadingsInView();
       });
 
     document.onkeydown = function (evt) {
@@ -392,9 +395,9 @@ app.controller('messagesController', [
       }
     };
 
-    angular.element(document).ready(function () {
-      updateScrollLimits();
-    });
+    // angular.element(document).ready(function () {
+    //   updateScrollLimits();
+    // });
 
     $scope.$on('tab:focus:changed', function () {
       if ($rootScope.isTabFocused)
