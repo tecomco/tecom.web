@@ -115,21 +115,24 @@ app.factory('Channel', [
 
     Channel.prototype.getIconClass = function () {
       switch (this.type) {
-      case Channel.TYPE.PUBLIC:
-        return 'fa fa-globe';
-      case Channel.TYPE.PRIVATE:
-        return 'fa fa-lock';
-      case Channel.TYPE.DIRECT:
-      if (this.slug === Member.TECOM_BOT.username)
-        return 'fa fa-heart';
-      switch (this.member.status) {
-      case Member.STATUS.OFFLINE:
-        return 'zmdi zmdi-circle member-status status-offline';
-      case Member.STATUS.ONLINE:
-        return 'zmdi zmdi-circle member-status status-online';
-      case Member.STATUS.DEACTIVE:
-        return 'zmdi zmdi-circle member-status status-deactive';
-      }
+        case Channel.TYPE.PUBLIC:
+          return 'fa fa-globe';
+        case Channel.TYPE.PRIVATE:
+          return 'fa fa-lock';
+        case Channel.TYPE.DIRECT:
+          if (CurrentMember.member.isTecomBot()) {
+            return 'zmdi zmdi-circle member-status status-offline';
+          }
+          if (this.slug === Member.TECOM_BOT.username)
+            return 'fa fa-heart';
+          switch (this.member.status) {
+            case Member.STATUS.OFFLINE:
+              return 'zmdi zmdi-circle member-status status-offline';
+            case Member.STATUS.ONLINE:
+              return 'zmdi zmdi-circle member-status status-online';
+            case Member.STATUS.DEACTIVE:
+              return 'zmdi zmdi-circle member-status status-deactive';
+          }
       }
     };
 
