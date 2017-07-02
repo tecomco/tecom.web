@@ -5,13 +5,15 @@ app.controller('messagesController', [
   'Upload', 'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'ArrayUtil', 'textUtil', 'CurrentMember',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
-            Upload, Message, messagesService, channelsService, filesService,
-            $q, ArrayUtil, textUtil, CurrentMember) {
+    Upload, Message, messagesService, channelsService, filesService,
+    $q, ArrayUtil, textUtil, CurrentMember) {
 
     var self = this;
     $scope.messages = [];
     $scope.file = {};
     var scrollLimits;
+    var flagLock = false;
+    var prevScrollTop;
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -168,14 +170,14 @@ app.controller('messagesController', [
         if (previousMessage) {
           var timeDiff =
             Math.abs(message.datetime.getTime() - previousMessage.datetime
-                .getTime());
+              .getTime());
           var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
           return (diffDays === 0) ? false : true;
         }
       }
     };
 
-    function getLoadingMessages(channelId, from, to) {
+    function getLoadingMessages(channelId, from, to, dir) {
       messagesService.getMessagePacketFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
         removeLoadingMessage(from);
@@ -184,7 +186,14 @@ app.controller('messagesController', [
             $scope.messages.push(message);
           }
         });
+        flagLock = false;
         // updateScrollLimits();
+        console.log(dir);
+        if (dir === 'up')
+          scrollToMessageElementById(to + 1);
+        else
+          scrollToMessageElementById(from - 1);
+        getMessagePackagesIfLoadingsInView(dir);
       });
     }
 
@@ -268,8 +277,7 @@ app.controller('messagesController', [
             packetStartPoint = i + 1;
           }
         }
-      }
-      else {
+      } else {
         packetStartPoint = channel.lastMessageId - 1;
         for (i = channel.lastMessageId - 1; i > 0; i--) {
           if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
@@ -284,11 +292,20 @@ app.controller('messagesController', [
     }
 
     function generateLoadingMessage(channelId, fromId, toId) {
-      var additionalData = {'channelId': channelId, 'from': fromId, 'to': toId};
-      var loadingMessage = new Message(null, Message.TYPE.LOADING, null, channelId, null, null,
-        additionalData, null, null);
-      loadingMessage.setId(fromId);
-      $scope.messages.push(loadingMessage);
+      var additionalData = {
+        'channelId': channelId,
+        'from': fromId,
+        'to': toId
+      };
+      if (toId - fromId < 16) {
+        var loadingMessage = new Message(null, Message.TYPE.LOADING, null, channelId, null, null,
+          additionalData, null, null);
+        loadingMessage.setId(fromId);
+        $scope.messages.push(loadingMessage);
+      } else {
+        generateLoadingMessage(channelId, fromId, fromId + Message.MAX_PACKET_LENGTH - 1);
+        generateLoadingMessage(channelId, fromId + Message.MAX_PACKET_LENGTH, toId);
+      }
     }
 
     function removeLoadingMessage(messageId) {
@@ -300,8 +317,9 @@ app.controller('messagesController', [
         var holder = document.getElementById('messagesHolder');
         var messageElement = getMessageElementById(elementId);
         if (messageElement)
-          holder.scrollTop = messageElement.offsetTop - 80;
+          holder.scrollTop = messageElement.offsetTop - 60;
       }, 0, false);
+      console.log('scrolled');
     }
 
     function elementInViewport(el) {
@@ -329,13 +347,14 @@ app.controller('messagesController', [
       return element;
     }
 
-    function getMessagePackagesIfLoadingsInView() {
+    function getMessagePackagesIfLoadingsInView(direction) {
       $scope.messages.forEach(function (message) {
         if (message.type === Message.TYPE.LOADING) {
           var element = getMessageElementById(message.id);
-          if (elementInViewport(element)) {
+          if (elementInViewport(element) && !flagLock) {
             getLoadingMessages(message.additionalData.channelId,
-              message.additionalData.from, message.additionalData.to);
+              message.additionalData.from, message.additionalData.to, direction);
+            flagLock = true;
           }
         }
       });
@@ -367,9 +386,18 @@ app.controller('messagesController', [
 
     angular.element(document.getElementById('messagesHolder'))
       .bind('scroll', function () {
+        var scrollDirection;
         // if (scrollLimits) {
-        //   var holder = document.getElementById('messagesHolder');
-        //   console.log('scroll top:', holder.scrollTop);
+        var holder = document.getElementById('messagesHolder');
+        var scrollTop = holder.scrollTop;
+        if (prevScrollTop) {
+          if (prevScrollTop > scrollTop)
+            scrollDirection = 'up';
+          else
+            scrollDirection = 'down';
+        }
+        prevScrollTop = scrollTop;
+        //   console.log('scroll top:', holder.scrollTop);111
         //   console.log('scroll height:', holder.scrollHeight);
         //   console.log('limits:', scrollLimits);
         //
@@ -385,7 +413,7 @@ app.controller('messagesController', [
         //   }
         //   console.log('Scroll Limits:', scrollLimits);
         // }
-        getMessagePackagesIfLoadingsInView();
+        getMessagePackagesIfLoadingsInView(scrollDirection);
       });
 
     document.onkeydown = function (evt) {
@@ -405,5 +433,4 @@ app.controller('messagesController', [
     });
 
   }
-])
-;
+]);

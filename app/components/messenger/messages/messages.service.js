@@ -67,9 +67,12 @@ app.service('messagesService', [
     function getAndSaveNewMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
       getMessagesByChannelId(channel.id).then(function (messages) {
-        if(messages.length > 0 &&
-          messages[messages.length-1].id === channel.lastMessageId) {
+        if(messages.length > 0 && messages[messages.length-1].id === channel.lastMessageId) {
           deferred.resolve();
+          console.log(messages[messages.length-1].id === channel.lastMessageId);
+          console.log(messages);
+          console.log(channel.name);
+          console.log(channel.lastMessageId);
         }
         else if (channel.memberLastSeenId) {
           var period = findPeriodOfNeededInitMessages(channel, messages);
@@ -106,7 +109,7 @@ app.service('messagesService', [
       var to = Math.min(channel.memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
         channel.lastMessageId);
       var inPeriodMessages = messages.filter(function (message) {
-        return (message.id > from && message.id < to);
+        return (message.id > from - 1 && message.id < to + 1);
       });
       if (inPeriodMessages) {
         inPeriodMessages.forEach(function (inPeriodMessage) {
