@@ -89,7 +89,6 @@ app.service('channelsService', [
     }
 
     function getInitialChannels() {
-      console.log('getInitialChannels');
       try {
         socket.emit('channel:init', null, function (results) {
           self.channels = [];
@@ -107,7 +106,6 @@ app.service('channelsService', [
       } catch (err) {
         console.log('err', err);
       }
-      console.log('finish');
     }
 
     function setChannelLivedFileId(channelId, fileId) {

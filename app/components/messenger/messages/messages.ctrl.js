@@ -121,8 +121,7 @@ app.controller('messagesController', [
     }
 
     function scrollToUnseenMessage() {
-      var channel = channelsService.getCurrentChannel();
-      scrollToMessageElementById(channel.memberLastSeenId);
+      scrollToMessageElementById($scope.channel.memberLastSeenId,'unseen');
     }
 
     $scope.goLive = function (fileId, fileName) {
@@ -188,19 +187,17 @@ app.controller('messagesController', [
         });
         flagLock = false;
         // updateScrollLimits();
-        console.log(dir);
         if (dir === 'up')
-          scrollToMessageElementById(to + 1);
+          scrollToMessageElementById(to);
         else
-          scrollToMessageElementById(from - 1);
+          scrollToMessageElementById(from - 1, dir);
         getMessagePackagesIfLoadingsInView(dir);
       });
     }
 
     $scope.isMessageFirstUnread = function (message) {
-      var channel = channelsService.getCurrentChannel();
-      if (message.id === channel.memberLastSeenId + 1 &&
-        message.id !== channel.lastMessageId + 1)
+      if (message.id === $scope.channel.memberLastSeenId + 1 &&
+        message.id !== $scope.channel.lastMessageId + 1)
         return true;
       else
         return false;
@@ -220,9 +217,9 @@ app.controller('messagesController', [
       messagesService.getMessagesByChannelId($scope.channel.id)
         .then(function (messages) {
           $scope.messages = messages;
-          scrollBottom();
-          scrollToUnseenMessage();
+          // scrollBottom();
           handleLoadingMessages();
+          scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {
             messagesService.seenLastMessageByChannelId($scope.channel.id);
           }
@@ -243,7 +240,6 @@ app.controller('messagesController', [
 
     function handleLoadingMessages() {
       var packetStartPoint;
-      var channel = channelsService.getCurrentChannel();
       var i;
 
       if ($scope.messages.length > 0) {
@@ -253,7 +249,7 @@ app.controller('messagesController', [
         for (i = 0; i < $scope.messages.length; i++) {
           if (i !== $scope.messages.length - 1) {
             if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
-              generateLoadingMessage(channel.id, $scope.messages[i].id + 1,
+              generateLoadingMessage($scope.channel.id, $scope.messages[i].id + 1,
                 $scope.messages[i + 1].id - 1);
               // console.log('Middle GAP:', $scope.messages[i].id + 1, $scope.messages[i + 1].id - 1);
             }
@@ -263,32 +259,32 @@ app.controller('messagesController', [
         packetStartPoint = firstDbMessageId - 1;
         for (i = firstDbMessageId - 1; i > 0; i--) {
           if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
-            generateLoadingMessage(channel.id, i, packetStartPoint);
+            generateLoadingMessage($scope.channel.id, i, packetStartPoint);
             // console.log('Start GAP:', i, packetStartPoint);
             packetStartPoint = i - 1;
           }
         }
         packetStartPoint = lastDbMessageId + 1;
-        for (i = lastDbMessageId + 1; i <= channel.lastMessageId; i++) {
+        for (i = lastDbMessageId + 1; i <= $scope.channel.lastMessageId; i++) {
           if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH - 1 ||
-            (i === channel.lastMessageId - 1)) {
-            generateLoadingMessage(channel.id, packetStartPoint, i);
+            (i === $scope.channel.lastMessageId - 1)) {
+            generateLoadingMessage($scope.channel.id, packetStartPoint, i);
             // console.log('End GAP:', packetStartPoint, i);
             packetStartPoint = i + 1;
           }
         }
       } else {
-        packetStartPoint = channel.lastMessageId - 1;
-        for (i = channel.lastMessageId - 1; i > 0; i--) {
+        packetStartPoint = $scope.channel.lastMessageId - 1;
+        for (i = $scope.channel.lastMessageId - 1; i > 0; i--) {
           if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
-            generateLoadingMessage(channel.id, i, packetStartPoint);
+            generateLoadingMessage($scope.channel.id, i, packetStartPoint);
             // console.log('Start GAP:', i, packetStartPoint);
             packetStartPoint = i - 1;
           }
         }
       }
       //updateScrollLimits();
-      getMessagePackagesIfLoadingsInView();
+      getMessagePackagesIfLoadingsInView()
     }
 
     function generateLoadingMessage(channelId, fromId, toId) {
@@ -312,14 +308,19 @@ app.controller('messagesController', [
       ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
     }
 
-    function scrollToMessageElementById(elementId) {
+    function scrollToMessageElementById(elementId, dir) {
       $timeout(function () {
         var holder = document.getElementById('messagesHolder');
-        var messageElement = getMessageElementById(elementId);
+        var messageElement = getMessageElementById(elementId + 1);
+        var messagesWindow = document.getElementById('messagesWindow');
         if (messageElement)
-          holder.scrollTop = messageElement.offsetTop - 60;
+        {
+          if (dir === 'down')
+          holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop - 580;
+          else
+          holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop;
+        }
       }, 0, false);
-      console.log('scrolled');
     }
 
     function elementInViewport(el) {
@@ -348,15 +349,13 @@ app.controller('messagesController', [
     }
 
     function getMessagePackagesIfLoadingsInView(direction) {
-      $scope.messages.forEach(function (message) {
-        if (message.type === Message.TYPE.LOADING) {
+      filterAndGetLoadingMessages().forEach(function (message) {
           var element = getMessageElementById(message.id);
           if (elementInViewport(element) && !flagLock) {
             getLoadingMessages(message.additionalData.channelId,
               message.additionalData.from, message.additionalData.to, direction);
             flagLock = true;
           }
-        }
       });
     }
 
