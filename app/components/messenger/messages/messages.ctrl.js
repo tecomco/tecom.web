@@ -190,10 +190,10 @@ app.controller('messagesController', [
         });
         flagLock = false;
         // updateScrollLimits();
-        if (dir === 'up')
-          scrollToMessageElementById(to);
-        else
-          scrollToMessageElementById(from - 1, dir);
+        // if (dir === 'up')
+        //   scrollToMessageElementById(to);
+        // else
+        //   scrollToMessageElementById(from - 1, dir);
         getMessagePackagesIfLoadingsInView(dir);
       });
     }

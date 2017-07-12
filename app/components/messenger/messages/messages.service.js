@@ -66,21 +66,33 @@ app.service('messagesService', [
 
     function getAndSaveNewMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
+      generateFromAndTo(channel.memberLastSeenId,channel.lastMessageId).then(function (period) {
+        getInitialMessagesByChannelId(channel.id, channel.teamId, period.from, period.to).then(function () {
+          deferred.resolve();
+        }).catch(function (err) {
+          $log.error('Error Getting Initial Messages From Server', err);
+        });
+      })
+      return deferred.promise;
+    }
+
+    function generateFromAndTo(memberLastSeenId,lastMessageId) {
+      var deferred = $q.defer();
       var from;
       var to;
-      if (channel.memberLastSeenId) {
-        from = Math.max(channel.memberLastSeenId - Message.MAX_PACKET_LENGTH / 4, 1);
-        to = Math.min(channel.memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
-          channel.lastMessageId);
+      if (memberLastSeenId) {
+        from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4, 1);
+        to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
+          lastMessageId);
+          if (from === 1)
+          to = Message.MAX_PACKET_LENGTH;
+          if (to === lastMessageId)
+          from = lastMessageId - Message.MAX_PACKET_LENGTH + 1;
       } else {
         from = 1;
         to = Message.MAX_PACKET_LENGTH;
       }
-      getInitialMessagesByChannelId(channel.id, channel.teamId, from, to).then(function () {
-        deferred.resolve();
-      }).catch(function (err) {
-        $log.error('Error Getting Initial Messages From Server', err);
-      });
+      deferred.resolve({from:from,to:to});
       return deferred.promise;
     }
 
