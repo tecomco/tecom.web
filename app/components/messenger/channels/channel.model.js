@@ -34,6 +34,9 @@ app.factory('Channel', [
       this.lastMessageId = lastMessageId;
       this.memberLastSeenId = memberLastSeenId;
       this.notifCount = lastMessageId - memberLastSeenId;
+      console.log(this.name);
+      console.log('lastSeenId',memberLastSeenId);
+      console.log('notif',this.notifCount);
     };
 
     Channel.prototype.hasUnread = function () {

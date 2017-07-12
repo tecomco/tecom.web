@@ -121,7 +121,10 @@ app.controller('messagesController', [
     }
 
     function scrollToUnseenMessage() {
-      scrollToMessageElementById($scope.channel.memberLastSeenId,'unseen');
+      if ($scope.channel.memberLastSeenId === $scope.channel.lastMessageId)
+      scrollToMessageElementById($scope.channel.memberLastSeenId - 1);
+      else
+      scrollToMessageElementById($scope.channel.memberLastSeenId);
     }
 
     $scope.goLive = function (fileId, fileName) {
@@ -217,9 +220,10 @@ app.controller('messagesController', [
       messagesService.getMessagesByChannelId($scope.channel.id)
         .then(function (messages) {
           $scope.messages = messages;
+          console.log('messages:',messages);
           // scrollBottom();
-          handleLoadingMessages();
           scrollToUnseenMessage();
+          handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
             messagesService.seenLastMessageByChannelId($scope.channel.id);
           }

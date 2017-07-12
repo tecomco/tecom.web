@@ -180,6 +180,8 @@ app.service('messagesService', [
 
     function getInitialMessagesByChannelId(channelId, teamId, from, to) {
       var deferred = $q.defer();
+      console.log('from:',from);
+      console.log('to',to);
       getInitialMessagesByChannelIdFromDb(channelId, from, to)
         .then(function (res) {
           findGaps(res, from, to).then(function (gaps) {
@@ -209,8 +211,8 @@ app.service('messagesService', [
           sort: [{
             id: 'asc'
           }],
-          limit: 200
         }).then(function (docs) {
+          console.log('docs',docs);
           deferred.resolve(docs);
         });
       });
