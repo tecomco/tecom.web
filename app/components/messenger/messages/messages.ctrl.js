@@ -13,7 +13,7 @@ app.controller('messagesController', [
     $scope.messages = [];
     $scope.file = {};
     var scrollLimits;
-    var flagLock = false;
+    var flagLock = true;
     var prevScrollTop;
 
     if (!$stateParams.slug) {

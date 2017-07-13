@@ -1796,7 +1796,9 @@ ol.linenums, ol.linenums-view {
 .mime-more {
   display: inline-block;
   float: left;
-  position: relative;
+  position: absolute;
+  left: 0;
+  z-index: 5;
 }
 
 .mime-more>i {
@@ -2905,8 +2907,23 @@ label {
 
 .cssload-container {
   width: 100%;
-  height: 49px;
   text-align: center;
+}
+
+.msg-loading{
+  padding: 10px 0;
+}
+
+.msg-loading .name{
+  display: none;
+}
+
+.loading-text{
+  padding: 4px 32px;
+  background: #eee;
+  color: #888;
+  display: inline-block;
+  border-radius: 40px;
 }
 
 .cssload-speeding-wheel {
