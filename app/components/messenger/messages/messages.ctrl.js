@@ -213,11 +213,6 @@ app.controller('messagesController', [
           }
         });
         flagLock = false;
-        // updateScrollLimits();
-        // if (dir === 'up')
-        //   scrollToMessageElementById(to);
-        // else
-        //   scrollToMessageElementById(from - 1, dir);
         getMessagePackagesIfLoadingsInView(dir);
       });
     }
@@ -244,8 +239,6 @@ app.controller('messagesController', [
       messagesService.getMessagesByChannelId($scope.channel.id)
         .then(function (messages) {
           $scope.messages = messages;
-          console.log('messages:',messages);
-          // scrollBottom();
           scrollToUnseenMessage();
           handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
@@ -279,7 +272,6 @@ app.controller('messagesController', [
             if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
               generateLoadingMessage($scope.channel.id, $scope.messages[i].id + 1,
                 $scope.messages[i + 1].id - 1);
-              // console.log('Middle GAP:', $scope.messages[i].id + 1, $scope.messages[i + 1].id - 1);
             }
           }
         }
@@ -288,7 +280,6 @@ app.controller('messagesController', [
         for (i = firstDbMessageId - 1; i > 0; i--) {
           if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
             generateLoadingMessage($scope.channel.id, i, packetStartPoint);
-            // console.log('Start GAP:', i, packetStartPoint);
             packetStartPoint = i - 1;
           }
         }
@@ -297,7 +288,6 @@ app.controller('messagesController', [
           if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH - 1 ||
             (i === $scope.channel.lastMessageId - 1)) {
             generateLoadingMessage($scope.channel.id, packetStartPoint, i);
-            // console.log('End GAP:', packetStartPoint, i);
             packetStartPoint = i + 1;
           }
         }
@@ -306,12 +296,10 @@ app.controller('messagesController', [
         for (i = $scope.channel.lastMessageId - 1; i > 0; i--) {
           if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
             generateLoadingMessage($scope.channel.id, i, packetStartPoint);
-            // console.log('Start GAP:', i, packetStartPoint);
             packetStartPoint = i - 1;
           }
         }
       }
-      //updateScrollLimits();
       getMessagePackagesIfLoadingsInView();
     }
 
@@ -387,34 +375,11 @@ app.controller('messagesController', [
       });
     }
 
-    // function updateScrollLimits() {
-    //   var holder = document.getElementById('messagesHolder');
-    //   var top = 0;
-    //   var button = holder.scrollHeight;
-    //   var loadingMessages = filterAndGetLoadingMessages();
-    //   if (loadingMessages.length > 0) {
-    //     loadingMessages.forEach(function (LoadingMessage) {
-    //       var loadingElement = getMessageElementById(LoadingMessage.id);
-    //       if (loadingElement.offsetTop > top &&
-    //         loadingElement.offsetTop < holder.scrollTop)
-    //         top = loadingElement.offsetTop;
-    //       if (loadingElement.offsetTop < button &&
-    //         loadingElement.offsetTop > holder.scrollTop)
-    //         button = loadingElement.offsetTop;
-    //     });
-    //   }
-    //   scrollLimits = {
-    //     'top': top,
-    //     'button': button
-    //   };
-    // }
-
     document.getElementById('inputPlaceHolder').focus();
 
     angular.element(document.getElementById('messagesHolder'))
       .bind('scroll', function () {
         var scrollDirection;
-        // if (scrollLimits) {
         var holder = document.getElementById('messagesHolder');
         var scrollTop = holder.scrollTop;
         if (prevScrollTop) {
@@ -424,22 +389,6 @@ app.controller('messagesController', [
             scrollDirection = 'down';
         }
         prevScrollTop = scrollTop;
-        //   console.log('scroll top:', holder.scrollTop);111
-        //   console.log('scroll height:', holder.scrollHeight);
-        //   console.log('limits:', scrollLimits);
-        //
-        //   if (holder.scrollTop < scrollLimits.top) {
-        //     holder.scrollTop = scrollLimits.top;
-        //     getMessagePackagesIfLoadingsInView();
-        //     console.log('TOP LIMIT EXCEEDED');
-        //   }
-        //   if (holder.scrollTop > scrollLimits.button) {
-        //     holder.scrollTop = scrollLimits.button;
-        //     getMessagePackagesIfLoadingsInView();
-        //     console.log('BUTTON LIMIT EXCEEDED');
-        //   }
-        //   console.log('Scroll Limits:', scrollLimits);
-        // }
         getMessagePackagesIfLoadingsInView(scrollDirection);
       });
 
@@ -449,10 +398,6 @@ app.controller('messagesController', [
         $state.go('messenger.home');
       }
     };
-
-    // angular.element(document).ready(function () {
-    //   updateScrollLimits();
-    // });
 
     $scope.$on('tab:focus:changed', function () {
       if ($rootScope.isTabFocused)

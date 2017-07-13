@@ -93,12 +93,12 @@ app.service('messagesService', [
         to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
           lastMessageId);
           if (from === 1)
-          to = Message.MAX_PACKET_LENGTH;
+          to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
           if (to === lastMessageId)
-          from = lastMessageId - Message.MAX_PACKET_LENGTH + 1;
-      } else {
+          from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
+        } else {
         from = 1;
-        to = Message.MAX_PACKET_LENGTH;
+        to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId)
       }
       deferred.resolve({from:from,to:to});
       return deferred.promise;
@@ -200,15 +200,14 @@ app.service('messagesService', [
 
     function getInitialMessagesByChannelId(channelId, teamId, from, to) {
       var deferred = $q.defer();
-      console.log('from:',from);
-      console.log('to',to);
       getInitialMessagesByChannelIdFromDb(channelId, from, to)
         .then(function (res) {
           findGaps(res, from, to).then(function (gaps) {
             if (gaps)
               for (var i = 0; i < gaps.length; i++)
-                getMessagePacketFromServer(channelId, teamId, gaps[i].from,gaps[i].to);
-            deferred.resolve();
+                getMessagePacketFromServer(channelId, teamId, gaps[i].from,gaps[i].to).then(function () {
+                  deferred.resolve();
+                });
           });
         });
       return deferred.promise;
@@ -232,7 +231,6 @@ app.service('messagesService', [
             id: 'asc'
           }],
         }).then(function (docs) {
-          console.log('docs',docs);
           deferred.resolve(docs);
         });
       });
