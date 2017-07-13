@@ -8,24 +8,26 @@ app.factory('Channel', [
 
     function Channel(name, slug, description, type, id, membersCount,
       notifCount, memberId, isFakeDirect, liveFileId, teamId,
-      isCurrentMemberChannelMember, isMuted) {
+      isCurrentMemberChannelMember, isMuted,lastSeenId, lastDatetime, lastMessageId, memberLastSeenId) {
       this.setValues(name, slug, description, type, id, membersCount,
         notifCount, memberId, isFakeDirect, liveFileId, teamId,
-        isCurrentMemberChannelMember, isMuted);
+        isCurrentMemberChannelMember, isMuted,lastSeenId, lastDatetime,
+        lastMessageId, memberLastSeenId);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,
       id, membersCount, notifCount, memberId, isFakeDirect, liveFileId,
-      teamId, isCurrentMemberChannelMember, isMuted) {
+      teamId, isCurrentMemberChannelMember, isMuted, lastSeenId,
+      lastDatetime, lastMessageId,
+      memberLastSeenId) {
       this.name = name;
       this.slug = slug;
       this.description = description;
       this.type = type;
       this.id = id;
       this.membersCount = membersCount;
-      this.notifCount = notifCount || null;
       if (memberId) {
         this.member = Team.getMemberByMemberId(memberId);
       }
@@ -35,6 +37,11 @@ app.factory('Channel', [
       this.active = true;
       this.isCurrentMemberChannelMember = isCurrentMemberChannelMember;
       this.isMuted = isMuted;
+      this.lastSeenId = lastSeenId;
+      this.lastDatetime = new Date(lastDatetime);
+      this.lastMessageId = lastMessageId;
+      this.memberLastSeenId = memberLastSeenId;
+      this.notifCount = lastMessageId - memberLastSeenId;
     };
 
     Channel.prototype.hasUnread = function () {
@@ -132,8 +139,8 @@ app.factory('Channel', [
               return 'zmdi zmdi-circle member-status status-online';
             case Member.STATUS.DEACTIVE:
               return 'zmdi zmdi-circle member-status status-deactive';
-          }
       }
+    }
     };
 
     Channel.prototype.getNotifCountClass = function () {

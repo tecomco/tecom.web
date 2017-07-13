@@ -2,11 +2,11 @@
 
 app.factory('ArrayUtil', function () {
 
-  var getIndexByKeyValue = function (array, key, value) {
+  function getIndexByKeyValue(array, key, value) {
     var keySplit = key.split('.');
     for (var i = 0; i < array.length; i++) {
       var temp = array[i];
-      for (var k = 0; k < keySplit.length; k++){
+      for (var k = 0; k < keySplit.length; k++) {
         temp = temp[keySplit[k]];
       }
       if (temp == value) {
@@ -14,16 +14,16 @@ app.factory('ArrayUtil', function () {
       }
     }
     return -1;
-  };
+  }
 
-  var getIndexByValue = function (array, value) {
+  function getIndexByValue(array, value) {
     for (var i = 0; i < array.length; i++) {
       if (array[i] == value) {
         return i;
       }
     }
     return -1;
-  };
+  }
 
   function getElementByKeyValue(array, key, value) {
     var index = getIndexByKeyValue(array, key, value);
@@ -31,36 +31,45 @@ app.factory('ArrayUtil', function () {
     return array[index];
   }
 
-  var getLastElement = function (array) {
+  function getLastElement(array) {
     if (array.length === 0)
       return null;
     return array[array.length - 1];
-  };
+  }
 
-  var removeElementByIndex = function (array, index) {
+  function removeElementByIndex(array, index) {
     if (index > -1)
       array.splice(index, 1);
-  };
+  }
 
-  var removeElementByKeyValue = function (array, key, value) {
+  function removeElementByKeyValue(array, key, value) {
     var index = getIndexByKeyValue(array, key, value);
     if (index > -1)
       array.splice(index, 1);
-  };
+  }
 
-  var removeElementByValue = function (array, value) {
+  function removeElementByValue(array, value) {
     var index = getIndexByValue(array, value);
     if (index > -1)
       array.splice(index, 1);
-  };
+  }
 
-  var contains = function (array, value) {
+  function contains(array, value) {
     return (array.indexOf(value) > -1);
-  };
+  }
 
-  var containsKeyValue = function (array, key, value) {
+  function containsKeyValue(array, key, value) {
     return (getIndexByKeyValue(array, key, value) > -1);
-  };
+  }
+
+  function sortByKey(array, key){
+    array.sort(function(a, b){
+      if(a[key] < b[key]) return -1;
+      if(a[key] > b[key]) return 1;
+      return 0;
+    });
+  }
+
 
   return {
     getIndexByKeyValue: getIndexByKeyValue,
@@ -71,6 +80,7 @@ app.factory('ArrayUtil', function () {
     removeElementByKeyValue: removeElementByKeyValue,
     contains: contains,
     containsKeyValue: containsKeyValue,
-    removeElementByValue: removeElementByValue
+    removeElementByValue: removeElementByValue,
+    sortByKey: sortByKey
   };
 });

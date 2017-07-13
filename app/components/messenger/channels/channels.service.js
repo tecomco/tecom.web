@@ -100,6 +100,7 @@ app.service('channelsService', [
     }
 
     function getInitialChannels() {
+    try {
       socket.emit('channel:init', null, function (results) {
         self.channels = [];
         self.initChannelsCount = results.length;
@@ -123,6 +124,9 @@ app.service('channelsService', [
         }
         self.initialChannelsGottenForFirstTime = true;
       });
+    } catch (err) {
+      console.log('err', err);
+    }
     }
 
     function setChannelLivedFileId(channelId, fileId) {
@@ -140,7 +144,8 @@ app.service('channelsService', [
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, null, data.memberId,
         data.isFakeDirect, data.liveFileId, data.teamId,
-        data.isCurrentMemberChannelMember, data.isMuted);
+        data.isCurrentMemberChannelMember, data.isMuted, data.lastSeenMessageId,
+        data.lastMessageDatetime, data.lastMessageId, data.memberLastSeenMessageId);
       if (channel.isDirect() && !channel.isFakeDirect && !CurrentMember.member
         .isTecomBot()) {
         channel.changeNameAndSlugFromId();

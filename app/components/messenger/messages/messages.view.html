@@ -13,9 +13,12 @@
         <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
       </div>
       <div class="main">
-        <div ng-repeat="message in messages | orderBy : 'datetime'">
+        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}">
           <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
             <label>{{message.getLocaleDate()}}</label>
+          </div>
+          <div class="date-holder" ng-if="isMessageFirstUnread(message)">
+            <label>پیام های جدید</label>
           </div>
           <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name">{{message.getUsername()}}</label>
@@ -62,6 +65,212 @@
       <button class="btn" ng-click="archiveDirect(channel)">حذف و بستن مکالمه</button>
     </div>
   </div>
+  <div class="mime-holder opened">
+    <div class="mime-toggle-fix"></div>
+    <div class="mime-menu-toggle-holder">
+      <div class="mime-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <div class="mime-menu-header">
+      <h3>عکس‌ها</h3>
+      <div class="mime-more">
+        <i class="zmdi zmdi-more"></i>
+        <ul>
+          <li><a>عکس‌ها</a></li>
+          <li><a>فایل‌ها</a></li>
+        </ul>
+      </div>
+    </div>
+    <ul class="mime-main">
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#dll"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">نام فایل</label>
+            <span class="mime-date">۱۴ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱.۵۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+            <use xlink:href="/static/img/file-formats.svg#ai"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">landing-illus.ai</label>
+            <span class="mime-date">۱۲ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#js"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">model.js</label>
+            <span class="mime-date">۵ اردیبهشت ۱۳۹۶</span>
+            <span class="mime-size">۰.۳۱ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#dll"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">نام فایل</label>
+            <span class="mime-date">۱۴ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱.۵۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+            <use xlink:href="/static/img/file-formats.svg#ai"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">landing-illus.ai</label>
+            <span class="mime-date">۱۲ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#js"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">model.js</label>
+            <span class="mime-date">۵ اردیبهشت ۱۳۹۶</span>
+            <span class="mime-size">۰.۳۱ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#dll"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">نام فایل</label>
+            <span class="mime-date">۱۴ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱.۵۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+            <use xlink:href="/static/img/file-formats.svg#ai"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">landing-illus.ai</label>
+            <span class="mime-date">۱۲ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#js"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">model.js</label>
+            <span class="mime-date">۵ اردیبهشت ۱۳۹۶</span>
+            <span class="mime-size">۰.۳۱ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#dll"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">نام فایل</label>
+            <span class="mime-date">۱۴ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱.۵۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+            <use xlink:href="/static/img/file-formats.svg#ai"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">landing-illus.ai</label>
+            <span class="mime-date">۱۲ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#js"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">model.js</label>
+            <span class="mime-date">۵ اردیبهشت ۱۳۹۶</span>
+            <span class="mime-size">۰.۳۱ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#dll"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">نام فایل</label>
+            <span class="mime-date">۱۴ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱.۵۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+            <use xlink:href="/static/img/file-formats.svg#ai"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">landing-illus.ai</label>
+            <span class="mime-date">۱۲ تیر ۱۳۹۶</span>
+            <span class="mime-size">۱۴ مگابایت</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="mime-item-one">
+          <svg viewBox="0 0 100 100">
+           <use xlink:href="/static/img/file-formats.svg#js"></use>
+          </svg>
+          <div class="mime-dets">
+            <label class="mime-name">model.js</label>
+            <span class="mime-date">۵ اردیبهشت ۱۳۹۶</span>
+            <span class="mime-size">۰.۳۱ مگابایت</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
 </div>
 <div ng-class="getPannelsCSS('files')" class="window-transition">
   <!-- TODO col-sm-3 col-lg-3 -->

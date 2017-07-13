@@ -2,17 +2,19 @@
 
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
-  'Upload', 'messagesService', 'channelsService', 'filesService', '$q',
+    'Upload', 'Message', 'messagesService', 'channelsService', 'filesService', '$q',
   'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
-    Upload, messagesService, channelsService, filesService, $q,
+    Upload, Message, messagesService, channelsService, filesService, $q,
     ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
 
     var self = this;
-
     $scope.messages = [];
     $scope.file = {};
+    var scrollLimits;
+    var flagLock = false;
+    var prevScrollTop;
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -126,6 +128,13 @@ app.controller('messagesController', [
       }, 0, false);
     }
 
+    function scrollToUnseenMessage() {
+      if ($scope.channel.memberLastSeenId === $scope.channel.lastMessageId)
+      scrollToMessageElementById($scope.channel.memberLastSeenId - 1);
+      else
+      scrollToMessageElementById($scope.channel.memberLastSeenId);
+    }
+
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
@@ -194,6 +203,33 @@ app.controller('messagesController', [
       }
     };
 
+    function getLoadingMessages(channelId, from, to, dir) {
+      messagesService.getMessagePacketFromServer(channelId,
+        CurrentMember.member.teamId, from, to).then(function (messages) {
+        removeLoadingMessage(from);
+        messages.forEach(function (message) {
+          if (!ArrayUtil.containsKeyValue($scope.messages, 'id', message.id)) {
+            $scope.messages.push(message);
+          }
+        });
+        flagLock = false;
+        // updateScrollLimits();
+        // if (dir === 'up')
+        //   scrollToMessageElementById(to);
+        // else
+        //   scrollToMessageElementById(from - 1, dir);
+        getMessagePackagesIfLoadingsInView(dir);
+      });
+    }
+
+    $scope.isMessageFirstUnread = function (message) {
+      if (message.id === $scope.channel.memberLastSeenId + 1 &&
+        message.id !== $scope.channel.lastMessageId + 1)
+        return true;
+      else
+        return false;
+    };
+
     function setCurrentChannel() {
       var defer = $q.defer();
       var slug = $stateParams.slug.replace('@', '');
@@ -208,7 +244,10 @@ app.controller('messagesController', [
       messagesService.getMessagesByChannelId($scope.channel.id)
         .then(function (messages) {
           $scope.messages = messages;
-          scrollBottom();
+          console.log('messages:',messages);
+          // scrollBottom();
+          scrollToUnseenMessage();
+          handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
             messagesService.seenLastMessageByChannelId($scope.channel.id);
           }
@@ -227,7 +266,182 @@ app.controller('messagesController', [
       $scope.inputMessage = '';
     }
 
+    function handleLoadingMessages() {
+      var packetStartPoint;
+      var i;
+
+      if ($scope.messages.length > 0) {
+        var firstDbMessageId = $scope.messages[0].id;
+        var lastDbMessageId = $scope.messages[$scope.messages.length - 1].id;
+
+        for (i = 0; i < $scope.messages.length; i++) {
+          if (i !== $scope.messages.length - 1) {
+            if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
+              generateLoadingMessage($scope.channel.id, $scope.messages[i].id + 1,
+                $scope.messages[i + 1].id - 1);
+              // console.log('Middle GAP:', $scope.messages[i].id + 1, $scope.messages[i + 1].id - 1);
+            }
+          }
+        }
+
+        packetStartPoint = firstDbMessageId - 1;
+        for (i = firstDbMessageId - 1; i > 0; i--) {
+          if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
+            generateLoadingMessage($scope.channel.id, i, packetStartPoint);
+            // console.log('Start GAP:', i, packetStartPoint);
+            packetStartPoint = i - 1;
+          }
+        }
+        packetStartPoint = lastDbMessageId + 1;
+        for (i = lastDbMessageId + 1; i <= $scope.channel.lastMessageId; i++) {
+          if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH - 1 ||
+            (i === $scope.channel.lastMessageId - 1)) {
+            generateLoadingMessage($scope.channel.id, packetStartPoint, i);
+            // console.log('End GAP:', packetStartPoint, i);
+            packetStartPoint = i + 1;
+          }
+        }
+      } else {
+        packetStartPoint = $scope.channel.lastMessageId - 1;
+        for (i = $scope.channel.lastMessageId - 1; i > 0; i--) {
+          if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i === 1)) {
+            generateLoadingMessage($scope.channel.id, i, packetStartPoint);
+            // console.log('Start GAP:', i, packetStartPoint);
+            packetStartPoint = i - 1;
+          }
+        }
+      }
+      //updateScrollLimits();
+      getMessagePackagesIfLoadingsInView();
+    }
+
+    function generateLoadingMessage(channelId, fromId, toId) {
+      var additionalData = {
+        'channelId': channelId,
+        'from': fromId,
+        'to': toId
+      };
+      if (toId - fromId < 16) {
+        var loadingMessage = new Message(null, Message.TYPE.LOADING, null, channelId, null, null,
+          additionalData, null, null);
+        loadingMessage.setId(fromId);
+        $scope.messages.push(loadingMessage);
+      } else {
+        generateLoadingMessage(channelId, fromId, fromId + Message.MAX_PACKET_LENGTH - 1);
+        generateLoadingMessage(channelId, fromId + Message.MAX_PACKET_LENGTH, toId);
+      }
+    }
+
+    function removeLoadingMessage(messageId) {
+      ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
+    }
+
+    function scrollToMessageElementById(elementId, dir) {
+      $timeout(function () {
+        var holder = document.getElementById('messagesHolder');
+        var messageElement = getMessageElementById(elementId + 1);
+        var messagesWindow = document.getElementById('messagesWindow');
+        if (messageElement)
+        {
+          if (dir === 'down')
+          holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop - 580;
+          else
+          holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop;
+        }
+      }, 0, false);
+    }
+
+    function elementInViewport(el) {
+      var messageHolder = document.getElementById('messagesHolder');
+      var messagesWindow = document.getElementById('messagesWindow');
+      if (el) {
+        if (el.offsetTop > messageHolder.scrollTop &&
+          el.offsetTop < messageHolder.scrollTop + messagesWindow.scrollHeight)
+          return true;
+        else
+          return false;
+      }
+      return false;
+    }
+
+    function filterAndGetLoadingMessages() {
+      var loadingMessages = $scope.messages.filter(function (message) {
+        return message.type === Message.TYPE.LOADING;
+      });
+      return loadingMessages;
+    }
+
+    function getMessageElementById(id) {
+      var element = document.getElementById('message_' + id);
+      return element;
+    }
+
+    function getMessagePackagesIfLoadingsInView(direction) {
+      filterAndGetLoadingMessages().forEach(function (message) {
+          var element = getMessageElementById(message.id);
+          if (elementInViewport(element) && !flagLock) {
+            getLoadingMessages(message.additionalData.channelId,
+              message.additionalData.from, message.additionalData.to, direction);
+            flagLock = true;
+          }
+      });
+    }
+
+    // function updateScrollLimits() {
+    //   var holder = document.getElementById('messagesHolder');
+    //   var top = 0;
+    //   var button = holder.scrollHeight;
+    //   var loadingMessages = filterAndGetLoadingMessages();
+    //   if (loadingMessages.length > 0) {
+    //     loadingMessages.forEach(function (LoadingMessage) {
+    //       var loadingElement = getMessageElementById(LoadingMessage.id);
+    //       if (loadingElement.offsetTop > top &&
+    //         loadingElement.offsetTop < holder.scrollTop)
+    //         top = loadingElement.offsetTop;
+    //       if (loadingElement.offsetTop < button &&
+    //         loadingElement.offsetTop > holder.scrollTop)
+    //         button = loadingElement.offsetTop;
+    //     });
+    //   }
+    //   scrollLimits = {
+    //     'top': top,
+    //     'button': button
+    //   };
+    // }
+
     document.getElementById('inputPlaceHolder').focus();
+
+    angular.element(document.getElementById('messagesHolder'))
+      .bind('scroll', function () {
+        var scrollDirection;
+        // if (scrollLimits) {
+        var holder = document.getElementById('messagesHolder');
+        var scrollTop = holder.scrollTop;
+        if (prevScrollTop) {
+          if (prevScrollTop > scrollTop)
+            scrollDirection = 'up';
+          else
+            scrollDirection = 'down';
+        }
+        prevScrollTop = scrollTop;
+        //   console.log('scroll top:', holder.scrollTop);111
+        //   console.log('scroll height:', holder.scrollHeight);
+        //   console.log('limits:', scrollLimits);
+        //
+        //   if (holder.scrollTop < scrollLimits.top) {
+        //     holder.scrollTop = scrollLimits.top;
+        //     getMessagePackagesIfLoadingsInView();
+        //     console.log('TOP LIMIT EXCEEDED');
+        //   }
+        //   if (holder.scrollTop > scrollLimits.button) {
+        //     holder.scrollTop = scrollLimits.button;
+        //     getMessagePackagesIfLoadingsInView();
+        //     console.log('BUTTON LIMIT EXCEEDED');
+        //   }
+        //   console.log('Scroll Limits:', scrollLimits);
+        // }
+        getMessagePackagesIfLoadingsInView(scrollDirection);
+      });
 
     document.onkeydown = function (evt) {
       evt = evt || window.event;
@@ -235,6 +449,10 @@ app.controller('messagesController', [
         $state.go('messenger.home');
       }
     };
+
+    // angular.element(document).ready(function () {
+    //   updateScrollLimits();
+    // });
 
     $scope.$on('tab:focus:changed', function () {
       if ($rootScope.isTabFocused)

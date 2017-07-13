@@ -3,9 +3,9 @@
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'Upload', 'socket',
   'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
-  'Team',
+  'Team', 'ArrayUtil',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-    Message, db, filesService, CurrentMember, Team) {
+    Message, db, filesService, CurrentMember, Team, ArrayUtil) {
 
     var self = this;
 
@@ -74,51 +74,33 @@ app.service('messagesService', [
 
     function getAndSaveNewMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
-      var messagePromises = [];
-      var messages = [];
-      var dataToBeSend = {
-        channelId: channel.id,
-        teamId: channel.teamId
-      };
-      messagePromises.push(new Promise(function (resolve) {
-        getLastMessageByChannelIdFromDb(channel.id)
-          .then(function (lastMessage) {
-            if (lastMessage) {
-              dataToBeSend.lastSavedMessageId = lastMessage.id;
-            }
-            socket.emit('message:get', dataToBeSend, function (res) {
-              channelsService.updateChannelNotification(channel
-                .id, 'num',
-                res.notifCount);
-              if (res.lastDatetime) {
-                channelsService.updateChannelLastDatetime(
-                  channel.id,
-                  new Date(res.lastDatetime));
-              }
-              if (res.channelLastSeen) {
-                channelsService.updateChannelLastSeen(channel.id,
-                  res.channelLastSeen);
-              }
-              res.messages.forEach(function (msg) {
-                var message = new Message(msg.body, msg.type,
-                  msg.senderId,
-                  msg.channelId, msg.id, msg.datetime,
-                  msg.additionalData, msg.about);
-                messages.push(message.getDbWellFormed());
-              });
-              resolve();
-            });
-          });
-      }));
-      Promise.all(messagePromises).then(function () {
-        if (messages.length > 0) {
-          bulkSaveMessage(messages).then(function () {
-            deferred.resolve();
-          });
-        } else {
+      generateFromAndTo(channel.memberLastSeenId,channel.lastMessageId).then(function (period) {
+        getInitialMessagesByChannelId(channel.id, channel.teamId, period.from, period.to).then(function () {
           deferred.resolve();
-        }
+        }).catch(function (err) {
+          $log.error('Error Getting Initial Messages From Server', err);
+        });
       });
+      return deferred.promise;
+    }
+
+    function generateFromAndTo(memberLastSeenId,lastMessageId) {
+      var deferred = $q.defer();
+      var from;
+      var to;
+      if (memberLastSeenId) {
+        from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4, 1);
+        to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
+          lastMessageId);
+          if (from === 1)
+          to = Message.MAX_PACKET_LENGTH;
+          if (to === lastMessageId)
+          from = lastMessageId - Message.MAX_PACKET_LENGTH + 1;
+      } else {
+        from = 1;
+        to = Message.MAX_PACKET_LENGTH;
+      }
+      deferred.resolve({from:from,to:to});
       return deferred.promise;
     }
 
@@ -133,6 +115,42 @@ app.service('messagesService', [
             deferred.reject();
             $log.error('Bulk saving messages failed.', err);
           });
+      });
+      return deferred.promise;
+    }
+
+    function getMessagePacketFromServer(channelId, teamId, fromId, toId) {
+      var messagesForDb = [];
+      var messagesForView = [];
+      var deferred = $q.defer();
+      var dataToBeSend = {
+        channelId: channelId,
+        teamId: teamId,
+        from: fromId,
+        to: toId
+      };
+      socket.emit('message:get', dataToBeSend, function (res) {
+        if (res && res.messages) {
+          res.messages.forEach(function (msg) {
+            var message = new Message(msg.body, msg.type,
+              msg.senderId,
+              msg.channelId, msg.id, msg.datetime,
+              msg.additionalData, msg.about);
+            messagesForDb.push(message.getDbWellFormed());
+            messagesForView.push(message);
+          });
+          if (messagesForDb.length > 0) {
+            bulkSaveMessage(messagesForDb).then(function () {
+              deferred.resolve(messagesForView);
+            }).catch(function (err) {
+              $log.error('Error Saving Initila Messages To DB', err);
+            });
+          } else {
+            deferred.resolve(messagesForView);
+          }
+        } else {
+          deferred.reject();
+        }
       });
       return deferred.promise;
     }
@@ -153,6 +171,7 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
+
     /**
      * @todo Create a static variable for limit count.
      */
@@ -169,13 +188,83 @@ app.service('messagesService', [
             }
           },
           sort: [{
-            id: 'desc'
+            id: 'asc'
           }],
-          limit: 200
+          // limit: 200
         }).then(function (docs) {
           deferred.resolve(docs);
         });
       });
+      return deferred.promise;
+    }
+
+    function getInitialMessagesByChannelId(channelId, teamId, from, to) {
+      var deferred = $q.defer();
+      console.log('from:',from);
+      console.log('to',to);
+      getInitialMessagesByChannelIdFromDb(channelId, from, to)
+        .then(function (res) {
+          findGaps(res, from, to).then(function (gaps) {
+            if (gaps)
+              for (var i = 0; i < gaps.length; i++)
+                getMessagePacketFromServer(channelId, teamId, gaps[i].from,gaps[i].to);
+            deferred.resolve();
+          });
+        });
+      return deferred.promise;
+    }
+
+    function getInitialMessagesByChannelIdFromDb(channelId, from, to) {
+      var deferred = $q.defer();
+      db.getDb().then(function (database) {
+        database.find({
+          selector: {
+            id: {
+              $gt: from - 1,
+              $lt: to + 1
+            },
+            channelId: {
+              $eq: channelId
+            }
+          },
+          fields: ['id'],
+          sort: [{
+            id: 'asc'
+          }],
+        }).then(function (docs) {
+          console.log('docs',docs);
+          deferred.resolve(docs);
+        });
+      });
+      return deferred.promise;
+    }
+
+    function findGaps(res, from, to) {
+      var deferred = $q.defer();
+      var gaps = [];
+      var diff = 0;
+      for (var i = from; i <= to; i++) {
+        if (res.docs[i - from - diff]) {
+          if (i === res.docs[i - from - diff].id)
+            continue;
+          else {
+            gaps.push({
+              from: i,
+              to: res.docs[i - from - diff].id - 1
+            });
+            var tempdiff = res.docs[i - from - diff].id - i;
+            i = res.docs[i - from - diff];
+            diff += tempdiff;
+          }
+        } else {
+          gaps.push({
+            from: i,
+            to: to
+          });
+          break;
+        }
+      }
+      deferred.resolve(gaps);
       return deferred.promise;
     }
 
@@ -273,7 +362,7 @@ app.service('messagesService', [
               message.datetime);
           });
       }, function (resp) {
-        console.log('Error status: ' + resp.status);
+        $log.error('Error status: ' + resp.status);
       }, function (evt) {
         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
         $rootScope.$broadcast('file:upload:progress',
@@ -324,6 +413,7 @@ app.service('messagesService', [
       getMessagesByChannelId: getMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
+      getMessagePacketFromServer: getMessagePacketFromServer,
       seenMessage: seenMessage,
       seenLastMessageByChannelId: seenLastMessageByChannelId,
       startTyping: startTyping,
