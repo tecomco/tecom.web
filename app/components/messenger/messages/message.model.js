@@ -118,7 +118,7 @@ app.factory('Message', [
           '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
       } else if(this.type === Message.TYPE.LOADING){
         body = '<div class="cssload-container">' +
-          '<div class="cssload-speeding-wheel"></div></div>';
+          '<div class="loading-text">در حال بارگذاری...</div></div>';
       }
       return body;
     };
@@ -129,6 +129,10 @@ app.factory('Message', [
 
     Message.prototype.isEnglish = function () {
       return this.body ? textUtil.isEnglish(this.body) : false;
+    };
+
+    Message.prototype.isLoading = function () {
+      return this.type === Message.TYPE.LOADING;
     };
 
     Message.prototype.getStyle = function () {
@@ -192,6 +196,8 @@ app.factory('Message', [
         return 'notif';
       case Message.TYPE.NOTIF.CHANNEL_EDITED:
         return 'notif';
+      case Message.TYPE.LOADING:
+          return 'msg-loading';
       }
     };
 

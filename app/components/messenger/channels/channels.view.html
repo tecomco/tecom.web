@@ -2,11 +2,11 @@
   <div class="group-holder-header">
     <i class="fa fa-users"></i>
     <label>گروه‌ ها</label>
-    <a class="plus-g" tooltip-placement="right" uib-tooltip="ایجاد گروه جدید!" ng-click="openCreateChannelModal()">
+    <a class="plus-g" tooltip-placement="right" uib-tooltip="ایجاد گروه جدید!" ng-click="openCreateChannelModal()" tour-step tour-step-title="Main Menu" tour-step-content="Navigate the site using this menu." tour-step-order="0" tour-step-placement="left">
       <i class="zmdi zmdi-plus"></i>
     </a>
   </div>
-  <div class="group-holder">
+  <div class="group-holder"  tour-step tour-step-title="PV" tour-step-content="به بچه‌های تیم خصوصی پیام بده ;)" tour-step-order="1" tour-step-placement="left">
     <ul>
       <li ng-repeat="channel in channels.publicsAndPrivates | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="channel.getCssClass()">
         <a ui-sref="messenger.messages({slug: channel.getUrlifiedSlug()})">
@@ -19,7 +19,7 @@
   </div>
   <div class="direct-holder-header">
     <i class="fa fa-user"></i>
-    <label>پیام خصوصی</label>
+    <label tour-step tour-step-title="PV" tour-step-content="به بچه‌های تیم خصوصی پیام بده ;)" tour-step-order="2" tour-step-placement="left">پیام خصوصی</label>
     <!--
     <a class="plus-d" tooltip-placement="right" uib-tooltip="شروع مکالمه خصوصی جدید!" ng-click="openModal('newDirect')">
       <i class="zmdi zmdi-plus"></i>

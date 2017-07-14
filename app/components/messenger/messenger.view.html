@@ -1,8 +1,8 @@
-<div ng-controller="MessengerCtrl" class="wrapper">
+<div ng-controller="MessengerCtrl" class="wrapper" ui-tour>
   <div class="col-sm-3 col-lg-2 no-padding channel-section">
     <div class="right-section">
       <div class="right-section-header" uib-dropdown>
-        <img src="static/img/tecom-logo.png" />
+        <img src="static/img/tecom-logo.png" ng-click="tour.start()" />
         <span class="brand-name-right-header">تیکام</span>
         <a uib-dropdown-toggle class="user-options-btn">
           <i class="zmdi zmdi-more-vert"></i>
@@ -45,9 +45,9 @@
   <div class="col-sm-9 col-lg-10 no-padding chat-section">
     <div ui-view></div>
   </div>
-  <div class="loading" ng-show="isLoading">
+  <!-- <div class="loading" ng-show="isLoading">
     <img class="loading-img" src="static/img/loading.gif">
     <div class="loading-txt">تمرکز روی همه چیز، همون تمرکز روی هیچ چیزِ.</div>
-  </div>
+  </div> -->
 </div>
 <div class="clearfix"></div>
