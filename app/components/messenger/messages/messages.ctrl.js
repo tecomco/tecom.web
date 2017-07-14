@@ -203,8 +203,8 @@ app.controller('messagesController', [
       }
     };
 
-    function getLoadingMessages(channelId, from, to, dir) {
-      messagesService.getMessagePacketFromServer(channelId,
+    function getLoadingMessages(channelId, from, to) {
+      messagesService.getNeededMessagesFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
         removeLoadingMessage(from);
         messages.forEach(function (message) {
@@ -213,7 +213,7 @@ app.controller('messagesController', [
           }
         });
         flagLock = false;
-        getMessagePackagesIfLoadingsInView(dir);
+        getMessagePackagesIfLoadingsInView();
       });
     }
 
@@ -324,22 +324,17 @@ app.controller('messagesController', [
       ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
     }
 
-    function scrollToMessageElementById(elementId, dir) {
+    function scrollToMessageElementById(elementId) {
       $timeout(function () {
         var holder = document.getElementById('messagesHolder');
         var messageElement = getMessageElementById(elementId + 1);
         var messagesWindow = document.getElementById('messagesWindow');
         if (messageElement)
-        {
-          if (dir === 'down')
-          holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop - 580;
-          else
           holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop;
-        }
       }, 0, false);
     }
 
-    function elementInViewport(el) {
+    function isElementInViewPort(el) {
       var messageHolder = document.getElementById('messagesHolder');
       var messagesWindow = document.getElementById('messagesWindow');
       if (el) {
@@ -364,12 +359,12 @@ app.controller('messagesController', [
       return element;
     }
 
-    function getMessagePackagesIfLoadingsInView(direction) {
+    function getMessagePackagesIfLoadingsInView() {
       filterAndGetLoadingMessages().forEach(function (message) {
           var element = getMessageElementById(message.id);
-          if (elementInViewport(element) && !flagLock) {
+          if (isElementInViewPort(element) && !flagLock) {
             getLoadingMessages(message.additionalData.channelId,
-              message.additionalData.from, message.additionalData.to, direction);
+              message.additionalData.from, message.additionalData.to);
             flagLock = true;
           }
       });
@@ -379,17 +374,17 @@ app.controller('messagesController', [
 
     angular.element(document.getElementById('messagesHolder'))
       .bind('scroll', function () {
-        var scrollDirection;
-        var holder = document.getElementById('messagesHolder');
-        var scrollTop = holder.scrollTop;
-        if (prevScrollTop) {
-          if (prevScrollTop > scrollTop)
-            scrollDirection = 'up';
-          else
-            scrollDirection = 'down';
-        }
-        prevScrollTop = scrollTop;
-        getMessagePackagesIfLoadingsInView(scrollDirection);
+        // var scrollDirection;
+        // var holder = document.getElementById('messagesHolder');
+        // var scrollTop = holder.scrollTop;
+        // if (prevScrollTop) {
+        //   if (prevScrollTop > scrollTop)
+        //     scrollDirection = 'up';
+        //   else
+        //     scrollDirection = 'down';
+        // }
+        // prevScrollTop = scrollTop;
+        getMessagePackagesIfLoadingsInView();
       });
 
     document.onkeydown = function (evt) {

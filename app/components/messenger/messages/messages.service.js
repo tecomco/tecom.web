@@ -63,7 +63,7 @@ app.service('messagesService', [
         deferred.resolve();
         promise = deferred.promise;
       } else {
-        promise = getAndSaveNewMessagesByChannelFromServer(channel);
+        promise = getAndSaveInitialMessagesByChannelFromServer(channel);
       }
       channelsService.addMessagesPromise(promise);
     });
@@ -72,7 +72,7 @@ app.service('messagesService', [
      * @summary Methods
      */
 
-    function getAndSaveNewMessagesByChannelFromServer(channel) {
+    function getAndSaveInitialMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
       generateFromAndTo(channel.memberLastSeenId,channel.lastMessageId).then(function (period) {
         getInitialMessagesByChannelId(channel.id, channel.teamId, period.from, period.to).then(function () {
@@ -98,7 +98,7 @@ app.service('messagesService', [
           from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
         } else {
         from = 1;
-        to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId)
+        to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
       }
       deferred.resolve({from:from,to:to});
       return deferred.promise;
@@ -119,7 +119,7 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getMessagePacketFromServer(channelId, teamId, fromId, toId) {
+    function getNeededMessagesFromServer(channelId, teamId, fromId, toId) {
       var messagesForDb = [];
       var messagesForView = [];
       var deferred = $q.defer();
@@ -205,9 +205,8 @@ app.service('messagesService', [
           findGaps(res, from, to).then(function (gaps) {
             if (gaps)
               for (var i = 0; i < gaps.length; i++)
-                getMessagePacketFromServer(channelId, teamId, gaps[i].from,gaps[i].to).then(function () {
-                  deferred.resolve();
-                });
+                getNeededMessagesFromServer(channelId, teamId, gaps[i].from,gaps[i].to);
+                deferred.resolve();
           });
         });
       return deferred.promise;
@@ -411,7 +410,7 @@ app.service('messagesService', [
       getMessagesByChannelId: getMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
-      getMessagePacketFromServer: getMessagePacketFromServer,
+      getNeededMessagesFromServer: getNeededMessagesFromServer,
       seenMessage: seenMessage,
       seenLastMessageByChannelId: seenLastMessageByChannelId,
       startTyping: startTyping,
