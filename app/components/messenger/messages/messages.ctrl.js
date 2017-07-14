@@ -2,7 +2,7 @@
 
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
-    'Upload', 'Message', 'messagesService', 'channelsService', 'filesService', '$q',
+  'Upload', 'Message', 'messagesService', 'channelsService', 'filesService', '$q',
   'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Upload, Message, messagesService, channelsService, filesService, $q,
@@ -13,7 +13,7 @@ app.controller('messagesController', [
     $scope.messages = [];
     $scope.file = {};
     var scrollLimits;
-    var flagLock = true;
+    var flagLock;
     var prevScrollTop;
 
     if (!$stateParams.slug) {
@@ -130,9 +130,9 @@ app.controller('messagesController', [
 
     function scrollToUnseenMessage() {
       if ($scope.channel.memberLastSeenId === $scope.channel.lastMessageId)
-      scrollToMessageElementById($scope.channel.memberLastSeenId - 1);
+        scrollToMessageElementById($scope.channel.memberLastSeenId - 1);
       else
-      scrollToMessageElementById($scope.channel.memberLastSeenId);
+        scrollToMessageElementById($scope.channel.memberLastSeenId);
     }
 
     $scope.goLive = function (fileId, fileName) {
@@ -203,7 +203,7 @@ app.controller('messagesController', [
       }
     };
 
-    function getLoadingMessages(channelId, from, to) {
+    function getLoadingMessages(channelId, from, to, direction) {
       messagesService.getNeededMessagesFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
         removeLoadingMessage(from);
@@ -213,7 +213,7 @@ app.controller('messagesController', [
           }
         });
         flagLock = false;
-        getMessagePackagesIfLoadingsInView();
+        getMessagePackagesIfLoadingsInView(direction);
       });
     }
 
@@ -334,15 +334,19 @@ app.controller('messagesController', [
       }, 0, false);
     }
 
-    function isElementInViewPort(el) {
+    function isElementInViewPort(element, direction) {
       var messageHolder = document.getElementById('messagesHolder');
       var messagesWindow = document.getElementById('messagesWindow');
-      if (el) {
-        if (el.offsetTop > messageHolder.scrollTop &&
-          el.offsetTop < messageHolder.scrollTop + messagesWindow.scrollHeight)
-          return true;
-        else
-          return false;
+      if (element) {
+        if (direction === 'up') {
+          if (element.offsetTop > messageHolder.scrollTop &&
+            element.offsetTop < messageHolder.scrollTop + messagesWindow.scrollHeight)
+            return true;
+        } else {
+          if (element.offsetTop > messageHolder.scrollTop + messagesWindow.scrollHeight &&
+            element.offsetTop < messageHolder.scrollTop + 2 * messagesWindow.scrollHeight)
+            return true;
+        }
       }
       return false;
     }
@@ -359,14 +363,15 @@ app.controller('messagesController', [
       return element;
     }
 
-    function getMessagePackagesIfLoadingsInView() {
+    function getMessagePackagesIfLoadingsInView(direction) {
       filterAndGetLoadingMessages().forEach(function (message) {
-          var element = getMessageElementById(message.id);
-          if (isElementInViewPort(element) && !flagLock) {
-            getLoadingMessages(message.additionalData.channelId,
-              message.additionalData.from, message.additionalData.to);
-            flagLock = true;
-          }
+        var element = getMessageElementById(message.id);
+        if (isElementInViewPort(element, direction) && !flagLock) {
+          console.log('here');
+          getLoadingMessages(message.additionalData.channelId,
+            message.additionalData.from, message.additionalData.to, direction);
+          flagLock = true;
+        }
       });
     }
 
@@ -374,17 +379,17 @@ app.controller('messagesController', [
 
     angular.element(document.getElementById('messagesHolder'))
       .bind('scroll', function () {
-        // var scrollDirection;
-        // var holder = document.getElementById('messagesHolder');
-        // var scrollTop = holder.scrollTop;
-        // if (prevScrollTop) {
-        //   if (prevScrollTop > scrollTop)
-        //     scrollDirection = 'up';
-        //   else
-        //     scrollDirection = 'down';
-        // }
-        // prevScrollTop = scrollTop;
-        getMessagePackagesIfLoadingsInView();
+        var scrollDirection;
+        var holder = document.getElementById('messagesHolder');
+        var scrollTop = holder.scrollTop;
+        if (prevScrollTop) {
+          if (prevScrollTop > scrollTop)
+            scrollDirection = 'up';
+          else
+            scrollDirection = 'down';
+        }
+        prevScrollTop = scrollTop;
+        getMessagePackagesIfLoadingsInView(scrollDirection);
       });
 
     document.onkeydown = function (evt) {
