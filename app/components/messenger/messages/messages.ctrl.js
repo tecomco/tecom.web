@@ -12,6 +12,7 @@ app.controller('messagesController', [
     var self = this;
     $scope.messages = [];
     $scope.file = {};
+    $scope.initialMemberLastSeenId = null;
     var scrollLimits;
     var flagLock;
     var prevScrollTop;
@@ -35,14 +36,16 @@ app.controller('messagesController', [
 
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
-        $scope.messages.push(message);
-        scrollBottom();
         if ($rootScope.isTabFocused) {
+          $scope.channel.memberLastSeenId++;
+          $scope.channel.lastMessageId++;
           messagesService.seenMessage($scope.channel.id, message.id,
             message.senderId);
-        } else {
-          self.lastUnSeenMessage = message;
-        }
+          } else {
+            self.lastUnSeenMessage = message;
+          }
+        $scope.messages.push(message);
+        scrollBottom();
       }
     });
 
@@ -93,6 +96,8 @@ app.controller('messagesController', [
       $event.preventDefault();
       var messageBody = $scope.inputMessage.trim();
       if (!messageBody) return;
+      $scope.channel.lastMessageId++;
+      $scope.channel.memberLastSeenId++;
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody);
       $scope.messages.push(message);
@@ -169,6 +174,8 @@ app.controller('messagesController', [
     function initialize() {
       setCurrentChannel().then(function () {
         if ($scope.channel) {
+          if ($scope.channel.memberLastSeenId !== $scope.channel.lastMessageId)
+          $scope.initialMemberLastSeenId = $scope.channel.memberLastSeenId;
           $rootScope.$broadcast('channel:ready', $scope.channel);
           bindMessages();
           $scope.inputMessage = '';
@@ -218,8 +225,7 @@ app.controller('messagesController', [
     }
 
     $scope.isMessageFirstUnread = function (message) {
-      if (message.id === $scope.channel.memberLastSeenId + 1 &&
-        message.id !== $scope.channel.lastMessageId + 1)
+      if (message.id === $scope.initialMemberLastSeenId + 1)
         return true;
       else
         return false;
@@ -245,6 +251,7 @@ app.controller('messagesController', [
             messagesService.seenLastMessageByChannelId($scope.channel.id);
           }
         });
+        channelsService.updateChannelNotification($scope.channel.id, 'empty');
     }
 
     function seenLastUnSeenMessage() {
@@ -367,7 +374,6 @@ app.controller('messagesController', [
       filterAndGetLoadingMessages().forEach(function (message) {
         var element = getMessageElementById(message.id);
         if (isElementInViewPort(element, direction) && !flagLock) {
-          console.log('here');
           getLoadingMessages(message.additionalData.channelId,
             message.additionalData.from, message.additionalData.to, direction);
           flagLock = true;

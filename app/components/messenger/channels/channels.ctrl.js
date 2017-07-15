@@ -31,11 +31,13 @@ app.controller('channelsController', [
         } else {
           var belongsToCurrentChannel =
             message.channelId === $scope.channels.current.id;
-          if (!belongsToCurrentChannel && !message.isFromMe()) {
+          if (!belongsToCurrentChannel) {
             incrementChannelNotification(message.channelId);
           }
         }
       }
+      console.log('lastseen',channel.memberLastSeenId);
+      console.log('last',channel.lastMessageId);
     });
 
     function sendBrowserNotification(channel) {

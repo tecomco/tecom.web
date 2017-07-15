@@ -7,10 +7,10 @@ app.factory('Channel', [
     Member) {
 
     function Channel(name, slug, description, type, id, membersCount,
-      notifCount, memberId, isFakeDirect, liveFileId, teamId,
+      memberId, isFakeDirect, liveFileId, teamId,
       isCurrentMemberChannelMember, isMuted,lastSeenId, lastDatetime, lastMessageId, memberLastSeenId) {
       this.setValues(name, slug, description, type, id, membersCount,
-        notifCount, memberId, isFakeDirect, liveFileId, teamId,
+        memberId, isFakeDirect, liveFileId, teamId,
         isCurrentMemberChannelMember, isMuted,lastSeenId, lastDatetime,
         lastMessageId, memberLastSeenId);
       this.isTypingMemberIds = [];
@@ -18,7 +18,7 @@ app.factory('Channel', [
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,
-      id, membersCount, notifCount, memberId, isFakeDirect, liveFileId,
+      id, membersCount, memberId, isFakeDirect, liveFileId,
       teamId, isCurrentMemberChannelMember, isMuted, lastSeenId,
       lastDatetime, lastMessageId,
       memberLastSeenId) {
@@ -41,11 +41,10 @@ app.factory('Channel', [
       this.lastDatetime = new Date(lastDatetime);
       this.lastMessageId = lastMessageId;
       this.memberLastSeenId = memberLastSeenId;
-      this.notifCount = lastMessageId - memberLastSeenId;
     };
 
     Channel.prototype.hasUnread = function () {
-      return this.notifCount && this.notifCount !== 0;
+      return this.getNotifCount() && this.getNotifCount() !== 0;
     };
 
     Channel.prototype.isCurrentMemberPublicChannelMember = function () {
@@ -77,7 +76,7 @@ app.factory('Channel', [
 
     Channel.prototype.getLocaleNotifCount = function () {
       return this.hasUnread() ?
-        textUtil.persianify(this.notifCount.toString()) : null;
+        textUtil.persianify(this.getNotifCount().toString()) : null;
     };
 
     Channel.prototype.getLocaleMembersCount = function () {
@@ -146,6 +145,10 @@ app.factory('Channel', [
     Channel.prototype.getNotifCountClass = function () {
       return this.isCurrentMemberChannelMember ? 'badge' :
         'badge badge-grey';
+    };
+
+    Channel.prototype.getNotifCount = function () {
+      return this.memberLastSeenId ? this.lastMessageId - this.memberLastSeenId : null;
     };
 
     Channel.prototype.getCssClass = function () {

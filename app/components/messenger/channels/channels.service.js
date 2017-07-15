@@ -142,7 +142,7 @@ app.service('channelsService', [
 
     function createAndPushChannel(data) {
       var channel = new Channel(data.name, data.slug, data.description,
-        data.type, data.id, data.membersCount, null, data.memberId,
+        data.type, data.id, data.membersCount, data.memberId,
         data.isFakeDirect, data.liveFileId, data.teamId,
         data.isCurrentMemberChannelMember, data.isMuted, data.lastSeenMessageId,
         data.lastMessageDatetime, data.lastMessageId, data.memberLastSeenMessageId);
@@ -297,17 +297,14 @@ app.service('channelsService', [
       return deferred.promise;
     }
 
-    function updateChannelNotification(channelId, type, notifCount) {
+    function updateChannelNotification(channelId, type) {
       var channel = findChannelById(channelId);
       switch (type) {
       case 'empty':
-        channel.notifCount = 0;
+        channel.memberLastSeenId = channel.lastMessageId;
         break;
       case 'inc':
-        channel.notifCount++;
-        break;
-      case 'num':
-        channel.notifCount = notifCount;
+        channel.lastMessageId++;
         break;
       }
       $rootScope.$broadcast('channels:updated');
