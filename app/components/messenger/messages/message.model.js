@@ -156,7 +156,7 @@ app.factory('Message', [
       if (this.isPending) {
         return Message.STATUS_TYPE.PENDING;
       }
-      if (this.id <= this.channel.lastSeen) {
+      if (this.id <= this.channel.lastSeenId) {
         return Message.STATUS_TYPE.SEEN;
       }
       return Message.STATUS_TYPE.SENT;

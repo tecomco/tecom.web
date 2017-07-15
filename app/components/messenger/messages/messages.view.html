@@ -64,10 +64,9 @@
       <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>
       <button class="btn" ng-click="archiveDirect(channel)">حذف و بستن مکالمه</button>
     </div>
-  </div>
-  <div class="mime-holder opened">
+  <div ng-class="getFileManagerClass()">
     <div class="mime-toggle-fix"></div>
-    <div class="mime-menu-toggle-holder">
+    <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()">
       <div class="mime-menu-toggle">
         <span></span>
         <span></span>
@@ -78,25 +77,25 @@
       </div>
     </div>
     <div class="mime-menu-header">
-      <h3>عکس‌ها</h3>
+      <h3>مدیریت فایل‌ها</h3>
       <div class="mime-more">
         <i class="zmdi zmdi-more"></i>
         <ul>
-          <li><a>عکس‌ها</a></li>
           <li><a>فایل‌ها</a></li>
+          <li><a>عکس‌ها</a></li>
         </ul>
       </div>
     </div>
     <ul class="mime-main">
-      <li>
+      <li ng-repeat="file in files | orderBy : 'date'">
         <a class="mime-item-one">
           <svg viewBox="0 0 100 100">
-           <use xlink:href="/static/img/file-formats.svg#dll"></use>
+           <use xlink:href={{getFileExtension(file.name)}}></use>
           </svg>
           <div class="mime-dets">
-            <label class="mime-name">نام فایل</label>
-            <span class="mime-date">۱۴ تیر ۱۳۹۶</span>
-            <span class="mime-size">۱.۵۴ مگابایت</span>
+            <label class="mime-name">{{getFileName(file.name)}}</label>
+            <span class="mime-date">{{file.date}}</span>
+            <span class="mime-size">{{file.size}}</span>
           </div>
         </a>
       </li>
@@ -269,6 +268,7 @@
         </a>
       </li>
     </ul>
+  </div>
   </div>
 </div>
 </div>

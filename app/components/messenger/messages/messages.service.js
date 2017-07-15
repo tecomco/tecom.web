@@ -368,6 +368,28 @@ app.service('messagesService', [
       return message;
     }
 
+    function getFileManagerFiles(channelId) {
+      var deferred = $q.defer();
+      var data =[];
+      var data1={name:'irani.jpg',date:2017,size:13};
+      data.push(data1);
+      data1 = {name:'iran.jpg',date:2016,size:133};
+      data.push(data1);
+      deferred.resolve(data);
+      return deferred.promise;
+      $http({
+        method: 'GET',
+        url: '/api/v1/messenger/channe/' + channelId + '/members/'
+      }).then(function (data) {
+        deferred.resolve(data);
+      }).catch(function (err) {
+        $log.info('Error Getting FileManager Files.', err);
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    }
+
+
     function seenMessage(channelId, messageId, senderId) {
       var data = {
         channelId: channelId,
@@ -410,6 +432,7 @@ app.service('messagesService', [
       getMessagesByChannelId: getMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
+      getFileManagerFiles: getFileManagerFiles,
       getNeededMessagesFromServer: getNeededMessagesFromServer,
       seenMessage: seenMessage,
       seenLastMessageByChannelId: seenLastMessageByChannelId,

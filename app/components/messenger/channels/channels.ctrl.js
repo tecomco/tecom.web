@@ -36,8 +36,6 @@ app.controller('channelsController', [
           }
         }
       }
-      console.log('lastseen',channel.memberLastSeenId);
-      console.log('last',channel.lastMessageId);
     });
 
     function sendBrowserNotification(channel) {

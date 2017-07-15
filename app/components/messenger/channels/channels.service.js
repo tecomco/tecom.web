@@ -304,7 +304,10 @@ app.service('channelsService', [
         channel.memberLastSeenId = channel.lastMessageId;
         break;
       case 'inc':
-        channel.lastMessageId++;
+        if (!channel.lastMessageId)
+          channel.lastMessageId=1;
+        else
+          channel.lastMessageId++;
         break;
       }
       $rootScope.$broadcast('channels:updated');

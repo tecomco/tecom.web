@@ -16,6 +16,7 @@ app.controller('messagesController', [
     var scrollLimits;
     var flagLock;
     var prevScrollTop;
+    var fileManagerStatus = 'closed';
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -41,9 +42,9 @@ app.controller('messagesController', [
           $scope.channel.lastMessageId++;
           messagesService.seenMessage($scope.channel.id, message.id,
             message.senderId);
-          } else {
-            self.lastUnSeenMessage = message;
-          }
+        } else {
+          self.lastUnSeenMessage = message;
+        }
         $scope.messages.push(message);
         scrollBottom();
       }
@@ -171,14 +172,41 @@ app.controller('messagesController', [
       $scope.channel.isCurrentMemberChannelMember = true;
     };
 
+    $scope.getFileManagerClass = function () {
+      if (fileManagerStatus === 'closed')
+        return 'mime-holder closed';
+      else
+        return 'mime-holder opened';
+    };
+
+    $scope.toggleFileManagerStatus = function () {
+      if (fileManagerStatus === 'closed')
+        fileManagerStatus = 'opened';
+      else
+        fileManagerStatus = 'closed';
+    };
+
+    $scope.getFileExtension = function (name) {
+      var extension = name.split('.').pop();
+      return '/static/img/file-formats.svg#' + extension;
+    };
+
+    $scope.getFileName = function (name) {
+      var extension = name.split('.').pop();
+      return name.replace('.' + extension , '');
+    };
+
     function initialize() {
       setCurrentChannel().then(function () {
         if ($scope.channel) {
           if ($scope.channel.memberLastSeenId !== $scope.channel.lastMessageId)
-          $scope.initialMemberLastSeenId = $scope.channel.memberLastSeenId;
+            $scope.initialMemberLastSeenId = $scope.channel.memberLastSeenId;
           $rootScope.$broadcast('channel:ready', $scope.channel);
           bindMessages();
           $scope.inputMessage = '';
+          messagesService.getFileManagerFiles($scope.channel.id).then(function (files) {
+            $scope.files = files;
+          });
         }
       });
     }
@@ -225,7 +253,7 @@ app.controller('messagesController', [
     }
 
     $scope.isMessageFirstUnread = function (message) {
-      if (message.id === $scope.initialMemberLastSeenId + 1)
+      if ($scope.initialMemberLastSeenId && message.id === $scope.initialMemberLastSeenId + 1)
         return true;
       else
         return false;
@@ -250,8 +278,8 @@ app.controller('messagesController', [
           if ($scope.channel.hasUnread()) {
             messagesService.seenLastMessageByChannelId($scope.channel.id);
           }
+          channelsService.updateChannelNotification($scope.channel.id, 'empty');
         });
-        channelsService.updateChannelNotification($scope.channel.id, 'empty');
     }
 
     function seenLastUnSeenMessage() {

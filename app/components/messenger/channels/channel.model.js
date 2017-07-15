@@ -38,13 +38,14 @@ app.factory('Channel', [
       this.isCurrentMemberChannelMember = isCurrentMemberChannelMember;
       this.isMuted = isMuted;
       this.lastSeenId = lastSeenId;
+      if (lastDatetime)
       this.lastDatetime = new Date(lastDatetime);
       this.lastMessageId = lastMessageId;
       this.memberLastSeenId = memberLastSeenId;
     };
 
     Channel.prototype.hasUnread = function () {
-      return this.getNotifCount() && this.getNotifCount() !== 0;
+      return (this.getNotifCount() && this.getNotifCount() !== 0);
     };
 
     Channel.prototype.isCurrentMemberPublicChannelMember = function () {
@@ -89,7 +90,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.setLastSeen = function (lastSeenMessageId) {
-      this.lastSeen = lastSeenMessageId;
+      this.lastSeenId = lastSeenMessageId;
     };
 
     Channel.prototype.addIsTypingMemberId = function (memberId) {
@@ -148,7 +149,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getNotifCount = function () {
-      return this.memberLastSeenId ? this.lastMessageId - this.memberLastSeenId : null;
+      return this.memberLastSeenId ? this.lastMessageId - this.memberLastSeenId : this.lastMessageId;
     };
 
     Channel.prototype.getCssClass = function () {
