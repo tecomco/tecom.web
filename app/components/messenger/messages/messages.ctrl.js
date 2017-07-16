@@ -3,16 +3,17 @@
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Upload', 'Message', 'messagesService', 'channelsService', 'filesService', '$q',
-  'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
+  'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory', 'fileUtil', 'dateUtil',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Upload, Message, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, fileUtil, dateUtil
   ) {
 
     var self = this;
     $scope.messages = [];
     $scope.file = {};
     $scope.initialMemberLastSeenId = null;
+    $scope.files = [];
     var scrollLimits;
     var flagLock;
     var prevScrollTop;
@@ -194,6 +195,35 @@ app.controller('messagesController', [
     $scope.getFileName = function (name) {
       var extension = name.split('.').pop();
       return name.replace('.' + extension , '');
+    };
+
+    $scope.getFileTime = function (date) {
+      return dateUtil.getPersianDateString(new Date(date));
+    };
+
+    $scope.getFileProperties = function (file) {
+      var propertyHtml = '';
+      var canBeLived = fileUtil.isTextFormat(file.type);
+      if (canBeLived) {
+        if ($scope.channel.canMemberSendMessage()) {
+          propertyHtml += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
+            file.id + ', \'' + file.name +
+            '\')">';
+          propertyHtml += '<label dir="ltr">LIVE</label>';
+          propertyHtml += '<i class="fa fa-circle"></i>';
+          propertyHtml += '</a>';
+        }
+        propertyHtml += '<a class="dl-btn" dir="ltr" ng-click="viewFile(' + file.id +
+          ')" tooltip-placement="top" uib-tooltip="مشاهده">';
+        propertyHtml += '<i class="fa fa-eye"></i>';
+      }
+      propertyHtml += '<a class="dl-btn" href="' + file.file +
+        '" download="' + file.name +
+        '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
+      propertyHtml += '<i class="zmdi zmdi-download"></i>';
+
+      propertyHtml += '</a>';
+      return propertyHtml;
     };
 
     function initialize() {

@@ -370,18 +370,11 @@ app.service('messagesService', [
 
     function getFileManagerFiles(channelId) {
       var deferred = $q.defer();
-      var data =[];
-      var data1={name:'irani.jpg',date:2017,size:13};
-      data.push(data1);
-      data1 = {name:'iran.jpg',date:2016,size:133};
-      data.push(data1);
-      deferred.resolve(data);
-      return deferred.promise;
       $http({
         method: 'GET',
-        url: '/api/v1/messenger/channe/' + channelId + '/members/'
+        url: '/api/v1/files/channels/' + channelId + '/'
       }).then(function (data) {
-        deferred.resolve(data);
+        deferred.resolve(data.data);
       }).catch(function (err) {
         $log.info('Error Getting FileManager Files.', err);
         deferred.reject(err);
