@@ -13,15 +13,9 @@ app.controller('messagesController', [
 
     var self = this;
     $scope.messages = [];
-    $scope.file = {};
-    $scope.initialMemberLastSeenId = null;
-    $scope.files = [];
-    $scope.fileManagerFilter = null;
     var scrollLimits;
     var flagLock;
     var prevScrollTop;
-    var fileManagerStatus = 'closed';
-    var initializeFileManager = true;
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -175,53 +169,6 @@ app.controller('messagesController', [
       channelsService.addMembersToChannel([CurrentMember.member.id],
         $scope.channel.id);
       $scope.channel.isCurrentMemberChannelMember = true;
-    };
-
-    $scope.getFileManagerClass = function () {
-      if (fileManagerStatus === 'closed')
-        return 'mime-holder closed';
-      else
-        return 'mime-holder opened';
-    };
-
-    $scope.toggleFileManagerStatus = function () {
-      if (initializeFileManager) {
-        filesService.getFileManagerFiles($scope.channel.id).then(function (files) {
-          $scope.files = files;
-          initializeFileManager = false;
-          fileManagerStatus = 'opened';
-        });
-      } else {
-        if (fileManagerStatus === 'closed')
-          fileManagerStatus = 'opened';
-        else
-          fileManagerStatus = 'closed';
-      }
-    };
-
-    $scope.channelHasAnyFile = function () {
-      if ($scope.files.length !== 0)
-        return true;
-      return false;
-    };
-
-    $scope.fileManagerFileFilter = function (file) {
-      if (!$scope.fileManagerFilter)
-        return true;
-      return $scope.fileManagerFilter === file.type;
-    };
-
-    $scope.changeFileManagerFilter = function (type) {
-      if (type === '0')
-        $scope.fileManagerFilter = null;
-      else if (type === '1')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.CODE;
-      else if (type === '2')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.PICTURE;
-      else if (type === '3')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.DOCUMENT;
-      else if (type === '4')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.OTHER;
     };
 
     function initialize() {
