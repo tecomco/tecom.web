@@ -2,9 +2,9 @@
 
 app.service('filesService', [
   '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q', 'channelsService',
-  'File', 'fileUtil',
+  'File', 'FileManagerFile', 'fileUtil',
   function ($rootScope, $http, $log, socket, ArrayUtil, $q, channelsService,
-            File, fileUtil) {
+            File, FileManagerFile, fileUtil) {
 
     var self = this;
     self.files = [];
@@ -81,6 +81,25 @@ app.service('filesService', [
       return defer.promise;
     }
 
+    function getFileManagerFiles(channelId) {
+      var files=[];
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/v1/files/channels/' + channelId + '/'
+      }).then(function (data) {
+        data.data.forEach(function (file) {
+          var newFile = new FileManagerFile(file.id, file.file, file.name, file.date_uploaded, file.type);
+          files.push(newFile);
+        });
+        deferred.resolve(files);
+      }).catch(function (err) {
+        $log.info('Error Getting FileManager Files.', err);
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    }
+
     function viewFile(fileId) {
       if (self.livedFile && self.livedFile.id === fileId) {
         updateLiveFile();
@@ -130,6 +149,7 @@ app.service('filesService', [
       getLivedFile: getLivedFile,
       showFileLine: showFileLine,
       getFileById: getFileById,
+      getFileManagerFiles: getFileManagerFiles,
       viewFile: viewFile
     };
   }

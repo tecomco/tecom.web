@@ -2,11 +2,13 @@
 
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
-  'Upload', 'Message', 'messagesService', 'channelsService', 'filesService', '$q',
-  'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory', 'fileUtil', 'dateUtil',
+  'Upload', 'Message', 'messagesService', 'channelsService', 'filesService',
+  '$q', 'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
+  'fileUtil', 'dateUtil', 'FileManagerFile',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Upload, Message, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, fileUtil, dateUtil
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, fileUtil, dateUtil,
+    FileManagerFile
   ) {
 
     var self = this;
@@ -14,6 +16,7 @@ app.controller('messagesController', [
     $scope.file = {};
     $scope.initialMemberLastSeenId = null;
     $scope.files = [];
+    $scope.fileManagerFilter = null;
     var scrollLimits;
     var flagLock;
     var prevScrollTop;
@@ -183,7 +186,7 @@ app.controller('messagesController', [
 
     $scope.toggleFileManagerStatus = function () {
       if (initializeFileManager) {
-        messagesService.getFileManagerFiles($scope.channel.id).then(function (files) {
+        filesService.getFileManagerFiles($scope.channel.id).then(function (files) {
           $scope.files = files;
           initializeFileManager = false;
           fileManagerStatus = 'opened';
@@ -196,35 +199,29 @@ app.controller('messagesController', [
       }
     };
 
-    $scope.getFileExtension = function (name) {
-      var extension = name.split('.').pop();
-      return '/static/img/file-formats.svg#' + extension;
-    };
-
-    $scope.getFileName = function (name) {
-      var extension = name.split('.').pop();
-      return name.replace('.' + extension, '');
-    };
-
-    $scope.getFileTime = function (date) {
-      return dateUtil.getPersianDateString(new Date(date));
-    };
-
-    $scope.canBeLived = function (type) {
-      return fileUtil.isTextFormat(type);
-    };
-
-    $scope.downloadFile = function (file) {
-      var link = document.createElement("a");
-      link.download = file.name;
-      link.href = file.file;
-      link.click();
-    };
-
     $scope.channelHasAnyFile = function () {
       if ($scope.files.length !== 0)
         return true;
       return false;
+    };
+
+    $scope.fileManagerFileFilter = function (file) {
+      if (!$scope.fileManagerFilter)
+        return true;
+      return $scope.fileManagerFilter === file.type;
+    };
+
+    $scope.changeFileManagerFilter = function (type) {
+      if (type === '0')
+        $scope.fileManagerFilter = null;
+      else if (type === '1')
+        $scope.fileManagerFilter = FileManagerFile.TYPE.CODE;
+      else if (type === '2')
+        $scope.fileManagerFilter = FileManagerFile.TYPE.PICTURE;
+      else if (type === '3')
+        $scope.fileManagerFilter = FileManagerFile.TYPE.DOCUMENT;
+      else if (type === '4')
+        $scope.fileManagerFilter = FileManagerFile.TYPE.OTHER;
     };
 
     function initialize() {

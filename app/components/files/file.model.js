@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('File', ['$http', '$window', 'Line', 'fileUtil', '$timeout',
-  function ($http, $window, Line, fileUtil, $timeout) {
+app.factory('File', ['$window', 'Line', 'fileUtil', '$timeout',
+  function ($window, Line, fileUtil, $timeout) {
 
     function File(id, url, fileData, name, channelId) {
       this.id = id;

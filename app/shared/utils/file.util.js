@@ -23,11 +23,29 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
     'xmss', 'seestyle', 'makefile', 'sjava', 'emakerfile', 'cuo', 'rtf',
     'es6', 'hbs', 'erb', 'scss'];
 
+  var pictureFormats = ['ANI', 'BMP', 'CAL', 'EPS', 'FAX', 'GIF', 'IMG', 'JBG',
+  'JPE', 'JPEG', 'JPG', 'MAC', 'PBM', 'PCD', 'PCX', 'PCT', 'PGM', 'PNG', 'PPM',
+  'PSD', 'RAS', 'TGA', 'TIFF', 'WMF'];
+
+  var documentFormats = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
+  'odx', 'txt', 'rtf'];
+
   function isTextFormat(format) {
     return ArrayUtil.contains(textBaseFormats, format);
   }
 
+  function fileManagerFileFormat(format) {
+    if (ArrayUtil.contains(textBaseFormats, format))
+    return 1;
+    if (ArrayUtil.contains(pictureFormats, format.toUpperCase()))
+    return 2;
+    if (ArrayUtil.contains(documentFormats, format))
+    return 3;
+    return 4;
+  }
+
   return {
-    isTextFormat: isTextFormat
+    isTextFormat: isTextFormat,
+    fileManagerFileFormat: fileManagerFileFormat
   };
 }]);
