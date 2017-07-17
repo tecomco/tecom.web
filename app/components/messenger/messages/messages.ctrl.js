@@ -18,6 +18,7 @@ app.controller('messagesController', [
     var flagLock;
     var prevScrollTop;
     var fileManagerStatus = 'closed';
+    var initializeFileManager = true;
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -181,10 +182,18 @@ app.controller('messagesController', [
     };
 
     $scope.toggleFileManagerStatus = function () {
-      if (fileManagerStatus === 'closed')
-        fileManagerStatus = 'opened';
-      else
-        fileManagerStatus = 'closed';
+      if (initializeFileManager) {
+        messagesService.getFileManagerFiles($scope.channel.id).then(function (files) {
+          $scope.files = files;
+          initializeFileManager = false;
+          fileManagerStatus = 'opened';
+        });
+      } else {
+        if (fileManagerStatus === 'closed')
+          fileManagerStatus = 'opened';
+        else
+          fileManagerStatus = 'closed';
+      }
     };
 
     $scope.getFileExtension = function (name) {
@@ -194,36 +203,28 @@ app.controller('messagesController', [
 
     $scope.getFileName = function (name) {
       var extension = name.split('.').pop();
-      return name.replace('.' + extension , '');
+      return name.replace('.' + extension, '');
     };
 
     $scope.getFileTime = function (date) {
       return dateUtil.getPersianDateString(new Date(date));
     };
 
-    $scope.getFileProperties = function (file) {
-      var propertyHtml = '';
-      var canBeLived = fileUtil.isTextFormat(file.type);
-      if (canBeLived) {
-        if ($scope.channel.canMemberSendMessage()) {
-          propertyHtml += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
-            file.id + ', \'' + file.name +
-            '\')">';
-          propertyHtml += '<label dir="ltr">LIVE</label>';
-          propertyHtml += '<i class="fa fa-circle"></i>';
-          propertyHtml += '</a>';
-        }
-        propertyHtml += '<a class="dl-btn" dir="ltr" ng-click="viewFile(' + file.id +
-          ')" tooltip-placement="top" uib-tooltip="مشاهده">';
-        propertyHtml += '<i class="fa fa-eye"></i>';
-      }
-      propertyHtml += '<a class="dl-btn" href="' + file.file +
-        '" download="' + file.name +
-        '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
-      propertyHtml += '<i class="zmdi zmdi-download"></i>';
+    $scope.canBeLived = function (type) {
+      return fileUtil.isTextFormat(type);
+    };
 
-      propertyHtml += '</a>';
-      return propertyHtml;
+    $scope.downloadFile = function (file) {
+      var link = document.createElement("a");
+      link.download = file.name;
+      link.href = file.file;
+      link.click();
+    };
+
+    $scope.channelHasAnyFile = function () {
+      if ($scope.files.length !== 0)
+        return true;
+      return false;
     };
 
     function initialize() {
@@ -234,9 +235,6 @@ app.controller('messagesController', [
           $rootScope.$broadcast('channel:ready', $scope.channel);
           bindMessages();
           $scope.inputMessage = '';
-          messagesService.getFileManagerFiles($scope.channel.id).then(function (files) {
-            $scope.files = files;
-          });
         }
       });
     }

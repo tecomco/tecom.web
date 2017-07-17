@@ -14,11 +14,11 @@
       </div>
       <div class="main">
         <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}">
-          <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
-            <label>{{message.getLocaleDate()}}</label>
-          </div>
           <div class="date-holder" ng-if="isMessageFirstUnread(message)">
             <label>پیام های جدید</label>
+          </div>
+          <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
+            <label>{{message.getLocaleDate()}}</label>
           </div>
           <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name">{{message.getUsername()}}</label>
@@ -64,43 +64,48 @@
       <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>
       <button class="btn" ng-click="archiveDirect(channel)">حذف و بستن مکالمه</button>
     </div>
-  <div ng-class="getFileManagerClass()">
-    <div class="mime-toggle-fix"></div>
-    <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()">
-      <div class="mime-menu-toggle">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+    <div ng-class="getFileManagerClass()">
+      <div class="mime-toggle-fix"></div>
+      <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()">
+        <div class="mime-menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
-    </div>
-    <div class="mime-menu-header">
-      <h3>مدیریت فایل‌ها</h3>
-      <div class="mime-more">
-        <i class="zmdi zmdi-more"></i>
-        <ul>
-          <li><a>فایل‌ها</a></li>
-          <li><a>عکس‌ها</a></li>
-        </ul>
+      <div class="mime-menu-header">
+        <h3>مدیریت فایل‌ها</h3>
+        <div class="mime-more">
+          <i class="zmdi zmdi-more"></i>
+          <ul>
+            <li><a>فایل‌ها</a></li>
+            <li><a>عکس‌ها</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <ul class="mime-main">
-      <li ng-repeat="file in files | orderBy : 'date_uploaded'">
-        <a class="mime-item-one">
+      <ul class="mime-main">
+        <div ng-if="!channelHasAnyFile()">No Message</div>
+        <li ng-repeat="file in files | orderBy : '-date_uploaded'" ng-if="files">
+          <a class="mime-item-one">
           <svg viewBox="0 0 100 100">
            <use xlink:href={{getFileExtension(file.name)}}></use>
           </svg>
           <div class="mime-dets">
             <label class="mime-name">{{getFileName(file.name)}}</label>
             <span class="mime-date">{{getFileTime(file.date_uploaded)}}</span>
-            <span class="mime-size" compile template="{{getFileProperties(file)}}"></span>
+            <span class="mime-size">
+              <div class="live-btn" dir="ltr" ng-click="goLive(file.id,file.name)" ng-if="canBeLived(file.type) && channel.canMemberSendMessage()"><label dir="ltr">LIVE</label><i class="fa fa-circle"></i></div>
+              <div class="dl-btn" dir="ltr" ng-click="viewFile(file.id)" ng-if="canBeLived(file.type)" tooltip-placement="top" uib-tooltip="مشاهده"><i class="fa fa-eye"></i></div>
+              <div class="dl-btn" ng-click="downloadFile(file)" tooltip-placement="top" uib-tooltip="دانلود"><i class="zmdi zmdi-download"></i></div>
+            </span>
           </div>
         </a>
-      </li>
-    </ul>
-  </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 </div>
