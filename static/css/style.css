@@ -184,6 +184,25 @@ a * {
   z-index: 3;
 }
 
+.loading-taking-long-txt {
+  color: #fff;
+  font-weight: 200;
+  position: absolute;
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.loading-taking-long-txt a {
+  color: #0645AD;
+}
+
 .notif {
   min-width: 200px;
   color: #696969;

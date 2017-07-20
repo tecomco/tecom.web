@@ -1,14 +1,16 @@
-'use strict';
+ 'use strict';
 
 app.controller('MessengerCtrl', [
   '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
   'CurrentMember', '$localStorage',
   function ($rootScope, $scope, $window, $uibModal, AuthService,
     CurrentMember, $localStorage) {
+
     $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
     $rootScope.isTabFocused = true;
     $scope.activeFile = false;
     $scope.isAdmin = CurrentMember.member.isAdmin;
+
     $scope.openUserProfileModal = function () {
       var modalInstance = $uibModal.open({
         animation: true,
@@ -16,6 +18,7 @@ app.controller('MessengerCtrl', [
         controller: 'userProfileController',
       });
     };
+
     $scope.openTeamProfileModal = function () {
       var modalInstance = $uibModal.open({
         animation: true,
@@ -28,6 +31,10 @@ app.controller('MessengerCtrl', [
 
     $scope.$on('view:state:changed', function (event, state) {
       $scope.activeFile = (state === 'noFile') ? false : true;
+    });
+
+    $scope.$on('loading:finished', function () {
+      checkIfUserSeenTour();
     });
 
     $scope.getPannelsCSS = function (pannel) {
@@ -81,5 +88,13 @@ app.controller('MessengerCtrl', [
     function initialize() {
       $window.Notification.requestPermission();
     }
+
+    function checkIfUserSeenTour() {
+      if (!$localStorage.userSeenTour) {
+        $scope.tour.start();
+        $localStorage.userSeenTour = true;
+      }
+    }
+
   }
 ]);

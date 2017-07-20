@@ -351,6 +351,7 @@ app.service('channelsService', [
       if (self.messagesPromise.length == self.initChannelsCount) {
         $q.all(self.messagesPromise).then(function () {
           $rootScope.isLoading = false;
+          $rootScope.$broadcast('loading:finished');
         });
       }
     }
