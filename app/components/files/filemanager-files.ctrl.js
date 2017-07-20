@@ -13,6 +13,10 @@ app.controller('fileManagerController', [
       $scope.channel = channelsService.getCurrentChannel();
     });
 
+    $scope.$on('file:fileManager', function (event, file) {
+      $scope.files.push(file);
+    });
+
     $scope.getFileManagerClass = function () {
       if (fileManagerStatus === 'closed')
         return 'mime-holder closed';
@@ -36,15 +40,37 @@ app.controller('fileManagerController', [
     };
 
     $scope.channelHasAnyFile = function () {
-      if ($scope.files.length !== 0)
-        return true;
-      return false;
+      if ($scope.fileManagerFilter === null) {
+        if ($scope.files.length !== 0)
+          return true;
+        return false;
+      } else {
+        var filteredFiles = $scope.files.filter(function (file) {
+          return file.type === $scope.fileManagerFilter;
+        });
+        if (filteredFiles.length !== 0)
+          return true;
+        return false;
+      }
     };
 
     $scope.fileManagerFileFilter = function (file) {
       if (!$scope.fileManagerFilter)
         return true;
       return $scope.fileManagerFilter === file.type;
+    };
+
+    $scope.getNoFileMessage = function (file) {
+      if ($scope.fileManagerFilter === null)
+        return 'هیچ فایلی وجود ندارد';
+      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.CODE)
+        return 'هیچ فایلی به صورت کد وحود ندارد';
+      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.PICTURE)
+        return 'هیچ عکسی وجود ندارد';
+      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.DOCUMENT)
+        return 'هیچ سندی وجود ندارد';
+      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.OTHER)
+        return 'هیچ فایل دیگری وحود ندارد';
     };
 
     $scope.changeFileManagerFilter = function (type) {

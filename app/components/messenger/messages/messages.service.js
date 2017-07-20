@@ -3,9 +3,9 @@
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'Upload', 'socket',
   'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
-  'Team', 'ArrayUtil',
+  'Team', 'ArrayUtil', 'FileManagerFile',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-    Message, db, filesService, CurrentMember, Team, ArrayUtil) {
+    Message, db, filesService, CurrentMember, Team, ArrayUtil, FileManagerFile) {
 
     var self = this;
 
@@ -74,7 +74,7 @@ app.service('messagesService', [
 
     function getAndSaveInitialMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
-      generateFromAndTo(channel.memberLastSeenId,channel.lastMessageId).then(function (period) {
+      generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId).then(function (period) {
         getInitialMessagesByChannelId(channel.id, channel.teamId, period.from, period.to).then(function () {
           deferred.resolve();
         }).catch(function (err) {
@@ -84,7 +84,7 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function generateFromAndTo(memberLastSeenId,lastMessageId) {
+    function generateFromAndTo(memberLastSeenId, lastMessageId) {
       var deferred = $q.defer();
       var from;
       var to;
@@ -92,15 +92,18 @@ app.service('messagesService', [
         from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4, 1);
         to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
           lastMessageId);
-          if (from === 1)
+        if (from === 1)
           to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
-          if (to === lastMessageId)
+        if (to === lastMessageId)
           from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
-        } else {
+      } else {
         from = 1;
         to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
       }
-      deferred.resolve({from:from,to:to});
+      deferred.resolve({
+        from: from,
+        to: to
+      });
       return deferred.promise;
     }
 
@@ -155,6 +158,21 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
+    function getLastMessagesFromServer(channelId, teamId, fromId, toId) {
+      var messagesForView = [];
+      var deferred = $q.defer();
+      var dataToBeSend = {
+        channelId: channelId,
+        teamId: teamId,
+        from: fromId,
+        to: toId
+      };
+      socket.emit('message:get', dataToBeSend, function (res) {
+            deferred.resolve(res.messages[0].senderId);
+        });
+        return deferred.promise;
+      }
+
     function getMessagesByChannelId(channelId) {
       var deferred = $q.defer();
       getMessagesByChannelIdFromDb(channelId)
@@ -205,8 +223,8 @@ app.service('messagesService', [
           findGaps(res, from, to).then(function (gaps) {
             if (gaps)
               for (var i = 0; i < gaps.length; i++)
-                getNeededMessagesFromServer(channelId, teamId, gaps[i].from,gaps[i].to);
-                deferred.resolve();
+                getNeededMessagesFromServer(channelId, teamId, gaps[i].from, gaps[i].to);
+            deferred.resolve();
           });
         });
       return deferred.promise;
@@ -265,35 +283,35 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getLastMessageByChannelIdFromDb(channelId) {
-      var deferred = $q.defer();
-      db.getDb().then(function (database) {
-        database.find({
-          selector: {
-            id: {
-              $gt: null
-            },
-            channelId: {
-              $eq: channelId
-            }
-          },
-          sort: [{
-            id: 'desc'
-          }],
-          limit: 1
-        }).then(function (result) {
-          if (result.docs.length === 0) {
-            deferred.resolve(null);
-          } else {
-            deferred.resolve(result.docs[0]);
-          }
-        }).catch(function (err) {
-          $log.error('Getting last message from db failed.', err);
-          deferred.reject();
-        });
-      });
-      return deferred.promise;
-    }
+    // function getLastMessageByChannelIdFromDb(channelId) {
+    //   var deferred = $q.defer();
+    //   db.getDb().then(function (database) {
+    //     database.find({
+    //       selector: {
+    //         id: {
+    //           $gt: null
+    //         },
+    //         channelId: {
+    //           $eq: channelId
+    //         }
+    //       },
+    //       sort: [{
+    //         id: 'desc'
+    //       }],
+    //       limit: 1
+    //     }).then(function (result) {
+    //       if (result.docs.length === 0) {
+    //         deferred.resolve(null);
+    //       } else {
+    //         deferred.resolve(result.docs[0]);
+    //       }
+    //     }).catch(function (err) {
+    //       $log.error('Getting last message from db failed.', err);
+    //       deferred.reject();
+    //     });
+    //   });
+    //   return deferred.promise;
+    // }
 
     function sendAndGetMessage(channelId, messageBody, type, fileName,
       fileUrl) {
@@ -358,6 +376,8 @@ app.service('messagesService', [
             channelsService.updateChannelLastDatetime(message.channelId,
               message.datetime);
           });
+          var file = new FileManagerFile(res.data.id, res.data.file, res.data.name, res.data.date_uploaded, res.data.type);
+          $rootScope.$broadcast('file:fileManager', file);
       }, function (resp) {
         $log.error('Error status: ' + resp.status);
       }, function (evt) {
@@ -377,15 +397,6 @@ app.service('messagesService', [
       };
       socket.emit('message:seen', data);
       channelsService.updateChannelNotification(channelId, 'empty');
-    }
-
-    function seenLastMessageByChannelId(channelId) {
-      getLastMessageByChannelIdFromDb(channelId)
-        .then(function (lastMessage) {
-          if (lastMessage) {
-            seenMessage(channelId, lastMessage.id, lastMessage.senderId);
-          }
-        });
     }
 
     function startTyping(channelId) {
@@ -411,8 +422,8 @@ app.service('messagesService', [
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
       getNeededMessagesFromServer: getNeededMessagesFromServer,
+      getLastMessagesFromServer: getLastMessagesFromServer,
       seenMessage: seenMessage,
-      seenLastMessageByChannelId: seenLastMessageByChannelId,
       startTyping: startTyping,
       endTyping: endTyping,
     };

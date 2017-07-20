@@ -7,7 +7,7 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       this.id = id;
       this.url = url;
       this.name = name;
-      this.date = dateUtil.getPersianDateString(new Date(date));
+      this.date = date;
       this.type = fileUtil.fileManagerFileFormat(type);
       this.extension = type;
       this.svg = this.getSvgUrl();
@@ -23,6 +23,10 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
 
     FileManagerFile.prototype.canBeLived = function () {
       return fileUtil.isTextFormat(this.extension);
+    };
+
+    FileManagerFile.prototype.getLocalDate = function () {
+      return dateUtil.getPersianDateString(new Date(this.date));
     };
 
     FileManagerFile.prototype.downloadFile = function () {

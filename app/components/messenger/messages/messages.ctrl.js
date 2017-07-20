@@ -248,7 +248,14 @@ app.controller('messagesController', [
           scrollToUnseenMessage();
           handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
-            messagesService.seenLastMessageByChannelId($scope.channel.id);
+            if (ArrayUtil.containsKeyValue($scope.messages, 'id', $scope.channel.lastMessageId)) {
+              var lastMessage = ArrayUtil.getElementByKeyValue($scope.messages, 'id', $scope.channel.lastMessageId);
+              messagesService.seenMessage($scope.channel.id, lastMessage.id, lastMessage.senderId);
+            } else {
+              messagesService.getLastMessagesFromServer($scope.channel.id, $scope.channel.teamId, $scope.channel.lastMessageId, $scope.channel.lastMessageId).then(function (senderId) {
+                messagesService.seenMessage($scope.channel.id, $scope.channel.lastMessageId, senderId);
+              });
+            }
           }
           channelsService.updateChannelNotification($scope.channel.id, 'empty');
         });

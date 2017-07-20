@@ -48,12 +48,19 @@ app.service('channelsService', [
 
     socket.on('channel:members:add', function (result) {
       $log.info('add member:', result);
-      var channel = findChannelById(result.channel.id);
-      if (result.channel.type === Channel.TYPE.PUBLIC)
+      if (result.channel.type === Channel.TYPE.PUBLIC) {
+        var channel = findChannelById(result.channel.id);
         channel.isCurrentMemberChannelMember = true;
-      else if (result.channel.type === Channel.TYPE.PRIVATE) {
+      } else if (result.channel.type === Channel.TYPE.PRIVATE) {
         createAndPushChannel(result.channel);
         $rootScope.$broadcast('channels:updated');
+        var channel = findChannelById(result.channel.id);
+        var data = {channelId: result.channel.id};
+        socket.emit('channel:messagedata', data, function (res) {
+          channel.lastMessageId = res.lastMessageId;
+          channel.memberLastSeenId = res.lastMessageId - 1;
+          $rootScope.$emit('channel:new', channel);
+        });
       }
     });
 
@@ -100,33 +107,33 @@ app.service('channelsService', [
     }
 
     function getInitialChannels() {
-    try {
-      socket.emit('channel:init', null, function (results) {
-        self.channels = [];
-        self.initChannelsCount = results.length;
-        if (self.initChannelsCount === 0) {
-          $rootScope.isLoading = false;
-        }
-        if (Team.areMembersReady) {
-          results.forEach(function (result) {
-            var channel = createAndPushChannel(result);
-            $rootScope.$emit('channel:new', channel);
-          });
-          $rootScope.$broadcast('channels:updated', 'init');
-        } else {
-          Team.membersPromise.then(function () {
+      try {
+        socket.emit('channel:init', null, function (results) {
+          self.channels = [];
+          self.initChannelsCount = results.length;
+          if (self.initChannelsCount === 0) {
+            $rootScope.isLoading = false;
+          }
+          if (Team.areMembersReady) {
             results.forEach(function (result) {
               var channel = createAndPushChannel(result);
               $rootScope.$emit('channel:new', channel);
             });
             $rootScope.$broadcast('channels:updated', 'init');
-          });
-        }
-        self.initialChannelsGottenForFirstTime = true;
-      });
-    } catch (err) {
-      console.log('err', err);
-    }
+          } else {
+            Team.membersPromise.then(function () {
+              results.forEach(function (result) {
+                var channel = createAndPushChannel(result);
+                $rootScope.$emit('channel:new', channel);
+              });
+              $rootScope.$broadcast('channels:updated', 'init');
+            });
+          }
+          self.initialChannelsGottenForFirstTime = true;
+        });
+      } catch (err) {
+        console.log('err', err);
+      }
     }
 
     function setChannelLivedFileId(channelId, fileId) {
@@ -247,8 +254,7 @@ app.service('channelsService', [
       socket.emit('channel:edit:details', channel, function (res) {
         if (res.status) {
           defer.resolve();
-        }
-        else {
+        } else {
           defer.reject(res.message);
         }
       });
@@ -300,15 +306,15 @@ app.service('channelsService', [
     function updateChannelNotification(channelId, type) {
       var channel = findChannelById(channelId);
       switch (type) {
-      case 'empty':
-        channel.memberLastSeenId = channel.lastMessageId;
-        break;
-      case 'inc':
-        if (!channel.lastMessageId)
-          channel.lastMessageId=1;
-        else
-          channel.lastMessageId++;
-        break;
+        case 'empty':
+          channel.memberLastSeenId = channel.lastMessageId;
+          break;
+        case 'inc':
+          if (!channel.lastMessageId)
+            channel.lastMessageId = 1;
+          else
+            channel.lastMessageId++;
+          break;
       }
       $rootScope.$broadcast('channels:updated');
     }

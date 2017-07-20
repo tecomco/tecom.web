@@ -25,15 +25,15 @@
     </div>
   </div>
   <ul class="mime-main">
-    <div ng-if="!channelHasAnyFile()">No Message</div>
-    <li ng-repeat="file in files | orderBy : '-file.date' | filter : fileManagerFileFilter">
+    <div ng-if="!channelHasAnyFile()">{{getNoFileMessage()}}</div>
+    <li ng-repeat="file in files | orderBy : '-date' | filter : fileManagerFileFilter">
       <a class="mime-item-one">
       <svg viewBox="0 0 100 100">
        <use xlink:href={{file.svg}}></use>
       </svg>
       <div class="mime-dets">
         <label class="mime-name">{{file.getFileName()}}</label>
-        <span class="mime-date">{{file.date}}</span>
+        <span class="mime-date">{{file.getLocalDate()}}</span>
         <span class="mime-size">
           <div class="live-btn" dir="ltr" ng-click="goLive(file.id,file.name)" ng-if="file.canBeLived() && channel.canMemberSendMessage()"><label dir="ltr">LIVE</label><i class="fa fa-circle"></i></div>
           <div class="dl-btn" dir="ltr" ng-click="viewFile(file.id)" ng-if="file.canBeLived()" tooltip-placement="top" uib-tooltip="مشاهده"><i class="fa fa-eye"></i></div>
