@@ -2,9 +2,9 @@
   <div class="col-sm-3 col-lg-2 no-padding channel-section">
     <div class="right-section">
       <div class="right-section-header" uib-dropdown>
-        <img src="static/img/tecom-logo.png" ng-click="tour.start()" />
+        <img src="static/img/tecom-logo.png" />
         <span class="brand-name-right-header">تیکام</span>
-        <a uib-dropdown-toggle class="user-options-btn">
+        <a uib-dropdown-toggle class="user-options-btn" tour-step tour-step-content="راستی یادت نره بری تو مدیریت تیم و هم‌کار‌هات رو دعوت کنی. چون تیکام با هم‌تیمی‌هاست که معنی پیدا می‌کنه!" tour-step-order="3" tour-step-placement="bottom">
           <i class="zmdi zmdi-more-vert"></i>
         </a>
         <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
@@ -47,7 +47,11 @@
   </div>
   <div class="loading" ng-show="isLoading">
     <img class="loading-img" src="static/img/loading.gif">
-    <div class="loading-txt">تمرکز روی همه چیز، همون تمرکز روی هیچ چیزِ.</div>
+    <div class="loading-txt">تمرکز روی چند چیز، همون تمرکز روی هیچ چیزه.</div>
+    <div class="loading-taking-long-txt" ng-show="isLoadingTakingTooLong">
+      <label>بارگذاری داره زیاد طول می‌کشه؟</label>
+      <a class="btn btn-link" href="mailto:support@tecom.me">ارتباط با پشتیبانی</a>
+    </div>
   </div>
 </div>
 <div class="clearfix"></div>

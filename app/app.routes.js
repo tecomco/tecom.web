@@ -22,7 +22,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     })
     .state('messenger.home', {
       url: '/',
-      template: '<div ng-controller="messagesController" class="msg-landing"><img src="static/img/tecom-bw.png" class="img-responsive" /><h1>لطفا یک گروه را انتخاب کنید.</h1></div>'
+      template: '<div ng-controller="messagesController" class="msg-landing"><img src="static/img/tecom-bw.png" class="img-responsive" tour-step tour-step-content="سلام. به تیکام خوش اومدی! خوشحال می‌شم یه توضیح کوتاه بهت بدم..." tour-step-order="0" tour-step-placement="right" /><h1>لطفا یک گروه را انتخاب کنید.</h1></div>'
     })
     .state('messenger.messages', {
       url: '/:slug',
