@@ -1,10 +1,10 @@
 'use strict';
 
 app.service('filesService', [
-  '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q', 'channelsService',
-  'File', 'FileManagerFile', 'fileUtil',
+  '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q',
+  'channelsService', 'File', 'FileManagerFile', 'fileUtil',
   function ($rootScope, $http, $log, socket, ArrayUtil, $q, channelsService,
-            File, FileManagerFile, fileUtil) {
+    File, FileManagerFile, fileUtil) {
 
     var self = this;
     self.files = [];
@@ -24,8 +24,7 @@ app.service('filesService', [
               $rootScope.$broadcast('file:lived', file);
               self.livedFile = file;
             });
-        }
-        else {
+        } else {
           self.livedFile = null;
           $rootScope.$broadcast('file:killed');
         }
@@ -44,8 +43,7 @@ app.service('filesService', [
       var file = ArrayUtil.getElementByKeyValue(self.files, 'id', fileId);
       if (file) {
         defer.resolve(file);
-      }
-      else {
+      } else {
         $rootScope.$broadcast('file:loading');
         var url;
         var name;
@@ -66,8 +64,7 @@ app.service('filesService', [
             self.files.push(file);
             $rootScope.$broadcast('file:ready');
             defer.resolve(file);
-          }
-          else {
+          } else {
             $log.error('Lived File Format Not Supported Yet !');
             $rootScope.$broadcast('file:ready');
             defer.reject();
@@ -82,14 +79,15 @@ app.service('filesService', [
     }
 
     function getFileManagerFiles(channelId) {
-      var files=[];
+      var files = [];
       var deferred = $q.defer();
       $http({
         method: 'GET',
         url: '/api/v1/files/channels/' + channelId + '/'
       }).then(function (data) {
         data.data.forEach(function (file) {
-          var newFile = new FileManagerFile(file.id, file.file, file.name, file.date_uploaded, file.type);
+          var newFile = new FileManagerFile(file.id, file.file, file
+            .name, file.date_uploaded, file.type);
           files.push(newFile);
         });
         deferred.resolve(files);
@@ -103,8 +101,7 @@ app.service('filesService', [
     function viewFile(fileId) {
       if (self.livedFile && self.livedFile.id === fileId) {
         updateLiveFile();
-      }
-      else {
+      } else {
         getFileById(fileId).then(function (file) {
           $rootScope.$broadcast('file:view', file);
         });
@@ -154,5 +151,4 @@ app.service('filesService', [
     };
   }
 
-])
-;
+]);

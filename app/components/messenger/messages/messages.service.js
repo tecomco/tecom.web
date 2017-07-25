@@ -283,36 +283,6 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    // function getLastMessageByChannelIdFromDb(channelId) {
-    //   var deferred = $q.defer();
-    //   db.getDb().then(function (database) {
-    //     database.find({
-    //       selector: {
-    //         id: {
-    //           $gt: null
-    //         },
-    //         channelId: {
-    //           $eq: channelId
-    //         }
-    //       },
-    //       sort: [{
-    //         id: 'desc'
-    //       }],
-    //       limit: 1
-    //     }).then(function (result) {
-    //       if (result.docs.length === 0) {
-    //         deferred.resolve(null);
-    //       } else {
-    //         deferred.resolve(result.docs[0]);
-    //       }
-    //     }).catch(function (err) {
-    //       $log.error('Getting last message from db failed.', err);
-    //       deferred.reject();
-    //     });
-    //   });
-    //   return deferred.promise;
-    // }
-
     function sendAndGetMessage(channelId, messageBody, type, fileName,
       fileUrl) {
       var additionalData = null;
@@ -377,7 +347,7 @@ app.service('messagesService', [
               message.datetime);
           });
           var file = new FileManagerFile(res.data.id, res.data.file, res.data.name, res.data.date_uploaded, res.data.type);
-          $rootScope.$broadcast('file:fileManager', file);
+          $rootScope.$broadcast('file:newFileManagerFile', file);
       }, function (resp) {
         $log.error('Error status: ' + resp.status);
       }, function (evt) {

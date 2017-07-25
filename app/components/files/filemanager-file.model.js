@@ -8,7 +8,7 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       this.url = url;
       this.name = name;
       this.date = date;
-      this.type = fileUtil.fileManagerFileFormat(type);
+      this.type = this.getFileType();
       this.extension = type;
       this.svg = this.getSvgUrl();
     }
@@ -29,8 +29,12 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       return dateUtil.getPersianDateString(new Date(this.date));
     };
 
+    FileManagerFile.prototype.getFileType = function () {
+      return fileUtil.fileManagerFileFormat(this.extension);
+    };
+
     FileManagerFile.prototype.downloadFile = function () {
-      var link = document.createElement("a");
+      var link = document.createElement('a');
       link.download = this.name;
       link.href = this.url;
       link.click();

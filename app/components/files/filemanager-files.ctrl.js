@@ -1,11 +1,13 @@
 'use strict';
 
 app.controller('fileManagerController', [
-  '$scope', 'filesService', 'channelsService', 'FileManagerFile', '$stateParams', '$q',
-  function ($scope, filesService, channelsService, FileManagerFile, $stateParams, $q) {
+  '$scope', 'filesService', 'channelsService', 'FileManagerFile',
+  '$stateParams', '$q',
+  function ($scope, filesService, channelsService, FileManagerFile,
+    $stateParams, $q) {
 
     $scope.files = [];
-    $scope.fileManagerFilter = null;
+    $scope.fileManagerFilterType = null;
     var fileManagerStatus = 'closed';
     var initializeFileManager = true;
 
@@ -13,7 +15,7 @@ app.controller('fileManagerController', [
       $scope.channel = channelsService.getCurrentChannel();
     });
 
-    $scope.$on('file:fileManager', function (event, file) {
+    $scope.$on('file:newFileManagerFile', function (event, file) {
       $scope.files.push(file);
     });
 
@@ -26,7 +28,8 @@ app.controller('fileManagerController', [
 
     $scope.toggleFileManagerStatus = function () {
       if (initializeFileManager) {
-        filesService.getFileManagerFiles($scope.channel.id).then(function (files) {
+        filesService.getFileManagerFiles($scope.channel.id).then(function (
+          files) {
           $scope.files = files;
           initializeFileManager = false;
           fileManagerStatus = 'opened';
@@ -39,14 +42,14 @@ app.controller('fileManagerController', [
       }
     };
 
-    $scope.channelHasAnyFile = function () {
-      if ($scope.fileManagerFilter === null) {
+    $scope.doesChannelHaveAnyFilteredFiles = function () {
+      if ($scope.fileManagerFilterType === null) {
         if ($scope.files.length !== 0)
           return true;
         return false;
       } else {
         var filteredFiles = $scope.files.filter(function (file) {
-          return file.type === $scope.fileManagerFilter;
+          return file.type === $scope.fileManagerFilterType;
         });
         if (filteredFiles.length !== 0)
           return true;
@@ -54,36 +57,36 @@ app.controller('fileManagerController', [
       }
     };
 
-    $scope.fileManagerFileFilter = function (file) {
-      if (!$scope.fileManagerFilter)
+    $scope.fileManagerFilesFilter = function (file) {
+      if (!$scope.fileManagerFilterType)
         return true;
-      return $scope.fileManagerFilter === file.type;
+      return $scope.fileManagerFilterType === file.type;
     };
 
-    $scope.getNoFileMessage = function (file) {
-      if ($scope.fileManagerFilter === null)
+    $scope.getMessageOfNoFilteredFile = function () {
+      if ($scope.fileManagerFilterType === null)
         return 'هیچ فایلی وجود ندارد';
-      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.CODE)
+      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.CODE)
         return 'هیچ فایلی به صورت کد وحود ندارد';
-      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.PICTURE)
+      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.PICTURE)
         return 'هیچ عکسی وجود ندارد';
-      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.DOCUMENT)
+      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.DOCUMENT)
         return 'هیچ سندی وجود ندارد';
-      else if ($scope.fileManagerFilter === FileManagerFile.TYPE.OTHER)
+      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.OTHER)
         return 'هیچ فایل دیگری وحود ندارد';
     };
 
-    $scope.changeFileManagerFilter = function (type) {
+    $scope.changeFileManagerFilterType = function (type) {
       if (type === '0')
-        $scope.fileManagerFilter = null;
+        $scope.fileManagerFilterType = null;
       else if (type === '1')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.CODE;
+        $scope.fileManagerFilterType = FileManagerFile.TYPE.CODE;
       else if (type === '2')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.PICTURE;
+        $scope.fileManagerFilterType = FileManagerFile.TYPE.PICTURE;
       else if (type === '3')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.DOCUMENT;
+        $scope.fileManagerFilterType = FileManagerFile.TYPE.DOCUMENT;
       else if (type === '4')
-        $scope.fileManagerFilter = FileManagerFile.TYPE.OTHER;
+        $scope.fileManagerFilterType = FileManagerFile.TYPE.OTHER;
     };
 
     $scope.goLive = function (fileId, fileName) {
@@ -93,16 +96,6 @@ app.controller('fileManagerController', [
     $scope.viewFile = function (fileId) {
       filesService.viewFile(fileId);
     };
-
-    function setCurrentChannel() {
-      var defer = $q.defer();
-      var slug = $stateParams.slug.replace('@', '');
-      channelsService.setCurrentChannelBySlug(slug).then(function () {
-        $scope.channel = channelsService.getCurrentChannel();
-        defer.resolve();
-      });
-      return defer.promise;
-    }
 
   }
 ]);

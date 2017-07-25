@@ -46,6 +46,7 @@ app.service('channelsService', [
       $rootScope.$broadcast('channels:updated');
     });
 
+    // TODO: tofmali
     socket.on('channel:members:add', function (result) {
       $log.info('add member:', result);
       if (result.channel.type === Channel.TYPE.PUBLIC) {

@@ -16,17 +16,17 @@
     <div class="mime-more">
       <i class="zmdi zmdi-more"></i>
       <ul>
-        <li><a ng-click="changeFileManagerFilter('0')">همه</a></li>
-        <li><a ng-click="changeFileManagerFilter('1')">کدها</a></li>
-        <li><a ng-click="changeFileManagerFilter('2')">عکس‌ها</a></li>
-        <li><a ng-click="changeFileManagerFilter('3')">اسناد</a></li>
-        <li><a ng-click="changeFileManagerFilter('4')">دیگر</a></li>
+        <li><a ng-click="changeFileManagerFilterType('0')">همه</a></li>
+        <li><a ng-click="changeFileManagerFilterType('1')">کدها</a></li>
+        <li><a ng-click="changeFileManagerFilterType('2')">عکس‌ها</a></li>
+        <li><a ng-click="changeFileManagerFilterType('3')">اسناد</a></li>
+        <li><a ng-click="changeFileManagerFilterType('4')">دیگر</a></li>
       </ul>
     </div>
   </div>
   <ul class="mime-main">
-    <div ng-if="!channelHasAnyFile()">{{getNoFileMessage()}}</div>
-    <li ng-repeat="file in files | orderBy : '-date' | filter : fileManagerFileFilter">
+    <div ng-if="!doesChannelHaveAnyFilteredFiles()">{{getMessageOfNoFilteredFile()}}</div>
+    <li ng-repeat="file in files | orderBy : '-date' | filter : fileManagerFilesFilter">
       <a class="mime-item-one">
       <svg viewBox="0 0 100 100">
        <use xlink:href={{file.svg}}></use>
