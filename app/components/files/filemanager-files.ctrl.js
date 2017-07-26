@@ -2,14 +2,12 @@
 
 app.controller('fileManagerController', [
   '$scope', 'filesService', 'channelsService', 'FileManagerFile',
-  '$stateParams', '$q',
-  function ($scope, filesService, channelsService, FileManagerFile,
-    $stateParams, $q) {
+  function ($scope, filesService, channelsService, FileManagerFile) {
 
     $scope.files = [];
     $scope.fileManagerFilterType = null;
-    var fileManagerStatus = 'closed';
-    var initializeFileManager = true;
+    var isFileManagerClosed = true;
+    var isFileManagerInitialized = true;
 
     $scope.$on('channel:changed', function () {
       $scope.channel = channelsService.getCurrentChannel();
@@ -20,73 +18,58 @@ app.controller('fileManagerController', [
     });
 
     $scope.getFileManagerClass = function () {
-      if (fileManagerStatus === 'closed')
+      if (isFileManagerClosed)
         return 'mime-holder closed';
       else
         return 'mime-holder opened';
     };
 
     $scope.toggleFileManagerStatus = function () {
-      if (initializeFileManager) {
+      if (isFileManagerInitialized) {
         filesService.getFileManagerFiles($scope.channel.id).then(function (
           files) {
           $scope.files = files;
-          initializeFileManager = false;
-          fileManagerStatus = 'opened';
+          isFileManagerInitialized = false;
+          isFileManagerClosed = false;
         });
       } else {
-        if (fileManagerStatus === 'closed')
-          fileManagerStatus = 'opened';
+        if (isFileManagerClosed)
+          isFileManagerClosed = false;
         else
-          fileManagerStatus = 'closed';
+          isFileManagerClosed = true;
       }
     };
 
     $scope.doesChannelHaveAnyFilteredFiles = function () {
       if ($scope.fileManagerFilterType === null) {
-        if ($scope.files.length !== 0)
-          return true;
-        return false;
+        return ($scope.files.length !== 0);
       } else {
         var filteredFiles = $scope.files.filter(function (file) {
           return file.type === $scope.fileManagerFilterType;
         });
-        if (filteredFiles.length !== 0)
-          return true;
-        return false;
+        return filteredFiles.length !== 0;
       }
     };
 
-    $scope.fileManagerFilesFilter = function (file) {
+    $scope.shouldShowInFileManager = function (file) {
       if (!$scope.fileManagerFilterType)
         return true;
       return $scope.fileManagerFilterType === file.type;
     };
 
     $scope.getMessageOfNoFilteredFile = function () {
-      if ($scope.fileManagerFilterType === null)
-        return 'هیچ فایلی وجود ندارد';
-      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.CODE)
-        return 'هیچ فایلی به صورت کد وحود ندارد';
-      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.PICTURE)
-        return 'هیچ عکسی وجود ندارد';
-      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.DOCUMENT)
-        return 'هیچ سندی وجود ندارد';
-      else if ($scope.fileManagerFilterType === FileManagerFile.TYPE.OTHER)
-        return 'هیچ فایل دیگری وحود ندارد';
-    };
-
-    $scope.changeFileManagerFilterType = function (type) {
-      if (type === '0')
-        $scope.fileManagerFilterType = null;
-      else if (type === '1')
-        $scope.fileManagerFilterType = FileManagerFile.TYPE.CODE;
-      else if (type === '2')
-        $scope.fileManagerFilterType = FileManagerFile.TYPE.PICTURE;
-      else if (type === '3')
-        $scope.fileManagerFilterType = FileManagerFile.TYPE.DOCUMENT;
-      else if (type === '4')
-        $scope.fileManagerFilterType = FileManagerFile.TYPE.OTHER;
+      switch (parseInt($scope.fileManagerFilterType)) {
+        case null:
+          return 'هیچ فایلی وجود ندارد';
+        case FileManagerFile.TYPE.CODE:
+          return 'هیچ فایلی به صورت کد وحود ندارد';
+        case FileManagerFile.TYPE.PICTURE:
+          return 'هیچ عکسی وجود ندارد';
+        case FileManagerFile.TYPE.DOCUMENT:
+          return 'هیچ سندی وجود ندارد';
+        case FileManagerFile.TYPE.OTHER:
+          return 'هیچ فایل دیگری وحود ندارد';
+      }
     };
 
     $scope.goLive = function (fileId, fileName) {

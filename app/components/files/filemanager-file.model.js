@@ -8,8 +8,8 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       this.url = url;
       this.name = name;
       this.date = date;
-      this.type = this.getFileType();
       this.extension = type;
+      this.type = this.getFileType();
       this.svg = this.getSvgUrl();
     }
 

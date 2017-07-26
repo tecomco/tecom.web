@@ -335,7 +335,7 @@ app.controller('messagesController', [
         'from': fromId,
         'to': toId
       };
-      if (toId - fromId < 16) {
+      if (toId - fromId < Message.MAX_PACKET_LENGTH) {
         var loadingMessage = new Message(null, Message.TYPE.LOADING, null,
           channelId, null, null,
           additionalData, null, null);

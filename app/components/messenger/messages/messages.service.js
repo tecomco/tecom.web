@@ -5,7 +5,8 @@ app.service('messagesService', [
   'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
   'Team', 'ArrayUtil', 'FileManagerFile',
   function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
-    Message, db, filesService, CurrentMember, Team, ArrayUtil, FileManagerFile) {
+    Message, db, filesService, CurrentMember, Team, ArrayUtil,
+    FileManagerFile) {
 
     var self = this;
 
@@ -74,18 +75,26 @@ app.service('messagesService', [
 
     function getAndSaveInitialMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
-      generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId).then(function (period) {
-        getInitialMessagesByChannelId(channel.id, channel.teamId, period.from, period.to).then(function () {
+      generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId).then(
+        function (periods) {
+          for (var i = 0; i < periods.length; i++) {
+            getInitialMessagesByChannelId(channel.id, channel.teamId,
+              periods[i].from, periods[i].to).then(function () {
+              console.log('here');
+            }).catch(function (err) {
+              $log.error('Error Getting Initial Messages From Server',
+                err);
+            });
+          }
           deferred.resolve();
-        }).catch(function (err) {
-          $log.error('Error Getting Initial Messages From Server', err);
         });
-      });
       return deferred.promise;
     }
 
     function generateFromAndTo(memberLastSeenId, lastMessageId) {
       var deferred = $q.defer();
+      var periods = [];
+      var tempData;
       var from;
       var to;
       if (memberLastSeenId) {
@@ -96,14 +105,45 @@ app.service('messagesService', [
           to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
         if (to === lastMessageId)
           from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
+        if (to < lastMessageId - Message.MAX_PACKET_LENGTH) {
+          tempData = {
+            from: from,
+            to: to
+          };
+          periods.push(tempData);
+          tempData = {
+            from: lastMessageId - Message.MAX_PACKET_LENGTH + 1,
+            to: lastMessageId
+          };
+          periods.push(tempData);
+        } else {
+          tempData = {
+            from: from,
+            to: lastMessageId
+          };
+          periods.push(tempData);
+        }
       } else {
-        from = 1;
-        to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
+        if (lastMessageId <= 2 * Message.MAX_PACKET_LENGTH) {
+          tempData = {
+            from: 1,
+            to: lastMessageId
+          };
+          periods.push(tempData);
+        } else {
+          tempData = {
+            from: 1,
+            to: Message.MAX_PACKET_LENGTH
+          };
+          periods.push(tempData);
+          tempData = {
+            from: lastMessageId - Message.MAX_PACKET_LENGTH + 1,
+            to: lastMessageId
+          };
+          periods.push(tempData);
+        }
       }
-      deferred.resolve({
-        from: from,
-        to: to
-      });
+      deferred.resolve(periods);
       return deferred.promise;
     }
 
@@ -168,10 +208,10 @@ app.service('messagesService', [
         to: toId
       };
       socket.emit('message:get', dataToBeSend, function (res) {
-            deferred.resolve(res.messages[0].senderId);
-        });
-        return deferred.promise;
-      }
+        deferred.resolve(res.messages[0].senderId);
+      });
+      return deferred.promise;
+    }
 
     function getMessagesByChannelId(channelId) {
       var deferred = $q.defer();
@@ -223,7 +263,8 @@ app.service('messagesService', [
           findGaps(res, from, to).then(function (gaps) {
             if (gaps)
               for (var i = 0; i < gaps.length; i++)
-                getNeededMessagesFromServer(channelId, teamId, gaps[i].from, gaps[i].to);
+                getNeededMessagesFromServer(channelId, teamId, gaps[i]
+                  .from, gaps[i].to);
             deferred.resolve();
           });
         });
@@ -346,8 +387,9 @@ app.service('messagesService', [
             channelsService.updateChannelLastDatetime(message.channelId,
               message.datetime);
           });
-          var file = new FileManagerFile(res.data.id, res.data.file, res.data.name, res.data.date_uploaded, res.data.type);
-          $rootScope.$broadcast('file:newFileManagerFile', file);
+        var file = new FileManagerFile(res.data.id, res.data.file, res.data
+          .name, res.data.date_uploaded, res.data.type);
+        $rootScope.$broadcast('file:newFileManagerFile', file);
       }, function (resp) {
         $log.error('Error status: ' + resp.status);
       }, function (evt) {
