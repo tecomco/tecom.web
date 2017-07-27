@@ -2,11 +2,13 @@
 
 app.service('filesService', [
   '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q',
-  'channelsService', 'File', 'FileManagerFile', 'fileUtil',
+  'channelsService', 'File', 'FileManagerFile', 'fileUtil', 'Upload',
   function ($rootScope, $http, $log, socket, ArrayUtil, $q, channelsService,
-    File, FileManagerFile, fileUtil) {
+    File, FileManagerFile, fileUtil, Upload) {
 
     var self = this;
+    var uploadQueue = [];
+    var uploadFlag = false;
     self.files = [];
     self.viewFile = null;
 
@@ -78,6 +80,47 @@ app.service('filesService', [
       return defer.promise;
     }
 
+    function uploadFile(fileName, channelId, memberId, fileData) {
+      var deferred = $q.defer();
+      uploadQueue.push({
+        fileName: fileName,
+        channelId: channelId,
+        memberId: memberId,
+        fileData: fileData,
+        deferred: deferred
+      });
+      if (uploadQueue.length === 1) {
+        upload();
+      }
+      return deferred.promise;
+    }
+
+    function upload() {
+      var fileData = uploadQueue.shift();
+      Upload.upload({
+          url: 'api/v1/files/upload/' + fileData.fileName,
+          data: {
+            name: fileData.fileName,
+            channel: fileData.channelId,
+            sender: fileData.memberId,
+            file: fileData.fileData
+          },
+          method: 'PUT'
+        })
+        .then(function (res) {
+          fileData.deferred.resolve(res);
+          if (uploadQueue.length > 0) {
+            upload();
+          }
+        }, function (resp) {
+          $log.error('Error status: ' + resp.status);
+          fileData.deferred.reject();
+        }, function (evt) {
+          var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+          $rootScope.$broadcast('file:upload:progress', progressPercentage);
+        });
+    }
+
     function getFileManagerFiles(channelId) {
       var files = [];
       var deferred = $q.defer();
@@ -146,6 +189,7 @@ app.service('filesService', [
       getLivedFile: getLivedFile,
       showFileLine: showFileLine,
       getFileById: getFileById,
+      uploadFile: uploadFile,
       getFileManagerFiles: getFileManagerFiles,
       viewFile: viewFile
     };

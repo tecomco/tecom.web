@@ -1,15 +1,15 @@
 'use strict';
 
 app.service('messagesService', [
-  '$rootScope', '$http', '$log', '$q', 'Upload', 'socket',
+  '$rootScope', '$http', '$log', '$q', 'socket',
   'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
   'Team', 'ArrayUtil', 'FileManagerFile',
-  function ($rootScope, $http, $log, $q, Upload, socket, channelsService,
+  function ($rootScope, $http, $log, $q, socket, channelsService,
     Message, db, filesService, CurrentMember, Team, ArrayUtil,
     FileManagerFile) {
 
     var self = this;
-
+    var uploadFlag = false;
     /**
      * @summary Socket listeners
      */
@@ -75,16 +75,11 @@ app.service('messagesService', [
 
     function getAndSaveInitialMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
-      generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId).then(
-        function (periods) {
+      generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId)
+        .then(function (periods) {
           for (var i = 0; i < periods.length; i++) {
             getInitialMessagesByChannelId(channel.id, channel.teamId,
-              periods[i].from, periods[i].to).then(function () {
-              console.log('here');
-            }).catch(function (err) {
-              $log.error('Error Getting Initial Messages From Server',
-                err);
-            });
+              periods[i].from, periods[i].to);
           }
           deferred.resolve();
         });
@@ -98,7 +93,8 @@ app.service('messagesService', [
       var from;
       var to;
       if (memberLastSeenId) {
-        from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4, 1);
+        from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4 + 1,
+          1);
         to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
           lastMessageId);
         if (from === 1)
@@ -257,18 +253,16 @@ app.service('messagesService', [
     }
 
     function getInitialMessagesByChannelId(channelId, teamId, from, to) {
-      var deferred = $q.defer();
       getInitialMessagesByChannelIdFromDb(channelId, from, to)
         .then(function (res) {
           findGaps(res, from, to).then(function (gaps) {
             if (gaps)
-              for (var i = 0; i < gaps.length; i++)
-                getNeededMessagesFromServer(channelId, teamId, gaps[i]
-                  .from, gaps[i].to);
-            deferred.resolve();
+              for (var i = 0; i < gaps.length; i++) {
+                getNeededMessagesFromServer(channelId, teamId,
+                  gaps[i].from, gaps[i].to);
+              }
           });
         });
-      return deferred.promise;
     }
 
     function getInitialMessagesByChannelIdFromDb(channelId, from, to) {
@@ -363,40 +357,29 @@ app.service('messagesService', [
       var additionalData = {
         name: fileName
       };
-      var message = new Message(null, Message.TYPE.FILE, CurrentMember.member
-        .id, channelId, null, null, additionalData, null, true, +new Date()
-      );
-      Upload.upload({
-        url: 'api/v1/files/upload/' + fileName,
-        data: {
-          name: fileName,
-          channel: channelId,
-          sender: CurrentMember.member.id,
-          file: fileData
-        },
-        method: 'PUT'
-      }).then(function (res) {
-        message.additionalData.url = res.data.file;
-        message.additionalData.fileId = res.data.id;
-        message.additionalData.type = res.data.type;
-        socket.emit('message:send', message.getServerWellFormed(),
-          function (data) {
-            message.isPending = false;
-            message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
-            message.save();
-            channelsService.updateChannelLastDatetime(message.channelId,
-              message.datetime);
-          });
-        var file = new FileManagerFile(res.data.id, res.data.file, res.data
-          .name, res.data.date_uploaded, res.data.type);
-        $rootScope.$broadcast('file:newFileManagerFile', file);
-      }, function (resp) {
-        $log.error('Error status: ' + resp.status);
-      }, function (evt) {
-        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-        $rootScope.$broadcast('file:upload:progress',
-          progressPercentage);
-      });
+      var message = new Message(null, Message.TYPE.FILE,
+        CurrentMember.member.id, channelId, null, null, additionalData,
+        null, true, +new Date());
+      filesService.uploadFile(fileName, channelId, CurrentMember.member.id,
+          fileData, message)
+        .then(function (res) {
+          message.additionalData.url = res.data.file;
+          message.additionalData.fileId = res.data.id;
+          message.additionalData.type = res.data.type;
+          socket.emit('message:send', message.getServerWellFormed(),
+            function (data) {
+              message.isPending = false;
+              message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
+              message.save();
+              channelsService.updateChannelLastDatetime(message.channelId,
+                message.datetime);
+            });
+          var file = new FileManagerFile(res.data.id, res.data.file, res.data
+            .name, res.data.date_uploaded, res.data.type);
+          $rootScope.$broadcast('file:newFileManagerFile', file);
+        }).catch(function (err) {
+          $log.error('Error Uploading File.', err);
+        });
       return message;
     }
 

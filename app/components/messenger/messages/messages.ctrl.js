@@ -22,7 +22,7 @@ app.controller('messagesController', [
     }
 
     $scope.$on('scroll:isTyping', function () {
-      scrollBottom();
+      checkShoudlScrollBottom();
     });
 
     $scope.$on('channels:updated', function (event, data) {
@@ -42,7 +42,7 @@ app.controller('messagesController', [
           self.lastUnSeenMessage = message;
         }
         $scope.messages.push(message);
-        scrollBottom();
+        checkShoudlScrollBottom();
       }
     });
 
@@ -130,6 +130,13 @@ app.controller('messagesController', [
       }, 0, false);
     }
 
+    function checkShoudlScrollBottom() {
+      var holder = document.getElementById('messagesHolder');
+      var messagesWindow = document.getElementById('messagesWindow');
+      if (holder.scrollHeight - holder.scrollTop < 1.5 * messagesWindow.scrollHeight)
+        scrollBottom();
+    }
+
     function scrollToUnseenMessage() {
       if ($scope.channel.memberLastSeenId === $scope.channel.lastMessageId)
         scrollToMessageElementById($scope.channel.memberLastSeenId);
@@ -189,6 +196,7 @@ app.controller('messagesController', [
           parentId));
         self.uploadProgressBar.setAbsolute();
         self.uploadProgressBar.start();
+        self.uploadProgressBar.set(2);
       }, 0, false);
     }
 

@@ -49,13 +49,14 @@ app.service('channelsService', [
     // TODO: tofmali
     socket.on('channel:members:add', function (result) {
       $log.info('add member:', result);
+      var channel;
       if (result.channel.type === Channel.TYPE.PUBLIC) {
-        var channel = findChannelById(result.channel.id);
+        channel = findChannelById(result.channel.id);
         channel.isCurrentMemberChannelMember = true;
       } else if (result.channel.type === Channel.TYPE.PRIVATE) {
         createAndPushChannel(result.channel);
         $rootScope.$broadcast('channels:updated');
-        var channel = findChannelById(result.channel.id);
+        channel = findChannelById(result.channel.id);
         var data = {channelId: result.channel.id};
         socket.emit('channel:messagedata', data, function (res) {
           channel.lastMessageId = res.lastMessageId;

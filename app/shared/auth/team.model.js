@@ -86,9 +86,12 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
 
     Team.isMemberActiveByUsername = function (username) {
       var member = Team.getMemberByUsername(username);
-      if (member.id === Member.TECOM_BOT.id)
-        return true;
-      return member.isActive();
+      if (member) {
+        if (member.id === Member.TECOM_BOT.id)
+          return true;
+        return member.isActive();
+      }
+      return false;
     };
 
     Team.getImageByMemberId = function (memberId) {
