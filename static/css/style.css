@@ -1866,14 +1866,22 @@ ol.linenums, ol.linenums-view {
   -webkit-transition: all 0.3s ease;
 }
 
-.mime-more ul li a {
+.mime-more ul li {
   display: block;
   width: 100%;
   padding: 16px 8px;
   font-size: 16px;
 }
 
-.mime-more ul li a:hover {
+.mime-more ul li input {
+  opacity: 0;
+}
+
+.mime-more ul li label {
+  cursor: pointer;
+}
+
+.mime-more ul li:hover {
   background: rgba(0, 0, 0, 0.02);
 }
 
@@ -1902,10 +1910,14 @@ ol.linenums, ol.linenums-view {
   padding: 8px;
   width: 100%;
   padding-right: 60px;
+  height: 60px;
   border-bottom: 1px solid rgba(0, 0, 0, .05);
 }
 
-.mime-item-one:hover {
+.mime-item-one.no-files {
+  border: 0;
+}
+.mime-item-one:hover:not(.no-files) {
   background: rgba(0, 0, 0, .02);
 }
 
@@ -1925,6 +1937,16 @@ ol.linenums, ol.linenums-view {
   position: relative;
   top: -2px;
   font-size: 18px;
+}
+
+.mime-btns {
+  position: relative;
+  top: -20px;
+}
+
+.mime-btns .dl-btn {
+  float: left;
+  margin-right: 5px;
 }
 
 .mime-date {
@@ -2834,9 +2856,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   display: none;
 }
 
-.popover-content [ng-click="tour.prev()"],
-.popover-content [ng-click="tour.next()"],
-.popover-content [ng-click="tour.end()"] {
+.popover-content [ng-click="tour.prev()"], .popover-content [ng-click="tour.next()"], .popover-content [ng-click="tour.end()"] {
   position: relative;
   text-indent: -290%;
   white-space: nowrap;
@@ -2845,16 +2865,15 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   width: 60px;
 }
 
-.popover-content [ng-click="tour.end()"]{
+.popover-content [ng-click="tour.end()"] {
   float: left;
 }
-.popover-content [ng-click="tour.next()"]:after{
+
+.popover-content [ng-click="tour.next()"]:after {
   float: right;
 }
 
-.popover-content [ng-click="tour.prev()"]:after,
-.popover-content [ng-click="tour.next()"]:after,
-.popover-content [ng-click="tour.end()"]:after {
+.popover-content [ng-click="tour.prev()"]:after, .popover-content [ng-click="tour.next()"]:after, .popover-content [ng-click="tour.end()"]:after {
   display: block;
   position: absolute;
   top: 0;
