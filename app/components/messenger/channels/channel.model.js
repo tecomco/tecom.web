@@ -8,10 +8,11 @@ app.factory('Channel', [
 
     function Channel(name, slug, description, type, id, membersCount,
       memberId, isFakeDirect, liveFileId, teamId,
-      isCurrentMemberChannelMember, isMuted,lastSeenId, lastDatetime, lastMessageId, memberLastSeenId) {
+      isCurrentMemberChannelMember, isMuted, lastSeenId, lastDatetime,
+      lastMessageId, memberLastSeenId) {
       this.setValues(name, slug, description, type, id, membersCount,
         memberId, isFakeDirect, liveFileId, teamId,
-        isCurrentMemberChannelMember, isMuted,lastSeenId, lastDatetime,
+        isCurrentMemberChannelMember, isMuted, lastSeenId, lastDatetime,
         lastMessageId, memberLastSeenId);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
@@ -38,8 +39,9 @@ app.factory('Channel', [
       this.isCurrentMemberChannelMember = isCurrentMemberChannelMember;
       this.isMuted = isMuted;
       this.lastSeenId = lastSeenId;
-      if (lastDatetime)
-      this.lastDatetime = new Date(lastDatetime);
+      if (lastDatetime) {
+        this.lastDatetime = new Date(lastDatetime);
+      }
       this.lastMessageId = lastMessageId;
       this.memberLastSeenId = memberLastSeenId;
     };
@@ -139,8 +141,8 @@ app.factory('Channel', [
               return 'zmdi zmdi-circle member-status status-online';
             case Member.STATUS.DEACTIVE:
               return 'zmdi zmdi-circle member-status status-deactive';
+          }
       }
-    }
     };
 
     Channel.prototype.getNotifCountClass = function () {
@@ -149,7 +151,8 @@ app.factory('Channel', [
     };
 
     Channel.prototype.getNotifCount = function () {
-      return this.memberLastSeenId ? this.lastMessageId - this.memberLastSeenId : this.lastMessageId;
+      return this.memberLastSeenId ? this.lastMessageId - this.memberLastSeenId :
+        this.lastMessageId;
     };
 
     Channel.prototype.getCssClass = function () {
@@ -169,7 +172,8 @@ app.factory('Channel', [
     };
 
     Channel.prototype.canMemberSendMessage = function () {
-      return !this.getIsRemoved() && !this.getIsArchived() && this.active && this.isCurrentMemberPublicChannelMember();
+      return !this.getIsRemoved() && !this.getIsArchived() && this.active &&
+        this.isCurrentMemberPublicChannelMember();
     };
 
     Channel.prototype.changeNameAndSlugFromId = function () {

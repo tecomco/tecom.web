@@ -31,7 +31,7 @@ app.controller('channelsController', [
         } else {
           var belongsToCurrentChannel =
             message.channelId === $scope.channels.current.id;
-          if (!belongsToCurrentChannel) {
+          if (!belongsToCurrentChannel && !message.isFromMe()) {
             incrementChannelNotification(message.channelId);
           }
         }

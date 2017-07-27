@@ -122,12 +122,12 @@ app.service('filesService', [
     }
 
     function getFileManagerFiles(channelId) {
-      var files = [];
       var deferred = $q.defer();
       $http({
         method: 'GET',
         url: '/api/v1/files/channels/' + channelId + '/'
       }).then(function (data) {
+        var files = [];
         data.data.forEach(function (file) {
           var newFile = new FileManagerFile(file.id, file.file, file
             .name, file.date_uploaded, file.type);

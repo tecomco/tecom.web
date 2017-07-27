@@ -57,7 +57,9 @@ app.service('channelsService', [
         createAndPushChannel(result.channel);
         $rootScope.$broadcast('channels:updated');
         channel = findChannelById(result.channel.id);
-        var data = {channelId: result.channel.id};
+        var data = {
+          channelId: result.channel.id
+        };
         socket.emit('channel:messagedata', data, function (res) {
           channel.lastMessageId = res.lastMessageId;
           channel.memberLastSeenId = res.lastMessageId - 1;
@@ -109,33 +111,29 @@ app.service('channelsService', [
     }
 
     function getInitialChannels() {
-      try {
-        socket.emit('channel:init', null, function (results) {
-          self.channels = [];
-          self.initChannelsCount = results.length;
-          if (self.initChannelsCount === 0) {
-            $rootScope.isLoading = false;
-          }
-          if (Team.areMembersReady) {
+      socket.emit('channel:init', null, function (results) {
+        self.channels = [];
+        self.initChannelsCount = results.length;
+        if (self.initChannelsCount === 0) {
+          $rootScope.isLoading = false;
+        }
+        if (Team.areMembersReady) {
+          results.forEach(function (result) {
+            var channel = createAndPushChannel(result);
+            $rootScope.$emit('channel:new', channel);
+          });
+          $rootScope.$broadcast('channels:updated', 'init');
+        } else {
+          Team.membersPromise.then(function () {
             results.forEach(function (result) {
               var channel = createAndPushChannel(result);
               $rootScope.$emit('channel:new', channel);
             });
             $rootScope.$broadcast('channels:updated', 'init');
-          } else {
-            Team.membersPromise.then(function () {
-              results.forEach(function (result) {
-                var channel = createAndPushChannel(result);
-                $rootScope.$emit('channel:new', channel);
-              });
-              $rootScope.$broadcast('channels:updated', 'init');
-            });
-          }
-          self.initialChannelsGottenForFirstTime = true;
-        });
-      } catch (err) {
-        console.log('err', err);
-      }
+          });
+        }
+        self.initialChannelsGottenForFirstTime = true;
+      });
     }
 
     function setChannelLivedFileId(channelId, fileId) {
@@ -154,7 +152,8 @@ app.service('channelsService', [
         data.type, data.id, data.membersCount, data.memberId,
         data.isFakeDirect, data.liveFileId, data.teamId,
         data.isCurrentMemberChannelMember, data.isMuted, data.lastSeenMessageId,
-        data.lastMessageDatetime, data.lastMessageId, data.memberLastSeenMessageId);
+        data.lastMessageDatetime, data.lastMessageId, data.memberLastSeenMessageId
+      );
       if (channel.isDirect() && !channel.isFakeDirect && !CurrentMember.member
         .isTecomBot()) {
         channel.changeNameAndSlugFromId();
