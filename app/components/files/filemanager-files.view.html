@@ -16,16 +16,21 @@
       <div class="mime-more">
         <i class="zmdi zmdi-more"></i>
         <ul>
-          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="null" />همه</li>
-          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="1" />کدها</li>
-          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="2" />عکس‌ها</li>
-          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="3" />اسناد</li>
-          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="4" />دیگر</li>
+          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="null" id="mime-opt-1" />
+            <label for="mime-opt-1">همه</label></li>
+          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="1" id="mime-opt-2" />
+            <label for="mime-opt-2">کدها</label></li>
+          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="2" id="mime-opt-3" />
+            <label for="mime-opt-3">عکس‌ها</label></li>
+          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="3" id="mime-opt-4" />
+            <label for="mime-opt-4">اسناد</label></li>
+          <li><input type="radio" ng-model="fileManagerFilterType" ng-value="4" id="mime-opt-5" />
+            <label for="mime-opt-5">دیگر</label></li>
         </ul>
       </div>
     </div>
     <ul class="mime-main">
-      <div ng-if="!doesChannelHaveAnyFilteredFiles()">{{getMessageOfNoFilteredFile()}}</div>
+      <div ng-if="!doesChannelHaveAnyFilteredFiles()"><div class="mime-item-one no-files">{{getMessageOfNoFilteredFile()}}</div></div>
       <li ng-repeat="file in files | orderBy : '-date' | filter : shouldShowInFileManager">
         <a class="mime-item-one">
       <svg viewBox="0 0 100 100">
@@ -35,10 +40,12 @@
         <label class="mime-name">{{file.getFileName()}}</label>
         <span class="mime-date">{{file.getLocalDate()}}</span>
         <span class="mime-size">
+        </span>
+        <div class="mime-btns">
           <div class="live-btn" dir="ltr" ng-click="goLive(file.id,file.name)" ng-if="file.canBeLived() && channel.canMemberSendMessage()"><label dir="ltr">LIVE</label><i class="fa fa-circle"></i></div>
           <div class="dl-btn" dir="ltr" ng-click="viewFile(file.id)" ng-if="file.canBeLived()" tooltip-placement="top" uib-tooltip="مشاهده"><i class="fa fa-eye"></i></div>
           <div class="dl-btn" ng-click="file.downloadFile()" tooltip-placement="top" uib-tooltip="دانلود"><i class="zmdi zmdi-download"></i></div>
-        </span>
+      </div>
       </div>
     </a>
       </li>
