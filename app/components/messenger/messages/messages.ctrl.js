@@ -13,7 +13,7 @@ app.controller('messagesController', [
     $scope.messages = [];
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
-    var holder = document.getElementById('messagesHolder');
+    var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
     var initialMemberLastSeenId;
 
@@ -37,7 +37,7 @@ app.controller('messagesController', [
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
         if ($rootScope.isTabFocused) {
-          $scope.channel.seenChannelNewMessage();
+          $scope.channel.seenLastMessage();
           messagesService.seenMessage($scope.channel.id, message.id,
             message.senderId);
         } else {
@@ -95,7 +95,7 @@ app.controller('messagesController', [
       $event.preventDefault();
       var messageBody = $scope.inputMessage.trim();
       if (!messageBody) return;
-      $scope.channel.seenChannelNewMessage();
+      $scope.channel.seenLastMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody);
       $scope.messages.push(message);
@@ -126,17 +126,17 @@ app.controller('messagesController', [
 
     function scrollBottom() {
       $timeout(function () {
-        holder.scrollTop = holder.scrollHeight;
+        messagesHolder.scrollTop = messagesHolder.scrollHeight;
       }, 0, false);
     }
 
     function checkShouldScrollBottom() {
-      if (holder.scrollHeight - holder.scrollTop < 1.5 * messagesWindow.scrollHeight)
+      if (messagesHolder.scrollHeight - messagesHolder.scrollTop < 1.5 * messagesWindow.scrollHeight)
         scrollBottom();
     }
 
     function scrollToUnseenMessage() {
-      if ($scope.channel.areAllMessagesOfChannelHaveBeenSeen())
+      if ($scope.channel.areAllMessagesHaveBeenSeen())
         scrollToMessageElementById($scope.channel.memberLastSeenId);
       else
         scrollToMessageElementById($scope.channel.memberLastSeenId + 1);
@@ -181,7 +181,7 @@ app.controller('messagesController', [
     function initialize() {
       setCurrentChannel().then(function () {
         if ($scope.channel) {
-          if (!$scope.channel.areAllMessagesOfChannelHaveBeenSeen())
+          if (!$scope.channel.areAllMessagesHaveBeenSeen())
             initialMemberLastSeenId = $scope.channel.memberLastSeenId;
           $rootScope.$broadcast('channel:ready', $scope.channel);
           bindMessages();
@@ -346,20 +346,20 @@ app.controller('messagesController', [
       $timeout(function () {
         var messageElement = getMessageElementById(elementId);
         if (messageElement)
-          holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop;
+          messagesHolder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop;
       }, 0, false);
     }
 
     function isElementInViewPort(element, direction) {
       if (element) {
         if (direction === 'up') {
-          if (element.offsetTop > holder.scrollTop &&
-            element.offsetTop < holder.scrollTop + holder.scrollHeight
+          if (element.offsetTop > messagesHolder.scrollTop &&
+            element.offsetTop < messagesHolder.scrollTop + messagesHolder.scrollHeight
           )
             return true;
         } else {
-          if (element.offsetTop > holder.scrollTop + messagesWindow.scrollHeight &&
-            element.offsetTop < holder.scrollTop + 2 * messagesWindow
+          if (element.offsetTop > messagesHolder.scrollTop + messagesWindow.scrollHeight &&
+            element.offsetTop < messagesHolder.scrollTop + 2 * messagesWindow
             .scrollHeight)
             return true;
         }
@@ -394,10 +394,10 @@ app.controller('messagesController', [
 
     document.getElementById('inputPlaceHolder').focus();
 
-    angular.element(holder)
+    angular.element(messagesHolder)
       .bind('scroll', function () {
         var scrollDirection;
-        var scrollTop = holder.scrollTop;
+        var scrollTop = messagesHolder.scrollTop;
         if (prevScrollTop) {
           if (prevScrollTop > scrollTop)
             scrollDirection = 'up';

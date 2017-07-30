@@ -95,12 +95,12 @@ app.factory('Channel', [
       this.lastSeenId = lastSeenMessageId;
     };
 
-    Channel.prototype.seenChannelNewMessage = function (lastSeenMessageId) {
+    Channel.prototype.seenLastMessage = function (lastSeenMessageId) {
       this.lastMessageId++;
       this.memberLastSeenId++;
     };
 
-    Channel.prototype.areAllMessagesOfChannelHaveBeenSeen = function (lastSeenMessageId) {
+    Channel.prototype.areAllMessagesHaveBeenSeen = function (lastSeenMessageId) {
       return this.memberLastSeenId === this.lastMessageId;
     };
 

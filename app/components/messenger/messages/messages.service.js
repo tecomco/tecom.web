@@ -75,52 +75,43 @@ app.service('messagesService', [
     function getAndSaveInitialMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
       var periods = generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId);
-      for (var i = 0; i < periods.length; i++) {
-        getInitialMessagesByChannelId(channel.id, channel.teamId,
-          periods[i].from, periods[i].to).then(function () {
-          if (i === periods.length) {
-            deferred.resolve();
-            }
-        });
-      }
-
-      return deferred.promise;
+      var promises = periods.map(function (period) {
+        return getInitialMessagesByChannelId(channel.id, channel.teamId,
+          period.from, period.to);
+      });
+      console.log(promises);
+      return $q.all(promises);
     }
 
     function generateFromAndTo(memberLastSeenId, lastMessageId) {
-      var from;
-      var to;
-      from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4 + 1,
+      var from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4 +
+        1,
         1);
-      to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
+      var to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
         lastMessageId);
       if (from === 1)
         to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
       if (to === lastMessageId)
         from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
-      return compareFromAndToWithLastmessages(lastMessageId, from, to);
+      return generatePeriodsBasedOnLastMessages(lastMessageId, from, to);
     }
 
-    function compareFromAndToWithLastmessages(lastMessageId, from, to) {
+    function generatePeriodsBasedOnLastMessages(lastMessageId, from, to) {
       var periods = [];
-      var tempData;
       if (to < lastMessageId - Message.MAX_PACKET_LENGTH) {
-        tempData = {
+        periods.push({
           from: from,
           to: to
-        };
-        periods.push(tempData);
-        tempData = {
+        });
+        periods.push({
           from: lastMessageId - Message.MAX_PACKET_LENGTH + 1,
           to: lastMessageId
-        };
-        periods.push(tempData);
+        });
       } else {
-        tempData = {
+        periods.push({
           from: from,
           to: lastMessageId
-        };
-        periods.push(tempData);
+        });
       }
       return periods;
     }
@@ -149,19 +140,16 @@ app.service('messagesService', [
         to: toId
       };
       socket.emit('message:get', dataToBeSend, function (res) {
-        var messages = [];
-        res.messages.forEach(function (msg) {
-          var message = new Message(msg.body, msg.type, msg.senderId,
+        var messages = res.messages.map(function (msg) {
+          return new Message(msg.body, msg.type, msg.senderId,
             msg.channelId, msg.id, msg.datetime, msg.additionalData,
             msg.about);
-          messages.push(message);
         });
         deferred.resolve(messages);
         var messagesForDb = messages.map(function (message) {
           return message.getDbWellFormed();
         });
-        if (messagesForDb.length > 0)
-          bulkSaveMessage(messagesForDb);
+        bulkSaveMessage(messagesForDb);
       });
       return deferred.promise;
     }
@@ -209,24 +197,17 @@ app.service('messagesService', [
     }
 
     function getInitialMessagesByChannelId(channelId, teamId, from, to) {
-      var deferred = $q.defer();
-      getInitialMessagesIdByChannelIdFromDb(channelId, from, to)
+      return getInitialMessagesIdByChannelIdFromDb(channelId, from, to)
         .then(function (ids) {
-          return findGaps(ids, from, to);
-        })
-        .then(function (gaps) {
+          var gaps = findGaps(ids, from, to);
           if (gaps.length) {
-            for (var i = 0; i < gaps.length; i++) {
-              getMessagesRangeFromServer(channelId, teamId,
-                gaps[i].from, gaps[i].to).then(function () {
-                deferred.resolve();
-              });
-            }
-          } else {
-            deferred.resolve();
+            var promises = gaps.map(function (gap) {
+              return getMessagesRangeFromServer(channelId, teamId,
+                gap.from, gap.to);
+            });
+            return $q.all(promises);
           }
         });
-      return deferred.promise;
     }
 
     function getInitialMessagesIdByChannelIdFromDb(channelId, from, to) {
@@ -242,19 +223,18 @@ app.service('messagesService', [
               $eq: channelId
             }
           },
-          // fields: ['id'],
+          fields: ['id'],
           sort: [{
             id: 'asc'
           }],
-        }).then(function (docs) {
-          deferred.resolve(docs.docs);
+        }).then(function (data) {
+          deferred.resolve(data.docs);
         });
       });
       return deferred.promise;
     }
 
     function findGaps(ids, from, to) {
-      var deferred = $q.defer();
       var gaps = [];
       var diff = 0;
       for (var i = from; i <= to; i++) {
@@ -278,8 +258,7 @@ app.service('messagesService', [
           break;
         }
       }
-      deferred.resolve(gaps);
-      return deferred.promise;
+      return gaps;
     }
 
     function sendAndGetMessage(channelId, messageBody, type, fileName,
