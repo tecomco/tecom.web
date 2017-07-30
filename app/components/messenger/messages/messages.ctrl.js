@@ -24,8 +24,9 @@ app.controller('messagesController', [
       initialize();
     }
 
-    $scope.$on('scroll:isTyping', function () {
-      checkShouldScrollBottom();
+    $scope.$on('type:start', function (channelId) {
+      if ($scope.channel.id === channelId)
+        checkShouldScrollBottom();
     });
 
     $scope.$on('channels:updated', function (event, data) {
@@ -131,7 +132,8 @@ app.controller('messagesController', [
     }
 
     function checkShouldScrollBottom() {
-      if (messagesHolder.scrollHeight - messagesHolder.scrollTop < 1.5 * messagesWindow.scrollHeight)
+      if (messagesHolder.scrollHeight - messagesHolder.scrollTop < 1.5 *
+        messagesWindow.scrollHeight)
         scrollBottom();
     }
 
@@ -219,7 +221,7 @@ app.controller('messagesController', [
       }
     };
 
-    function getLoadingMessages(channelId, from, to, direction) {
+    function getLoadingMessages(channelId, from, to, isDirectionUp) {
       messagesService.getMessagesRangeFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
         removeLoadingMessage(from);
@@ -230,7 +232,7 @@ app.controller('messagesController', [
           }
         });
         isAnyLoadingMessageGetting = false;
-        getMessagePackagesIfLoadingsInView(direction);
+        getMessagePackagesIfLoadingsInView(isDirectionUp);
       });
     }
 
@@ -245,11 +247,14 @@ app.controller('messagesController', [
     }
 
     function bindMessages() {
-      messagesService.getMessagesByChannelId($scope.channel.id)
+      messagesService.getMessagesByChannelId($scope.channel.id, $scope.channel
+          .lastMessageId)
         .then(function (messages) {
+          console.log($scope.channel.lastMessageId);
+          console.log($scope.channel.memberLastSeenId);
+          console.log(messages);
           $scope.messages = messages;
           scrollToUnseenMessage();
-          handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
             var lastMessage = ArrayUtil.getElementByKeyValue($scope.messages,
               'id', $scope.channel.lastMessageId);
@@ -271,73 +276,6 @@ app.controller('messagesController', [
       $scope.inputMessage = '';
     }
 
-    function handleLoadingMessages() {
-      var packetStartPoint;
-      var i;
-
-      if ($scope.messages.length > 0) {
-        var firstDbMessageId = $scope.messages[0].id;
-        var lastDbMessageId = $scope.messages[$scope.messages.length - 1].id;
-
-        for (i = 0; i < $scope.messages.length; i++) {
-          if (i !== $scope.messages.length - 1) {
-            if ($scope.messages[i + 1].id - $scope.messages[i].id > 1) {
-              generateLoadingMessage($scope.channel.id, $scope.messages[i].id +
-                1,
-                $scope.messages[i + 1].id - 1);
-            }
-          }
-        }
-
-        packetStartPoint = firstDbMessageId - 1;
-        for (i = firstDbMessageId - 1; i > 0; i--) {
-          if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i ===
-              1)) {
-            generateLoadingMessage($scope.channel.id, i, packetStartPoint);
-            packetStartPoint = i - 1;
-          }
-        }
-        packetStartPoint = lastDbMessageId + 1;
-        for (i = lastDbMessageId + 1; i <= $scope.channel.lastMessageId; i++) {
-          if (i - packetStartPoint >= Message.MAX_PACKET_LENGTH - 1 ||
-            (i === $scope.channel.lastMessageId - 1)) {
-            generateLoadingMessage($scope.channel.id, packetStartPoint, i);
-            packetStartPoint = i + 1;
-          }
-        }
-      } else {
-        packetStartPoint = $scope.channel.lastMessageId - 1;
-        for (i = $scope.channel.lastMessageId - 1; i > 0; i--) {
-          if (packetStartPoint - i >= Message.MAX_PACKET_LENGTH - 1 || (i ===
-              1)) {
-            generateLoadingMessage($scope.channel.id, i, packetStartPoint);
-            packetStartPoint = i - 1;
-          }
-        }
-      }
-      getMessagePackagesIfLoadingsInView();
-    }
-
-    function generateLoadingMessage(channelId, fromId, toId) {
-      var additionalData = {
-        'channelId': channelId,
-        'from': fromId,
-        'to': toId
-      };
-      if (toId - fromId < Message.MAX_PACKET_LENGTH) {
-        var loadingMessage = new Message(null, Message.TYPE.LOADING, null,
-          channelId, null, null,
-          additionalData, null, null);
-        loadingMessage.setId(fromId);
-        $scope.messages.push(loadingMessage);
-      } else {
-        generateLoadingMessage(channelId, fromId, fromId + Message.MAX_PACKET_LENGTH -
-          1);
-        generateLoadingMessage(channelId, fromId + Message.MAX_PACKET_LENGTH,
-          toId);
-      }
-    }
-
     function removeLoadingMessage(messageId) {
       ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
     }
@@ -346,30 +284,26 @@ app.controller('messagesController', [
       $timeout(function () {
         var messageElement = getMessageElementById(elementId);
         if (messageElement)
-          messagesHolder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop;
+          messagesHolder.scrollTop = messageElement.offsetTop -
+          messagesWindow.offsetTop;
       }, 0, false);
     }
 
-    function isElementInViewPort(element, direction) {
-      if (element) {
-        if (direction === 'up') {
-          if (element.offsetTop > messagesHolder.scrollTop &&
-            element.offsetTop < messagesHolder.scrollTop + messagesHolder.scrollHeight
-          )
-            return true;
-        } else {
-          if (element.offsetTop > messagesHolder.scrollTop + messagesWindow.scrollHeight &&
-            element.offsetTop < messagesHolder.scrollTop + 2 * messagesWindow
-            .scrollHeight)
-            return true;
-        }
+    function isElementInViewPort(element, isDirectionUp) {
+      if (isDirectionUp) {
+        return (element.offsetTop > messagesHolder.scrollTop &&
+          element.offsetTop < messagesHolder.scrollTop + messagesHolder.scrollHeight
+        );
+      } else {
+        return (element.offsetTop > messagesHolder.scrollTop +
+          messagesWindow.scrollHeight && element.offsetTop <
+          messagesHolder.scrollTop + 2 * messagesWindow.scrollHeight);
       }
-      return false;
     }
 
-    function filterAndGetLoadingMessages() {
+    function filterLoadingMessages() {
       var loadingMessages = $scope.messages.filter(function (message) {
-        return message.type === Message.TYPE.LOADING;
+        return message.isLoading();
       });
       return loadingMessages;
     }
@@ -379,14 +313,14 @@ app.controller('messagesController', [
       return element;
     }
 
-    function getMessagePackagesIfLoadingsInView(direction) {
-      filterAndGetLoadingMessages().forEach(function (message) {
+    function getMessagePackagesIfLoadingsInView(isDirectionUp) {
+      filterLoadingMessages().forEach(function (message) {
         var element = getMessageElementById(message.id);
-        if (isElementInViewPort(element, direction) && !
+        if (isElementInViewPort(element, isDirectionUp) && !
           isAnyLoadingMessageGetting) {
           getLoadingMessages(message.additionalData.channelId,
             message.additionalData.from, message.additionalData.to,
-            direction);
+            isDirectionUp);
           isAnyLoadingMessageGetting = true;
         }
       });
@@ -396,16 +330,16 @@ app.controller('messagesController', [
 
     angular.element(messagesHolder)
       .bind('scroll', function () {
-        var scrollDirection;
+        var isDirectionUp;
         var scrollTop = messagesHolder.scrollTop;
         if (prevScrollTop) {
           if (prevScrollTop > scrollTop)
-            scrollDirection = 'up';
+            isDirectionUp = true;
           else
-            scrollDirection = 'down';
+            isDirectionUp = false;
         }
         prevScrollTop = scrollTop;
-        getMessagePackagesIfLoadingsInView(scrollDirection);
+        getMessagePackagesIfLoadingsInView(isDirectionUp);
       });
 
     document.onkeydown = function (evt) {

@@ -9,6 +9,7 @@ app.service('messagesService', [
     FileManagerFile) {
 
     var self = this;
+    var messageMaxPacketLength = 20;
     /**
      * @summary Socket listeners
      */
@@ -39,7 +40,7 @@ app.service('messagesService', [
       channelsService.addIsTypingMemberByChannelId(data.channelId, data
         .memberId);
       $rootScope.$broadcast('channels:updated');
-      $rootScope.$broadcast('scroll:isTyping');
+      $rootScope.$broadcast('type:start', data.channelId);
     });
 
     socket.on('message:type:end', function (data) {
@@ -79,32 +80,31 @@ app.service('messagesService', [
         return getInitialMessagesByChannelId(channel.id, channel.teamId,
           period.from, period.to);
       });
-      console.log(promises);
       return $q.all(promises);
     }
 
     function generateFromAndTo(memberLastSeenId, lastMessageId) {
-      var from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4 +
+      var from = Math.max(memberLastSeenId - messageMaxPacketLength / 4 +
         1,
         1);
-      var to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
+      var to = Math.min(memberLastSeenId + messageMaxPacketLength * 3 / 4,
         lastMessageId);
       if (from === 1)
-        to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
+        to = Math.min(messageMaxPacketLength, lastMessageId);
       if (to === lastMessageId)
-        from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
+        from = Math.max(lastMessageId - messageMaxPacketLength + 1, 1);
       return generatePeriodsBasedOnLastMessages(lastMessageId, from, to);
     }
 
     function generatePeriodsBasedOnLastMessages(lastMessageId, from, to) {
       var periods = [];
-      if (to < lastMessageId - Message.MAX_PACKET_LENGTH) {
+      if (to < lastMessageId - messageMaxPacketLength) {
         periods.push({
           from: from,
           to: to
         });
         periods.push({
-          from: lastMessageId - Message.MAX_PACKET_LENGTH + 1,
+          from: lastMessageId - messageMaxPacketLength + 1,
           to: lastMessageId
         });
       } else {
@@ -154,22 +154,90 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getMessagesByChannelId(channelId) {
+    function getMessagesByChannelId(channelId, lastMessageId) {
       var deferred = $q.defer();
       getMessagesByChannelIdFromDb(channelId)
         .then(function (res) {
-          var messages = [];
-          res.docs.forEach(function (doc) {
-            var message = new Message(doc.body, doc.type, doc.senderId,
-              doc.channelId, doc._id, doc.datetime, doc.additionalData,
-              doc.about);
-            messages.push(message);
+          var messages = res.docs.map(function (message) {
+            return new Message(message.body, message.type,
+              message.senderId, message.channelId, message._id,
+              message.datetime, message.additionalData, message.about
+            );
           });
-          deferred.resolve(messages);
+          deferred.resolve(handleLoadingMessages(messages, channelId,
+            lastMessageId));
         });
       return deferred.promise;
     }
 
+    function handleLoadingMessages(messages, channelId, lastMessageId) {
+      if (messages.length > 0) {
+        var firstDbMessageId = messages[0].id;
+        var lastDbMessageId = messages[messages.length - 1].id;
+        generateMainLoadingMessages(messages, channelId);
+        generateUpperLoadingMessages(messages, channelId, firstDbMessageId);
+        generateLowerLoadingMessages(messages, channelId, lastMessageId,
+          lastDbMessageId);
+      } else {
+        generateUpperLoadingMessages(messages, channelId, lastMessageId);
+      }
+      return messages;
+    }
+
+
+    function generateMainLoadingMessages(messages, channelId) {
+      for (var i = 0; i < messages.length; i++) {
+        if (i !== messages.length - 1) {
+          if (messages[i + 1].id - messages[i].id > 1) {
+            generateLoadingMessage(messages, channelId, messages[i].id + 1,
+              messages[i + 1].id - 1);
+          }
+        }
+      }
+    }
+
+    function generateUpperLoadingMessages(messages, channelId,
+      firstDbMessageId) {
+      var packetStartPoint = firstDbMessageId - 1;
+      for (var i = firstDbMessageId - 1; i > 0; i--) {
+        if (packetStartPoint - i >= messageMaxPacketLength - 1 || (i ===
+            1)) {
+          generateLoadingMessage(messages, channelId, i, packetStartPoint);
+          packetStartPoint = i - 1;
+        }
+      }
+    }
+
+    function generateLowerLoadingMessages(messages, channelId, lastMessageId,
+      lastDbMessageId) {
+      var packetStartPoint = lastDbMessageId + 1;
+      for (var i = lastDbMessageId + 1; i <= lastMessageId; i++) {
+        if (i - packetStartPoint >= messageMaxPacketLength - 1 ||
+          (i === lastMessageId - 1)) {
+          generateLoadingMessage(messages, channelId, packetStartPoint, i);
+          packetStartPoint = i + 1;
+        }
+      }
+    }
+
+    function generateLoadingMessage(messages, channelId, fromId, toId) {
+      var additionalData = {
+        channelId: channelId,
+        from: fromId,
+        to: toId
+      };
+      if (toId - fromId < messageMaxPacketLength) {
+        var loadingMessage = new Message(null, Message.TYPE.LOADING, null,
+          channelId, null, null,
+          additionalData, null, null);
+        loadingMessage.setId(fromId);
+        messages.push(loadingMessage);
+      } else {
+        generateLoadingMessage(messages, channelId, fromId, fromId + messageMaxPacketLength - 1);
+        generateLoadingMessage(messages, channelId, fromId + messageMaxPacketLength,
+          toId);
+      }
+    }
 
     /**
      * @todo Create a static variable for limit count.

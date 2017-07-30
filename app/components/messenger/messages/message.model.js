@@ -305,8 +305,6 @@ app.factory('Message', [
       SEEN: 2
     };
 
-    Message.MAX_PACKET_LENGTH = 20;
-
     return Message;
 
   }
