@@ -9,7 +9,7 @@ app.service('messagesService', [
     FileManagerFile) {
 
     var self = this;
-    var messageMaxPacketLength = 20;
+    var MESSAGE_MAX_PACKET_LENGTH = 20;
     /**
      * @summary Socket listeners
      */
@@ -84,27 +84,27 @@ app.service('messagesService', [
     }
 
     function generateFromAndTo(memberLastSeenId, lastMessageId) {
-      var from = Math.max(memberLastSeenId - messageMaxPacketLength / 4 +
+      var from = Math.max(memberLastSeenId - MESSAGE_MAX_PACKET_LENGTH / 4 +
         1,
         1);
-      var to = Math.min(memberLastSeenId + messageMaxPacketLength * 3 / 4,
+      var to = Math.min(memberLastSeenId + MESSAGE_MAX_PACKET_LENGTH * 3 / 4,
         lastMessageId);
       if (from === 1)
-        to = Math.min(messageMaxPacketLength, lastMessageId);
+        to = Math.min(MESSAGE_MAX_PACKET_LENGTH, lastMessageId);
       if (to === lastMessageId)
-        from = Math.max(lastMessageId - messageMaxPacketLength + 1, 1);
+        from = Math.max(lastMessageId - MESSAGE_MAX_PACKET_LENGTH + 1, 1);
       return generatePeriodsBasedOnLastMessages(lastMessageId, from, to);
     }
 
     function generatePeriodsBasedOnLastMessages(lastMessageId, from, to) {
       var periods = [];
-      if (to < lastMessageId - messageMaxPacketLength) {
+      if (to < lastMessageId - MESSAGE_MAX_PACKET_LENGTH) {
         periods.push({
           from: from,
           to: to
         });
         periods.push({
-          from: lastMessageId - messageMaxPacketLength + 1,
+          from: lastMessageId - MESSAGE_MAX_PACKET_LENGTH + 1,
           to: lastMessageId
         });
       } else {
@@ -164,13 +164,13 @@ app.service('messagesService', [
               message.datetime, message.additionalData, message.about
             );
           });
-          deferred.resolve(handleLoadingMessages(messages, channelId,
+          deferred.resolve(generateLoadingMessages(messages, channelId,
             lastMessageId));
         });
       return deferred.promise;
     }
 
-    function handleLoadingMessages(messages, channelId, lastMessageId) {
+    function generateLoadingMessages(messages, channelId, lastMessageId) {
       if (messages.length > 0) {
         var firstDbMessageId = messages[0].id;
         var lastDbMessageId = messages[messages.length - 1].id;
@@ -181,15 +181,13 @@ app.service('messagesService', [
       } else {
         generateUpperLoadingMessages(messages, channelId, lastMessageId);
       }
-      return messages;
     }
-
 
     function generateMainLoadingMessages(messages, channelId) {
       for (var i = 0; i < messages.length; i++) {
         if (i !== messages.length - 1) {
           if (messages[i + 1].id - messages[i].id > 1) {
-            generateLoadingMessage(messages, channelId, messages[i].id + 1,
+            createAndPushLoadingMessage(messages, channelId, messages[i].id + 1,
               messages[i + 1].id - 1);
           }
         }
@@ -200,9 +198,9 @@ app.service('messagesService', [
       firstDbMessageId) {
       var packetStartPoint = firstDbMessageId - 1;
       for (var i = firstDbMessageId - 1; i > 0; i--) {
-        if (packetStartPoint - i >= messageMaxPacketLength - 1 || (i ===
+        if (packetStartPoint - i >= MESSAGE_MAX_PACKET_LENGTH - 1 || (i ===
             1)) {
-          generateLoadingMessage(messages, channelId, i, packetStartPoint);
+          createAndPushLoadingMessage(messages, channelId, i, packetStartPoint);
           packetStartPoint = i - 1;
         }
       }
@@ -212,29 +210,29 @@ app.service('messagesService', [
       lastDbMessageId) {
       var packetStartPoint = lastDbMessageId + 1;
       for (var i = lastDbMessageId + 1; i <= lastMessageId; i++) {
-        if (i - packetStartPoint >= messageMaxPacketLength - 1 ||
+        if (i - packetStartPoint >= MESSAGE_MAX_PACKET_LENGTH - 1 ||
           (i === lastMessageId - 1)) {
-          generateLoadingMessage(messages, channelId, packetStartPoint, i);
+          createAndPushLoadingMessage(messages, channelId, packetStartPoint, i);
           packetStartPoint = i + 1;
         }
       }
     }
 
-    function generateLoadingMessage(messages, channelId, fromId, toId) {
+    function createAndPushLoadingMessage(messages, channelId, fromId, toId) {
       var additionalData = {
         channelId: channelId,
         from: fromId,
         to: toId
       };
-      if (toId - fromId < messageMaxPacketLength) {
+      if (toId - fromId < MESSAGE_MAX_PACKET_LENGTH) {
         var loadingMessage = new Message(null, Message.TYPE.LOADING, null,
           channelId, null, null,
           additionalData, null, null);
         loadingMessage.setId(fromId);
         messages.push(loadingMessage);
       } else {
-        generateLoadingMessage(messages, channelId, fromId, fromId + messageMaxPacketLength - 1);
-        generateLoadingMessage(messages, channelId, fromId + messageMaxPacketLength,
+        createAndPushLoadingMessage(messages, channelId, fromId, fromId + MESSAGE_MAX_PACKET_LENGTH - 1);
+        createAndPushLoadingMessage(messages, channelId, fromId + MESSAGE_MAX_PACKET_LENGTH,
           toId);
       }
     }
