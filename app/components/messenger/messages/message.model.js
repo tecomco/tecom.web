@@ -34,7 +34,7 @@ app.factory('Message', [
     };
 
     Message.prototype.getUsername = function () {
-      if (CurrentMember.member.isTecomBot() || this.type === Message.TYPE.LOADING) {
+      if (CurrentMember.member.isTecomBot() || this.isLoading()) {
         return '';
       }
       var username = Team.getUsernameByMemberId(this.senderId);

@@ -11,8 +11,11 @@ app.controller('messagesController', [
 
     var self = this;
     $scope.messages = [];
-    var flagLock;
+    var isAnyLoadingMessageGetting;
     var prevScrollTop;
+    var holder = document.getElementById('messagesHolder');
+    var messagesWindow = document.getElementById('messagesWindow');
+    var initialMemberLastSeenId;
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
@@ -22,7 +25,7 @@ app.controller('messagesController', [
     }
 
     $scope.$on('scroll:isTyping', function () {
-      checkShoudlScrollBottom();
+      checkShouldScrollBottom();
     });
 
     $scope.$on('channels:updated', function (event, data) {
@@ -34,15 +37,14 @@ app.controller('messagesController', [
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
         if ($rootScope.isTabFocused) {
-          $scope.channel.memberLastSeenId++;
-          $scope.channel.lastMessageId++;
+          $scope.channel.seenChannelNewMessage();
           messagesService.seenMessage($scope.channel.id, message.id,
             message.senderId);
         } else {
           self.lastUnSeenMessage = message;
         }
         $scope.messages.push(message);
-        checkShoudlScrollBottom();
+        checkShouldScrollBottom();
       }
     });
 
@@ -93,8 +95,7 @@ app.controller('messagesController', [
       $event.preventDefault();
       var messageBody = $scope.inputMessage.trim();
       if (!messageBody) return;
-      $scope.channel.lastMessageId++;
-      $scope.channel.memberLastSeenId++;
+      $scope.channel.seenChannelNewMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody);
       $scope.messages.push(message);
@@ -125,20 +126,17 @@ app.controller('messagesController', [
 
     function scrollBottom() {
       $timeout(function () {
-        var holder = document.getElementById('messagesHolder');
         holder.scrollTop = holder.scrollHeight;
       }, 0, false);
     }
 
-    function checkShoudlScrollBottom() {
-      var holder = document.getElementById('messagesHolder');
-      var messagesWindow = document.getElementById('messagesWindow');
+    function checkShouldScrollBottom() {
       if (holder.scrollHeight - holder.scrollTop < 1.5 * messagesWindow.scrollHeight)
         scrollBottom();
     }
 
     function scrollToUnseenMessage() {
-      if ($scope.channel.memberLastSeenId === $scope.channel.lastMessageId)
+      if ($scope.channel.areAllMessagesOfChannelHaveBeenSeen())
         scrollToMessageElementById($scope.channel.memberLastSeenId);
       else
         scrollToMessageElementById($scope.channel.memberLastSeenId + 1);
@@ -175,12 +173,16 @@ app.controller('messagesController', [
       $scope.channel.isCurrentMemberChannelMember = true;
     };
 
+    $scope.isMessageFirstUnread = function (message) {
+      return (initialMemberLastSeenId !== undefined && message.id ===
+        initialMemberLastSeenId + 1);
+    };
+
     function initialize() {
       setCurrentChannel().then(function () {
         if ($scope.channel) {
-          if ($scope.channel.memberLastSeenId !== $scope.channel.lastMessageId)
-            $scope.initialMemberLastSeenId = $scope.channel.memberLastSeenId ||
-            0;
+          if (!$scope.channel.areAllMessagesOfChannelHaveBeenSeen())
+            initialMemberLastSeenId = $scope.channel.memberLastSeenId;
           $rootScope.$broadcast('channel:ready', $scope.channel);
           bindMessages();
           $scope.inputMessage = '';
@@ -218,7 +220,7 @@ app.controller('messagesController', [
     };
 
     function getLoadingMessages(channelId, from, to, direction) {
-      messagesService.getNeededMessagesFromServer(channelId,
+      messagesService.getMessagesRangeFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
         removeLoadingMessage(from);
         messages.forEach(function (message) {
@@ -227,18 +229,10 @@ app.controller('messagesController', [
             $scope.messages.push(message);
           }
         });
-        flagLock = false;
+        isAnyLoadingMessageGetting = false;
         getMessagePackagesIfLoadingsInView(direction);
       });
     }
-
-    $scope.isMessageFirstUnread = function (message) {
-      if ($scope.initialMemberLastSeenId !== undefined && message.id ===
-        $scope.initialMemberLastSeenId + 1)
-        return true;
-      else
-        return false;
-    };
 
     function setCurrentChannel() {
       var defer = $q.defer();
@@ -250,7 +244,6 @@ app.controller('messagesController', [
       return defer.promise;
     }
 
-    // TODO: tofmali
     function bindMessages() {
       messagesService.getMessagesByChannelId($scope.channel.id)
         .then(function (messages) {
@@ -258,23 +251,11 @@ app.controller('messagesController', [
           scrollToUnseenMessage();
           handleLoadingMessages();
           if ($scope.channel.hasUnread()) {
-            if (ArrayUtil.containsKeyValue($scope.messages, 'id', $scope.channel
-                .lastMessageId)) {
-              var lastMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-                'id', $scope.channel.lastMessageId);
-              messagesService.seenMessage($scope.channel.id, lastMessage.id,
-                lastMessage.senderId);
-            } else {
-              messagesService.getLastMessagesFromServer($scope.channel.id,
-                $scope.channel.teamId, $scope.channel.lastMessageId,
-                $scope.channel.lastMessageId).then(function (senderId) {
-                messagesService.seenMessage($scope.channel.id, $scope.channel
-                  .lastMessageId, senderId);
-              });
-            }
+            var lastMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+              'id', $scope.channel.lastMessageId);
+            messagesService.seenMessage($scope.channel.id, lastMessage.id,
+              lastMessage.senderId);
           }
-          channelsService.updateChannelNotification($scope.channel.id,
-            'empty');
         });
     }
 
@@ -363,26 +344,22 @@ app.controller('messagesController', [
 
     function scrollToMessageElementById(elementId) {
       $timeout(function () {
-        var holder = document.getElementById('messagesHolder');
         var messageElement = getMessageElementById(elementId);
-        var messagesWindow = document.getElementById('messagesWindow');
         if (messageElement)
           holder.scrollTop = messageElement.offsetTop - messagesWindow.offsetTop;
       }, 0, false);
     }
 
     function isElementInViewPort(element, direction) {
-      var messageHolder = document.getElementById('messagesHolder');
-      var messagesWindow = document.getElementById('messagesWindow');
       if (element) {
         if (direction === 'up') {
-          if (element.offsetTop > messageHolder.scrollTop &&
-            element.offsetTop < messageHolder.scrollTop + messagesWindow.scrollHeight
+          if (element.offsetTop > holder.scrollTop &&
+            element.offsetTop < holder.scrollTop + holder.scrollHeight
           )
             return true;
         } else {
-          if (element.offsetTop > messageHolder.scrollTop + messagesWindow.scrollHeight &&
-            element.offsetTop < messageHolder.scrollTop + 2 * messagesWindow
+          if (element.offsetTop > holder.scrollTop + messagesWindow.scrollHeight &&
+            element.offsetTop < holder.scrollTop + 2 * messagesWindow
             .scrollHeight)
             return true;
         }
@@ -405,21 +382,21 @@ app.controller('messagesController', [
     function getMessagePackagesIfLoadingsInView(direction) {
       filterAndGetLoadingMessages().forEach(function (message) {
         var element = getMessageElementById(message.id);
-        if (isElementInViewPort(element, direction) && !flagLock) {
+        if (isElementInViewPort(element, direction) && !
+          isAnyLoadingMessageGetting) {
           getLoadingMessages(message.additionalData.channelId,
             message.additionalData.from, message.additionalData.to,
             direction);
-          flagLock = true;
+          isAnyLoadingMessageGetting = true;
         }
       });
     }
 
     document.getElementById('inputPlaceHolder').focus();
 
-    angular.element(document.getElementById('messagesHolder'))
+    angular.element(holder)
       .bind('scroll', function () {
         var scrollDirection;
-        var holder = document.getElementById('messagesHolder');
         var scrollTop = holder.scrollTop;
         if (prevScrollTop) {
           if (prevScrollTop > scrollTop)

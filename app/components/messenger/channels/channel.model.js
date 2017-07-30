@@ -43,7 +43,7 @@ app.factory('Channel', [
         this.lastDatetime = new Date(lastDatetime);
       }
       this.lastMessageId = lastMessageId;
-      this.memberLastSeenId = memberLastSeenId;
+      this.memberLastSeenId = memberLastSeenId || 0;
     };
 
     Channel.prototype.hasUnread = function () {
@@ -93,6 +93,15 @@ app.factory('Channel', [
 
     Channel.prototype.setLastSeen = function (lastSeenMessageId) {
       this.lastSeenId = lastSeenMessageId;
+    };
+
+    Channel.prototype.seenChannelNewMessage = function (lastSeenMessageId) {
+      this.lastMessageId++;
+      this.memberLastSeenId++;
+    };
+
+    Channel.prototype.areAllMessagesOfChannelHaveBeenSeen = function (lastSeenMessageId) {
+      return this.memberLastSeenId === this.lastMessageId;
     };
 
     Channel.prototype.addIsTypingMemberId = function (memberId) {

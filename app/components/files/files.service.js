@@ -8,7 +8,6 @@ app.service('filesService', [
 
     var self = this;
     var uploadQueue = [];
-    var uploadFlag = false;
     self.files = [];
     self.viewFile = null;
 
@@ -109,15 +108,17 @@ app.service('filesService', [
         })
         .then(function (res) {
           fileData.deferred.resolve(res);
-          if (uploadQueue.length > 0) {
-            upload();
-          }
         }, function (resp) {
           $log.error('Error status: ' + resp.status);
           fileData.deferred.reject();
         }, function (evt) {
           var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
           $rootScope.$broadcast('file:upload:progress', progressPercentage);
+        })
+        .finally(function () {
+          if (uploadQueue.length > 0) {
+            upload();
+          }
         });
     }
 
@@ -126,12 +127,10 @@ app.service('filesService', [
       $http({
         method: 'GET',
         url: '/api/v1/files/channels/' + channelId + '/'
-      }).then(function (data) {
-        var files = [];
-        data.data.forEach(function (file) {
-          var newFile = new FileManagerFile(file.id, file.file, file
-            .name, file.date_uploaded, file.type);
-          files.push(newFile);
+      }).then(function (filesData) {
+        var files = filesData.data.map(function (file) {
+          return new FileManagerFile(file.id, file.file, file.name,
+            file.date_uploaded, file.type);
         });
         deferred.resolve(files);
       }).catch(function (err) {

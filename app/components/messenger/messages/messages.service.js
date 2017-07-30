@@ -9,7 +9,6 @@ app.service('messagesService', [
     FileManagerFile) {
 
     var self = this;
-    var uploadFlag = false;
     /**
      * @summary Socket listeners
      */
@@ -75,72 +74,55 @@ app.service('messagesService', [
 
     function getAndSaveInitialMessagesByChannelFromServer(channel) {
       var deferred = $q.defer();
-      generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId)
-        .then(function (periods) {
-          for (var i = 0; i < periods.length; i++) {
-            getInitialMessagesByChannelId(channel.id, channel.teamId,
-              periods[i].from, periods[i].to);
-          }
-          deferred.resolve();
+      var periods = generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId);
+      for (var i = 0; i < periods.length; i++) {
+        getInitialMessagesByChannelId(channel.id, channel.teamId,
+          periods[i].from, periods[i].to).then(function () {
+          if (i === periods.length) {
+            deferred.resolve();
+            }
         });
+      }
+
       return deferred.promise;
     }
 
     function generateFromAndTo(memberLastSeenId, lastMessageId) {
-      var deferred = $q.defer();
-      var periods = [];
-      var tempData;
       var from;
       var to;
-      if (memberLastSeenId) {
-        from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4 + 1,
-          1);
-        to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
-          lastMessageId);
-        if (from === 1)
-          to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
-        if (to === lastMessageId)
-          from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
-        if (to < lastMessageId - Message.MAX_PACKET_LENGTH) {
-          tempData = {
-            from: from,
-            to: to
-          };
-          periods.push(tempData);
-          tempData = {
-            from: lastMessageId - Message.MAX_PACKET_LENGTH + 1,
-            to: lastMessageId
-          };
-          periods.push(tempData);
-        } else {
-          tempData = {
-            from: from,
-            to: lastMessageId
-          };
-          periods.push(tempData);
-        }
+      from = Math.max(memberLastSeenId - Message.MAX_PACKET_LENGTH / 4 + 1,
+        1);
+      to = Math.min(memberLastSeenId + Message.MAX_PACKET_LENGTH * 3 / 4,
+        lastMessageId);
+      if (from === 1)
+        to = Math.min(Message.MAX_PACKET_LENGTH, lastMessageId);
+      if (to === lastMessageId)
+        from = Math.max(lastMessageId - Message.MAX_PACKET_LENGTH + 1, 1);
+      return compareFromAndToWithLastmessages(lastMessageId, from, to);
+    }
+
+    function compareFromAndToWithLastmessages(lastMessageId, from, to) {
+      var periods = [];
+      var tempData;
+      if (to < lastMessageId - Message.MAX_PACKET_LENGTH) {
+        tempData = {
+          from: from,
+          to: to
+        };
+        periods.push(tempData);
+        tempData = {
+          from: lastMessageId - Message.MAX_PACKET_LENGTH + 1,
+          to: lastMessageId
+        };
+        periods.push(tempData);
       } else {
-        if (lastMessageId <= 2 * Message.MAX_PACKET_LENGTH) {
-          tempData = {
-            from: 1,
-            to: lastMessageId
-          };
-          periods.push(tempData);
-        } else {
-          tempData = {
-            from: 1,
-            to: Message.MAX_PACKET_LENGTH
-          };
-          periods.push(tempData);
-          tempData = {
-            from: lastMessageId - Message.MAX_PACKET_LENGTH + 1,
-            to: lastMessageId
-          };
-          periods.push(tempData);
-        }
+        tempData = {
+          from: from,
+          to: lastMessageId
+        };
+        periods.push(tempData);
       }
-      deferred.resolve(periods);
-      return deferred.promise;
+      return periods;
     }
 
     function bulkSaveMessage(messages) {
@@ -158,9 +140,7 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getNeededMessagesFromServer(channelId, teamId, fromId, toId) {
-      var messagesForDb = [];
-      var messagesForView = [];
+    function getMessagesRangeFromServer(channelId, teamId, fromId, toId) {
       var deferred = $q.defer();
       var dataToBeSend = {
         channelId: channelId,
@@ -169,42 +149,19 @@ app.service('messagesService', [
         to: toId
       };
       socket.emit('message:get', dataToBeSend, function (res) {
-        if (res && res.messages) {
-          res.messages.forEach(function (msg) {
-            var message = new Message(msg.body, msg.type,
-              msg.senderId,
-              msg.channelId, msg.id, msg.datetime,
-              msg.additionalData, msg.about);
-            messagesForDb.push(message.getDbWellFormed());
-            messagesForView.push(message);
-          });
-          if (messagesForDb.length > 0) {
-            bulkSaveMessage(messagesForDb).then(function () {
-              deferred.resolve(messagesForView);
-            }).catch(function (err) {
-              $log.error('Error Saving Initila Messages To DB', err);
-            });
-          } else {
-            deferred.resolve(messagesForView);
-          }
-        } else {
-          deferred.reject();
-        }
-      });
-      return deferred.promise;
-    }
-
-    function getLastMessagesFromServer(channelId, teamId, fromId, toId) {
-      var messagesForView = [];
-      var deferred = $q.defer();
-      var dataToBeSend = {
-        channelId: channelId,
-        teamId: teamId,
-        from: fromId,
-        to: toId
-      };
-      socket.emit('message:get', dataToBeSend, function (res) {
-        deferred.resolve(res.messages[0].senderId);
+        var messages = [];
+        res.messages.forEach(function (msg) {
+          var message = new Message(msg.body, msg.type, msg.senderId,
+            msg.channelId, msg.id, msg.datetime, msg.additionalData,
+            msg.about);
+          messages.push(message);
+        });
+        deferred.resolve(messages);
+        var messagesForDb = messages.map(function (message) {
+          return message.getDbWellFormed();
+        });
+        if (messagesForDb.length > 0)
+          bulkSaveMessage(messagesForDb);
       });
       return deferred.promise;
     }
@@ -244,7 +201,6 @@ app.service('messagesService', [
           sort: [{
             id: 'asc'
           }],
-          // limit: 200
         }).then(function (docs) {
           deferred.resolve(docs);
         });
@@ -253,19 +209,27 @@ app.service('messagesService', [
     }
 
     function getInitialMessagesByChannelId(channelId, teamId, from, to) {
-      getInitialMessagesByChannelIdFromDb(channelId, from, to)
-        .then(function (res) {
-          findGaps(res, from, to).then(function (gaps) {
-            if (gaps)
-              for (var i = 0; i < gaps.length; i++) {
-                getNeededMessagesFromServer(channelId, teamId,
-                  gaps[i].from, gaps[i].to);
-              }
-          });
+      var deferred = $q.defer();
+      getInitialMessagesIdByChannelIdFromDb(channelId, from, to)
+        .then(function (ids) {
+          return findGaps(ids, from, to);
+        })
+        .then(function (gaps) {
+          if (gaps.length) {
+            for (var i = 0; i < gaps.length; i++) {
+              getMessagesRangeFromServer(channelId, teamId,
+                gaps[i].from, gaps[i].to).then(function () {
+                deferred.resolve();
+              });
+            }
+          } else {
+            deferred.resolve();
+          }
         });
+      return deferred.promise;
     }
 
-    function getInitialMessagesByChannelIdFromDb(channelId, from, to) {
+    function getInitialMessagesIdByChannelIdFromDb(channelId, from, to) {
       var deferred = $q.defer();
       db.getDb().then(function (database) {
         database.find({
@@ -278,32 +242,32 @@ app.service('messagesService', [
               $eq: channelId
             }
           },
-          fields: ['id'],
+          // fields: ['id'],
           sort: [{
             id: 'asc'
           }],
         }).then(function (docs) {
-          deferred.resolve(docs);
+          deferred.resolve(docs.docs);
         });
       });
       return deferred.promise;
     }
 
-    function findGaps(res, from, to) {
+    function findGaps(ids, from, to) {
       var deferred = $q.defer();
       var gaps = [];
       var diff = 0;
       for (var i = from; i <= to; i++) {
-        if (res.docs[i - from - diff]) {
-          if (i === res.docs[i - from - diff].id)
+        if (ids[i - from - diff]) {
+          if (i === ids[i - from - diff].id)
             continue;
           else {
             gaps.push({
               from: i,
-              to: res.docs[i - from - diff].id - 1
+              to: ids[i - from - diff].id - 1
             });
-            var tempdiff = res.docs[i - from - diff].id - i;
-            i = res.docs[i - from - diff];
+            var tempdiff = ids[i - from - diff].id - i;
+            i = ids[i - from - diff];
             diff += tempdiff;
           }
         } else {
@@ -416,8 +380,7 @@ app.service('messagesService', [
       getMessagesByChannelId: getMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
-      getNeededMessagesFromServer: getNeededMessagesFromServer,
-      getLastMessagesFromServer: getLastMessagesFromServer,
+      getMessagesRangeFromServer: getMessagesRangeFromServer,
       seenMessage: seenMessage,
       startTyping: startTyping,
       endTyping: endTyping,
