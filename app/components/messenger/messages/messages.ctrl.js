@@ -250,9 +250,6 @@ app.controller('messagesController', [
       messagesService.getMessagesByChannelId($scope.channel.id, $scope.channel
           .lastMessageId)
         .then(function (messages) {
-          console.log($scope.channel.lastMessageId);
-          console.log($scope.channel.memberLastSeenId);
-          console.log(messages);
           $scope.messages = messages;
           scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {
