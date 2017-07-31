@@ -71,6 +71,7 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
       if (memberId === Member.TECOM_BOT.id) {
         return Member.TECOM_BOT;
       }
+      console.log('team members',Team.members);
       var member = ArrayUtil.getElementByKeyValue(Team.members, 'id',
         memberId);
       if (!member)

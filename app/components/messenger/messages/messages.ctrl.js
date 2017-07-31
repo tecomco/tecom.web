@@ -8,7 +8,6 @@ app.controller('messagesController', [
     Upload, Message, messagesService, channelsService, filesService, $q,
     ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
-
     var self = this;
     $scope.messages = [];
     var isAnyLoadingMessageGetting;
@@ -18,9 +17,11 @@ app.controller('messagesController', [
     var initialMemberLastSeenId;
 
     if (!$stateParams.slug) {
+      console.log('1');
       channelsService.setCurrentChannelBySlug(null);
       return;
     } else if (channelsService.areChannelsReady()) {
+      console.log('2');
       initialize();
     }
 
@@ -31,6 +32,7 @@ app.controller('messagesController', [
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
+        console.log('4');
         initialize();
       }
     });
@@ -176,12 +178,15 @@ app.controller('messagesController', [
     };
 
     $scope.isMessageFirstUnread = function (message) {
+      if ($scope.channel.isDirect() && $scope.channel.lastMessageId === 0)
+        return false;
       return (initialMemberLastSeenId !== undefined && message.id ===
         initialMemberLastSeenId + 1);
     };
 
     function initialize() {
       setCurrentChannel().then(function () {
+        console.log('initialized channel', $scope.channel);
         if ($scope.channel) {
           if (!$scope.channel.areAllMessagesHaveBeenSeen())
             initialMemberLastSeenId = $scope.channel.memberLastSeenId;
@@ -250,6 +255,7 @@ app.controller('messagesController', [
       messagesService.getMessagesByChannelId($scope.channel.id, $scope.channel
           .lastMessageId)
         .then(function (messages) {
+          console.log(messages);
           $scope.messages = messages;
           scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {

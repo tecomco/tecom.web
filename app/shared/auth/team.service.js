@@ -7,6 +7,7 @@ app.factory('teamService', [
     AuthService, Channel, Member, CurrentMember) {
 
     socket.on('member:new', function (memberData) {
+      console.log('member new',memberData);
       var member = new Member(memberData.id, memberData.isAdmin,
         memberData.user_id, memberData.username, memberData.email,
         memberData.image, Member.STATUS.ONLINE);
@@ -38,7 +39,10 @@ app.factory('teamService', [
     });
 
     socket.on('member:status:change', function (data) {
+      console.log('member status change',data);
       var member = Team.getMemberByMemberId(data.memberId);
+      console.log('member of status changing',member);
+      if (member)
       member.status = data.status;
     });
 

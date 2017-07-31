@@ -15,6 +15,7 @@ app.service('messagesService', [
      */
 
     socket.on('message:send', function (data) {
+      console.log('log data message:send',data);
       var message = new Message(data.body, data.type, data.senderId,
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
@@ -28,6 +29,7 @@ app.service('messagesService', [
           channel.membersCount--;
       }
       $rootScope.$broadcast('message', message);
+      console.log('sender message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
       if (message.about) {
@@ -58,6 +60,7 @@ app.service('messagesService', [
      */
 
     $rootScope.$on('channel:new', function (event, channel) {
+      console.log('channel new $on');
       var promise;
       if (channel.isDirect() && channel.isFakeDirect) {
         var deferred = $q.defer();
@@ -77,6 +80,10 @@ app.service('messagesService', [
       var deferred = $q.defer();
       var periods = generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId);
       var promises = periods.map(function (period) {
+        console.log(channel.name);
+        console.log(channel.memberLastSeenId);
+        console.log(channel.lastMessageId);
+        console.log(periods);
         return getInitialMessagesByChannelId(channel.id, channel.teamId,
           period.from, period.to);
       });
@@ -84,6 +91,8 @@ app.service('messagesService', [
     }
 
     function generateFromAndTo(memberLastSeenId, lastMessageId) {
+      if (!lastMessageId)
+        return [];
       var from = Math.max(memberLastSeenId - MESSAGE_MAX_PACKET_LENGTH / 4 +
         1,
         1);
@@ -145,6 +154,7 @@ app.service('messagesService', [
             msg.channelId, msg.id, msg.datetime, msg.additionalData,
             msg.about);
         });
+        console.log('get message range', messages);
         deferred.resolve(messages);
         var messagesForDb = messages.map(function (message) {
           return message.getDbWellFormed();
@@ -164,8 +174,8 @@ app.service('messagesService', [
               message.datetime, message.additionalData, message.about
             );
           });
-          deferred.resolve(generateLoadingMessages(messages, channelId,
-            lastMessageId));
+          generateLoadingMessages(messages, channelId, lastMessageId);
+          deferred.resolve(messages);
         });
       return deferred.promise;
     }
@@ -187,7 +197,8 @@ app.service('messagesService', [
       for (var i = 0; i < messages.length; i++) {
         if (i !== messages.length - 1) {
           if (messages[i + 1].id - messages[i].id > 1) {
-            createAndPushLoadingMessage(messages, channelId, messages[i].id + 1,
+            createAndPushLoadingMessage(messages, channelId, messages[i].id +
+              1,
               messages[i + 1].id - 1);
           }
         }
@@ -200,7 +211,8 @@ app.service('messagesService', [
       for (var i = firstDbMessageId - 1; i > 0; i--) {
         if (packetStartPoint - i >= MESSAGE_MAX_PACKET_LENGTH - 1 || (i ===
             1)) {
-          createAndPushLoadingMessage(messages, channelId, i, packetStartPoint);
+          createAndPushLoadingMessage(messages, channelId, i,
+            packetStartPoint);
           packetStartPoint = i - 1;
         }
       }
@@ -212,7 +224,8 @@ app.service('messagesService', [
       for (var i = lastDbMessageId + 1; i <= lastMessageId; i++) {
         if (i - packetStartPoint >= MESSAGE_MAX_PACKET_LENGTH - 1 ||
           (i === lastMessageId - 1)) {
-          createAndPushLoadingMessage(messages, channelId, packetStartPoint, i);
+          createAndPushLoadingMessage(messages, channelId, packetStartPoint,
+            i);
           packetStartPoint = i + 1;
         }
       }
@@ -231,8 +244,10 @@ app.service('messagesService', [
         loadingMessage.setId(fromId);
         messages.push(loadingMessage);
       } else {
-        createAndPushLoadingMessage(messages, channelId, fromId, fromId + MESSAGE_MAX_PACKET_LENGTH - 1);
-        createAndPushLoadingMessage(messages, channelId, fromId + MESSAGE_MAX_PACKET_LENGTH,
+        createAndPushLoadingMessage(messages, channelId, fromId, fromId +
+          MESSAGE_MAX_PACKET_LENGTH - 1);
+        createAndPushLoadingMessage(messages, channelId, fromId +
+          MESSAGE_MAX_PACKET_LENGTH,
           toId);
       }
     }
@@ -267,6 +282,7 @@ app.service('messagesService', [
         .then(function (ids) {
           var gaps = findGaps(ids, from, to);
           if (gaps.length) {
+            console.log('gaps', gaps);
             var promises = gaps.map(function (gap) {
               return getMessagesRangeFromServer(channelId, teamId,
                 gap.from, gap.to);

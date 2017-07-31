@@ -122,14 +122,14 @@ app.service('channelsService', [
             var channel = createAndPushChannel(result);
             $rootScope.$emit('channel:new', channel);
           });
-          $rootScope.$broadcast('channels:updated', 'init');
+          // $rootScope.$broadcast('channels:updated', 'init');
         } else {
           Team.membersPromise.then(function () {
             results.forEach(function (result) {
               var channel = createAndPushChannel(result);
               $rootScope.$emit('channel:new', channel);
             });
-            $rootScope.$broadcast('channels:updated', 'init');
+            // $rootScope.$broadcast('channels:updated', 'init');
           });
         }
         self.initialChannelsGottenForFirstTime = true;
@@ -148,12 +148,14 @@ app.service('channelsService', [
     }
 
     function createAndPushChannel(data) {
+      console.log('create and push channel data', data);
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, data.memberId,
         data.isFakeDirect, data.liveFileId, data.teamId,
         data.isCurrentMemberChannelMember, data.isMuted, data.lastSeenMessageId,
         data.lastMessageDatetime, data.lastMessageId, data.memberLastSeenMessageId
       );
+      console.log('create and push channel channel', channel);
       if (channel.isDirect() && !channel.isFakeDirect && !CurrentMember.member
         .isTecomBot()) {
         channel.changeNameAndSlugFromId();
@@ -173,15 +175,11 @@ app.service('channelsService', [
     }
 
     function findChannelById(id) {
-      return self.channels.find(function (channel) {
-        return channel.id === id;
-      });
+      return ArrayUtil.getElementByKeyValue(self.channels, 'id', id);
     }
 
     function findChannelBySlug(slug) {
-      return self.channels.find(function (channel) {
-        return channel.slug === slug;
-      });
+      return ArrayUtil.getElementByKeyValue(self.channels, 'slug', slug);
     }
 
     function setCurrentChannelBySlug(slug) {
@@ -305,7 +303,9 @@ app.service('channelsService', [
     }
 
     function updateChannelNotification(channelId, type) {
+      console.log('channelId update notif', channelId);
       var channel = findChannelById(channelId);
+      console.log('channel update notif', channel);
       switch (type) {
         case 'empty':
           channel.memberLastSeenId = channel.lastMessageId;
@@ -351,6 +351,8 @@ app.service('channelsService', [
       self.messagesPromise.push(promise);
       if (self.messagesPromise.length == self.initChannelsCount) {
         $q.all(self.messagesPromise).then(function () {
+          $rootScope.$broadcast('channels:updated', 'init');
+          console.log('loading done');
           $rootScope.isLoading = false;
           $rootScope.$broadcast('loading:finished');
         });

@@ -14,23 +14,32 @@ app.factory('AuthService', [
     }
 
     function initialize() {
+      var deferred = $q.defer();
       var token = $localStorage.token;
       if (token) {
         var teamSlug = domainUtil.getSubdomain();
-        createUser(token, teamSlug);
+        createUser(token, teamSlug).then(function () {
+          deferred.resolve();
+        });
       } else {
         // $window.location.assign('/login');
       }
+      return deferred.promise;
     }
 
     function createUser(token, teamSlug) {
+      var deferred = $q.defer();
       var decodedToken = jwtHelper.decodeToken(token);
       var currentMembership = ArrayUtil.getElementByKeyValue(
         decodedToken.memberships, 'team_slug', teamSlug);
+        console.log('decodedToken',decodedToken);
+        console.log('currentMembership',currentMembership);
       CurrentMember.initialize(currentMembership.id, currentMembership.is_admin,
         decodedToken.user_id, decodedToken.username, decodedToken.email,
         decodedToken.image);
+        deferred.resolve();
       Team.initialize(currentMembership.team_id);
+      return deferred.promise;
     }
 
     function persistToken(token) {
@@ -83,6 +92,7 @@ app.factory('AuthService', [
 
     return {
       initialize: initialize,
+      createUser: createUser,
       login: login,
       logout: logout,
     };
