@@ -21,10 +21,13 @@ app.controller('messagesController', [
       if (data === 'init') {
         setCurrentChannel().then(function () {
           if ($scope.channel) {
-            initialize()
+            $scope.channel.promises
               .then(function () {
-                finishLoading();
-              });
+                return initialize();
+              })
+            .then(function () {
+              finishLoading();
+            });
           } else {
             finishLoading();
           }
@@ -37,7 +40,10 @@ app.controller('messagesController', [
       return;
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel().then(function () {
-        initialize();
+        $scope.channel.promises
+          .then(function () {
+            return initialize();
+          });
       });
     }
 

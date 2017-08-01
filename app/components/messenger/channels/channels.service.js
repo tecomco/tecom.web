@@ -7,7 +7,7 @@ app.service('channelsService', [
     CurrentMember, Team, ArrayUtil) {
 
     var self = this;
-
+    var MAX_INITIAL_CHANNELS = 5;
     /**
      * @summary Global variables
      */
@@ -112,6 +112,7 @@ app.service('channelsService', [
 
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
+        ArrayUtil.sortByKey(results, 'lastMessageDatetime');
         self.channels = [];
         self.initChannelsCount = results.length;
         if (self.initChannelsCount === 0) {
@@ -345,8 +346,10 @@ app.service('channelsService', [
         self.messagesPromise = [];
       }
       self.messagesPromise.push(promise);
-      if (self.messagesPromise.length == self.initChannelsCount) {
-        $q.all(self.messagesPromise).then(function () {
+      if (self.messagesPromise.length == MAX_INITIAL_CHANNELS) {
+        var messagesPromise = self.messagesPromise.slice(0,
+          MAX_INITIAL_CHANNELS);
+        $q.all(messagesPromise).then(function () {
           $rootScope.$broadcast('channels:updated', 'init');
         });
       }

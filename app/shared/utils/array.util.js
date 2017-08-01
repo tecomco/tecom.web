@@ -64,8 +64,8 @@ app.factory('ArrayUtil', function () {
 
   function sortByKey(array, key){
     array.sort(function(a, b){
-      if(a[key] < b[key]) return -1;
-      if(a[key] > b[key]) return 1;
+      if(a[key] < b[key]) return 1;
+      if(a[key] > b[key]) return -1;
       return 0;
     });
   }

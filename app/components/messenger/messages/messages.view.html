@@ -51,6 +51,7 @@
     </div>
     <div ng-show="channel.getIsRemoved() && !channel.isPublic()" class="input-holder">
       <label>شما از این گروه حذف شدین.</label>
+      <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
     </div>
     <div ng-show="channel.getIsArchived() && channel.active" class="input-holder">
       <label>این گروه توسط ادمین حذف شده و دیگر به آن دسترسی ندارید.</label>
