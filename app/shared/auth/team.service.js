@@ -39,9 +39,7 @@ app.factory('teamService', [
     });
 
     socket.on('member:status:change', function (data) {
-      console.log('member status change',data);
       var member = Team.getMemberByMemberId(data.memberId);
-      console.log('member of status changing',member);
       if (member)
       member.status = data.status;
     });

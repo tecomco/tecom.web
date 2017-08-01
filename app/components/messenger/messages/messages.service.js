@@ -80,10 +80,6 @@ app.service('messagesService', [
       var deferred = $q.defer();
       var periods = generateFromAndTo(channel.memberLastSeenId, channel.lastMessageId);
       var promises = periods.map(function (period) {
-        console.log(channel.name);
-        console.log(channel.memberLastSeenId);
-        console.log(channel.lastMessageId);
-        console.log(periods);
         return getInitialMessagesByChannelId(channel.id, channel.teamId,
           period.from, period.to);
       });
@@ -154,7 +150,6 @@ app.service('messagesService', [
             msg.channelId, msg.id, msg.datetime, msg.additionalData,
             msg.about);
         });
-        console.log('get message range', messages);
         deferred.resolve(messages);
         var messagesForDb = messages.map(function (message) {
           return message.getDbWellFormed();
@@ -282,7 +277,6 @@ app.service('messagesService', [
         .then(function (ids) {
           var gaps = findGaps(ids, from, to);
           if (gaps.length) {
-            console.log('gaps', gaps);
             var promises = gaps.map(function (gap) {
               return getMessagesRangeFromServer(channelId, teamId,
                 gap.from, gap.to);

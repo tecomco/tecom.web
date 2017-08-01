@@ -8,6 +8,7 @@ app.controller('messagesController', [
     Upload, Message, messagesService, channelsService, filesService, $q,
     ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
+
     var self = this;
     $scope.messages = [];
     var isAnyLoadingMessageGetting;
@@ -16,13 +17,28 @@ app.controller('messagesController', [
     var messagesWindow = document.getElementById('messagesWindow');
     var initialMemberLastSeenId;
 
+    $scope.$on('channels:updated', function (event, data) {
+      if (data === 'init') {
+        setCurrentChannel().then(function () {
+          if ($scope.channel) {
+            initialize()
+              .then(function () {
+                finishLoading();
+              });
+          } else {
+            finishLoading();
+          }
+        });
+      }
+    });
+
     if (!$stateParams.slug) {
-      console.log('1');
       channelsService.setCurrentChannelBySlug(null);
       return;
     } else if (channelsService.areChannelsReady()) {
-      console.log('2');
-      initialize();
+      setCurrentChannel().then(function () {
+        initialize();
+      });
     }
 
     $scope.$on('type:start', function (channelId) {
@@ -30,12 +46,6 @@ app.controller('messagesController', [
         checkShouldScrollBottom();
     });
 
-    $scope.$on('channels:updated', function (event, data) {
-      if (data === 'init') {
-        console.log('4');
-        initialize();
-      }
-    });
 
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
@@ -146,6 +156,11 @@ app.controller('messagesController', [
         scrollToMessageElementById($scope.channel.memberLastSeenId + 1);
     }
 
+    function finishLoading() {
+      $rootScope.isLoading = false;
+      $rootScope.$broadcast('loading:finished');
+    }
+
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
@@ -185,16 +200,18 @@ app.controller('messagesController', [
     };
 
     function initialize() {
-      setCurrentChannel().then(function () {
-        console.log('initialized channel', $scope.channel);
-        if ($scope.channel) {
-          if (!$scope.channel.areAllMessagesHaveBeenSeen())
-            initialMemberLastSeenId = $scope.channel.memberLastSeenId;
-          $rootScope.$broadcast('channel:ready', $scope.channel);
-          bindMessages();
-          $scope.inputMessage = '';
-        }
-      });
+      var deferred = $q.defer();
+      console.log('initialized channel', $scope.channel);
+      if ($scope.channel) {
+        if (!$scope.channel.areAllMessagesHaveBeenSeen())
+          initialMemberLastSeenId = $scope.channel.memberLastSeenId;
+        $rootScope.$broadcast('channel:ready', $scope.channel);
+        bindMessages().then(function () {
+          deferred.resolve();
+        });
+        $scope.inputMessage = '';
+      }
+      return deferred.promise;
     }
 
     function generateUploadProgressBar(parentId) {
@@ -242,20 +259,23 @@ app.controller('messagesController', [
     }
 
     function setCurrentChannel() {
-      var defer = $q.defer();
-      var slug = $stateParams.slug.replace('@', '');
-      channelsService.setCurrentChannelBySlug(slug).then(function () {
-        $scope.channel = channelsService.getCurrentChannel();
-        defer.resolve();
-      });
-      return defer.promise;
+      var deferred = $q.defer();
+      var slug = null;
+      if ($stateParams.slug)
+        slug = $stateParams.slug.replace('@', '');
+      channelsService.setCurrentChannelBySlug(slug)
+        .then(function () {
+          $scope.channel = channelsService.getCurrentChannel();
+          deferred.resolve();
+        });
+      return deferred.promise;
     }
 
     function bindMessages() {
+      var deferred = $q.defer();
       messagesService.getMessagesByChannelId($scope.channel.id, $scope.channel
           .lastMessageId)
         .then(function (messages) {
-          console.log(messages);
           $scope.messages = messages;
           scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {
@@ -264,7 +284,9 @@ app.controller('messagesController', [
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
           }
+          deferred.resolve();
         });
+      return deferred.promise;
     }
 
     function seenLastUnSeenMessage() {
