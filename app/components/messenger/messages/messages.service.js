@@ -15,7 +15,6 @@ app.service('messagesService', [
      */
 
     socket.on('message:send', function (data) {
-      console.log('log data message:send',data);
       var message = new Message(data.body, data.type, data.senderId,
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
@@ -29,7 +28,6 @@ app.service('messagesService', [
           channel.membersCount--;
       }
       $rootScope.$broadcast('message', message);
-      console.log('sender message', message);
       channelsService.updateChannelLastDatetime(message.channelId,
         message.datetime);
       if (message.about) {
@@ -60,7 +58,6 @@ app.service('messagesService', [
      */
 
     $rootScope.$on('channel:new', function (event, channel) {
-      console.log('channel new $on');
       var promise;
       if (channel.isDirect() && channel.isFakeDirect) {
         var deferred = $q.defer();

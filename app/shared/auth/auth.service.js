@@ -32,12 +32,10 @@ app.factory('AuthService', [
       var decodedToken = jwtHelper.decodeToken(token);
       var currentMembership = ArrayUtil.getElementByKeyValue(
         decodedToken.memberships, 'team_slug', teamSlug);
-        console.log('decodedToken',decodedToken);
-        console.log('currentMembership',currentMembership);
       CurrentMember.initialize(currentMembership.id, currentMembership.is_admin,
         decodedToken.user_id, decodedToken.username, decodedToken.email,
         decodedToken.image);
-        deferred.resolve();
+      deferred.resolve();
       Team.initialize(currentMembership.team_id);
       return deferred.promise;
     }

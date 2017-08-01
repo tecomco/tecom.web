@@ -201,7 +201,6 @@ app.controller('messagesController', [
 
     function initialize() {
       var deferred = $q.defer();
-      console.log('initialized channel', $scope.channel);
       if ($scope.channel) {
         if (!$scope.channel.areAllMessagesHaveBeenSeen())
           initialMemberLastSeenId = $scope.channel.memberLastSeenId;

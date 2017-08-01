@@ -148,14 +148,12 @@ app.service('channelsService', [
     }
 
     function createAndPushChannel(data) {
-      console.log('create and push channel data', data);
       var channel = new Channel(data.name, data.slug, data.description,
         data.type, data.id, data.membersCount, data.memberId,
         data.isFakeDirect, data.liveFileId, data.teamId,
         data.isCurrentMemberChannelMember, data.isMuted, data.lastSeenMessageId,
         data.lastMessageDatetime, data.lastMessageId, data.memberLastSeenMessageId
       );
-      console.log('create and push channel channel', channel);
       if (channel.isDirect() && !channel.isFakeDirect && !CurrentMember.member
         .isTecomBot()) {
         channel.changeNameAndSlugFromId();
@@ -303,9 +301,7 @@ app.service('channelsService', [
     }
 
     function updateChannelNotification(channelId, type) {
-      console.log('channelId update notif', channelId);
       var channel = findChannelById(channelId);
-      console.log('channel update notif', channel);
       switch (type) {
         case 'empty':
           channel.memberLastSeenId = channel.lastMessageId;

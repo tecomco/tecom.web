@@ -7,11 +7,10 @@ app.factory('CurrentMember', ['Member', '$localStorage', function (Member,
 
   CurrentMember.initialize = function (id, isAdmin, userId, username,
     email, image) {
-      console.log('isAdmin property making',isAdmin);
     CurrentMember.member = new Member(id, isAdmin, userId, username,
       email, image, Member.STATUS.ONLINE);
-      console.log('current member',CurrentMember.member);
-    CurrentMember.dontDisturbMode = $localStorage.dontDisturbMode || false;
+    CurrentMember.dontDisturbMode = $localStorage.dontDisturbMode ||
+      false;
     CurrentMember.isReady = true;
   };
 

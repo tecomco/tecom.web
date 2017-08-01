@@ -7,7 +7,6 @@ app.factory('teamService', [
     AuthService, Channel, Member, CurrentMember) {
 
     socket.on('member:new', function (memberData) {
-      console.log('member new',memberData);
       var member = new Member(memberData.id, memberData.isAdmin,
         memberData.user_id, memberData.username, memberData.email,
         memberData.image, Member.STATUS.ONLINE);
@@ -28,8 +27,7 @@ app.factory('teamService', [
           .then(function () {
             $window.location.assign('/login?err=UserRemoved');
           });
-      }
-      else {
+      } else {
         deactiveTeamMember(memberId);
         var username = Team.getUsernameByMemberId(memberId);
         channelsService.setDirectActiveState(username, false);
@@ -41,7 +39,7 @@ app.factory('teamService', [
     socket.on('member:status:change', function (data) {
       var member = Team.getMemberByMemberId(data.memberId);
       if (member)
-      member.status = data.status;
+        member.status = data.status;
     });
 
     function deactiveTeamMember(memberId) {
