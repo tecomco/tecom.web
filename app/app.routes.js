@@ -28,7 +28,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/:slug',
       views: {
         '': {
-          templateUrl: 'app/components/messenger/messages/messages.view.html?v=1.0.7'
+          templateUrl: 'app/components/messenger/messages/messages.view.html?v=1.0.8'
         },
         'header@messenger.messages': {
           templateUrl: 'app/components/messenger/header/header.view.html?v=1.0.4'
@@ -37,7 +37,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
           templateUrl: 'app/components/files/files.view.html?v=1.0.6'
         },
         'filemanager@messenger.messages': {
-          templateUrl: 'app/components/files/filemanager-files.view.html'
+          templateUrl: 'app/components/files/filemanager-files.view.html?v=1.0.0'
         }
       },
       params: {
