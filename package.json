@@ -21,12 +21,12 @@
     "url": "https://github.com/tecomco/tecom.web.git"
   },
   "dependencies": {
-    "bower": "^1.7.9"
+    "bower": "^1.7.9",
+    "grunt": "^1.0.1"
   },
   "devDependencies": {
     "angular-jsdoc": "^1.4.2",
     "angular-mocks": "^1.5.8",
-    "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-jsdoc": "^2.1.0",
     "grunt-ng-constant": "^2.0.1",
