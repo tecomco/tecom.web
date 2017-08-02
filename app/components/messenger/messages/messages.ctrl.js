@@ -22,7 +22,7 @@ app.controller('messagesController', [
       if (data === 'init') {
         setCurrentChannel().then(function () {
           if ($scope.channel) {
-            $scope.channel.getInitialMessagesPromise
+            $scope.channel.InitialMessagesPromise
               .then(function () {
                 return initialize();
               })
@@ -41,7 +41,7 @@ app.controller('messagesController', [
       return;
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel().then(function () {
-        $scope.channel.getInitialMessagesPromise
+        $scope.channel.InitialMessagesPromise
           .then(initialize());
       });
     }
@@ -202,9 +202,8 @@ app.controller('messagesController', [
       if (!$scope.channel.areAllMessagesHaveBeenSeen())
         initialMemberLastSeenId = $scope.channel.memberLastSeenId;
       $rootScope.$broadcast('channel:ready', $scope.channel);
-      bindMessages().then(function () {
-        deferred.resolve();
-      });
+      bindMessages()
+        .then(deferred.resolve());
       $scope.inputMessage = '';
       return deferred.promise;
     }

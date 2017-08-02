@@ -66,7 +66,7 @@ app.service('messagesService', [
       } else {
         promise = getAndSaveInitialMessagesByChannelFromServer(channel);
       }
-      channel.setGetInitialMessagesPromise(promise);
+      channel.setInitialMessagesPromise(promise);
       channelsService.addMessagesPromise(promise);
     });
 

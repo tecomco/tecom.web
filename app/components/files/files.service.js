@@ -96,7 +96,7 @@ app.service('filesService', [
     }
 
     function upload() {
-      var fileData = uploadQueue.shift();
+      var fileData = uploadQueue[0];
       Upload.upload({
           url: 'api/v1/files/upload/' + fileData.fileName,
           data: {
@@ -120,6 +120,7 @@ app.service('filesService', [
             fileData.message.uploadProgressBar.set(percent);
         })
         .finally(function () {
+          uploadQueue.shift();
           if (uploadQueue.length > 0) {
             upload();
           }
