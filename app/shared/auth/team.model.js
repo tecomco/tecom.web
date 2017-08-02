@@ -9,7 +9,6 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
     Team.initialize = function (id) {
       Team.id = id;
       Team.members = [];
-      Team.areMembersReady = false;
       Team.membersPromise = Team.getTeamMembers();
       Team.getName()
         .then(function (res) {
@@ -20,15 +19,12 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
     Team.getTeamMembers = function () {
       var deferred = $q.defer();
       socket.emit('team:members', null, function (res) {
-        res.forEach(function (memberData) {
-          var member = new Member(memberData.id, memberData.isAdmin,
+        Team.members = res.map(function (memberData) {
+          return new Member(memberData.id, memberData.isAdmin,
             memberData.user_id, memberData.username, memberData.email,
-            memberData.image, memberData.status
-          );
-          Team.members.push(member);
+            memberData.image, memberData.status);
         });
-        Team.areMembersReady = true;
-        deferred.resolve(res);
+        deferred.resolve();
       });
       return deferred.promise;
     };

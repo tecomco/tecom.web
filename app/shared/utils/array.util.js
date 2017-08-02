@@ -62,7 +62,7 @@ app.factory('ArrayUtil', function () {
     return (getIndexByKeyValue(array, key, value) > -1);
   }
 
-  function sortByKey(array, key){
+  function sortByKeyDesc(array, key){
     array.sort(function(a, b){
       if(a[key] < b[key]) return 1;
       if(a[key] > b[key]) return -1;
@@ -81,6 +81,6 @@ app.factory('ArrayUtil', function () {
     contains: contains,
     containsKeyValue: containsKeyValue,
     removeElementByValue: removeElementByValue,
-    sortByKey: sortByKey
+    sortByKeyDesc: sortByKeyDesc
   };
 });

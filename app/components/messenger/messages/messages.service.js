@@ -66,7 +66,7 @@ app.service('messagesService', [
       } else {
         promise = getAndSaveInitialMessagesByChannelFromServer(channel);
       }
-      channel.promises = promise;
+      channel.setGetInitialMessagesPromise(promise);
       channelsService.addMessagesPromise(promise);
     });
 
@@ -88,8 +88,7 @@ app.service('messagesService', [
       if (!lastMessageId)
         return [];
       var from = Math.max(memberLastSeenId - MESSAGE_MAX_PACKET_LENGTH / 4 +
-        1,
-        1);
+        1, 1);
       var to = Math.min(memberLastSeenId + MESSAGE_MAX_PACKET_LENGTH * 3 / 4,
         lastMessageId);
       if (from === 1)

@@ -8,6 +8,7 @@ app.service('channelsService', [
 
     var self = this;
     var MAX_INITIAL_CHANNELS = 5;
+
     /**
      * @summary Global variables
      */
@@ -112,27 +113,18 @@ app.service('channelsService', [
 
     function getInitialChannels() {
       socket.emit('channel:init', null, function (results) {
-        ArrayUtil.sortByKey(results, 'lastMessageDatetime');
+        ArrayUtil.sortByKeyDesc(results, 'lastMessageDatetime');
         self.channels = [];
         self.initChannelsCount = results.length;
         if (self.initChannelsCount === 0) {
           $rootScope.isLoading = false;
         }
-        if (Team.areMembersReady) {
-          results.forEach(function (result) {
-            var channel = createAndPushChannel(result);
-            $rootScope.$emit('channel:new', channel);
-          });
-          // $rootScope.$broadcast('channels:updated', 'init');
-        } else {
           Team.membersPromise.then(function () {
             results.forEach(function (result) {
               var channel = createAndPushChannel(result);
               $rootScope.$emit('channel:new', channel);
             });
-            // $rootScope.$broadcast('channels:updated', 'init');
           });
-        }
         self.initialChannelsGottenForFirstTime = true;
       });
     }
@@ -342,14 +334,15 @@ app.service('channelsService', [
     }
 
     function addMessagesPromise(promise) {
+      var maxInitialChannels = Math.min(self.initChannelsCount,
+        MAX_INITIAL_CHANNELS);
       if (!self.messagesPromise) {
         self.messagesPromise = [];
       }
+      if (self.messagesPromise.length < maxInitialChannels)
       self.messagesPromise.push(promise);
-      if (self.messagesPromise.length == MAX_INITIAL_CHANNELS) {
-        var messagesPromise = self.messagesPromise.slice(0,
-          MAX_INITIAL_CHANNELS);
-        $q.all(messagesPromise).then(function () {
+      if (self.messagesPromise.length == maxInitialChannels) {
+        $q.all(self.messagesPromise).then(function () {
           $rootScope.$broadcast('channels:updated', 'init');
         });
       }

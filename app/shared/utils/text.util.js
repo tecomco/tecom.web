@@ -36,11 +36,10 @@ app.factory('textUtil', function () {
       if (validUrl(url)) {
         var href = url;
         if (url.indexOf('//') === -1)
-           href = '//' + url;
+          href = '//' + url;
         return '<a href="' + href + '" target="_blank">' + url +
           '</a>';
-      }
-      else
+      } else
         return url;
     });
   }
@@ -65,6 +64,9 @@ app.factory('textUtil', function () {
   }
 
   function directionify(text) {
+    var EnglishRegex = /\b((?!=|\,|\.).)+(.)\b/;
+    if (!EnglishRegex.test(text))
+      return text;
     var directionRegex = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
     return text.replace(directionRegex, function (englishPart) {
       if (englishPart === ' ')

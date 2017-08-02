@@ -11,7 +11,6 @@ app.factory('CurrentMember', ['Member', '$localStorage', function (Member,
       email, image, Member.STATUS.ONLINE);
     CurrentMember.dontDisturbMode = $localStorage.dontDisturbMode ||
       false;
-    CurrentMember.isReady = true;
   };
 
   CurrentMember.exists = function () {

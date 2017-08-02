@@ -6,15 +6,8 @@
    function ($rootScope, $scope, $window, $uibModal, AuthService,
      CurrentMember, $localStorage) {
 
-     if (CurrentMember.isReady) {
-       $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
-       $scope.isAdmin = CurrentMember.member.isAdmin;
-     } else {
-       AuthService.initialize().then(function () {
-         $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
-         $scope.isAdmin = CurrentMember.member.isAdmin;
-       });
-     }
+     $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
+     $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
 

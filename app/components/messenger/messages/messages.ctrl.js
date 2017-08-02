@@ -16,18 +16,19 @@ app.controller('messagesController', [
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
     var initialMemberLastSeenId;
+    var initialLastMessageId;
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
         setCurrentChannel().then(function () {
           if ($scope.channel) {
-            $scope.channel.promises
+            $scope.channel.getInitialMessagesPromise
               .then(function () {
                 return initialize();
               })
-            .then(function () {
-              finishLoading();
-            });
+              .then(function () {
+                finishLoading();
+              });
           } else {
             finishLoading();
           }
@@ -40,10 +41,8 @@ app.controller('messagesController', [
       return;
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel().then(function () {
-        $scope.channel.promises
-          .then(function () {
-            return initialize();
-          });
+        $scope.channel.getInitialMessagesPromise
+          .then(initialize());
       });
     }
 
@@ -199,23 +198,21 @@ app.controller('messagesController', [
     };
 
     $scope.isMessageFirstUnread = function (message) {
-      if ($scope.channel.isDirect() && $scope.channel.lastMessageId === 0)
+      if (!initialLastMessageId)
         return false;
-      return (initialMemberLastSeenId !== undefined && message.id ===
-        initialMemberLastSeenId + 1);
+      return message.id === initialMemberLastSeenId + 1;
     };
 
     function initialize() {
       var deferred = $q.defer();
-      if ($scope.channel) {
-        if (!$scope.channel.areAllMessagesHaveBeenSeen())
-          initialMemberLastSeenId = $scope.channel.memberLastSeenId;
-        $rootScope.$broadcast('channel:ready', $scope.channel);
-        bindMessages().then(function () {
-          deferred.resolve();
-        });
-        $scope.inputMessage = '';
-      }
+      initialLastMessageId = $scope.channel.lastMessageId;
+      if (!$scope.channel.areAllMessagesHaveBeenSeen())
+        initialMemberLastSeenId = $scope.channel.memberLastSeenId;
+      $rootScope.$broadcast('channel:ready', $scope.channel);
+      bindMessages().then(function () {
+        deferred.resolve();
+      });
+      $scope.inputMessage = '';
       return deferred.promise;
     }
 
@@ -265,9 +262,8 @@ app.controller('messagesController', [
 
     function setCurrentChannel() {
       var deferred = $q.defer();
-      var slug = null;
-      if ($stateParams.slug)
-        slug = $stateParams.slug.replace('@', '');
+      var slug = $stateParams.slug ? $stateParams.slug.replace('@', '') :
+        null;
       channelsService.setCurrentChannelBySlug(slug)
         .then(function () {
           $scope.channel = channelsService.getCurrentChannel();

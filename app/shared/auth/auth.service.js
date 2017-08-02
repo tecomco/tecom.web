@@ -1,10 +1,11 @@
 'use strict';
 
 app.factory('AuthService', [
-  '$log', '$http', '$q', '$window', '$localStorage', 'jwtHelper',
+  '$log', '$http', '$q', '$window', '$timeout', '$localStorage', 'jwtHelper',
   'ArrayUtil', 'CurrentMember', '$injector', 'domainUtil', 'validationUtil',
   '$rootElement',
-  function ($log, $http, $q, $window, $localStorage, jwtHelper, ArrayUtil,
+  function ($log, $http, $q, $window, $timeout, $localStorage, jwtHelper,
+    ArrayUtil,
     CurrentMember, $injector, domainUtil, validationUtil, $rootElement) {
 
     var Team;
@@ -14,30 +15,19 @@ app.factory('AuthService', [
     }
 
     function initialize() {
-      var deferred = $q.defer();
       var token = $localStorage.token;
-      if (token) {
-        var teamSlug = domainUtil.getSubdomain();
-        createUser(token, teamSlug).then(function () {
-          deferred.resolve();
-        });
-      } else {
-        // $window.location.assign('/login');
-      }
-      return deferred.promise;
+      var teamSlug = domainUtil.getSubdomain();
+      createUser(token, teamSlug);
     }
 
     function createUser(token, teamSlug) {
-      var deferred = $q.defer();
       var decodedToken = jwtHelper.decodeToken(token);
       var currentMembership = ArrayUtil.getElementByKeyValue(
         decodedToken.memberships, 'team_slug', teamSlug);
       CurrentMember.initialize(currentMembership.id, currentMembership.is_admin,
         decodedToken.user_id, decodedToken.username, decodedToken.email,
         decodedToken.image);
-      deferred.resolve();
       Team.initialize(currentMembership.team_id);
-      return deferred.promise;
     }
 
     function persistToken(token) {
