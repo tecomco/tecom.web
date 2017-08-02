@@ -79,13 +79,14 @@ app.service('filesService', [
       return defer.promise;
     }
 
-    function uploadFile(fileName, channelId, memberId, fileData) {
+    function uploadFile(fileName, channelId, memberId, fileData, message) {
       var deferred = $q.defer();
       uploadQueue.push({
         fileName: fileName,
         channelId: channelId,
         memberId: memberId,
         fileData: fileData,
+        message: message,
         deferred: deferred
       });
       if (uploadQueue.length === 1) {
@@ -112,8 +113,11 @@ app.service('filesService', [
           $log.error('Error status: ' + resp.status);
           fileData.deferred.reject();
         }, function (evt) {
-          var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-          $rootScope.$broadcast('file:upload:progress', progressPercentage);
+          var percent = parseInt(100.0 * evt.loaded / evt.total);
+          if (percent === 100)
+            fileData.message.uploadProgressBar.complete();
+          else
+            fileData.message.uploadProgressBar.set(percent);
         })
         .finally(function () {
           if (uploadQueue.length > 0) {

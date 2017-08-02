@@ -31,6 +31,7 @@ app.factory('Message', [
         this.teamId = this.currentChannel.teamId;
       }
       this.fileTimestamp = fileTimestamp;
+      this.uploadProgressBar = null;
     };
 
     Message.prototype.getUsername = function () {
