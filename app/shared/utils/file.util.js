@@ -23,9 +23,9 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
     'xmss', 'seestyle', 'makefile', 'sjava', 'emakerfile', 'cuo', 'rtf',
     'es6', 'hbs', 'erb', 'scss'];
 
-  var pictureFormats = ['ANI', 'BMP', 'CAL', 'EPS', 'FAX', 'GIF', 'IMG', 'JBG',
-  'JPE', 'JPEG', 'JPG', 'MAC', 'PBM', 'PCD', 'PCX', 'PCT', 'PGM', 'PNG', 'PPM',
-  'PSD', 'RAS', 'TGA', 'TIFF', 'WMF'];
+  var pictureFormats = ['ani', 'bmp', 'cal', 'eps', 'fax', 'gif', 'img', 'jbg',
+  'jpe', 'jpeg', 'jpg', 'mac', 'pbm', 'pcd', 'pcx', 'pct', 'pgm', 'png', 'ppm',
+  'psd', 'ras', 'tga', 'tiff', 'wmf'];
 
   var documentFormats = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
   'odx', 'txt', 'rtf'];
@@ -34,10 +34,14 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
     return ArrayUtil.contains(textBaseFormats, format);
   }
 
+  function isPictureFormat(format) {
+    return ArrayUtil.contains(pictureFormats, format);
+  }
+
   function fileManagerFileFormat(format) {
     if (ArrayUtil.contains(textBaseFormats, format))
     return 1;
-    if (ArrayUtil.contains(pictureFormats, format.toUpperCase()))
+    if (ArrayUtil.contains(pictureFormats, format))
     return 2;
     if (ArrayUtil.contains(documentFormats, format))
     return 3;
@@ -46,6 +50,7 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
 
   return {
     isTextFormat: isTextFormat,
+    isPictureFormat: isPictureFormat,
     fileManagerFileFormat: fileManagerFileFormat
   };
 }]);

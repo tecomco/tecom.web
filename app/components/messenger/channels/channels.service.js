@@ -119,12 +119,12 @@ app.service('channelsService', [
         if (self.initChannelsCount === 0) {
           $rootScope.isLoading = false;
         }
-          Team.membersPromise.then(function () {
-            results.forEach(function (result) {
-              var channel = createAndPushChannel(result);
-              $rootScope.$emit('channel:new', channel);
-            });
+        Team.membersPromise.then(function () {
+          results.forEach(function (result) {
+            var channel = createAndPushChannel(result);
+            $rootScope.$emit('channel:new', channel);
           });
+        });
         self.initialChannelsGottenForFirstTime = true;
       });
     }
@@ -339,12 +339,13 @@ app.service('channelsService', [
       if (!self.messagesPromise) {
         self.messagesPromise = [];
       }
-      if (self.messagesPromise.length < maxInitialChannels)
-      self.messagesPromise.push(promise);
-      if (self.messagesPromise.length == maxInitialChannels) {
-        $q.all(self.messagesPromise).then(function () {
-          $rootScope.$broadcast('channels:updated', 'init');
-        });
+      if (self.messagesPromise.length < maxInitialChannels) {
+        self.messagesPromise.push(promise);
+        if (self.messagesPromise.length == maxInitialChannels) {
+          $q.all(self.messagesPromise).then(function () {
+            $rootScope.$broadcast('channels:updated', 'init');
+          });
+        }
       }
     }
 

@@ -63,13 +63,16 @@ app.factory('Message', [
         this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
         body = '<div id="' + this.getFileTimestampId() +
           '" class="ng-scope" dir="rtl">';
-        body += '<label class="file-name">' + this.additionalData.name +
-          '</label>';
-        body +=
-          '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
+        if (fileUtil.isPictureFormat(this.additionalData.type)) {
+          body += '<img class="img-responsive" ng-src="' + this.additionalData.url + '" />'
+        } else {
+          body += '<label class="file-name">' + this.additionalData.name +
+            '</label>';
+          body +=
+            '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
+        }
         if (this.canBeLived) {
-          if (this.currentChannel.canMemberSendMessage())
-          {
+          if (this.currentChannel.canMemberSendMessage()) {
             body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
               this.additionalData.fileId + ', \'' + this.additionalData.name +
               '\')">';
@@ -116,7 +119,7 @@ app.factory('Message', [
         body = 'فایل "' + this.additionalData.fileName + '"، از حالت ' +
           '<span class="live-btn"><label dir="ltr">LIVE</label>' +
           '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
-      } else if(this.type === Message.TYPE.LOADING){
+      } else if (this.type === Message.TYPE.LOADING) {
         body = '<div class="cssload-container">' +
           '<div class="loading-text">در حال بارگذاری...</div></div>';
       }
@@ -169,34 +172,34 @@ app.factory('Message', [
     Message.prototype.getStatusIcon = function () {
       var status = this.getStatus();
       switch (status) {
-      case Message.STATUS_TYPE.PENDING:
-        return 'zmdi zmdi-time';
-      case Message.STATUS_TYPE.SENT:
-        return 'zmdi zmdi-check';
-      case Message.STATUS_TYPE.SEEN:
-        return 'zmdi zmdi-check-all';
+        case Message.STATUS_TYPE.PENDING:
+          return 'zmdi zmdi-time';
+        case Message.STATUS_TYPE.SENT:
+          return 'zmdi zmdi-check';
+        case Message.STATUS_TYPE.SEEN:
+          return 'zmdi zmdi-check-all';
       }
     };
 
     Message.prototype.getCssClass = function () {
       switch (this.type) {
-      case Message.TYPE.TEXT:
-        return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
-      case Message.TYPE.FILE:
-        return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
-      case Message.TYPE.NOTIF.USER_ADDED:
-        return 'notif';
-      case Message.TYPE.NOTIF.USER_REMOVED:
-        return 'notif';
-      case Message.TYPE.NOTIF.FILE_LIVED:
-        return 'notif';
-      case Message.TYPE.NOTIF.FILE_DIED:
-        return 'notif';
-      case Message.TYPE.NOTIF.CHANNEL_CREATED:
-        return 'notif';
-      case Message.TYPE.NOTIF.CHANNEL_EDITED:
-        return 'notif';
-      case Message.TYPE.LOADING:
+        case Message.TYPE.TEXT:
+          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+        case Message.TYPE.FILE:
+          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+        case Message.TYPE.NOTIF.USER_ADDED:
+          return 'notif';
+        case Message.TYPE.NOTIF.USER_REMOVED:
+          return 'notif';
+        case Message.TYPE.NOTIF.FILE_LIVED:
+          return 'notif';
+        case Message.TYPE.NOTIF.FILE_DIED:
+          return 'notif';
+        case Message.TYPE.NOTIF.CHANNEL_CREATED:
+          return 'notif';
+        case Message.TYPE.NOTIF.CHANNEL_EDITED:
+          return 'notif';
+        case Message.TYPE.LOADING:
           return 'msg-loading';
       }
     };
