@@ -17,6 +17,8 @@ app.controller('messagesController', [
     var messagesWindow = document.getElementById('messagesWindow');
     var initialMemberLastSeenId;
     var initialLastMessageId;
+    var isJumpDownScrollingDown = false;
+    var haveUnreadMessages = false;
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -46,7 +48,7 @@ app.controller('messagesController', [
       });
     }
 
-    $scope.$on('type:start', function (channelId) {
+    $scope.$on('type:start', function (event, channelId) {
       if ($scope.channel.id === channelId)
         checkShouldScrollBottom();
     });
@@ -54,6 +56,12 @@ app.controller('messagesController', [
 
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
+        if (!isBottomOfMessagesHolder()) {
+          haveUnreadMessages = true;
+          $timeout(function () {
+            $scope.$apply();
+          });
+        }
         if ($rootScope.isTabFocused) {
           $scope.channel.seenLastMessage();
           messagesService.seenMessage($scope.channel.id, message.id,
@@ -134,6 +142,34 @@ app.controller('messagesController', [
     $scope.showFileLine = function (fileId, startLine, endLine) {
       filesService.showFileLine(fileId, startLine, endLine);
     };
+
+    $scope.shouldShowjumpDown = function () {
+      return isJumpDownScrollingDown || haveUnreadMessages;
+    };
+
+    $scope.jumpDown = function () {
+      isAnyLoadingMessageGetting = true;
+      scrollToMessageElementById($scope.channel.lastMessageId);
+      isAnyLoadingMessageGetting = false;
+    };
+
+    $scope.isMessageDateInAnotherDay = function (message) {
+      if (message.id === 1)
+        return true;
+      else {
+        var previousMessage =
+          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
+            1);
+        if (previousMessage) {
+          var timeDiff =
+            Math.abs(message.datetime.getTime() - previousMessage.datetime
+              .getTime());
+          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+          return (diffDays === 0) ? false : true;
+        }
+      }
+    };
+
 
     function scrollBottom() {
       $timeout(function () {
@@ -221,23 +257,6 @@ app.controller('messagesController', [
       }, 0, false);
     }
 
-    $scope.isMessageDateInAnotherDay = function (message) {
-      if (message.id === 1)
-        return true;
-      else {
-        var previousMessage =
-          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
-            1);
-        if (previousMessage) {
-          var timeDiff =
-            Math.abs(message.datetime.getTime() - previousMessage.datetime
-              .getTime());
-          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
-          return (diffDays === 0) ? false : true;
-        }
-      }
-    };
-
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
       messagesService.getMessagesRangeFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
@@ -277,6 +296,11 @@ app.controller('messagesController', [
               'id', $scope.channel.lastMessageId);
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
+            $timeout(function () {
+              if (!isBottomOfMessagesHolder())
+                haveUnreadMessages = true;
+              $scope.$apply();
+            });
           }
           deferred.resolve();
         });
@@ -345,6 +369,16 @@ app.controller('messagesController', [
       });
     }
 
+    function checkHavingUnreadMessages() {
+      haveUnreadMessages = !isBottomOfMessagesHolder() &&
+        haveUnreadMessages;
+    }
+
+    function isBottomOfMessagesHolder() {
+      return messagesHolder.scrollTop + messagesWindow.scrollHeight >
+        messagesHolder.scrollHeight;
+    }
+
     document.getElementById('inputPlaceHolder').focus();
 
     angular.element(messagesHolder)
@@ -358,7 +392,14 @@ app.controller('messagesController', [
             isDirectionUp = false;
         }
         prevScrollTop = scrollTop;
+        if (!isBottomOfMessagesHolder() && !isDirectionUp && isDirectionUp !==
+          undefined)
+          isJumpDownScrollingDown = true;
+        else
+          isJumpDownScrollingDown = false;
         getMessagePackagesIfLoadingsInView(isDirectionUp);
+        checkHavingUnreadMessages();
+        $scope.$apply();
       });
 
     document.onkeydown = function (evt) {
