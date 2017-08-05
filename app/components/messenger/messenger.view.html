@@ -1,40 +1,52 @@
 <div ng-controller="MessengerCtrl" class="wrapper" ui-tour>
   <div class="col-sm-3 col-lg-2 no-padding channel-section">
     <div class="right-section">
-      <div class="right-section-header" uib-dropdown>
+      <div class="right-section-header">
         <img src="static/img/tecom-logo.png" />
         <span class="brand-name-right-header">تیکام</span>
-        <a uib-dropdown-toggle class="user-options-btn" tour-step tour-step-content="راستی یادت نره بری تو مدیریت تیم و هم‌کار‌هات رو دعوت کنی. چون تیکام با هم‌تیمی‌هاست که معنی پیدا می‌کنه!" tour-step-order="3" tour-step-placement="bottom">
-          <i class="zmdi zmdi-more-vert"></i>
-        </a>
-        <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
-          <li style="display:block">
-            <!-- <a>
-              <div class="checkbox-holder" style="margin: 10px 15px -15px">
-                <input type="checkbox" ng-model="dontDisturbMode" id="dontDisturbMode" ng-change="toggleDontDisturbMode()" class="ios-toggle" />
-                <label for="dontDisturbMode" class="checkbox-label"></label>
-                <label for="dontDisturbMode"  class="zmdi zmdi-notifications-active checkbox-holder-icon checkbox-holder-left-icon"></label>
-                <label for="dontDisturbMode"  class="zmdi zmdi-notifications-off checkbox-holder-icon checkbox-holder-right-icon"></label>
-              </div>
-             </a> -->
-          </li>
-          <li ng-click="openUserProfileModal()">
-            <a><i class="fa fa-user"></i>پروفایل من</a>
-          </li>
-          <li ng-show="isAdmin" ng-click="openTeamProfileModal()">
-            <a><i class="fa fa-users"></i>مدیریت تیم</a>
-          </li>
-          <li ng-click="setNotificationPermission()" ng-show="shouldShowNotificationPermission()">
-            <a><i class="fa fa-bell"></i>درخواست دسترسی اعلان‌ها</a>
-          </li>
-          <li ng-click="logout()">
-            <a><i class="fa fa-sign-out"></i>خروج</a>
-          </li>
-        </ul>
-        <div class="header-notif">
-          <input type="checkbox" ng-model="dontDisturbMode" id="dontDisturbMode" ng-change="toggleDontDisturbMode()" class="" />
+        <div uib-dropdown>
+          <a uib-dropdown-toggle class="user-options-btn" tour-step tour-step-content="راستی یادت نره بری تو مدیریت تیم و هم‌کار‌هات رو دعوت کنی. چون تیکام با هم‌تیمی‌هاست که معنی پیدا می‌کنه!" tour-step-order="3" tour-step-placement="bottom">
+            <i class="zmdi zmdi-more-vert"></i>
+          </a>
+          <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
+            <li style="display:block">
+            </li>
+            <li ng-click="openUserProfileModal()">
+              <a><i class="fa fa-user"></i>پروفایل من</a>
+            </li>
+            <li ng-show="isAdmin" ng-click="openTeamProfileModal()">
+              <a><i class="fa fa-users"></i>مدیریت تیم</a>
+            </li>
+            <li ng-click="setNotificationPermission()" ng-show="shouldShowNotificationPermission()">
+              <a><i class="fa fa-bell"></i>درخواست دسترسی اعلان‌ها</a>
+            </li>
+            <li ng-click="logout()">
+              <a><i class="fa fa-sign-out"></i>خروج</a>
+            </li>
+          </ul>
+        </div>
+        <div class="header-notif" uib-dropdown>
+          <a uib-dropdown-toggle class="user-options-btn">
+            <i ng-class="getNotifIconClass()"></i>
+          </a>
+          <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
+            <!-- <li style="display:block"></li> -->
+            <li ng-click="setDontDisturbModeTime(30)">
+              <a><i class="zmdi zmdi-notifications-add"></i>نیم‌ساعت</a>
+            </li>
+            <li ng-click="setDontDisturbModeTime(60)">
+              <a><i class="zmdi zmdi-notifications-add"></i>یک‌ساعت</a>
+            </li>
+            <li ng-click="setDontDisturbDeactive()">
+              <a><i class="zmdi zmdi-notifications-active"></i>راحت‌باش</a>
+            </li>
+            <li ng-click="setDontDisturbActive()">
+              <a><i class="zmdi zmdi-notifications-none"></i>پیام‌نده</a>
+            </li>
+          </ul>
+          <!-- <input type="checkbox" ng-model="dontDisturbMode" id="dontDisturbMode" ng-change="toggleDontDisturbMode()" class="" />
           <label for="dontDisturbMode" class="zmdi zmdi-notifications-active"></label>
-          <label for="dontDisturbMode" class="zmdi zmdi-notifications-off"></label>
+          <label for="dontDisturbMode" class="zmdi zmdi-notifications-off"></label> -->
         </div>
       </div>
       <div class="right-section-main">

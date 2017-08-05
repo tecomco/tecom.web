@@ -24,7 +24,7 @@ app.controller('channelsController', [
       if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
         if (channel.shouldSendNotification())
-        sendBrowserNotification(channel);
+          sendBrowserNotification(channel);
       } else {
         if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
