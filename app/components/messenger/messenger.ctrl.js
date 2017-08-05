@@ -2,9 +2,9 @@
 
  app.controller('MessengerCtrl', [
    '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
-   'CurrentMember', '$localStorage', '$timeout', '$interval',
+   'CurrentMember', '$localStorage',
    function ($rootScope, $scope, $window, $uibModal, AuthService,
-     CurrentMember, $localStorage, $timeout, $interval) {
+     CurrentMember, $localStorage) {
 
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
@@ -70,21 +70,21 @@
      };
 
      $scope.setDontDisturbModeTime = function (minute) {
-       setDontDisturbModeTime(minute * 60000);
+       CurrentMember.setDontDisturbModeTime(minute * 60000);
      };
 
      $scope.setDontDisturbActive = function () {
        var time = $localStorage.dontDisturbModeTime;
        if (time)
-         removeDontDisturbModeTimeProperties();
-       setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.ACTIVE);
+         CurrentMember.removeDontDisturbModeTimeProperties();
+       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.ACTIVE);
      };
 
      $scope.setDontDisturbDeactive = function () {
        var time = $localStorage.dontDisturbModeTime;
        if (time)
-         removeDontDisturbModeTimeProperties();
-       setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
+         CurrentMember.removeDontDisturbModeTimeProperties();
+       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
      };
 
      $scope.setNotificationPermission = function () {
@@ -106,47 +106,14 @@
        var startTime = $localStorage.dontDisturbModeStartTime;
        if (time) {
          if (initTime - startTime < time)
-           setDontDisturbModeTime(startTime + time - initTime);
+           CurrentMember.setDontDisturbModeTime(startTime + time - initTime);
          else {
-           removeDontDisturbModeTimeProperties();
-           setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
+           CurrentMember.removeDontDisturbModeTimeProperties();
+           CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
          }
        } else {
          CurrentMember.dontDisturbMode = CurrentMember.getDontDisturbModeStatus();
        }
-     }
-
-     function setTimeOutForNotifications(time) {
-       $timeout(function () {
-         removeDontDisturbModeTimeProperties();
-         setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
-       }, time);
-     }
-
-     function setDontDisturbModeTime(miliseconds) {
-       setDontDisturbModeTimeProperties(miliseconds);
-       setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE);
-       setTimeOutForNotifications(miliseconds);
-     }
-
-     function setDontDisturbModeTimeProperties(time) {
-       var startTime = +new Date();
-       CurrentMember.dontDisturbModeTime = time;
-       $localStorage.dontDisturbModeTime = time;
-       CurrentMember.dontDisturbModeStartTime = startTime;
-       $localStorage.dontDisturbModeStartTime = startTime;
-     }
-
-     function removeDontDisturbModeTimeProperties() {
-       delete $localStorage.dontDisturbModeTime;
-       CurrentMember.dontDisturbModeTime = null;
-       delete $localStorage.dontDisturbModeStartTime;
-       CurrentMember.dontDisturbModeStartTime = null;
-     }
-
-     function setDontDisturbMode(mode) {
-       $localStorage.dontDisturbMode = mode;
-       CurrentMember.dontDisturbMode = mode;
      }
 
      function checkIfUserSeenTour() {
