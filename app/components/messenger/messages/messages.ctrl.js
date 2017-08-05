@@ -18,7 +18,7 @@ app.controller('messagesController', [
     var initialMemberLastSeenId;
     var initialLastMessageId;
     var isJumpDownScrollingDown = false;
-    var haveUnreadMessages = false;
+    var hasUnreadMessages = false;
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -57,7 +57,7 @@ app.controller('messagesController', [
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
         if (!isBottomOfMessagesHolder()) {
-          haveUnreadMessages = true;
+          hasUnreadMessages = true;
           $timeout(function () {
             $scope.$apply();
           });
@@ -143,8 +143,8 @@ app.controller('messagesController', [
       filesService.showFileLine(fileId, startLine, endLine);
     };
 
-    $scope.shouldShowjumpDown = function () {
-      return isJumpDownScrollingDown || haveUnreadMessages;
+    $scope.shouldShowJumpDownButton = function () {
+      return isJumpDownScrollingDown || hasUnreadMessages;
     };
 
     $scope.jumpDown = function () {
@@ -298,7 +298,7 @@ app.controller('messagesController', [
               lastMessage.senderId);
             $timeout(function () {
               if (!isBottomOfMessagesHolder())
-                haveUnreadMessages = true;
+                hasUnreadMessages = true;
               $scope.$apply();
             });
           }
@@ -370,8 +370,8 @@ app.controller('messagesController', [
     }
 
     function checkHavingUnreadMessages() {
-      haveUnreadMessages = !isBottomOfMessagesHolder() &&
-        haveUnreadMessages;
+      hasUnreadMessages = !isBottomOfMessagesHolder() &&
+        hasUnreadMessages;
     }
 
     function isBottomOfMessagesHolder() {
@@ -392,8 +392,7 @@ app.controller('messagesController', [
             isDirectionUp = false;
         }
         prevScrollTop = scrollTop;
-        if (!isBottomOfMessagesHolder() && !isDirectionUp && isDirectionUp !==
-          undefined)
+        if (!isBottomOfMessagesHolder() && isDirectionUp === false)
           isJumpDownScrollingDown = true;
         else
           isJumpDownScrollingDown = false;
