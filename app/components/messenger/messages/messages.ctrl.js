@@ -11,6 +11,7 @@ app.controller('messagesController', [
 
     var self = this;
     $scope.messages = [];
+    $scope.hasUnreadNewMessages = false;
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var messagesHolder = document.getElementById('messagesHolder');
@@ -18,7 +19,7 @@ app.controller('messagesController', [
     var initialMemberLastSeenId;
     var initialLastMessageId;
     var isJumpDownScrollingDown = false;
-    var hasUnreadMessages = false;
+    var hasUnreadInitializeMessages = false;
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -57,7 +58,7 @@ app.controller('messagesController', [
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
         if (!isBottomOfMessagesHolder()) {
-          hasUnreadMessages = true;
+          $scope.hasUnreadNewMessages = true;
           $timeout(function () {
             $scope.$apply();
           });
@@ -144,7 +145,8 @@ app.controller('messagesController', [
     };
 
     $scope.shouldShowJumpDownButton = function () {
-      return isJumpDownScrollingDown || hasUnreadMessages;
+      return isJumpDownScrollingDown || $scope.hasUnreadNewMessages ||
+        hasUnreadInitializeMessages;
     };
 
     $scope.jumpDown = function () {
@@ -298,7 +300,7 @@ app.controller('messagesController', [
               lastMessage.senderId);
             $timeout(function () {
               if (!isBottomOfMessagesHolder())
-                hasUnreadMessages = true;
+                hasUnreadInitializeMessages = true;
               $scope.$apply();
             });
           }
@@ -370,8 +372,10 @@ app.controller('messagesController', [
     }
 
     function checkHavingUnreadMessages() {
-      hasUnreadMessages = !isBottomOfMessagesHolder() &&
-        hasUnreadMessages;
+      $scope.hasUnreadNewMessages = !isBottomOfMessagesHolder() &&
+        $scope.hasUnreadNewMessages;
+      hasUnreadInitializeMessages = !isBottomOfMessagesHolder() &&
+        hasUnreadInitializeMessages;
     }
 
     function isBottomOfMessagesHolder() {
