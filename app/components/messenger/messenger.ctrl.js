@@ -57,34 +57,31 @@
          });
      };
 
-     $scope.getNotifIconClass = function () {
-       if (CurrentMember.dontDisturbMode === CurrentMember.DONT_DISTURB_MODE
-         .DEACTIVE)
-         return 'zmdi zmdi-notifications-active';
-       else if (CurrentMember.dontDisturbMode === CurrentMember.DONT_DISTURB_MODE
-         .ACTIVE)
-         return 'zmdi zmdi-notifications-none';
-       else if (CurrentMember.dontDisturbMode === CurrentMember.DONT_DISTURB_MODE
-         .TIMEACTIVE)
-         return 'zmdi zmdi-notifications-add';
+     $scope.getDontDisturbModeClass = function () {
+       switch (CurrentMember.dontDisturb.mode) {
+         case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
+           return 'zmdi zmdi-notifications-active';
+         case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
+           return 'zmdi zmdi-notifications-none';
+         case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
+           return 'zmdi zmdi-notifications-add';
+       }
      };
 
-     $scope.setDontDisturbModeTime = function (minute) {
-       CurrentMember.setDontDisturbModeTime(minute * 60000);
+     $scope.timeActivateDontDisturbMode = function (minute) {
+       CurrentMember.timeActivateDontDisturbMode(minute * 60000);
      };
 
-     $scope.setDontDisturbActive = function () {
-       var time = $localStorage.dontDisturbModeTime;
-       if (time)
-         CurrentMember.removeDontDisturbModeTimeProperties();
-       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.ACTIVE);
+     $scope.activeDontDisturbMode = function () {
+       CurrentMember.activeDontDisturbMode();
      };
 
-     $scope.setDontDisturbDeactive = function () {
-       var time = $localStorage.dontDisturbModeTime;
-       if (time)
-         CurrentMember.removeDontDisturbModeTimeProperties();
-       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
+     $scope.deactiveDontDisturbMode = function () {
+       CurrentMember.deactiveDontDisturbMode();
+     };
+
+     $scope.dontDisturbModeRemainingTime = function () {
+       return CurrentMember.dontDisturb.remainingTime;
      };
 
      $scope.setNotificationPermission = function () {
@@ -101,19 +98,7 @@
 
      function initialize() {
        $window.Notification.requestPermission();
-       var initTime = +new Date();
-       var time = $localStorage.dontDisturbModeTime;
-       var startTime = $localStorage.dontDisturbModeStartTime;
-       if (time) {
-         if (initTime - startTime < time)
-           CurrentMember.setDontDisturbModeTime(startTime + time - initTime);
-         else {
-           CurrentMember.removeDontDisturbModeTimeProperties();
-           CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
-         }
-       } else {
-         CurrentMember.dontDisturbMode = CurrentMember.getDontDisturbModeStatus();
-       }
+       CurrentMember.initializeDontDisturbMode();
      }
 
      function checkIfUserSeenTour() {

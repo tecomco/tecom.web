@@ -67,8 +67,8 @@ app.factory('Channel', [
         this.hideNotifFunction();
         this.hideNotifFunction = null;
       }
-      return (this.isCurrentMemberPublicChannelMember() && (CurrentMember.dontDisturbMode ===
-        CurrentMember.DONT_DISTURB_MODE.DEACTIVE) && !this.isMuted);
+      return (this.isCurrentMemberPublicChannelMember() && (CurrentMember.isDontDisturbModeActive()) &&
+        !this.isMuted);
     };
 
     Channel.prototype.updateFromJson = function (json) {
