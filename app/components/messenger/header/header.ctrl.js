@@ -8,7 +8,14 @@ app.controller('headerController',
 
       $scope.$on('channel:changed', function () {
         $scope.channel = channelsService.getCurrentChannel();
+        console.log($scope.channel);
+        $scope.isMuted = $scope.channel.isMuted;
       });
+
+      $scope.toggleisMuted = function () {
+        $scope.channel.isMuted = $scope.isMuted;
+        channelsService.toggleisMuted($scope.channel.id);
+      };
 
       $scope.openChannelDetailsModal = function () {
         if ($scope.channel) {

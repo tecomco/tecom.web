@@ -102,6 +102,13 @@
         </div> -->
       </div>
     </li>
+    <li>
+      <div ng-show="channel.isDirect()" class="header-notif">
+        <input type="checkbox" ng-model="isMuted" id="isMuted" ng-change="toggleisMuted()" class="" />
+        <label for="isMuted" class="zmdi zmdi-notifications-active"></label>
+        <label for="isMuted" class="zmdi zmdi-notifications-off"></label>
+      </div>
+    </li>
   </ul>
   <!-- TODO make bottom div visible when search happened shid-->
   <!-- <div class="overlay"></div> -->
