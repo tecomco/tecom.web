@@ -159,6 +159,22 @@ app.factory('Channel', [
       }
     };
 
+    Channel.prototype.getDirectStatus = function () {
+      if (CurrentMember.member.isTecomBot()) {
+        return 'آفلاین';
+      }
+      if (this.slug === Member.TECOM_BOT.username)
+        return 'تیک بات';
+      switch (this.member.status) {
+        case Member.STATUS.OFFLINE:
+          return 'آفلاین';
+        case Member.STATUS.ONLINE:
+          return 'آنلاین';
+        case Member.STATUS.DEACTIVE:
+          return 'غیرفعال';
+      }
+    };
+
     Channel.prototype.getNotifCountClass = function () {
       return this.isCurrentMemberChannelMember ? 'badge' :
         'badge badge-grey';
