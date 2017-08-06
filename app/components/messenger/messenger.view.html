@@ -30,7 +30,7 @@
             <i ng-class="getDontDisturbModeClass()"></i>
           </a>
           <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
-            <li>
+            <li ng-show="dontDisturbModeRemainingTime()">
               <a><i class="zmdi zmdi-notifications-add"></i>{{dontDisturbModeRemainingTime()}}</a>
             </li>
             <!-- <li style="display:block"></li> -->

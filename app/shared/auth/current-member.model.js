@@ -63,6 +63,7 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
         .TIMEACTIVE) {
         CurrentMember.removeDontDisturbModeTimeProperties();
         $timeout.cancel(timeout);
+        CurrentMember.removeDontDisturbModeRemainingTime();
       }
       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.ACTIVE);
     };
@@ -72,6 +73,7 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
         .TIMEACTIVE) {
         CurrentMember.removeDontDisturbModeTimeProperties();
         $timeout.cancel(timeout);
+        CurrentMember.removeDontDisturbModeRemainingTime();
       }
       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
     };
@@ -89,6 +91,11 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
       CurrentMember.dontDisturb.duration = null;
       delete $localStorage.dontDisturb.startTime;
       CurrentMember.dontDisturb.startTime = null;
+    };
+
+    CurrentMember.removeDontDisturbModeRemainingTime = function () {
+      $interval.cancel(interval);
+      CurrentMember.dontDisturb.remainingTime = null;
     };
 
     CurrentMember.setTimeOutForNotifications = function (duration) {
