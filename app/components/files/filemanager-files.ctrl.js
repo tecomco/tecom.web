@@ -6,6 +6,7 @@ app.controller('fileManagerController', [
 
     $scope.files = [];
     $scope.fileManagerFilterType = null;
+    $scope.fileManagerToggleClass = 'mime-menu-toggle';
     var isFileManagerClosed = true;
     var isFileManagerInitialized = true;
 
@@ -26,9 +27,11 @@ app.controller('fileManagerController', [
 
     $scope.toggleFileManagerStatus = function () {
       if (isFileManagerInitialized) {
+        $scope.fileManagerToggleClass = 'fa fa-spinner';
         filesService.getFileManagerFiles($scope.channel.id).then(function (
           files) {
           $scope.files = files;
+          $scope.fileManagerToggleClass = 'mime-menu-toggle';
           isFileManagerInitialized = false;
           isFileManagerClosed = false;
         });

@@ -390,9 +390,8 @@ app.service('messagesService', [
               channelsService.updateChannelLastDatetime(message.channelId,
                 message.datetime);
             });
-          var file = new FileManagerFile(res.data.id, res.data.file, res.data
-            .name, res.data.date_uploaded, res.data.type);
-          $rootScope.$broadcast('file:newFileManagerFile', file);
+          filesService.createFileManagerFile(res.data.id, res.data.file,
+            res.data.name, new Date(res.data.date_uploaded), res.data.type);
         }).catch(function (err) {
           $log.error('Error Uploading File.', err);
         });

@@ -135,7 +135,7 @@ app.service('filesService', [
       }).then(function (filesData) {
         var files = filesData.data.map(function (file) {
           return new FileManagerFile(file.id, file.file, file.name,
-            file.date_uploaded, file.type);
+            new Date(file.date_uploaded), file.type);
         });
         deferred.resolve(files);
       }).catch(function (err) {
@@ -180,6 +180,11 @@ app.service('filesService', [
       return self.livedFile;
     }
 
+    function createFileManagerFile(id, url, name, date, type) {
+      var file = new FileManagerFile(id, file, name, date, type);
+      $rootScope.$broadcast('file:newFileManagerFile', file);
+    }
+
     function showFileLine(fileId, startLine, endLine) {
       getFileById(fileId).then(function (file) {
         $rootScope.$broadcast('file:show:line', file, startLine, endLine);
@@ -195,7 +200,8 @@ app.service('filesService', [
       getFileById: getFileById,
       uploadFile: uploadFile,
       getFileManagerFiles: getFileManagerFiles,
-      viewFile: viewFile
+      viewFile: viewFile,
+      createFileManagerFile: createFileManagerFile
     };
   }
 

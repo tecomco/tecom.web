@@ -4,9 +4,10 @@ app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Upload', 'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
+  'FileManagerFile',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Upload, Message, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, FileManagerFile
   ) {
 
     var self = this;
@@ -62,6 +63,10 @@ app.controller('messagesController', [
           self.lastUnSeenMessage = message;
         }
         $scope.messages.push(message);
+        if (message.type === Message.TYPE.FILE)
+        filesService.createFileManagerFile(message.additionalData.fileId,
+          message.additionalData.url, message.additionalData.name,
+          message.datetime, message.additionalData.type);
         checkShouldScrollBottom();
       }
     });
