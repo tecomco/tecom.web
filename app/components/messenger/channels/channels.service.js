@@ -210,7 +210,7 @@ app.service('channelsService', [
       return !$rootScope.isLoading;
     }
 
-    function toggleisMuted(channelId) {
+    function toggleIsMuted(channelId) {
       var deferred = $q.defer();
       var data = {
         channelId: channelId
@@ -425,7 +425,7 @@ app.service('channelsService', [
       setCurrentChannelBySlug: setCurrentChannelBySlug,
       getCurrentChannel: getCurrentChannel,
       areChannelsReady: areChannelsReady,
-      toggleisMuted: toggleisMuted,
+      toggleIsMuted: toggleIsMuted,
       createChannel: createChannel,
       sendEditedChannel: sendEditedChannel,
       addMembersToChannel: addMembersToChannel,

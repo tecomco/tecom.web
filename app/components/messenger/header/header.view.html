@@ -6,9 +6,7 @@
       <label ng-show="channel.getLocaleMembersCount()" dir="rtl">{{channel.getLocaleMembersCount()}} عضو</label>
       <label>{{channel.getDescription()}}</label>
     </div>
-    <div class="det" ng-show="channel.isDirect()">
-      <label ng-if="channel.isDirect()" dir="rtl">{{channel.getDirectStatus()}}</label>
-    </div>
+    <label ng-if="channel.isDirect()" dir="rtl">{{channel.getDirectStatus()}}</label>
   </div>
   <ul class="top-left">
     <li>
@@ -104,9 +102,9 @@
     </li>
     <li>
       <div ng-show="channel.isDirect()" class="header-notif">
-        <input type="checkbox" ng-model="isMuted" id="isMuted" ng-change="toggleisMuted()" class="" />
-        <label for="isMuted" class="zmdi zmdi-notifications-active"></label>
-        <label for="isMuted" class="zmdi zmdi-notifications-off"></label>
+        <input type="checkbox" ng-model="channel.isMuted" id="channel.isMuted" ng-change="toggleIsMuted()" class="" />
+        <label for="channel.isMuted" class="zmdi zmdi-notifications-active"></label>
+        <label for="channel.isMuted" class="zmdi zmdi-notifications-off"></label>
       </div>
     </li>
   </ul>

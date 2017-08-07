@@ -164,14 +164,14 @@ app.factory('Channel', [
         return 'آفلاین';
       }
       if (this.slug === Member.TECOM_BOT.username)
-        return 'تیک بات';
+        return 'همیشه آنلاین';
       switch (this.member.status) {
         case Member.STATUS.OFFLINE:
           return 'آفلاین';
         case Member.STATUS.ONLINE:
           return 'آنلاین';
         case Member.STATUS.DEACTIVE:
-          return 'غیرفعال';
+          return 'حذف شده از تیم';
       }
     };
 

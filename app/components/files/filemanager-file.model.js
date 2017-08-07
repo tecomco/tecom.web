@@ -7,7 +7,7 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       this.id = id;
       this.url = url;
       this.name = name;
-      this.date = date;
+      this.date = new Date(date);
       this.extension = type;
       this.type = this.getFileType();
       this.svg = this.getSvgUrl();
@@ -26,7 +26,7 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
     };
 
     FileManagerFile.prototype.getLocalDate = function () {
-      return dateUtil.getPersianDateString(new Date(this.date));
+      return dateUtil.getPersianDateString(this.date);
     };
 
     FileManagerFile.prototype.getFileType = function () {

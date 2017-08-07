@@ -2,12 +2,11 @@
 
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
-  'Upload', 'Message', 'messagesService', 'channelsService', 'filesService',
+  'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
-  'FileManagerFile',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
-    Upload, Message, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, FileManagerFile
+    Message, messagesService, channelsService, filesService, $q,
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
 
     var self = this;
@@ -63,10 +62,10 @@ app.controller('messagesController', [
           self.lastUnSeenMessage = message;
         }
         $scope.messages.push(message);
-        if (message.type === Message.TYPE.FILE)
-        filesService.createFileManagerFile(message.additionalData.fileId,
-          message.additionalData.url, message.additionalData.name,
-          message.datetime, message.additionalData.type);
+        if (message.isFile())
+          filesService.createFileManagerFile(message.additionalData.fileId,
+            message.additionalData.url, message.additionalData.name,
+            message.datetime, message.additionalData.type);
         checkShouldScrollBottom();
       }
     });
@@ -367,7 +366,7 @@ app.controller('messagesController', [
       });
 
     document.onkeydown = function (evt) {
-      evt = evt || window.event;
+      evt = evt || $window.event;
       if (evt.keyCode == 27) {
         $state.go('messenger.home');
       }

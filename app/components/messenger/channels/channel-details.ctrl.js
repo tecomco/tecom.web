@@ -92,9 +92,9 @@ app.controller('channelDetailsController', [
         });
     }
 
-    $scope.toggleisMuted = function () {
+    $scope.toggleIsMuted = function () {
       $scope.channel.isMuted = $scope.isMuted;
-      channelsService.toggleisMuted($scope.channel.id);
+      channelsService.toggleIsMuted($scope.channel.id);
     };
 
     function findChanneMemberItemById(id) {

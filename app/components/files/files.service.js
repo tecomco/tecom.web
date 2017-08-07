@@ -135,7 +135,7 @@ app.service('filesService', [
       }).then(function (filesData) {
         var files = filesData.data.map(function (file) {
           return new FileManagerFile(file.id, file.file, file.name,
-            new Date(file.date_uploaded), file.type);
+            file.date_uploaded, file.type);
         });
         deferred.resolve(files);
       }).catch(function (err) {

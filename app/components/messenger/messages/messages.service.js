@@ -391,7 +391,7 @@ app.service('messagesService', [
                 message.datetime);
             });
           filesService.createFileManagerFile(res.data.id, res.data.file,
-            res.data.name, new Date(res.data.date_uploaded), res.data.type);
+            res.data.name, res.data.date_uploaded, res.data.type);
         }).catch(function (err) {
           $log.error('Error Uploading File.', err);
         });

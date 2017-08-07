@@ -60,7 +60,7 @@ app.factory('Message', [
           body += '<div><i class="zmdi zmdi-link"></i></div></a>';
         }
         body += Message.generateMessageWellFormedText(this.body);
-      } else if (this.type === Message.TYPE.FILE) {
+      } else if (this.isFile()) {
         this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
         body = '<div id="' + this.getFileTimestampId() +
           '" class="ng-scope" dir="rtl">';
@@ -141,7 +141,7 @@ app.factory('Message', [
     };
 
     Message.prototype.getStyle = function () {
-      if ((this.type === Message.TYPE.FILE) || this.isEnglish()) {
+      if ((this.isFile()) || this.isEnglish()) {
         return {
           'text-align': 'left',
           'direction': 'ltr'
@@ -280,6 +280,10 @@ app.factory('Message', [
         this.type === Message.TYPE.NOTIF.CHANNEL_CREATED ||
         this.type === Message.TYPE.NOTIF.CHANNEL_EDITED ||
         this.type === Message.TYPE.NOTIF.FILE_DIED);
+    };
+
+    Message.prototype.isFile = function () {
+      return this.type === Message.TYPE.FILE;
     };
 
     Message.prototype.getLocaleDate = function () {
