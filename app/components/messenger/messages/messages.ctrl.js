@@ -371,11 +371,11 @@ app.controller('messagesController', [
       });
     }
 
-    function checkHavingUnreadMessages() {
-      $scope.hasUnreadNewMessages = !isBottomOfMessagesHolder() &&
-        $scope.hasUnreadNewMessages;
-      hasUnreadInitializeMessages = !isBottomOfMessagesHolder() &&
-        hasUnreadInitializeMessages;
+    function updateUnreadFlagsToCheckIfSeenMessages() {
+      $scope.hasUnreadNewMessages = $scope.hasUnreadNewMessages &&
+        !isBottomOfMessagesHolder();
+      hasUnreadInitializeMessages = hasUnreadInitializeMessages &&
+        !isBottomOfMessagesHolder();
     }
 
     function isBottomOfMessagesHolder() {
@@ -401,7 +401,7 @@ app.controller('messagesController', [
         else
           isJumpDownScrollingDown = false;
         getMessagePackagesIfLoadingsInView(isDirectionUp);
-        checkHavingUnreadMessages();
+        updateUnreadFlagsToCheckIfSeenMessages();
         $scope.$apply();
       });
 
