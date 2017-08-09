@@ -2,7 +2,7 @@
   <button type="button" class="close" data-dismiss="modal" ng-click="$close()">&times;</button>
   <h4 class="modal-title">مدیریت {{team.name}}</h4>
 </div>
-<div class="modal-body two-part-modal profile-modal">
+<div class="modal-body two-part-modal profile-modal" ui-tour ui-tour-on-ready="onTourReady(tour)">
   <div class="container-fluid u-profile">
     <div class="col-sm-10 col-sm-offset-1">
       <div class="t-info">
@@ -21,7 +21,7 @@
         </div>
         <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation()" novalidate>
           <div class="col-md-2"></div>
-          <div class="col-sm-7 col-md-5 no-padding">
+          <div class="col-sm-7 col-md-5 no-padding" tour-step tour-step-content="ایمیل رو وارد کن اضافه کن به تیم لعنتیت" tour-step-placement="top" tour-step-backdrop="true">
             <div>
               <input type="text" name="email" ng-model="invitedEmail" placeholder="ایمیل هم‌تیمی جدیدت رو وارد کن..." required/>
             </div>

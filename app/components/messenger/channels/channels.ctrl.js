@@ -1,14 +1,15 @@
 'use strict';
 
 app.controller('channelsController', [
-  '$rootScope', '$scope', '$window', '$state', '$uibModal',
+  '$rootScope', '$scope', '$window', '$state', '$uibModal', '$q',
   'channelsService', 'webNotification', 'textUtil', '$log', 'CurrentMember',
-  function ($rootScope, $scope, $window, $state, $uibModal, channelsService,
-    webNotification, textUtil, $log, CurrentMember) {
+  function ($rootScope, $scope, $window, $state, $uibModal, $q,
+    channelsService, webNotification, textUtil, $log, CurrentMember) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
     $scope.channels.directs = [];
+
     $scope.$on('channels:updated', function () {
       updateChannels();
       updateFavicon();
@@ -24,7 +25,7 @@ app.controller('channelsController', [
       if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
         if (channel.shouldSendNotification())
-        sendBrowserNotification(channel);
+          sendBrowserNotification(channel);
       } else {
         if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
@@ -37,6 +38,24 @@ app.controller('channelsController', [
         }
       }
     });
+
+    $scope.openTeamProfileModal = function (tour) {
+      var tourClicked = false;
+      if (tour.getStatus() === tour.Status.ON) {
+        tourClicked = true;
+        tour.end();
+      }
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.0',
+        controller: 'teamProfileController',
+        resolve: {
+          tourClicked: function () {
+            return tourClicked;
+          }
+        }
+      });
+    };
 
     function sendBrowserNotification(channel) {
       webNotification.showNotification(channel.name, {
@@ -71,6 +90,19 @@ app.controller('channelsController', [
         controller: 'createChannelController'
       });
       modalInstance.result.then(function () {}, function () {});
+    };
+
+    $scope.navigateToAndWaitFor = function (tour, stepId) {
+      if ($scope.channels.publicsAndPrivates.length) {
+        $state.go('messenger.messages', {
+          slug: $scope.channels.publicsAndPrivates[0].slug
+        });
+        return tour.waitFor(stepId);
+      }
+    };
+
+    $scope.navigateToHome = function () {
+      $state.go('messenger.home');
     };
 
     function validateUrlChannel() {

@@ -1,7 +1,7 @@
 <div id=fileManager ng-controller="fileManagerController">
   <div ng-class="getFileManagerClass()">
     <div class="mime-toggle-fix"></div>
-    <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()">
+    <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()" tour-step="file-manager" tour-step-content="کسشعرایی که آپلود کردی همشون اینجان ، باز کن همشو بکن تو کونت" tour-step-order="5" tour-step-backdrop="true" tour-step-placement="right" tour-step-on-next="navigateToHome()">
       <div ng-class="getFileManagerToggleClass()">
         <span></span>
         <span></span>

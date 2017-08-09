@@ -2848,8 +2848,9 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 /* TOUR */
 
 .ui-tour-backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   fill: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
 }
 
 .popover-content [ng-click="tour.pause()"] {

@@ -139,6 +139,10 @@ app.controller('messagesController', [
       filesService.showFileLine(fileId, startLine, endLine);
     };
 
+    $scope.navigateToAndWaitFor = function () {
+      $state.go('messenger.home');
+    };
+
     function scrollBottom() {
       $timeout(function () {
         messagesHolder.scrollTop = messagesHolder.scrollHeight;

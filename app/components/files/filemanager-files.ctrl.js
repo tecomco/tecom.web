@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('fileManagerController', [
-  '$scope', 'filesService', 'channelsService', 'FileManagerFile',
-  function ($scope, filesService, channelsService, FileManagerFile) {
+  '$scope', 'filesService', 'channelsService', 'FileManagerFile', '$state',
+  function ($scope, filesService, channelsService, FileManagerFile, $state) {
 
     $scope.files = [];
     $scope.fileManagerFilterType = null;
@@ -90,5 +90,8 @@ app.controller('fileManagerController', [
       filesService.viewFile(fileId);
     };
 
+    $scope.navigateToHome = function () {
+      $state.go('messenger.home');
+    };
   }
 ]);

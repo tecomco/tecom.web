@@ -25,6 +25,11 @@ app.config(['$httpProvider', 'jwtInterceptorProvider',
   }
 ]);
 
+app.config(['TourConfigProvider', function (TourConfigProvider) {
+  TourConfigProvider.set('scrollIntoView', false);
+  TourConfigProvider.set('useHotkeys', true);
+}]);
+
 app.run(['$rootScope', '$timeout', function ($rootScope, $timeout) {
   $rootScope.isLoading = true;
   $rootScope.socketConnected = true;

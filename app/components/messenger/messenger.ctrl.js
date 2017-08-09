@@ -2,9 +2,9 @@
 
  app.controller('MessengerCtrl', [
    '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
-   'CurrentMember', '$localStorage',
+   'CurrentMember', '$localStorage', '$state',
    function ($rootScope, $scope, $window, $uibModal, AuthService,
-     CurrentMember, $localStorage) {
+     CurrentMember, $localStorage, $state) {
 
      $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
      $scope.isAdmin = CurrentMember.member.isAdmin;
@@ -73,6 +73,10 @@
 
      $scope.shouldShowNotificationPermission = function () {
        return $window.Notification.permission !== 'granted';
+     };
+
+     $scope.navigateToHome = function () {
+         $state.go('messenger.home');
      };
 
      angular.element($window)

@@ -3,10 +3,10 @@
 app.controller('teamProfileController', [
   '$scope', '$log', 'profileService', '$uibModalInstance', 'CurrentMember',
   'Team', '$timeout', 'validationUtil', 'ArrayUtil', 'teamService',
-  'channelsService',
-  function ($scope, $log, profileService, $uibModalInstance, CurrentMember,
-    Team,
-    $timeout, validationUtil, ArrayUtil, teamService, channelsService) {
+  'channelsService', 'uiTourService', 'tourClicked',
+  function ($scope, $log, profileService, $uibModalInstance,
+    CurrentMember, Team, $timeout, validationUtil, ArrayUtil, teamService,
+    channelsService, uiTourService, tourClicked) {
 
     initialize();
 
@@ -77,24 +77,32 @@ app.controller('teamProfileController', [
       return member.isAdmin ? 'is-admin' : '';
     };
 
+    $scope.onTourReady = function (tour) {
+      if (tourClicked) {
+        $timeout(function () {
+          tour.start();
+        }, 500);
+      }
+    };
+
     function setInfoOrErrorMessage(type, message) {
       switch (type) {
-      case 'info':
-        $scope.infoMessage = message;
-        $scope.showInfoMessage = true;
-        $timeout(function () {
-          $scope.showInfoMessage = false;
-          $scope.infoMessage = null;
-        }, 4000);
-        break;
-      case 'error':
-        $scope.showErrorMessage = true;
-        $scope.errorMessage = message;
-        $timeout(function () {
-          $scope.showErrorMessage = false;
-          $scope.errorMessage = null;
-        }, 4000);
-        break;
+        case 'info':
+          $scope.infoMessage = message;
+          $scope.showInfoMessage = true;
+          $timeout(function () {
+            $scope.showInfoMessage = false;
+            $scope.infoMessage = null;
+          }, 4000);
+          break;
+        case 'error':
+          $scope.showErrorMessage = true;
+          $scope.errorMessage = message;
+          $timeout(function () {
+            $scope.showErrorMessage = false;
+            $scope.errorMessage = null;
+          }, 4000);
+          break;
       }
     }
 

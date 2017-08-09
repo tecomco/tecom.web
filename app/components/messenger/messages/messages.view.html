@@ -1,9 +1,9 @@
-<div ng-class="getPannelsCSS('messages')" class="window-transition">
+<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="اینجا میتونی هر کسشعری دلت خواست بنویسی :)))" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="right" tour-step-on-prev="navigateToHome()">
   <!-- TODO col-sm-9 col-lg-9 -->
   <div class="header clearfix">
     <div ui-view="header"></div>
   </div>
-  <div id=messagesWindow ng-controller="messagesController" tour-step-order="2" tour-step-placement="left" nextPath="messenger.messages" useUiRouter="true">
+  <div id=messagesWindow ng-controller="messagesController">
     <div id="messagesHolder" class="chat">
       <div class="server-msg ng-cloak ng-hide" ng-hide="socketConnected" ng-cloak>
         <i class="fa fa-spinner fa-spin fa-fw"></i>
@@ -68,7 +68,7 @@
     <div ui-view="filemanager"></div>
   </div>
 </div>
-<div ng-class="getPannelsCSS('files')" class="window-transition">
+<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-content="هر فایل کسشعری خواستی آپلود کن" tour-step-order="4" tour-step-backdrop="true" tour-step-placement="right">
   <!-- TODO col-sm-3 col-lg-3 -->
   <div ui-view="files"></div>
 </div>
