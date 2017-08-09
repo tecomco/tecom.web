@@ -9,7 +9,10 @@
         <i class="fa fa-spinner fa-spin fa-fw"></i>
         <span>در حال وصل شدن به سرور...</span>
       </div>
-      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadErrNotif" ng-cloak>
+      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadErrorNotif" ng-cloak>
+        <span>مشکل در آپلود فایل</span>
+      </div>
+      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadSizeLimitNotif" ng-cloak>
         <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
       </div>
       <div class="main">
@@ -23,6 +26,8 @@
           <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name">{{message.getUsername()}}</label>
             <label class="status" ng-show="message.isFromMe()">
+              <a class="fa fa-remove" ng-show="message.isFailed" ng-click="removeUploadFailedMessage(message.fileTimestamp)"></a>
+              <a class="fa fa-refresh" ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"></a>
               <i ng-class="message.getStatusIcon()"></i>
             </label>
             <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>

@@ -7,13 +7,14 @@ app.factory('Message', [
     CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-      additionalData, about, isPending, fileTimestamp) {
+      additionalData, about, isPending, isFailed, fileTimestamp) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
-        additionalData, about, isPending, fileTimestamp);
+        additionalData, about, isPending, isFailed, fileTimestamp);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-      _id, datetime, additionalData, about, isPending, fileTimestamp) {
+      _id, datetime, additionalData, about, isPending, isFailed,
+      fileTimestamp) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -26,6 +27,7 @@ app.factory('Message', [
         this.id = Message.generateIntegerId(_id);
       }
       this.isPending = isPending || false;
+      this.isFailed = isFailed || false;
       this.currentChannel = channelsService.getCurrentChannel();
       if (this.currentChannel) {
         this.teamId = this.currentChannel.teamId;
@@ -87,12 +89,13 @@ app.factory('Message', [
             ')" tooltip-placement="top" uib-tooltip="مشاهده">';
           body += '<i class="fa fa-eye"></i>';
         }
-        body += '<a class="dl-btn" href="' + this.additionalData.url +
-          '" download="' + this.additionalData.name +
-          '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
-        body += '<i class="zmdi zmdi-download"></i>';
-
-        body += '</a></div>';
+        if (!this.isFailed) {
+          body += '<a class="dl-btn" href="' + this.additionalData.url +
+            '" download="' + this.additionalData.name +
+            '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
+          body += '<i class="zmdi zmdi-download"></i></a>';
+        }
+        body += '</div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
@@ -158,6 +161,9 @@ app.factory('Message', [
           return Message.STATUS_TYPE.SEEN;
         }
       }
+      if (this.isFailed) {
+        return Message.STATUS_TYPE.FAILED;
+      }
       if (this.isPending) {
         return Message.STATUS_TYPE.PENDING;
       }
@@ -180,6 +186,8 @@ app.factory('Message', [
           return 'zmdi zmdi-check';
         case Message.STATUS_TYPE.SEEN:
           return 'zmdi zmdi-check-all';
+        case Message.STATUS_TYPE.FAILED:
+          return 'zmdi zmdi-close';
       }
     };
 
@@ -311,7 +319,8 @@ app.factory('Message', [
     Message.STATUS_TYPE = {
       PENDING: 0,
       SENT: 1,
-      SEEN: 2
+      SEEN: 2,
+      FAILED: 3
     };
 
     return Message;

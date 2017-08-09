@@ -8,7 +8,6 @@ app.controller('channelDetailsController', [
     $scope.editMode = false;
     $scope.addMemberMode = false;
     $scope.channel = channelsService.getCurrentChannel();
-    $scope.isMuted = $scope.channel.isMuted;
     $scope.isAdmin = CurrentMember.member.isAdmin;
     $scope.details = {};
     $scope.forms = {};
@@ -93,7 +92,6 @@ app.controller('channelDetailsController', [
     }
 
     $scope.toggleIsMuted = function () {
-      $scope.channel.isMuted = $scope.isMuted;
       channelsService.toggleIsMuted($scope.channel.id);
     };
 

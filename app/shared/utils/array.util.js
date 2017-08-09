@@ -31,12 +31,6 @@ app.factory('ArrayUtil', function () {
     return array[index];
   }
 
-  function getLastElement(array) {
-    if (array.length === 0)
-      return null;
-    return array[array.length - 1];
-  }
-
   function removeElementByIndex(array, index) {
     if (index > -1)
       array.splice(index, 1);
@@ -75,7 +69,6 @@ app.factory('ArrayUtil', function () {
     getIndexByKeyValue: getIndexByKeyValue,
     getIndexByValue: getIndexByValue,
     getElementByKeyValue: getElementByKeyValue,
-    getLastElement: getLastElement,
     removeElementByIndex: removeElementByIndex,
     removeElementByKeyValue: removeElementByKeyValue,
     contains: contains,
