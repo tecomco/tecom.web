@@ -67,7 +67,7 @@ app.factory('Channel', [
         this.hideNotifFunction();
         this.hideNotifFunction = null;
       }
-      return (this.isCurrentMemberPublicChannelMember() && (CurrentMember.isDontDisturbModeActive()) &&
+      return (this.isCurrentMemberPublicChannelMember() && (CurrentMember.isDontDisturbModeDeactive()) &&
         !this.isMuted);
     };
 

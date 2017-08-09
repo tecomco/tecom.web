@@ -68,19 +68,19 @@
        }
      };
 
-     $scope.timeActivateDontDisturbMode = function (minute) {
-       CurrentMember.timeActivateDontDisturbMode(minute * 60000);
+     $scope.activateTimeDontDisturbMode = function (minute) {
+       CurrentMember.activateTimeDontDisturbMode(minute * 60000);
      };
 
-     $scope.activeDontDisturbMode = function () {
-       CurrentMember.activeDontDisturbMode();
+     $scope.activateDontDisturbMode = function () {
+       CurrentMember.activateDontDisturbMode();
      };
 
-     $scope.deactiveDontDisturbMode = function () {
-       CurrentMember.deactiveDontDisturbMode();
+     $scope.deactivateDontDisturbMode = function () {
+       CurrentMember.deactivateDontDisturbMode();
      };
 
-     $scope.dontDisturbModeRemainingTime = function () {
+     $scope.getDontDisturbModeRemainingTime = function () {
        return CurrentMember.dontDisturb.remainingTime;
      };
 

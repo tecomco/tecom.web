@@ -4,9 +4,6 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
   '$interval',
   function (Member, $localStorage, $timeout, textUtil, $interval) {
 
-    var timeout;
-    var interval;
-
     function CurrentMember() {}
 
     CurrentMember.initialize = function (id, isAdmin, userId, username,
@@ -20,27 +17,37 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
     };
 
     CurrentMember.initializeDontDisturbMode = function () {
-      if (!$localStorage.dontDisturb) {
-        var initMode = {
-          mode: CurrentMember.DONT_DISTURB_MODE.DEACTIVE
-        };
-        $localStorage.dontDisturb = initMode;
-      }
       CurrentMember.dontDisturb = {};
-      var duration = $localStorage.dontDisturb.duration;
-      if (duration) {
-        var initTime = +new Date();
-        var startTime = $localStorage.dontDisturb.startTime;
-        if (initTime - startTime < duration)
-          CurrentMember.timeActivateDontDisturbMode(startTime + duration -
-            initTime);
+      if (!$localStorage.dontDisturb)
+        CurrentMember.initializeInitialJsons();
+      else {
+        var duration = $localStorage.dontDisturb.duration;
+        if (duration)
+          CurrentMember.checkShouldContinueTimeActive(duration);
         else {
-          CurrentMember.removeDontDisturbModeTimeProperties();
-          CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
-            .DEACTIVE);
+          CurrentMember.dontDisturb.mode = $localStorage.dontDisturb.mode;
         }
+      }
+    };
+
+    CurrentMember.initializeInitialJsons = function () {
+      var initMode = {
+        mode: CurrentMember.DONT_DISTURB_MODE.DEACTIVE
+      };
+      $localStorage.dontDisturb = initMode;
+      CurrentMember.dontDisturb.mode = $localStorage.dontDisturb.mode;
+    };
+
+    CurrentMember.checkShouldContinueTimeActive = function (duration) {
+      var initTime = +new Date();
+      var startTime = $localStorage.dontDisturb.startTime;
+      if (initTime - startTime < duration) {
+        CurrentMember.activateTimeDontDisturbMode(startTime + duration -
+          initTime);
       } else {
-        CurrentMember.dontDisturb.mode = $localStorage.dontDisturb.mode;
+        CurrentMember.removeDontDisturbModeTimeProperties();
+        CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
+          .DEACTIVE);
       }
     };
 
@@ -49,30 +56,30 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
       CurrentMember.dontDisturb.mode = mode;
     };
 
-    CurrentMember.timeActivateDontDisturbMode = function (miliseconds) {
+    CurrentMember.activateTimeDontDisturbMode = function (miliseconds) {
       CurrentMember.setDontDisturbModeTimeProperties(miliseconds);
       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE);
-      CurrentMember.setTimeOutForNotifications(miliseconds);
-      interval = $interval(function () {
-        CurrentMember.dontDisturbRemainingTime();
+      CurrentMember.setDontDisturbTimeout(miliseconds);
+      CurrentMember.dontDisturbInterval = $interval(function () {
+        CurrentMember.updateDontDisturbRemainingTime();
       }, 1000);
     };
 
-    CurrentMember.activeDontDisturbMode = function () {
+    CurrentMember.activateDontDisturbMode = function () {
       if (CurrentMember.dontDisturb.mode === CurrentMember.DONT_DISTURB_MODE
         .TIMEACTIVE) {
         CurrentMember.removeDontDisturbModeTimeProperties();
-        $timeout.cancel(timeout);
+        $timeout.cancel(CurrentMember.dontDisturbTimeout);
         CurrentMember.removeDontDisturbModeRemainingTime();
       }
       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.ACTIVE);
     };
 
-    CurrentMember.deactiveDontDisturbMode = function () {
+    CurrentMember.deactivateDontDisturbMode = function () {
       if (CurrentMember.dontDisturb.mode === CurrentMember.DONT_DISTURB_MODE
         .TIMEACTIVE) {
         CurrentMember.removeDontDisturbModeTimeProperties();
-        $timeout.cancel(timeout);
+        $timeout.cancel(CurrentMember.dontDisturbTimeout);
         CurrentMember.removeDontDisturbModeRemainingTime();
       }
       CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
@@ -94,16 +101,16 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
     };
 
     CurrentMember.removeDontDisturbModeRemainingTime = function () {
-      $interval.cancel(interval);
+      $interval.cancel(CurrentMember.dontDisturbInterval);
       CurrentMember.dontDisturb.remainingTime = null;
     };
 
-    CurrentMember.setTimeOutForNotifications = function (duration) {
-      timeout = $timeout(function () {
+    CurrentMember.setDontDisturbTimeout = function (duration) {
+      CurrentMember.dontDisturbTimeout = $timeout(function () {
         CurrentMember.removeDontDisturbModeTimeProperties();
         CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
           .DEACTIVE);
-        $interval.cancel(interval);
+        $interval.cancel(CurrentMember.dontDisturbInterval);
       }, duration);
     };
 
@@ -122,17 +129,17 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
         .TIMEACTIVE;
     };
 
-    CurrentMember.dontDisturbRemainingTime = function () {
-      if (!CurrentMember.isDontDisturbModeTimeActive())
-        CurrentMember.dontDisturb.remainingTime = null;
-      else {
-        var seconds = (CurrentMember.dontDisturb.duration + CurrentMember.dontDisturb
-          .startTime - +new Date()) / 1000;
-        var minute = Math.floor(seconds / 60);
-        var second = Math.floor(seconds % 60);
-        CurrentMember.dontDisturb.remainingTime = textUtil.persianify(
-          second.toString()) + ' : ' + textUtil.persianify(minute.toString());
-      }
+    CurrentMember.updateDontDisturbRemainingTime = function () {
+      CurrentMember.dontDisturb.remainingTime = CurrentMember.getLocaleDontDisturbRemainingTime();
+    };
+
+    CurrentMember.getLocaleDontDisturbRemainingTime = function () {
+      var remainingSeconds = (CurrentMember.dontDisturb.duration +
+        CurrentMember.dontDisturb
+        .startTime - +new Date()) / 1000;
+      var minutes = Math.floor(remainingSeconds / 60);
+      var seconds = Math.floor(remainingSeconds % 60);
+      return textUtil.persianify(seconds.toString() + ' : ' + minutes.toString());
     };
 
     CurrentMember.DONT_DISTURB_MODE = {

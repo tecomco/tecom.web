@@ -30,20 +30,20 @@
             <i ng-class="getDontDisturbModeClass()"></i>
           </a>
           <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
-            <li ng-show="dontDisturbModeRemainingTime()">
-              <a><i class="zmdi zmdi-notifications-add"></i>{{dontDisturbModeRemainingTime()}}</a>
+            <li ng-show="getDontDisturbModeRemainingTime()">
+              <a><i class="zmdi zmdi-notifications-add"></i>{{getDontDisturbModeRemainingTime()}}</a>
             </li>
             <!-- <li style="display:block"></li> -->
-            <li ng-click="timeActivateDontDisturbMode(30)">
+            <li ng-click="activateTimeDontDisturbMode(30)">
               <a><i class="zmdi zmdi-notifications-add"></i>نیم‌ساعت</a>
             </li>
-            <li ng-click="timeActivateDontDisturbMode(60)">
+            <li ng-click="activateTimeDontDisturbMode(60)">
               <a><i class="zmdi zmdi-notifications-add"></i>یک‌ساعت</a>
             </li>
-            <li ng-click="deactiveDontDisturbMode()">
+            <li ng-click="deactivateDontDisturbMode()">
               <a><i class="zmdi zmdi-notifications-active"></i>راحت‌باش</a>
             </li>
-            <li ng-click="activeDontDisturbMode()">
+            <li ng-click="activateDontDisturbMode()">
               <a><i class="zmdi zmdi-notifications-none"></i>پیام‌نده</a>
             </li>
           </ul>
