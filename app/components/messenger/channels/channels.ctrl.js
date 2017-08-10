@@ -105,6 +105,20 @@ app.controller('channelsController', [
       $state.go('messenger.home');
     };
 
+    $scope.scrollToDirects = function () {
+      document.getElementById('groups').scrollTop = document.getElementById(
+        'channels').scrollHeight;
+    };
+
+    $scope.scrollToChannels = function () {
+      document.getElementById('groups').scrollTop = 0;
+    };
+
+    $scope.scrollToProgress = function () {
+      var groups = document.getElementById('groups');
+      groups.scrollTop = groups.scrollHeight;
+    };
+
     function validateUrlChannel() {
       if (!$scope.channels.current) {
         $state.go('messenger.home');

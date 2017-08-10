@@ -27,6 +27,7 @@ app.config(['$httpProvider', 'jwtInterceptorProvider',
 
 app.config(['TourConfigProvider', function (TourConfigProvider) {
   TourConfigProvider.set('scrollIntoView', false);
+  TourConfigProvider.set('backdropBorderRadius', 5);
   TourConfigProvider.set('useHotkeys', true);
 }]);
 
