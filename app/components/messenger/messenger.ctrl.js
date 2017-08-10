@@ -2,9 +2,9 @@
 
  app.controller('MessengerCtrl', [
    '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
-   'CurrentMember', '$localStorage', '$state',
+   'CurrentMember', '$localStorage', '$state', '$http', '$templateCache',
    function ($rootScope, $scope, $window, $uibModal, AuthService,
-     CurrentMember, $localStorage, $state) {
+     CurrentMember, $localStorage, $state, $http, $templateCache) {
 
      $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
      $scope.isAdmin = CurrentMember.member.isAdmin;
@@ -76,7 +76,7 @@
      };
 
      $scope.navigateToHome = function () {
-         $state.go('messenger.home');
+       $state.go('messenger.home');
      };
 
      angular.element($window)
@@ -90,6 +90,23 @@
 
      function initialize() {
        $window.Notification.requestPermission();
+       cacheMessagesTemplates();
+     }
+
+     function cacheMessagesTemplates() {
+       $http.get(
+         'app/components/messenger/messages/messages.view.html?v=1.0.8', {
+           cache: $templateCache
+         });
+       $http.get('app/components/messenger/header/header.view.html?v=1.0.4', {
+         cache: $templateCache
+       });
+       $http.get('app/components/files/files.view.html?v=1.0.6', {
+         cache: $templateCache
+       });
+       $http.get('app/components/files/filemanager-files.view.html?v=1.0.0', {
+         cache: $templateCache
+       });
      }
 
      function checkIfUserSeenTour() {
