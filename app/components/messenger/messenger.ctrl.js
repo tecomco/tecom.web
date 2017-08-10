@@ -23,6 +23,11 @@
          animation: true,
          templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.0',
          controller: 'teamProfileController',
+         resolve: {
+           tourClicked: function () {
+             return null;
+           }
+         }
        });
      };
 
@@ -111,6 +116,7 @@
 
      function initialize() {
        $window.Notification.requestPermission();
+       CurrentMember.initializeDontDisturbMode();
        cacheMessagesTemplates();
      }
 
