@@ -14,7 +14,7 @@
       </div>
       <div class="main">
         <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}">
-          <div class="date-holder" ng-if="isMessageFirstUnread(message)">
+          <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
             <label>پیام های جدید</label>
           </div>
           <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
@@ -40,6 +40,10 @@
         </div>
       </div>
     </div>
+      <a class="jump-btn ng-hide" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()">
+        <i class="zmdi zmdi-chevron-down"></i>
+        <span ng-show="hasUnreadNewMessages" class="fa fa-circle"></span>
+      </a>
     <div ng-show="channel.canMemberSendMessage()" class="input-holder" id="inputHolder">
       <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
         <i class="fa fa-paperclip"></i>

@@ -1336,7 +1336,7 @@ ol.linenums, ol.linenums-view {
   text-align: center;
   position: relative;
   margin: 3px 0px 3px 0px;
-  font-weight: 100;
+  font-weight: 300;
 }
 
 .date-holder:after {
@@ -1351,6 +1351,18 @@ ol.linenums, ol.linenums-view {
   z-index: 0;
 }
 
+.unread-msgs{
+  font-weight: 200;
+}
+
+.unread-msgs:after{
+  height: 26px;
+  top: 12px;
+  right: -30px;
+  left: -30px;
+  background: #ddd;
+}
+
 .date-holder label {
   background: rgb(244, 245, 246);
   margin: 15px 0px 15px 0px;
@@ -1360,6 +1372,11 @@ ol.linenums, ol.linenums-view {
   position: relative;
   z-index: 1;
   font-weight: 100;
+}
+.unread-msgs label {
+  background: #ddd;
+  color: #fff;
+  font-weight: 300;
 }
 
 .msg {
@@ -1543,6 +1560,47 @@ ol.linenums, ol.linenums-view {
 .is-typing>span:last-of-type {
   animation: type-anim 0.5s ease 0.66s infinite;
   -webkit-animation: type-anim 0.5s ease 0.66s infinite;
+}
+
+.jump-btn {
+  position: absolute;
+  bottom: 0;
+  left: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ddd;
+  text-align: center;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), 0 4px 8px -4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+
+.jump-btn:not(.ng-hide) {
+  bottom: 80px;
+  opacity: 1;
+}
+
+.jump-btn.ng-hide {
+  opacity: 0;
+  bottom: 0;
+}
+
+.jump-btn i {
+  color: #999;
+  font-size: 30px;
+  position: relative;
+  top: 5px;
+}
+
+.jump-btn span {
+  color: rgb(230, 77, 77);
+  font-size: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 @keyframes type-anim {
@@ -1936,6 +1994,7 @@ ol.linenums, ol.linenums-view {
 .mime-item-one.no-files {
   border: 0;
 }
+
 .mime-item-one:hover:not(.no-files) {
   background: rgba(0, 0, 0, .02);
 }
