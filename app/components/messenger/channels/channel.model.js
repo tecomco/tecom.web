@@ -67,8 +67,8 @@ app.factory('Channel', [
         this.hideNotifFunction();
         this.hideNotifFunction = null;
       }
-      return (this.isCurrentMemberPublicChannelMember() && !
-        CurrentMember.dontDisturbMode && !this.isMuted);
+      return (this.isCurrentMemberPublicChannelMember() && (CurrentMember.isDontDisturbModeDeactive()) &&
+        !this.isMuted);
     };
 
     Channel.prototype.updateFromJson = function (json) {
@@ -101,7 +101,8 @@ app.factory('Channel', [
       this.memberLastSeenId++;
     };
 
-    Channel.prototype.areAllMessagesHaveBeenSeen = function (lastSeenMessageId) {
+    Channel.prototype.areAllMessagesHaveBeenSeen = function (
+      lastSeenMessageId) {
       return this.memberLastSeenId === this.lastMessageId;
     };
 

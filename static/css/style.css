@@ -45,6 +45,11 @@ h1, h2, h3, h4, h5 {
 body {
   margin: 0;
   padding: 0;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   direction: rtl;
   font-family: 'iransans', 'calibri';
   background: #fff;
@@ -85,20 +90,28 @@ a * {
 .user-options-btn {
   float: left;
   display: inline-block;
-  padding: 7px 20px;
+  padding: 20px 8px 11px 13px;
   font-size: 20px;
 }
 
 .user-options {
-  position: absolute;
-  top: 54px;
-  right: 58px;
 }
 
-.user-options a .fa {
+.user-options a .fa, .user-options a .zmdi {
   padding-left: 5px;
   width: 20px;
   color: #999;
+}
+
+.ddm-time{
+  cursor: default !important;
+  display: block;
+  text-align: center;
+  font-size: 16px;
+  padding: 4px;
+  text-align: center;
+  width: 100%;
+  color: #777;
 }
 
 .u-profile img {
@@ -488,6 +501,17 @@ a * {
 .right-section-header {
   padding: 14px 0 10px;
   background: rgba(17, 17, 17, 0.2);
+}
+
+.header-options{
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.header-option{
+  display: inline-block;
+  float: left;
 }
 
 .header-notif {
