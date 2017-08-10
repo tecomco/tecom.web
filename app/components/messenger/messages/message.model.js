@@ -65,7 +65,7 @@ app.factory('Message', [
         body = '<div id="' + this.getFileTimestampId() +
           '" class="ng-scope" dir="rtl">';
         if (fileUtil.isPictureFormat(this.additionalData.type)) {
-          body += '<img class="img-responsive" ng-src="' + this.additionalData
+          body += '<img class="img-responsive" id="img-' + this.additionalData.fileId + '" ng-src="' + this.additionalData
             .url + '" style="cursor:pointer" fullscreen />';
         } else {
           body += '<label class="file-name">' + this.additionalData.name +
