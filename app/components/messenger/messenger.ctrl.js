@@ -6,7 +6,6 @@
    function ($rootScope, $scope, $window, $uibModal, AuthService,
      CurrentMember, $localStorage, $state, $http, $templateCache) {
 
-     $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
@@ -51,16 +50,38 @@
        }
      };
 
-     $scope.toggleDontDisturbMode = function () {
-       CurrentMember.dontDisturbMode = $scope.dontDisturbMode;
-       $localStorage.dontDisturbMode = $scope.dontDisturbMode;
-     };
-
      $scope.logout = function () {
        AuthService.logout()
          .then(function () {
            $window.location.href = '/login';
          });
+     };
+
+     $scope.getDontDisturbModeClass = function () {
+       switch (CurrentMember.dontDisturb.mode) {
+         case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
+           return 'zmdi zmdi-notifications-active';
+         case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
+           return 'zmdi zmdi-notifications-none';
+         case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
+           return 'zmdi zmdi-notifications-add';
+       }
+     };
+
+     $scope.activateTimeDontDisturbMode = function (minute) {
+       CurrentMember.activateTimeDontDisturbMode(minute * 60000);
+     };
+
+     $scope.activateDontDisturbMode = function () {
+       CurrentMember.activateDontDisturbMode();
+     };
+
+     $scope.deactivateDontDisturbMode = function () {
+       CurrentMember.deactivateDontDisturbMode();
+     };
+
+     $scope.getDontDisturbModeRemainingTime = function () {
+       return CurrentMember.dontDisturb.remainingTime;
      };
 
      $scope.setNotificationPermission = function () {
@@ -115,6 +136,15 @@
          $localStorage.userSeenTour = true;
        }
      }
+
+     angular.element($window)
+       .bind('focus', function () {
+         $rootScope.isTabFocused = true;
+         $rootScope.$broadcast('tab:focus:changed');
+       }).bind('blur', function () {
+         $rootScope.isTabFocused = false;
+         $rootScope.$broadcast('tab:focus:changed');
+       });
 
    }
  ]);

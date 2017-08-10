@@ -11,12 +11,15 @@ app.controller('messagesController', [
 
     var self = this;
     $scope.messages = [];
+    $scope.hasUnreadNewMessages = false;
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
     var initialMemberLastSeenId;
     var initialLastMessageId;
+    var isJumpDownScrollingDown = false;
+    var hasUnreadInitializeMessages = false;
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -46,7 +49,7 @@ app.controller('messagesController', [
       });
     }
 
-    $scope.$on('type:start', function (channelId) {
+    $scope.$on('type:start', function (event, channelId) {
       if ($scope.channel.id === channelId)
         checkShouldScrollBottom();
     });
@@ -54,6 +57,12 @@ app.controller('messagesController', [
 
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
+        if (!isBottomOfMessagesHolder()) {
+          $scope.hasUnreadNewMessages = true;
+          $timeout(function () {
+            $scope.$apply();
+          });
+        }
         if ($rootScope.isTabFocused) {
           $scope.channel.seenLastMessage();
           messagesService.seenMessage($scope.channel.id, message.id,
@@ -143,6 +152,34 @@ app.controller('messagesController', [
       $state.go('messenger.home');
     };
 
+    $scope.shouldShowJumpDownButton = function () {
+      return isJumpDownScrollingDown || $scope.hasUnreadNewMessages ||
+        hasUnreadInitializeMessages;
+    };
+
+    $scope.jumpDown = function () {
+      isAnyLoadingMessageGetting = true;
+      scrollToMessageElementById($scope.channel.lastMessageId);
+      isAnyLoadingMessageGetting = false;
+    };
+
+    $scope.isMessageDateInAnotherDay = function (message) {
+      if (message.id === 1)
+        return true;
+      else {
+        var previousMessage =
+          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
+            1);
+        if (previousMessage) {
+          var timeDiff =
+            Math.abs(message.datetime.getTime() - previousMessage.datetime
+              .getTime());
+          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+          return (diffDays === 0) ? false : true;
+        }
+      }
+    };
+
     function scrollBottom() {
       $timeout(function () {
         messagesHolder.scrollTop = messagesHolder.scrollHeight;
@@ -229,23 +266,6 @@ app.controller('messagesController', [
       }, 0, false);
     }
 
-    $scope.isMessageDateInAnotherDay = function (message) {
-      if (message.id === 1)
-        return true;
-      else {
-        var previousMessage =
-          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
-            1);
-        if (previousMessage) {
-          var timeDiff =
-            Math.abs(message.datetime.getTime() - previousMessage.datetime
-              .getTime());
-          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
-          return (diffDays === 0) ? false : true;
-        }
-      }
-    };
-
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
       messagesService.getMessagesRangeFromServer(channelId,
         CurrentMember.member.teamId, from, to).then(function (messages) {
@@ -285,6 +305,11 @@ app.controller('messagesController', [
               'id', $scope.channel.lastMessageId);
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
+            $timeout(function () {
+              if (!isBottomOfMessagesHolder())
+                hasUnreadInitializeMessages = true;
+              $scope.$apply();
+            });
           }
           deferred.resolve();
         });
@@ -353,6 +378,18 @@ app.controller('messagesController', [
       });
     }
 
+    function updateUnreadFlagsToCheckIfSeenMessages() {
+      $scope.hasUnreadNewMessages = $scope.hasUnreadNewMessages &&
+        !isBottomOfMessagesHolder();
+      hasUnreadInitializeMessages = hasUnreadInitializeMessages &&
+        !isBottomOfMessagesHolder();
+    }
+
+    function isBottomOfMessagesHolder() {
+      return messagesHolder.scrollTop + messagesWindow.scrollHeight >
+        messagesHolder.scrollHeight;
+    }
+
     document.getElementById('inputPlaceHolder').focus();
 
     angular.element(messagesHolder)
@@ -366,7 +403,13 @@ app.controller('messagesController', [
             isDirectionUp = false;
         }
         prevScrollTop = scrollTop;
+        if (!isBottomOfMessagesHolder() && isDirectionUp === false)
+          isJumpDownScrollingDown = true;
+        else
+          isJumpDownScrollingDown = false;
         getMessagePackagesIfLoadingsInView(isDirectionUp);
+        updateUnreadFlagsToCheckIfSeenMessages();
+        $scope.$apply();
       });
 
     document.onkeydown = function (evt) {
