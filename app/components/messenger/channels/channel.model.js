@@ -96,7 +96,7 @@ app.factory('Channel', [
       this.lastSeenId = lastSeenMessageId;
     };
 
-    Channel.prototype.seenLastMessage = function (lastSeenMessageId) {
+    Channel.prototype.seenLastMessage = function () {
       this.lastMessageId++;
       this.memberLastSeenId++;
     };

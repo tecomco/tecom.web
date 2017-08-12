@@ -67,9 +67,9 @@
          case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
            return 'zmdi zmdi-notifications-active';
          case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
-           return 'zmdi zmdi-notifications-none';
+           return 'zmdi zmdi-notifications-off';
          case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
-           return 'zmdi zmdi-notifications-add';
+           return 'zmdi zmdi-notifications-paused';
        }
      };
 
