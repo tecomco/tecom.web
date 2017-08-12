@@ -458,6 +458,7 @@ app.service('messagesService', [
     function updateCacheMessagesByChannelId(channelId, messages) {
       var cache = getChannelCachedMessages(channelId);
       cache = cache.concat(messages);
+      ArrayUtil.sortByKeyAsc(cache, 'id');
       setChannelCachedMessages(channelId, cache);
     }
 
@@ -465,6 +466,7 @@ app.service('messagesService', [
       if (checkCacheHavingChannelMessages(channelId)) {
         var cache = getChannelCachedMessages(channelId);
         cache = cache.concat(messages);
+        ArrayUtil.sortByKeyAsc(cache, 'id');
         setChannelCachedMessages(channelId, cache);
       }
     }
