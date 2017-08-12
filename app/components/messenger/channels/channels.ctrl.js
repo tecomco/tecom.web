@@ -101,16 +101,13 @@ app.controller('channelsController', [
       }
     };
 
-    $scope.navigateToHome = function () {
-      $state.go('messenger.home');
-    };
-
     $scope.scrollToDirects = function () {
       document.getElementById('groups').scrollTop = document.getElementById(
         'channels').scrollHeight;
     };
 
-    $scope.scrollToChannels = function () {
+    $scope.navigateToHomeAndScrollToChannels = function () {
+      $state.go('messenger.home');
       document.getElementById('groups').scrollTop = 0;
     };
 
