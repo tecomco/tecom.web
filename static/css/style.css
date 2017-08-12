@@ -1449,10 +1449,6 @@ ol.linenums, ol.linenums-view {
   color: #888;
 }
 
-.msg.msg-recieve .name {
-  color: rgb(5, 198, 186);
-}
-
 .msg.msg-recieve .status {
   display: none;
 }

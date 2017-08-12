@@ -16,7 +16,7 @@ app.factory('Channel', [
         lastMessageId, memberLastSeenId);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
-      this.InitialMessagesPromise = null;
+      this.initialMessagesPromise = null;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,
@@ -134,7 +134,7 @@ app.factory('Channel', [
     };
 
     Channel.prototype.setInitialMessagesPromise = function (promise) {
-      this.InitialMessagesPromise = promise;
+      this.initialMessagesPromise = promise;
     };
 
     Channel.prototype.getIconClass = function () {

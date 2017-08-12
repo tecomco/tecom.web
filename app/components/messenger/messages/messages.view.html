@@ -22,7 +22,7 @@
             <label>{{message.getLocaleDate()}}</label>
           </div>
           <div ng-class="message.getCssClass()" class="msg-holder">
-            <label class="name">{{message.getUsername()}}</label>
+            <label class="name" ng-style="message.getUsernameColor()">{{message.getUsername()}}</label>
             <label class="status" ng-show="message.isFromMe()">
               <i ng-class="message.getStatusIcon()"></i>
             </label>

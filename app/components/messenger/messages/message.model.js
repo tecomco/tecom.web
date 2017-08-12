@@ -49,6 +49,19 @@ app.factory('Message', [
       return username;
     };
 
+    Message.prototype.getUsernameColor = function () {
+      if (CurrentMember.member.isTecomBot() || !this.senderId || this.senderId ===
+        CurrentMember.member.id) {
+        return {};
+      }
+      var member = Team.getMemberByMemberId(this.senderId);
+      if (member)
+        return {
+          'color': Team.getMemberByMemberId(this.senderId).user.usernameColor
+        };
+      return {}
+    };
+
     Message.prototype.getViewWellFormed = function () {
       var body = '';
       if (this.type === Message.TYPE.TEXT) {

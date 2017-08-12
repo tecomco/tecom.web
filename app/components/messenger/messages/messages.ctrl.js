@@ -25,7 +25,7 @@ app.controller('messagesController', [
       if (data === 'init') {
         setCurrentChannel().then(function () {
           if ($scope.channel) {
-            $scope.channel.InitialMessagesPromise
+            $scope.channel.initialMessagesPromise
               .then(function () {
                 return initialize();
               })
@@ -44,7 +44,7 @@ app.controller('messagesController', [
       return;
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel().then(function () {
-        $scope.channel.InitialMessagesPromise
+        $scope.channel.initialMessagesPromise
           .then(initialize());
       });
     }
