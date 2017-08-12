@@ -6,7 +6,7 @@
       <i class="zmdi zmdi-plus"></i>
     </a>
   </div>
-  <div class="group-holder" id="channels" tour-step tour-step-content="این‌جا جای گروه‌های مختلف تیمه. با دکمه‌ی + می‌تونی گروه عمومی یا خصوصی جدید بسازی." tour-step-order="1" tour-step-on-show="navigateToHomeAndScrollToChannels()" tour-step-placement="left" tour-step-backdrop="true">
+  <div class="group-holder" id="channels" tour-step tour-step-content="این‌جا جای گروه‌های مختلف تیمه. با دکمه‌ی + می‌تونی گروه عمومی یا خصوصی جدید بسازی. (۲/۸)" tour-step-order="1" tour-step-on-show="navigateToHomeAndScrollToChannels()" tour-step-placement="left" tour-step-backdrop="true">
     <ul>
       <li ng-repeat="channel in channels.publicsAndPrivates | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="channel.getCssClass()">
         <a ui-sref="messenger.messages({slug: channel.getUrlifiedSlug()})">
@@ -26,7 +26,7 @@
     </a>
     -->
   </div>
-  <div class="direct-holder group-holder" tour-step tour-step-content="این‌جا هم لیست هم‌تیمی‌هاته که می‌تونی باهاشون مکالمه‌ی مستقیم داشته باشی. هر سوال یا بازخوردی رو هم می‌تونی با تیک-بات در میون بزاری." tour-step-order="2" tour-step-placement="left" tour-step-on-show="scrollToDirects()" tour-step-on-next="navigateToAndWaitFor(tour, 'messages')" tour-step-backdrop="true">
+  <div class="direct-holder group-holder" tour-step tour-step-content="این‌جا هم لیست هم‌تیمی‌هاته که می‌تونی باهاشون مکالمه‌ی مستقیم داشته باشی. هر سوال یا بازخوردی رو هم می‌تونی با تیک-بات در میون بزاری. (۳/۸)" tour-step-order="2" tour-step-placement="left" tour-step-on-show="scrollToDirects()" tour-step-on-next="navigateToAndWaitFor(tour, 'messages')" tour-step-backdrop="true">
     <ul>
       <li ng-repeat="direct in channels.directs | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="direct.getCssClass()">
         <a ui-sref="messenger.messages({slug: direct.getUrlifiedSlug()})">
@@ -36,9 +36,10 @@
         </a>
       </li>
     </ul>
-    <span tour-step tour-step-content="کلیک نکنی روش نمیرم توش" tour-step-order="6" tour-step-placement="left" tour-step-on-show="scrollToProgress()" tour-step-on-prev="navigateToAndWaitFor(tour, 'file-manager')" tour-step-backdrop="true">
+    <span tour-step tour-step-content="حالا روی این گزینه کلیک کن تا خیلی راحت چند تا از هم‌کارات رو به تیکام دعوت کنی! (۷/۸)" tour-step-order="6" tour-step-placement="left" tour-step-on-show="scrollToProgress()" tour-step-on-prev="navigateToAndWaitFor(tour, 'file-manager')" tour-step-backdrop="true">
       <a ng-click="openTeamProfileModal(tour)">
-        <span class="channel-name">اعضای تیمت رو دعوت کن</span>
+        <i class="fa fa-user-plus"></i>
+        <span class="channel-name">دعوت هم‌تیمی</span>
       </a>
     </span>
   </div>
