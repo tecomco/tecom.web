@@ -268,17 +268,18 @@ app.controller('messagesController', [
 
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
       messagesService.getMessagesRangeFromServer(channelId,
-        CurrentMember.member.teamId, from, to).then(function (messages) {
-        removeLoadingMessage(from);
-        messages.forEach(function (message) {
-          if (!ArrayUtil.containsKeyValue($scope.messages, 'id',
-              message.id)) {
-            $scope.messages.push(message);
-          }
+          CurrentMember.member.teamId, from, to, 'loadingMessage')
+        .then(function (messages) {
+          removeLoadingMessage(from);
+          messages.forEach(function (message) {
+            if (!ArrayUtil.containsKeyValue($scope.messages, 'id',
+                message.id)) {
+              $scope.messages.push(message);
+            }
+          });
+          isAnyLoadingMessageGetting = false;
+          getMessagePackagesIfLoadingsInView(isDirectionUp);
         });
-        isAnyLoadingMessageGetting = false;
-        getMessagePackagesIfLoadingsInView(isDirectionUp);
-      });
     }
 
     function setCurrentChannel() {
