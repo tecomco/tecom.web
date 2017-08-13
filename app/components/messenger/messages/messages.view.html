@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-      <a class="jump-btn ng-hide" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()">
+      <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
         <i class="zmdi zmdi-chevron-down"></i>
         <span ng-show="hasUnreadNewMessages" class="fa fa-circle"></span>
       </a>

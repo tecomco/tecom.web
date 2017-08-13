@@ -61,7 +61,7 @@
   <div class="col-sm-9 col-lg-10 no-padding chat-section">
     <div ui-view></div>
   </div>
-  <div class="loading" ng-show="isLoading">
+  <div class="loading ng-cloak" ng-hide="!isLoading" ng-cloak>
     <img class="loading-img" src="static/img/loading.gif">
     <div class="loading-txt">تمرکز روی چند چیز، همون تمرکز روی هیچ چیزه.</div>
     <div class="loading-taking-long-txt" ng-show="isLoadingTakingTooLong">
