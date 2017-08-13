@@ -367,6 +367,7 @@ a * {
   overflow-y: hidden;
   height: 50px;
   padding-top: 10px;
+  direction: rtl;
 }
 
 .s-r-tabs {}
