@@ -11,7 +11,6 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       this.extension = type;
       this.type = this.getFileType();
       this.svg = this.getSvgUrl();
-      this.defaultSvg = '/static/img/file-formats.svg#generic';
     }
 
     FileManagerFile.prototype.getSvgUrl = function () {
