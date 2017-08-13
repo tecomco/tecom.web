@@ -71,7 +71,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-ng-constant');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
   grunt.registerTask('prod', ['jshint', 'ngconstant:prod']);
