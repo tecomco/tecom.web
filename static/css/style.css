@@ -360,6 +360,12 @@ a * {
   border-radius: 4px;
   background: #fff;
 }
+.search-results.coming-soon {
+  font-size: 20px;
+  text-align: center;
+  color: #aaa;
+  padding-top: 130px;
+}
 
 .s-r-tabs {}
 
