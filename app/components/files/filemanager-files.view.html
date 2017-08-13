@@ -34,7 +34,8 @@
       <li ng-repeat="file in files | orderBy : '-date' | filter : shouldShowInFileManager">
         <a class="mime-item-one">
       <svg viewBox="0 0 100 100">
-       <use xlink:href={{file.svg}}></use>
+       <use xlink:href={{file.defaultSvg}}></use>
+       <!-- <use xlink:href={{file.svg}}></use> -->
       </svg>
       <div class="mime-dets">
         <label class="mime-name">{{file.getFileName()}}</label>

@@ -9,7 +9,7 @@ app.factory('dateUtil', ['$window', function ($window) {
 
   function getPersianTime(datetime) {
     var pDate = $window.persianDate(datetime);
-    return pDate.format('h:mm');
+    return pDate.format('H:MM');
   }
 
   return {

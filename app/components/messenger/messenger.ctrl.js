@@ -25,7 +25,7 @@
          controller: 'teamProfileController',
          resolve: {
            tourClicked: function () {
-             return null;
+             return false;
            }
          }
        });

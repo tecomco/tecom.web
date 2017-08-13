@@ -3,10 +3,10 @@
 app.controller('teamProfileController', [
   '$scope', '$log', 'profileService', '$uibModalInstance', 'CurrentMember',
   'Team', '$timeout', 'validationUtil', 'ArrayUtil', 'teamService',
-  'channelsService', 'uiTourService', 'tourClicked',
+  'channelsService', 'tourClicked',
   function ($scope, $log, profileService, $uibModalInstance,
     CurrentMember, Team, $timeout, validationUtil, ArrayUtil, teamService,
-    channelsService, uiTourService, tourClicked) {
+    channelsService, tourClicked) {
 
     initialize();
 
@@ -14,18 +14,15 @@ app.controller('teamProfileController', [
       $scope.teamMembers = Team.getActiveMembers();
     });
 
-    $scope.inviteMember = function () {
-      initializeInviteMemberForm();
-      $scope.inviteMode = true;
-    };
-
-    $scope.sendInvitation = function () {
-      if (!$scope.invitedEmail)
+    $scope.sendInvitation = function (form) {
+      console.log($scope.invitedEmail);
+      var email = form.email.$modelValue;
+      if (!email)
         setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن.');
-      else if (validationUtil.validateEmail($scope.invitedEmail)) {
-        profileService.sendInvitationEmail($scope.invitedEmail)
+      else if (validationUtil.validateEmail(email)) {
+        profileService.sendInvitationEmail(email)
           .then(function () {
-            $scope.invitedEmail = '';
+            email = '';
             setInfoOrErrorMessage('info',
               'ایمیل دعوت به تیم با موفقیت ارسال شد.');
             $scope.inviteMode = false;
@@ -106,8 +103,8 @@ app.controller('teamProfileController', [
       }
     }
 
-    $scope.isMe = function (member) {
-      return member.id === CurrentMember.member.id;
+    $scope.isAdminOrAnotherMember = function (member) {
+      return !isMe(member) && CurrentMember.member.isAdmin;
     };
 
     function initialize() {
@@ -118,9 +115,8 @@ app.controller('teamProfileController', [
       $scope.forms = {};
     }
 
-    function initializeInviteMemberForm() {
-      $scope.invitedEmail = '';
-      $scope.forms.inviteMember.$setPristine();
+    function isMe(member) {
+      return member.id === CurrentMember.member.id;
     }
 
   }
