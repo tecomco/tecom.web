@@ -9,7 +9,7 @@ app.service('messagesService', [
     FileManagerFile) {
 
     var self = this;
-    self.FailedUploadedFiles = [];
+    self.failedUploadedFiles = [];
     var MESSAGE_MAX_PACKET_LENGTH = 20;
     /**
      * @summary Socket listeners
@@ -168,13 +168,11 @@ app.service('messagesService', [
             );
           });
           generateLoadingMessages(messages, channelId, lastMessageId);
-          var FailedUploadedFiles = self.FailedUploadedFiles.filter(
-            function (data) {
-              return data.channelId === channelId;
-            });
-            FailedUploadedFiles.forEach(function (data) {
-              messages.push(data.message);
-            });
+          var channelFailedUploadedFiles =
+            getFailedUploadedFilesByChannelId(channelId);
+          channelFailedUploadedFiles.forEach(function (data) {
+            messages.push(data.message);
+          });
           deferred.resolve(messages);
         });
       return deferred.promise;
@@ -240,7 +238,7 @@ app.service('messagesService', [
       if (toId - fromId < MESSAGE_MAX_PACKET_LENGTH) {
         var loadingMessage = new Message(null, Message.TYPE.LOADING, null,
           channelId, null, null,
-          additionalData, null, null, null);
+          additionalData, null, null);
         loadingMessage.setId(fromId);
         messages.push(loadingMessage);
       } else {
@@ -377,71 +375,63 @@ app.service('messagesService', [
       return message;
     }
 
-    function sendFileAndGetMessage(channelId, fileData, fileName) {
+    function sendFileAndGetMessage(channelId, fileData) {
       var additionalData = {
-        name: fileName
+        name: fileData.name
       };
       var message = new Message(null, Message.TYPE.FILE,
         CurrentMember.member.id, channelId, null, null, additionalData,
-        null, true, false, +new Date());
-      filesService.uploadFile(fileName, channelId, CurrentMember.member.id,
-          fileData, message)
-        .then(function (res) {
-          message.additionalData.url = res.data.file;
-          message.additionalData.fileId = res.data.id;
-          message.additionalData.type = res.data.type;
-          socket.emit('message:send', message.getServerWellFormed(),
-            function (data) {
-              message.isPending = false;
-              message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
-              message.save();
-              channelsService.updateChannelLastDatetime(message.channelId,
-                message.datetime);
-            });
-          filesService.createFileManagerFile(res.data.id, res.data.file,
-            res.data.name, res.data.date_uploaded, res.data.type);
-        }).catch(function (err) {
-          message.isFailed = true;
-          self.FailedUploadedFiles.push({
-            fileData: fileData,
-            channelId: channelId,
-            message: message
-          });
-        });
+        null, true, +new Date());
+      uploadFile(message, fileData);
       return message;
     }
 
     function reuploadFile(fileTimestamp) {
-      var data = ArrayUtil.getElementByKeyValue(self.FailedUploadedFiles,
-        'message.fileTimestamp', fileTimestamp);
-      ArrayUtil.removeElementByKeyValue(self.FailedUploadedFiles,
-        'message.fileTimestamp', fileTimestamp);
+      var data = getFailedUploadedFileByfileTimestamp(fileTimestamp);
       data.message.isFailed = false;
-      filesService.uploadFile(data.fileData.fileName, data.channelId,
-          CurrentMember.member.id, data.fileData, data.message)
-        .then(function (res) {
-          data.message.additionalData.url = res.data.file;
-          data.message.additionalData.fileId = res.data.id;
-          data.message.additionalData.type = res.data.type;
-          socket.emit('message:send', data.message.getServerWellFormed(),
-            function (res) {
-              data.message.isPending = false;
-              data.message.setIdAndDatetime(res.id, res.datetime, res.additionalData);
-              data.message.save();
-              channelsService.updateChannelLastDatetime(data.message.data
-                .channelId,
-                data.message.datetime);
-            });
-          filesService.createFileManagerFile(res.data.id, res.data.file,
-            res.data.name, res.data.date_uploaded, res.data.type);
-        }).catch(function (err) {
-          data.message.isFailed = true;
-          self.FailedUploadedFiles.push({
-            fileData: data.fileData,
-            channelId: data.channelId,
-            message: data.message
-          });
+      uploadFile(data.message, data.fileData);
+    }
+
+    function setUploadedFileMessageDetails(message, result) {
+      message.additionalData.url = result.file;
+      message.additionalData.fileId = result.id;
+      message.additionalData.type = result.type;
+      socket.emit('message:send', message.getServerWellFormed(),
+        function (res) {
+          message.isPending = false;
+          message.setIdAndDatetime(res.id, res.datetime, res.additionalData);
+          message.save();
+          channelsService.updateChannelLastDatetime(message.channelId,
+            message.datetime);
         });
+      filesService.createFileManagerFile(result.id, result.file, result.name,
+        result.date_uploaded, result.type);
+    }
+
+    function updateFailedUploadedFiles(message, fileData) {
+      message.isFailed = true;
+      self.failedUploadedFiles.push({
+        fileData: fileData,
+        message: message
+      });
+    }
+
+    function uploadFile(message, fileData) {
+      filesService.uploadFile(fileData.name, message.channelId,
+          CurrentMember.member.id, fileData, message)
+        .then(function (res) {
+          setUploadedFileMessageDetails(message, res.data);
+        }).catch(function (err) {
+          updateFailedUploadedFiles(message, fileData);
+        });
+    }
+
+    function getFailedUploadedFileByfileTimestamp(fileTimestamp) {
+      var data = ArrayUtil.getElementByKeyValue(self.failedUploadedFiles,
+        'message.fileTimestamp', fileTimestamp);
+      ArrayUtil.removeElementByKeyValue(self.failedUploadedFiles,
+        'message.fileTimestamp', fileTimestamp);
+        return data;
     }
 
     function seenMessage(channelId, messageId, senderId) {
@@ -453,6 +443,12 @@ app.service('messagesService', [
       };
       socket.emit('message:seen', data);
       channelsService.updateChannelNotification(channelId, 'empty');
+    }
+
+    function getFailedUploadedFilesByChannelId(channelId) {
+      return self.failedUploadedFiles.filter(function (data) {
+        return data.channelId === channelId;
+      });
     }
 
     function startTyping(channelId) {

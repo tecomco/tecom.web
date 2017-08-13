@@ -26,7 +26,7 @@
     </a>
     -->
   </div>
-  <div class="direct-holder group-holder" tour-step tour-step-content="این‌جا هم لیست هم‌تیمی‌هاته که می‌تونی باهاشون مکالمه‌ی مستقیم داشته باشی. هر سوال یا بازخوردی رو هم می‌تونی با تیک-بات در میون بزاری." tour-step-order="2" tour-step-placement="left" tour-step-on-next="navigateToAndWaitFor(tour, 'messages')" tour-step-backdrop="true">
+  <div class="direct-holder group-holder" tour-step tour-step-content="این‌جا هم لیست هم‌تیمی‌هاته که می‌تونی باهاشون مکالمه‌ی مستقیم داشته باشی. هر سوال یا بازخوردی رو هم می‌تونی با تیک-بات در میون بزاری." tour-step-order="2" tour-step-placement="left" tour-step-on-next="navigateToAndWaitFor('messages')" tour-step-backdrop="true">
     <ul>
       <li ng-repeat="direct in channels.directs | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="direct.getCssClass()">
         <a ui-sref="messenger.messages({slug: direct.getUrlifiedSlug()})">
@@ -36,8 +36,8 @@
         </a>
       </li>
     </ul>
-    <span tour-step tour-step-content="کلیک نکنی روش نمیرم توش" tour-step-order="6" tour-step-placement="left" tour-step-on-prev="navigateToAndWaitFor(tour, 'file-manager')" tour-step-backdrop="true">
-      <a ng-click="openTeamProfileModal(tour)">
+    <span tour-step tour-step-content="کلیک نکنی روش نمیرم توش" tour-step-order="6" tour-step-placement="left" tour-step-on-prev="navigateToAndWaitFor('file-manager')" tour-step-backdrop="true">
+      <a ng-click="openTeamProfileModal()">
         <span class="channel-name">اعضای تیمت رو دعوت کن</span>
       </a>
     </span>

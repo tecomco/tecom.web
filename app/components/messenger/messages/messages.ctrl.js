@@ -74,7 +74,7 @@ app.controller('messagesController', [
       $scope.uploadErrorNotif = false;
       $scope.uploadSizeLimitNotif = false;
       var message = messagesService.sendFileAndGetMessage($scope.channel
-        .id, file, file.name);
+        .id, file);
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
@@ -87,7 +87,7 @@ app.controller('messagesController', [
       if (err === 'uploadError')
         setUploadErrorNotif();
       else if (err === 'sizeLimit')
-        uploadSizeLimitNotif();
+        setUploadSizeLimitNotif();
     });
 
     $scope.upload = function (file, errFiles) {
@@ -300,7 +300,7 @@ app.controller('messagesController', [
       }, 3000);
     }
 
-    function uploadSizeLimitNotif() {
+    function setUploadSizeLimitNotif() {
       if (!$scope.uploadSizeLimitNotif) {
         $scope.uploadSizeLimitNotif = true;
       }

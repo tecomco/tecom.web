@@ -1,10 +1,10 @@
 'use strict';
 
 app.controller('channelsController', [
-  '$rootScope', '$scope', '$window', '$state', '$uibModal', '$q',
-  'channelsService', 'webNotification', 'textUtil', '$log', 'CurrentMember',
-  function ($rootScope, $scope, $window, $state, $uibModal, $q,
-    channelsService, webNotification, textUtil, $log, CurrentMember) {
+  '$rootScope', '$scope', '$window', '$state', '$uibModal',
+  'channelsService', 'webNotification', '$log',
+  function ($rootScope, $scope, $window, $state, $uibModal, channelsService,
+    webNotification, $log) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
@@ -39,11 +39,11 @@ app.controller('channelsController', [
       }
     });
 
-    $scope.openTeamProfileModal = function (tour) {
+    $scope.openTeamProfileModal = function () {
       var tourClicked = false;
-      if (tour.getStatus() === tour.Status.ON) {
+      if ($scope.tour.getStatus() === $scope.tour.Status.ON) {
         tourClicked = true;
-        tour.end();
+        $scope.tour.end();
       }
       var modalInstance = $uibModal.open({
         animation: true,
@@ -92,12 +92,12 @@ app.controller('channelsController', [
       modalInstance.result.then(function () {}, function () {});
     };
 
-    $scope.navigateToAndWaitFor = function (tour, stepId) {
+    $scope.navigateToAndWaitFor = function (stepId) {
       if ($scope.channels.publicsAndPrivates.length) {
         $state.go('messenger.messages', {
           slug: $scope.channels.publicsAndPrivates[0].slug
         });
-        return tour.waitFor(stepId);
+        return $scope.tour.waitFor(stepId);
       }
     };
 
