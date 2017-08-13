@@ -6,6 +6,10 @@ module.exports = function (grunt) {
     '*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
   ];
 
+  var UGLIFY_SRC_FILES = [
+    'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
+  ];
+
   var ENV_CONFIG_PATH = 'app/app.config.js';
 
   grunt.initConfig({
@@ -83,8 +87,12 @@ module.exports = function (grunt) {
     },
     uglify: {
       my_target: {
+        options: {
+          mangle: false,
+          beautify: true
+        },
         files: {
-          'dist/tecom.min.js': SRC_FILES
+          'app/tecom.min.js': UGLIFY_SRC_FILES
         }
       }
     }
