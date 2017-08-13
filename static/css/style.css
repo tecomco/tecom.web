@@ -1419,6 +1419,9 @@ ol.linenums, ol.linenums-view {
 .msg .status .zmdi-time {
   color: #bbb;
 }
+.msg .status .zmdi-alert-circle-o {
+  color: rgb(230, 77, 77);
+}
 
 .msg .status .zmdi-check-all {
   color: rgb(5, 198, 186)
@@ -1484,6 +1487,25 @@ ol.linenums, ol.linenums-view {
   content: "";
   clear: both;
   float: none;
+}
+
+.file-failed-btns{
+  display: table;
+  width: 100%;
+}
+.file-failed-btns a{
+  width: 50%;
+  text-align: center;
+  color: #888;
+  padding: 4px;
+  display: table-cell;
+}
+.file-failed-btns a i{
+  padding-left: 4px;
+}
+
+.file-failed-btns a span{
+  font-size: 12px;
 }
 
 .is-typing {

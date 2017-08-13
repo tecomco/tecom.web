@@ -26,12 +26,14 @@
           <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name">{{message.getUsername()}}</label>
             <label class="status" ng-show="message.isFromMe()">
-              <a class="fa fa-remove" ng-show="message.isFailed" ng-click="removeUploadFailedMessage(message.fileTimestamp)"></a>
-              <a class="fa fa-refresh" ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"></a>
               <i ng-class="message.getStatusIcon()"></i>
             </label>
             <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
+            <div class="file-failed-btns">
+              <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
+              <a ng-show="message.isFailed" ng-click="removeUploadFailedMessage(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
+            </div>
           </div>
         </div>
         <!-- TODO: Fix this -->

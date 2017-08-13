@@ -187,7 +187,7 @@ app.factory('Message', [
         case Message.STATUS_TYPE.SEEN:
           return 'zmdi zmdi-check-all';
         case Message.STATUS_TYPE.FAILED:
-          return 'zmdi zmdi-close';
+          return 'zmdi zmdi-alert-circle-o';
       }
     };
 
