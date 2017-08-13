@@ -2,15 +2,15 @@
   <button type="button" class="close" data-dismiss="modal" ng-click="$close()">&times;</button>
   <h4 class="modal-title">مدیریت {{team.name}}</h4>
 </div>
-<div class="modal-body two-part-modal profile-modal" ui-tour ui-tour-on-ready="onTourReady(tour)">
-  <div class="container-fluid u-profile">
+<div class="modal-body two-part-modal profile-modal">
+  <div class="container-fluid u-profile" ui-tour ui-tour-on-ready="onTourReady(tour)">
     <div class="col-sm-10 col-sm-offset-1">
       <div class="t-info">
         <div class="g-members">
           <div ng-repeat="member in teamMembers | orderBy : 'user.username'" class="g-m-one">
             <img ng-src="{{member.user.image}}"/>
             <label>@{{member.user.username}}</label>
-            <div ng-hide="isMe(member)" style="float: left">
+            <div ng-show="isAdminOrAnotherMember(member)" style="float: left">
               <confirm-dialog ng-class="getAdminButtonCSS(member)" class="t-m-btn" message='{{member.isAdmin ? "مطمئنی میخوای \"@" + member.user.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + member.user.username + "\"  ادمین بشه؟"}}'
                               cancel="نه، حواسم نبود" ok="آره"
                               args="[member]" confirm-func="changeMemberAdminState" confirm-button='{{member.isAdmin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
@@ -19,7 +19,7 @@
             </div>
           </div>
         </div>
-        <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation()" novalidate>
+        <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation(forms.inviteMember)" novalidate>
           <div class="col-md-2"></div>
           <div class="col-sm-7 col-md-5 no-padding">
             <div tour-step tour-step-content="ایمیل هم‌کارات رو وارد کن تا ما براشون یه دعوت‌نامه بفرستیم. چون تیکام با هم‌تیمی هاست که معنی پیدا می‌کنه. موفق باشین!" tour-step-placement="top" tour-step-backdrop="true">

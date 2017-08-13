@@ -59,7 +59,7 @@ app.factory('Message', [
         return {
           'color': Team.getMemberByMemberId(this.senderId).user.usernameColor
         };
-      return {}
+      return {};
     };
 
     Message.prototype.getViewWellFormed = function () {
