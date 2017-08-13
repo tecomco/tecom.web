@@ -15,7 +15,6 @@ app.controller('teamProfileController', [
     });
 
     $scope.sendInvitation = function (form) {
-      console.log($scope.invitedEmail);
       var email = form.email.$modelValue;
       if (!email)
         setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن.');

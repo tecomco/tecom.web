@@ -24,9 +24,12 @@
     <li class="head-search-holder">
       <!-- TODO add class "focused" to bottom div on input focus-->
       <div class="head-search">
-        <input type="text" placeholder="جستجو" />
+        <input type="text" placeholder="جستجو" ng-focus="searchFocused()" ng-blur="searchBlurred()" />
         <i class="zmdi zmdi-search"></i>
         <!-- TODO bottom div is search result -->
+        <div class="search-results" ng-show="searchFocus">
+          coming soon
+        </div>
         <!-- <div class="search-results">
           <div class="s-r-tabs clearfix">
             <a class="s-r-tab-one active">

@@ -5,6 +5,8 @@ app.controller('headerController', ['$scope', '$localStorage', '$uibModal',
   function ($scope, $localStorage, $uibModal, $window, AuthService, db,
     channelsService, $state) {
 
+    $scope.searchFocus = false;
+
     $scope.$on('channel:changed', function () {
       $scope.channel = channelsService.getCurrentChannel();
     });
@@ -30,5 +32,14 @@ app.controller('headerController', ['$scope', '$localStorage', '$uibModal',
           $window.location.href = '/login';
         });
     };
+
+    $scope.searchFocused = function () {
+      $scope.searchFocus = true;
+    };
+
+    $scope.searchBlurred = function () {
+      $scope.searchFocus = false;
+    };
+
   }
 ]);
