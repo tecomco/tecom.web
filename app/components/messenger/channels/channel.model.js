@@ -155,7 +155,7 @@ app.factory('Channel', [
             case Member.STATUS.ONLINE:
               return 'zmdi zmdi-circle member-status status-online';
             case Member.STATUS.DEACTIVE:
-              return 'zmdi zmdi-circle member-status status-deactive';
+              return 'zmdi zmdi-close-circle-o member-status status-deactive';
           }
       }
     };
