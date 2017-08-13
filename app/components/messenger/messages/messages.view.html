@@ -1,4 +1,4 @@
-<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن. (۴/۸)" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="right" tour-step-on-prev="navigateToHome()">
+<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن. (۴/۸)" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left" tour-step-on-prev="navigateToHome()">
   <!-- TODO col-sm-9 col-lg-9 -->
   <div class="header clearfix">
     <div ui-view="header"></div>
@@ -12,7 +12,7 @@
       <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadErrNotif" ng-cloak>
         <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
       </div>
-      <div ng-show="!channel.lastMessageId">No Message Yet</div>
+      <div ng-show="!channel.lastMessageId" class="no-msg"><span>پیامی نیست!</span></div>
       <div class="main">
         <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}">
           <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
@@ -54,15 +54,15 @@
         <i class="zmdi zmdi-mail-send"></i>
       </a>
     </div>
-    <div ng-show="channel.getIsRemoved() && !channel.isPublic()" class="input-holder">
+    <div ng-show="channel.getIsRemoved() && !channel.isPublic()" class="input-holder bottom-msg">
       <label>شما از این گروه حذف شدین.</label>
       <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
     </div>
-    <div ng-show="channel.getIsArchived() && channel.active" class="input-holder">
+    <div ng-show="channel.getIsArchived() && channel.active" class="input-holder bottom-msg">
       <label>این گروه توسط ادمین حذف شده و دیگر به آن دسترسی ندارید.</label>
       <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
     </div>
-    <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && !channel.isCurrentMemberPublicChannelMember()" class="input-holder">
+    <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && !channel.isCurrentMemberPublicChannelMember()" class="input-holder bottom-msg">
       <label>شما در این گروه عمومی عضو نیستید.</label>
       <button class="btn" ng-click="joinPublicChannel()">همین الان عضو شو!</button>
     </div>
