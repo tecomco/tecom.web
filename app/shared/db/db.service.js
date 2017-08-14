@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.service('db', ['$window', '$q', '$log', 'CurrentMember','Team',
+app.service('Db', ['$window', '$q', '$log', 'CurrentMember','Team',
   function ($window, $q, $log, CurrentMember, Team) {
 
   var self = this;

@@ -1,9 +1,9 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
+  '$log', 'Db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
   'CurrentMember', 'Team',
-  function ($log, db, textUtil, channelsService, fileUtil, dateUtil,
+  function ($log, Db, textUtil, channelsService, fileUtil, dateUtil,
     CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
@@ -259,7 +259,7 @@ app.factory('Message', [
 
     Message.prototype.save = function () {
       var that = this;
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.put(that.getDbWellFormed())
           .catch(function (err) {
             $log.error('Saving message failed.', err);

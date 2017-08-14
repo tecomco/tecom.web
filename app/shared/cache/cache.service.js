@@ -1,26 +1,23 @@
 'use strict';
 /*jshint esversion: 6 */
 
-app.service('cache', ['CurrentMember','$window',
-  function (CurrentMember, $window) {
+app.service('CacheService', ['$window', function ($window) {
 
-    var self = this;
+  var self = this;
+  var CACHE_MAX_SIZE = 3;
 
-    if (!CurrentMember.exists()) return;
-    createCache();
+  createCache();
 
-    function createCache() {
-      let cache = new $window.LRUMap(3);
-      self.cache = cache;
-    }
-
-    function getCache() {
-      return self.cache;
-    }
-
-    return {
-      createCache: createCache,
-      getCache: getCache
-    };
+  function createCache() {
+    let cache = new $window.LRUMap(CACHE_MAX_SIZE);
+    self.cache = cache;
   }
-]);
+
+  function getCache() {
+    return self.cache;
+  }
+
+  return {
+    getCache: getCache
+  };
+}]);

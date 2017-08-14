@@ -2,11 +2,11 @@
 
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'socket',
-  'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
-  'Team', 'ArrayUtil', 'FileManagerFile', 'cache',
+  'channelsService', 'Message', 'Db', 'filesService', 'CurrentMember',
+  'Team', 'ArrayUtil', 'FileManagerFile', 'CacheService',
   function ($rootScope, $http, $log, $q, socket, channelsService,
-    Message, db, filesService, CurrentMember, Team, ArrayUtil,
-    FileManagerFile, cache) {
+    Message, Db, filesService, CurrentMember, Team, ArrayUtil,
+    FileManagerFile, CacheService) {
 
     var self = this;
     var MESSAGE_MAX_PACKET_LENGTH = 20;
@@ -19,7 +19,7 @@ app.service('messagesService', [
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
       message.save();
-      updateCacheMessagesByChannelIdWithCheck(message.channelId, message
+      updateCacheMessagesByChannelIdIfExists(message.channelId, message
         .getDbWellFormed());
       if (message.type === Message.TYPE.NOTIF) {
         var channel = channelsService.findChannelById(message.channelId);
@@ -122,7 +122,7 @@ app.service('messagesService', [
 
     function bulkSaveMessage(messages) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.bulkDocs(messages)
           .then(function () {
             deferred.resolve();
@@ -163,16 +163,15 @@ app.service('messagesService', [
 
     function getMessagesByChannelId(channelId, lastMessageId) {
       var deferred = $q.defer();
-      if (checkCacheHavingChannelMessages(channelId)) {
-        var rawMessages = getChannelCachedMessages(channelId);
-        var messages = getModeledMessages(rawMessages);
+      if (doesCacheContainsChannelMessages(channelId)) {
+        var messages = getChannelCachedMessageModels(channelId);
         generateLoadingMessages(messages, channelId, lastMessageId);
         deferred.resolve(messages);
       } else {
         getMessagesByChannelIdFromDb(channelId)
-          .then(function (rawMessages) {
-            setChannelCachedMessages(channelId, rawMessages.docs);
-            var messages = getModeledMessages(rawMessages.docs);
+          .then(function (messagesData) {
+            cacheChannelMessagesData(channelId, messagesData.docs);
+            var messages = generateMessageModelsFromData(messagesData.docs);
             generateLoadingMessages(messages, channelId, lastMessageId);
             deferred.resolve(messages);
           });
@@ -180,13 +179,18 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getModeledMessages(rawMessages) {
-      return rawMessages.map(function (message) {
+    function generateMessageModelsFromData(messagesData) {
+      return messagesData.map(function (message) {
         return new Message(message.body, message.type,
           message.senderId, message.channelId, message._id,
           message.datetime, message.additionalData, message.about
         );
       });
+    }
+
+    function getChannelCachedMessageModels(channelId) {
+      var messagesData = getMessagesDataByChannelIdFromCache(channelId);
+      return generateMessageModelsFromData(messagesData);
     }
 
     function generateLoadingMessages(messages, channelId, lastMessageId) {
@@ -266,7 +270,7 @@ app.service('messagesService', [
      */
     function getMessagesByChannelIdFromDb(channelId) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.find({
           selector: {
             id: {
@@ -302,7 +306,7 @@ app.service('messagesService', [
 
     function getInitialMessagesIdByChannelIdFromDb(channelId, from, to) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.find({
           selector: {
             id: {
@@ -380,7 +384,7 @@ app.service('messagesService', [
           message.isPending = false;
           message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
           message.save();
-          updateCacheMessagesByChannelIdWithCheck(message.channelId,
+          updateCacheMessagesByChannelIdIfExists(message.channelId,
             message
             .getDbWellFormed());
           channelsService.updateChannelLastDatetime(message.channelId,
@@ -407,7 +411,7 @@ app.service('messagesService', [
               message.isPending = false;
               message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
               message.save();
-              updateCacheMessagesByChannelIdWithCheck(message.channelId,
+              updateCacheMessagesByChannelIdIfExists(message.channelId,
                 message
                 .getDbWellFormed());
               channelsService.updateChannelLastDatetime(message.channelId,
@@ -446,32 +450,28 @@ app.service('messagesService', [
       socket.emit('message:type:end', data);
     }
 
-    function checkCacheHavingChannelMessages(channelId) {
-      return cache.getCache().has(channelId);
+    function doesCacheContainsChannelMessages(channelId) {
+      return CacheService.getCache().has(channelId);
     }
 
-    function getChannelCachedMessages(channelId) {
-      return cache.getCache().get(channelId);
+    function getMessagesDataByChannelIdFromCache(channelId) {
+      return CacheService.getCache().get(channelId);
     }
 
-    function setChannelCachedMessages(channelId, messages) {
-      return cache.getCache().set(channelId, messages);
+    function cacheChannelMessagesData(channelId, messages) {
+      return CacheService.getCache().set(channelId, messages);
     }
 
     function updateCacheMessagesByChannelId(channelId, messages) {
-      var cache = getChannelCachedMessages(channelId);
-      cache = cache.concat(messages);
+      var cache = getMessagesDataByChannelIdFromCache(channelId);
+      cache = CacheService.concat(messages);
       ArrayUtil.sortByKeyAsc(cache, 'id');
-      setChannelCachedMessages(channelId, cache);
+      cacheChannelMessagesData(channelId, cache);
     }
 
-    function updateCacheMessagesByChannelIdWithCheck(channelId, messages) {
-      if (checkCacheHavingChannelMessages(channelId)) {
-        var cache = getChannelCachedMessages(channelId);
-        cache = cache.concat(messages);
-        ArrayUtil.sortByKeyAsc(cache, 'id');
-        setChannelCachedMessages(channelId, cache);
-      }
+    function updateCacheMessagesByChannelIdIfExists(channelId, messages) {
+      if (doesCacheContainsChannelMessages(channelId))
+        updateCacheMessagesByChannelId(channelId, messages);
     }
 
     /**
