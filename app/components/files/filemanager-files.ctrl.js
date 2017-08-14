@@ -1,10 +1,10 @@
 'use strict';
 
 app.controller('fileManagerController', [
-  '$scope', 'filesService', 'channelsService', 'FileManagerFile', '$state',
-  'Fullscreen',
-  function ($scope, filesService, channelsService, FileManagerFile, $state,
-    Fullscreen) {
+  '$scope', '$rootScope', 'filesService', 'channelsService',
+  'FileManagerFile', '$state',
+  function ($scope, $rootScope, filesService, channelsService,
+    FileManagerFile, $state) {
 
     $scope.files = [];
     $scope.fileManagerFilterType = null;
@@ -92,9 +92,8 @@ app.controller('fileManagerController', [
       filesService.viewFile(fileId);
     };
 
-    $scope.fullscreenPhoto = function (id) {
-      var photoId = 'img-' + id;
-      Fullscreen.enable(document.getElementById(photoId));
+    $scope.fullscreenImage = function (url, name) {
+      $rootScope.$broadcast('image:fullscreen', url, name);
     };
 
     $scope.navigateToHome = function () {

@@ -212,6 +212,10 @@ app.controller('messagesController', [
       filesService.viewFile(fileId);
     };
 
+    $scope.fullscreenImage = function (url, name) {
+      $rootScope.$broadcast('image:fullscreen', url, name);
+    };
+
     $scope.archiveDirect = function (channel) {
       channelsService.archiveChannel(channel.id)
         .then(function () {
