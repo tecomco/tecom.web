@@ -268,14 +268,11 @@ app.controller('messagesController', [
 
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
       messagesService.getMessagesRangeFromServer(channelId,
-          CurrentMember.member.teamId, from, to, 'loadingMessage')
+          CurrentMember.member.teamId, from, to, true)
         .then(function (messages) {
           removeLoadingMessage(from);
           messages.forEach(function (message) {
-            if (!ArrayUtil.containsKeyValue($scope.messages, 'id',
-                message.id)) {
-              $scope.messages.push(message);
-            }
+            $scope.messages.push(message);
           });
           isAnyLoadingMessageGetting = false;
           getMessagePackagesIfLoadingsInView(isDirectionUp);

@@ -135,7 +135,8 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getMessagesRangeFromServer(channelId, teamId, fromId, toId, key) {
+    function getMessagesRangeFromServer(channelId, teamId, fromId, toId,
+      AreLoadingMessagesGetting) {
       var deferred = $q.defer();
       var dataToBeSend = {
         channelId: channelId,
@@ -154,7 +155,7 @@ app.service('messagesService', [
           return message.getDbWellFormed();
         });
         bulkSaveMessage(messagesForDb);
-        if (key)
+        if (AreLoadingMessagesGetting)
           updateCacheMessagesByChannelId(channelId, messagesForDb);
       });
       return deferred.promise;
@@ -379,7 +380,8 @@ app.service('messagesService', [
           message.isPending = false;
           message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
           message.save();
-          updateCacheMessagesByChannelIdWithCheck(message.channelId, message
+          updateCacheMessagesByChannelIdWithCheck(message.channelId,
+            message
             .getDbWellFormed());
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
@@ -405,7 +407,8 @@ app.service('messagesService', [
               message.isPending = false;
               message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
               message.save();
-              updateCacheMessagesByChannelIdWithCheck(message.channelId, message
+              updateCacheMessagesByChannelIdWithCheck(message.channelId,
+                message
                 .getDbWellFormed());
               channelsService.updateChannelLastDatetime(message.channelId,
                 message.datetime);
