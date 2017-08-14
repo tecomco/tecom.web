@@ -21,7 +21,7 @@
      $scope.openTeamProfileModal = function () {
        var modalInstance = $uibModal.open({
          animation: true,
-         templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.0',
+         templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.1',
          controller: 'teamProfileController',
          resolve: {
            tourClicked: function () {
@@ -122,16 +122,16 @@
 
      function cacheMessagesTemplates() {
        $http.get(
-         'app/components/messenger/messages/messages.view.html?v=1.0.8', {
+         'app/components/messenger/messages/messages.view.html?v=1.0.9', {
            cache: $templateCache
          });
-       $http.get('app/components/messenger/header/header.view.html?v=1.0.4', {
+       $http.get('app/components/messenger/header/header.view.html?v=1.0.5', {
          cache: $templateCache
        });
        $http.get('app/components/files/files.view.html?v=1.0.6', {
          cache: $templateCache
        });
-       $http.get('app/components/files/filemanager-files.view.html?v=1.0.0', {
+       $http.get('app/components/files/filemanager-files.view.html?v=1.0.1', {
          cache: $templateCache
        });
      }
