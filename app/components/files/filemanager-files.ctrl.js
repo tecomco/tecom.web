@@ -71,16 +71,16 @@ app.controller('fileManagerController', [
 
     $scope.getMessageOfNoFilteredFile = function () {
       switch (parseInt($scope.fileManagerFilterType)) {
-        case null:
-          return 'هیچ فایلی وجود ندارد';
         case FileManagerFile.TYPE.CODE:
-          return 'هیچ فایلی به صورت کد وحود ندارد';
+          return 'کدی وجود ندارد.';
         case FileManagerFile.TYPE.PICTURE:
-          return 'هیچ عکسی وجود ندارد';
+          return 'عکسی وجود ندارد.';
         case FileManagerFile.TYPE.DOCUMENT:
-          return 'هیچ سندی وجود ندارد';
+          return 'سندی وجود ندارد.';
         case FileManagerFile.TYPE.OTHER:
-          return 'هیچ فایل دیگری وحود ندارد';
+          return 'فایل دیگری وجود ندارد.';
+        default:
+          return 'فایلی وجود ندارد.';
       }
     };
 
