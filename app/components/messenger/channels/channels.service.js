@@ -26,7 +26,7 @@ app.service('channelsService', [
       var channel = createAndPushChannel(result.channel);
       var deferred = $q.defer();
       deferred.resolve();
-      channel.setInitialMessagesPromise(deferred);
+      channel.setInitialMessagesPromise(deferred.promise);
       if (result.channel.creatorId === CurrentMember.member.id) {
         $state.go('messenger.messages', {
           slug: channel.getUrlifiedSlug()
