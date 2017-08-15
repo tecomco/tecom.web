@@ -276,8 +276,11 @@ app.factory('Message', [
     };
 
     Message.prototype.addImageViewerBody = function () {
-      return '<img class="img-responsive" ng-src="' + this.additionalData
-        .url + '" style="cursor:pointer" fullscreen />';
+      return '<div class="msg-img" ng-click="fullscreenImage(\'' +
+        this.additionalData.url + '\', \'' + this.additionalData.name +
+        '\')"><img class="img-responsive " id="img-' + this.additionalData
+        .fileId + '" ng-src="' + this.additionalData
+        .url + '" style="cursor:pointer" /></div>';
     };
 
     Message.prototype.addFileMessageBody = function () {
