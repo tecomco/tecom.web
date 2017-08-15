@@ -1646,6 +1646,25 @@ ol.linenums, ol.linenums-view {
   opacity: 1;
 }
 
+.file-failed-btns{
+  display: table;
+  width: 100%;
+}
+.file-failed-btns a{
+  width: 50%;
+  text-align: center;
+  color: #888;
+  padding: 4px;
+  display: table-cell;
+}
+.file-failed-btns a i{
+  padding-left: 4px;
+}
+
+.file-failed-btns a span{
+  font-size: 12px;
+}
+
 .is-typing {
   text-align: center;
   float: left;

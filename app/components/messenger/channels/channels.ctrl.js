@@ -111,11 +111,6 @@ app.controller('channelsController', [
       document.getElementById('groups').scrollTop = 0;
     };
 
-    $scope.scrollToProgress = function () {
-      var groups = document.getElementById('groups');
-      groups.scrollTop = groups.scrollHeight;
-    };
-
     function validateUrlChannel() {
       if (!$scope.channels.current) {
         $state.go('messenger.home');
