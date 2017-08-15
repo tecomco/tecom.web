@@ -270,7 +270,7 @@ app.factory('Message', [
       if (this.canBeLived)
         body += this.addFileLiveAndViewBody();
       if (!this.isFailed)
-        body += this.addFailedFileBody();
+        body += this.addFileDownloadBody();
       body += '</div>';
       return body;
     };
@@ -306,7 +306,7 @@ app.factory('Message', [
       return body;
     };
 
-    Message.prototype.addFailedFileBody = function () {
+    Message.prototype.addFileDownloadBody = function () {
       return '<a class="dl-btn" href="' + this.additionalData.url +
         '" download="' + this.additionalData.name +
         '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">' +

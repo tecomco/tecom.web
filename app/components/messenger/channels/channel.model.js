@@ -148,7 +148,7 @@ app.factory('Channel', [
             return 'zmdi zmdi-circle member-status status-offline';
           }
           if (this.slug === Member.TECOM_BOT.username)
-            return 'fa fa-heart';
+            return 'fa fa-heart member-status status-online';
           switch (this.member.status) {
             case Member.STATUS.OFFLINE:
               return 'zmdi zmdi-circle member-status status-offline';
