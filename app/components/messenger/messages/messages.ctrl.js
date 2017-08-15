@@ -107,9 +107,11 @@ app.controller('messagesController', [
       messagesService.reuploadFile(fileTimestamp);
     };
 
-    $scope.removeUploadFailedMessage = function (fileTimestamp) {
+    $scope.removeUploadFailedMessageByFileTimestamp = function (
+      fileTimestamp) {
       ArrayUtil.removeElementByKeyValue($scope.messages, 'fileTimestamp',
         fileTimestamp);
+      messagesService.removeUploadFailedFileByFileTimestamp(fileTimestamp);
     };
 
     $scope.getInputStyle = function () {

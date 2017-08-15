@@ -167,11 +167,8 @@ app.service('messagesService', [
       if (doesCacheContainsChannelMessages(channelId)) {
         var messages = getChannelCachedMessageModels(channelId);
         generateLoadingMessages(messages, channelId, lastMessageId);
-        var channelFailedUploadedFiles =
-          getFailedUploadedFilesByChannelId(channelId);
-        channelFailedUploadedFiles.forEach(function (data) {
-          messages.push(data.message);
-        });
+        pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+          channelId);
         deferred.resolve(messages);
       } else {
         getMessagesByChannelIdFromDb(channelId)
@@ -179,11 +176,8 @@ app.service('messagesService', [
             cacheChannelMessagesData(channelId, messagesData.docs);
             var messages = generateMessageModelsFromData(messagesData.docs);
             generateLoadingMessages(messages, channelId, lastMessageId);
-            var channelFailedUploadedFiles =
-              getFailedUploadedFilesByChannelId(channelId);
-            channelFailedUploadedFiles.forEach(function (data) {
-              messages.push(data.message);
-            });
+            pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+              channelId);
             deferred.resolve(messages);
           });
       }
@@ -196,6 +190,15 @@ app.service('messagesService', [
           message.senderId, message.channelId, message._id,
           message.datetime, message.additionalData, message.about
         );
+      });
+    }
+
+    function pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+      channelId) {
+      var channelFailedUploadedFiles =
+        getFailedUploadedFilesByChannelId(channelId);
+      channelFailedUploadedFiles.forEach(function (data) {
+        messages.push(data.message);
       });
     }
 
@@ -395,7 +398,7 @@ app.service('messagesService', [
           message.isPending = false;
           message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
           message.save();
-          updateCacheMessagesByChannelIdIfExists(message.channelId,
+          updateCacheMessagesByChannelId(message.channelId,
             message.getDbWellFormed());
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
@@ -429,6 +432,8 @@ app.service('messagesService', [
           message.isPending = false;
           message.setIdAndDatetime(res.id, res.datetime, res.additionalData);
           message.save();
+          updateCacheMessagesByChannelIdIfExists(message.channelId,
+            message.getDbWellFormed());
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
         });
@@ -457,9 +462,13 @@ app.service('messagesService', [
     function getFailedUploadedFileByfileTimestamp(fileTimestamp) {
       var data = ArrayUtil.getElementByKeyValue(self.failedUploadedFiles,
         'message.fileTimestamp', fileTimestamp);
+      removeUploadFailedFileByFileTimestamp(fileTimestamp);
+      return data;
+    }
+
+    function removeUploadFailedFileByFileTimestamp(fileTimestamp) {
       ArrayUtil.removeElementByKeyValue(self.failedUploadedFiles,
         'message.fileTimestamp', fileTimestamp);
-        return data;
     }
 
     function seenMessage(channelId, messageId, senderId) {
@@ -475,7 +484,7 @@ app.service('messagesService', [
 
     function getFailedUploadedFilesByChannelId(channelId) {
       return self.failedUploadedFiles.filter(function (data) {
-        return data.channelId === channelId;
+        return data.message.channelId === channelId;
       });
     }
 
@@ -507,7 +516,7 @@ app.service('messagesService', [
 
     function updateCacheMessagesByChannelId(channelId, messages) {
       var cache = getMessagesDataByChannelIdFromCache(channelId);
-      cache = CacheService.concat(messages);
+      cache = cache.concat(messages);
       ArrayUtil.sortByKeyAsc(cache, 'id');
       cacheChannelMessagesData(channelId, cache);
     }
@@ -527,6 +536,7 @@ app.service('messagesService', [
       sendFileAndGetMessage: sendFileAndGetMessage,
       reuploadFile: reuploadFile,
       getMessagesRangeFromServer: getMessagesRangeFromServer,
+      removeUploadFailedFileByFileTimestamp: removeUploadFailedFileByFileTimestamp,
       seenMessage: seenMessage,
       startTyping: startTyping,
       endTyping: endTyping,
