@@ -188,30 +188,6 @@ app.controller('messagesController', [
       }
     };
 
-    function scrollBottom() {
-      $timeout(function () {
-        messagesHolder.scrollTop = messagesHolder.scrollHeight;
-      }, 0, false);
-    }
-
-    function checkShouldScrollBottom() {
-      if (messagesHolder.scrollHeight - messagesHolder.scrollTop < 1.5 *
-        messagesWindow.scrollHeight)
-        scrollBottom();
-    }
-
-    function scrollToUnseenMessage() {
-      if ($scope.channel.areAllMessagesHaveBeenSeen())
-        scrollToMessageElementById($scope.channel.memberLastSeenId);
-      else
-        scrollToMessageElementById($scope.channel.memberLastSeenId + 1);
-    }
-
-    function finishLoading() {
-      $rootScope.isLoading = false;
-      $rootScope.$broadcast('loading:finished');
-    }
-
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
