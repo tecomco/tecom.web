@@ -1,7 +1,7 @@
 <div id=fileManager ng-controller="fileManagerController">
   <div ng-class="getFileManagerClass()">
     <div class="mime-toggle-fix"></div>
-    <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()" tour-step="file-manager" tour-step-content="کسشعرایی که آپلود کردی همشون اینجان ، باز کن همشو بکن تو کونت" tour-step-order="5" tour-step-backdrop="true" tour-step-placement="right" tour-step-on-next="navigateToHome()">
+    <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()" tour-step="file-manager" tour-step-content="از این‌جا می‌تونی به تمام فایل‌های گروه دسترسی داشته باشی. (۶/۸)" tour-step-order="5" tour-step-backdrop="true" tour-step-placement="right" tour-step-on-next="navigateToHome()">
       <div ng-class="getFileManagerToggleClass()">
         <span></span>
         <span></span>
@@ -44,6 +44,7 @@
         <div class="mime-btns">
           <div class="live-btn" dir="ltr" ng-click="goLive(file.id,file.name)" ng-if="file.canBeLived() && channel.canMemberSendMessage()"><label dir="ltr">LIVE</label><i class="fa fa-circle"></i></div>
           <div class="dl-btn" dir="ltr" ng-click="viewFile(file.id)" ng-if="file.canBeLived()" tooltip-placement="top" uib-tooltip="مشاهده"><i class="fa fa-eye"></i></div>
+          <div class="dl-btn" dir="ltr" ng-click="fullscreenPhoto(file.id)" ng-if="file.isPhoto()" tooltip-placement="top" uib-tooltip="مشاهده تصویر"><i class="fa fa-eye"></i></div>
           <div class="dl-btn" ng-click="file.downloadFile()" tooltip-placement="top" uib-tooltip="دانلود"><i class="zmdi zmdi-download"></i></div>
       </div>
       </div>

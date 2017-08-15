@@ -2,11 +2,11 @@
 
 app.service('messagesService', [
   '$rootScope', '$http', '$log', '$q', 'socket',
-  'channelsService', 'Message', 'db', 'filesService', 'CurrentMember',
-  'Team', 'ArrayUtil', 'FileManagerFile',
+  'channelsService', 'Message', 'Db', 'filesService', 'CurrentMember',
+  'Team', 'ArrayUtil', 'FileManagerFile', 'CacheService',
   function ($rootScope, $http, $log, $q, socket, channelsService,
-    Message, db, filesService, CurrentMember, Team, ArrayUtil,
-    FileManagerFile) {
+    Message, Db, filesService, CurrentMember, Team, ArrayUtil,
+    FileManagerFile, CacheService) {
 
     var self = this;
     self.failedUploadedFiles = [];
@@ -20,6 +20,8 @@ app.service('messagesService', [
         data.channelId, data.id, data.datetime, data.additionalData,
         data.about);
       message.save();
+      updateCacheMessagesByChannelIdIfExists(message.channelId, message
+        .getDbWellFormed());
       if (message.type === Message.TYPE.NOTIF) {
         var channel = channelsService.findChannelById(message.channelId);
         if (message.type === Message.TYPE.NOTIF.USER_ADDED)
@@ -121,7 +123,7 @@ app.service('messagesService', [
 
     function bulkSaveMessage(messages) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.bulkDocs(messages)
           .then(function () {
             deferred.resolve();
@@ -134,7 +136,8 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getMessagesRangeFromServer(channelId, teamId, fromId, toId) {
+    function getMessagesRangeFromServer(channelId, teamId, fromId, toId,
+      areLoadingMessagesGetting) {
       var deferred = $q.defer();
       var dataToBeSend = {
         channelId: channelId,
@@ -153,29 +156,52 @@ app.service('messagesService', [
           return message.getDbWellFormed();
         });
         bulkSaveMessage(messagesForDb);
+        if (areLoadingMessagesGetting)
+          updateCacheMessagesByChannelId(channelId, messagesForDb);
       });
       return deferred.promise;
     }
 
     function getMessagesByChannelId(channelId, lastMessageId) {
       var deferred = $q.defer();
-      getMessagesByChannelIdFromDb(channelId)
-        .then(function (res) {
-          var messages = res.docs.map(function (message) {
-            return new Message(message.body, message.type,
-              message.senderId, message.channelId, message._id,
-              message.datetime, message.additionalData, message.about
-            );
-          });
-          generateLoadingMessages(messages, channelId, lastMessageId);
-          var channelFailedUploadedFiles =
-            getFailedUploadedFilesByChannelId(channelId);
-          channelFailedUploadedFiles.forEach(function (data) {
-            messages.push(data.message);
-          });
-          deferred.resolve(messages);
+      if (doesCacheContainsChannelMessages(channelId)) {
+        var messages = getChannelCachedMessageModels(channelId);
+        generateLoadingMessages(messages, channelId, lastMessageId);
+        var channelFailedUploadedFiles =
+          getFailedUploadedFilesByChannelId(channelId);
+        channelFailedUploadedFiles.forEach(function (data) {
+          messages.push(data.message);
         });
+        deferred.resolve(messages);
+      } else {
+        getMessagesByChannelIdFromDb(channelId)
+          .then(function (messagesData) {
+            cacheChannelMessagesData(channelId, messagesData.docs);
+            var messages = generateMessageModelsFromData(messagesData.docs);
+            generateLoadingMessages(messages, channelId, lastMessageId);
+            var channelFailedUploadedFiles =
+              getFailedUploadedFilesByChannelId(channelId);
+            channelFailedUploadedFiles.forEach(function (data) {
+              messages.push(data.message);
+            });
+            deferred.resolve(messages);
+          });
+      }
       return deferred.promise;
+    }
+
+    function generateMessageModelsFromData(messagesData) {
+      return messagesData.map(function (message) {
+        return new Message(message.body, message.type,
+          message.senderId, message.channelId, message._id,
+          message.datetime, message.additionalData, message.about
+        );
+      });
+    }
+
+    function getChannelCachedMessageModels(channelId) {
+      var messagesData = getMessagesDataByChannelIdFromCache(channelId);
+      return generateMessageModelsFromData(messagesData);
     }
 
     function generateLoadingMessages(messages, channelId, lastMessageId) {
@@ -255,7 +281,7 @@ app.service('messagesService', [
      */
     function getMessagesByChannelIdFromDb(channelId) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.find({
           selector: {
             id: {
@@ -291,7 +317,7 @@ app.service('messagesService', [
 
     function getInitialMessagesIdByChannelIdFromDb(channelId, from, to) {
       var deferred = $q.defer();
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.find({
           selector: {
             id: {
@@ -369,6 +395,8 @@ app.service('messagesService', [
           message.isPending = false;
           message.setIdAndDatetime(data.id, data.datetime, data.additionalData);
           message.save();
+          updateCacheMessagesByChannelIdIfExists(message.channelId,
+            message.getDbWellFormed());
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
         });
@@ -463,6 +491,30 @@ app.service('messagesService', [
         channelId: channelId
       };
       socket.emit('message:type:end', data);
+    }
+
+    function doesCacheContainsChannelMessages(channelId) {
+      return CacheService.getCache().has(channelId);
+    }
+
+    function getMessagesDataByChannelIdFromCache(channelId) {
+      return CacheService.getCache().get(channelId);
+    }
+
+    function cacheChannelMessagesData(channelId, messages) {
+      return CacheService.getCache().set(channelId, messages);
+    }
+
+    function updateCacheMessagesByChannelId(channelId, messages) {
+      var cache = getMessagesDataByChannelIdFromCache(channelId);
+      cache = CacheService.concat(messages);
+      ArrayUtil.sortByKeyAsc(cache, 'id');
+      cacheChannelMessagesData(channelId, cache);
+    }
+
+    function updateCacheMessagesByChannelIdIfExists(channelId, messages) {
+      if (doesCacheContainsChannelMessages(channelId))
+        updateCacheMessagesByChannelId(channelId, messages);
     }
 
     /**

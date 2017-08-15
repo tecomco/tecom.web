@@ -25,6 +25,10 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       return fileUtil.isTextFormat(this.extension);
     };
 
+    FileManagerFile.prototype.isPhoto = function () {
+      return fileUtil.isPictureFormat(this.extension);
+    };
+
     FileManagerFile.prototype.getLocalDate = function () {
       return dateUtil.getPersianDateString(this.date);
     };

@@ -101,8 +101,19 @@ app.controller('channelsController', [
       }
     };
 
-    $scope.navigateToHome = function () {
+    $scope.scrollToDirects = function () {
+      document.getElementById('groups').scrollTop = document.getElementById(
+        'channels').scrollHeight;
+    };
+
+    $scope.navigateToHomeAndScrollToChannels = function () {
       $state.go('messenger.home');
+      document.getElementById('groups').scrollTop = 0;
+    };
+
+    $scope.scrollToProgress = function () {
+      var groups = document.getElementById('groups');
+      groups.scrollTop = groups.scrollHeight;
     };
 
     function validateUrlChannel() {

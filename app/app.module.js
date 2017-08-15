@@ -3,7 +3,7 @@
 var app = angular.module('tecomApp', [
   'ui.router', 'ngStorage', 'angular-jwt', 'ui.bootstrap', 'config',
   'ngFileUpload', 'ngSanitize', 'mwl.confirm', 'ngMessages',
-  'angular-web-notification', 'ngProgress', 'bm.uiTour', 'FBAngular'
+  'angular-web-notification', 'ngProgress', 'bm.uiTour'
 ]);
 
 app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
@@ -27,6 +27,7 @@ app.config(['$httpProvider', 'jwtInterceptorProvider',
 
 app.config(['TourConfigProvider', function (TourConfigProvider) {
   TourConfigProvider.set('scrollIntoView', false);
+  TourConfigProvider.set('backdropBorderRadius', 5);
   TourConfigProvider.set('useHotkeys', true);
 }]);
 

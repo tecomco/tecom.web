@@ -2,11 +2,10 @@
 
  app.controller('MessengerCtrl', [
    '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
-   'CurrentMember', '$localStorage', '$state',
+   'CurrentMember', '$localStorage', '$state', '$http', '$templateCache',
    function ($rootScope, $scope, $window, $uibModal, AuthService,
-     CurrentMember, $localStorage, $state) {
+     CurrentMember, $localStorage, $state, $http, $templateCache) {
 
-     $scope.dontDisturbMode = CurrentMember.dontDisturbMode;
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
@@ -24,6 +23,11 @@
          animation: true,
          templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.0',
          controller: 'teamProfileController',
+         resolve: {
+           tourClicked: function () {
+             return null;
+           }
+         }
        });
      };
 
@@ -51,16 +55,38 @@
        }
      };
 
-     $scope.toggleDontDisturbMode = function () {
-       CurrentMember.dontDisturbMode = $scope.dontDisturbMode;
-       $localStorage.dontDisturbMode = $scope.dontDisturbMode;
-     };
-
      $scope.logout = function () {
        AuthService.logout()
          .then(function () {
            $window.location.href = '/login';
          });
+     };
+
+     $scope.getDontDisturbModeClass = function () {
+       switch (CurrentMember.dontDisturb.mode) {
+         case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
+           return 'zmdi zmdi-notifications-active';
+         case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
+           return 'zmdi zmdi-notifications-off';
+         case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
+           return 'zmdi zmdi-notifications-paused';
+       }
+     };
+
+     $scope.activateTimeDontDisturbMode = function (minute) {
+       CurrentMember.activateTimeDontDisturbMode(minute * 60000);
+     };
+
+     $scope.activateDontDisturbMode = function () {
+       CurrentMember.activateDontDisturbMode();
+     };
+
+     $scope.deactivateDontDisturbMode = function () {
+       CurrentMember.deactivateDontDisturbMode();
+     };
+
+     $scope.getDontDisturbModeRemainingTime = function () {
+       return CurrentMember.dontDisturb.remainingTime;
      };
 
      $scope.setNotificationPermission = function () {
@@ -76,7 +102,7 @@
      };
 
      $scope.navigateToHome = function () {
-         $state.go('messenger.home');
+       $state.go('messenger.home');
      };
 
      angular.element($window)
@@ -90,6 +116,24 @@
 
      function initialize() {
        $window.Notification.requestPermission();
+       CurrentMember.initializeDontDisturbMode();
+       cacheMessagesTemplates();
+     }
+
+     function cacheMessagesTemplates() {
+       $http.get(
+         'app/components/messenger/messages/messages.view.html?v=1.0.8', {
+           cache: $templateCache
+         });
+       $http.get('app/components/messenger/header/header.view.html?v=1.0.4', {
+         cache: $templateCache
+       });
+       $http.get('app/components/files/files.view.html?v=1.0.6', {
+         cache: $templateCache
+       });
+       $http.get('app/components/files/filemanager-files.view.html?v=1.0.0', {
+         cache: $templateCache
+       });
      }
 
      function checkIfUserSeenTour() {
@@ -98,6 +142,15 @@
          $localStorage.userSeenTour = true;
        }
      }
+
+     angular.element($window)
+       .bind('focus', function () {
+         $rootScope.isTabFocused = true;
+         $rootScope.$broadcast('tab:focus:changed');
+       }).bind('blur', function () {
+         $rootScope.isTabFocused = false;
+         $rootScope.$broadcast('tab:focus:changed');
+       });
 
    }
  ]);
