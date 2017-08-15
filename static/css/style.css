@@ -1518,6 +1518,9 @@ ol.linenums, ol.linenums-view {
 .msg .status .zmdi-time {
   color: #bbb;
 }
+.msg .status .zmdi-alert-circle-o {
+  color: rgb(230, 77, 77);
+}
 
 .msg .status .zmdi-check-all {
   color: rgb(5, 198, 186)

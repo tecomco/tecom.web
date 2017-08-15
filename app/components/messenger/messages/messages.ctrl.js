@@ -80,28 +80,38 @@ app.controller('messagesController', [
     });
 
     $scope.$on('file:uploading', function (event, file) {
-      $scope.uploadErrNotif = false;
+      $scope.uploadErrorNotif = false;
+      $scope.uploadSizeLimitNotif = false;
       var message = messagesService.sendFileAndGetMessage($scope.channel
-        .id, file, file.name);
+        .id, file);
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
     });
 
-    $scope.$on('file:uploadError', function () {
+    $scope.$on('file:uploadError', function (event, err) {
       if (self.uploadErrNotifTimeout) {
         $timeout.cancel(self.uploadErrNotifTimeout);
       }
-      if (!$scope.uploadErrNotif) {
-        $scope.uploadErrNotif = true;
-      }
-      self.uploadErrNotifTimeout = $timeout(function () {
-        $scope.uploadErrNotif = false;
-      }, 3000);
+      if (err === 'uploadError')
+        setUploadErrorNotif();
+      else if (err === 'sizeLimit')
+        setUploadSizeLimitNotif();
     });
 
     $scope.upload = function (file, errFiles) {
       $rootScope.$broadcast('file:upload', file, errFiles);
+    };
+
+    $scope.reuploadFile = function (fileTimestamp) {
+      messagesService.reuploadFile(fileTimestamp);
+    };
+
+    $scope.removeUploadFailedMessageByFileTimestamp = function (
+      fileTimestamp) {
+      ArrayUtil.removeElementByKeyValue($scope.messages, 'fileTimestamp',
+        fileTimestamp);
+      messagesService.removeUploadFailedFileByFileTimestamp(fileTimestamp);
     };
 
     $scope.getInputStyle = function () {
@@ -180,30 +190,6 @@ app.controller('messagesController', [
       }
     };
 
-    function scrollBottom() {
-      $timeout(function () {
-        messagesHolder.scrollTop = messagesHolder.scrollHeight;
-      }, 0, false);
-    }
-
-    function checkShouldScrollBottom() {
-      if (messagesHolder.scrollHeight - messagesHolder.scrollTop < 1.5 *
-        messagesWindow.scrollHeight)
-        scrollBottom();
-    }
-
-    function scrollToUnseenMessage() {
-      if ($scope.channel.areAllMessagesHaveBeenSeen())
-        scrollToMessageElementById($scope.channel.memberLastSeenId);
-      else
-        scrollToMessageElementById($scope.channel.memberLastSeenId + 1);
-    }
-
-    function finishLoading() {
-      $rootScope.isLoading = false;
-      $rootScope.$broadcast('loading:finished');
-    }
-
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
@@ -245,6 +231,23 @@ app.controller('messagesController', [
       return message.id === initialMemberLastSeenId + 1;
     };
 
+    $scope.isMessageDateInAnotherDay = function (message) {
+      if (message.id === 1)
+        return true;
+      else {
+        var previousMessage =
+          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
+            1);
+        if (previousMessage) {
+          var timeDiff =
+            Math.abs(message.datetime.getTime() - previousMessage.datetime
+              .getTime());
+          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+          return (diffDays === 0) ? false : true;
+        }
+      }
+    };
+
     function initialize() {
       var deferred = $q.defer();
       initialLastMessageId = $scope.channel.lastMessageId;
@@ -272,17 +275,15 @@ app.controller('messagesController', [
 
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
       messagesService.getMessagesRangeFromServer(channelId,
-        CurrentMember.member.teamId, from, to).then(function (messages) {
-        removeLoadingMessage(from);
-        messages.forEach(function (message) {
-          if (!ArrayUtil.containsKeyValue($scope.messages, 'id',
-              message.id)) {
+          CurrentMember.member.teamId, from, to, true)
+        .then(function (messages) {
+          removeLoadingMessage(from);
+          messages.forEach(function (message) {
             $scope.messages.push(message);
-          }
+          });
+          isAnyLoadingMessageGetting = false;
+          getMessagePackagesIfLoadingsInView(isDirectionUp);
         });
-        isAnyLoadingMessageGetting = false;
-        getMessagePackagesIfLoadingsInView(isDirectionUp);
-      });
     }
 
     function setCurrentChannel() {
@@ -334,6 +335,48 @@ app.controller('messagesController', [
 
     function removeLoadingMessage(messageId) {
       ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
+    }
+
+    function setUploadErrorNotif() {
+      if (!$scope.uploadErrorNotif) {
+        $scope.uploadErrorNotif = true;
+      }
+      self.uploadErrNotifTimeout = $timeout(function () {
+        $scope.uploadErrorNotif = false;
+      }, 3000);
+    }
+
+    function setUploadSizeLimitNotif() {
+      if (!$scope.uploadSizeLimitNotif) {
+        $scope.uploadSizeLimitNotif = true;
+      }
+      self.uploadErrNotifTimeout = $timeout(function () {
+        $scope.uploadSizeLimitNotif = false;
+      }, 3000);
+    }
+
+    function scrollBottom() {
+      $timeout(function () {
+        messagesHolder.scrollTop = messagesHolder.scrollHeight;
+      }, 0, false);
+    }
+
+    function checkShouldScrollBottom() {
+      if (messagesHolder.scrollHeight - messagesHolder.scrollTop < 1.5 *
+        messagesWindow.scrollHeight)
+        scrollBottom();
+    }
+
+    function scrollToUnseenMessage() {
+      if ($scope.channel.areAllMessagesHaveBeenSeen())
+        scrollToMessageElementById($scope.channel.memberLastSeenId);
+      else
+        scrollToMessageElementById($scope.channel.memberLastSeenId + 1);
+    }
+
+    function finishLoading() {
+      $rootScope.isLoading = false;
+      $rootScope.$broadcast('loading:finished');
     }
 
     function scrollToMessageElementById(elementId) {

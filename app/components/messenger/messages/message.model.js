@@ -1,9 +1,9 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
+  '$log', 'Db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
   'CurrentMember', 'Team',
-  function ($log, db, textUtil, channelsService, fileUtil, dateUtil,
+  function ($log, Db, textUtil, channelsService, fileUtil, dateUtil,
     CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
@@ -26,6 +26,7 @@ app.factory('Message', [
         this.id = Message.generateIntegerId(_id);
       }
       this.isPending = isPending || false;
+      this.isFailed = false;
       this.currentChannel = channelsService.getCurrentChannel();
       if (this.currentChannel) {
         this.teamId = this.currentChannel.teamId;
@@ -64,82 +65,12 @@ app.factory('Message', [
 
     Message.prototype.getViewWellFormed = function () {
       var body = '';
-      if (this.type === Message.TYPE.TEXT) {
-        if (this.about) {
-          body += '<a class="msg-attachment" ng-click="showFileLine(' +
-            this.about.fileId + ',' + this.about.lineNumber + ',' +
-            this.about.lineNumberTo +
-            ')" tooltip-placement="top" uib-tooltip="در مورد...">';
-          body += '<div><i class="zmdi zmdi-link"></i></div></a>';
-        }
-        body += Message.generateMessageWellFormedText(this.body);
-      } else if (this.isFile()) {
-        this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
-        body = '<div id="' + this.getFileTimestampId() +
-          '" class="ng-scope" dir="rtl">';
-        if (fileUtil.isPictureFormat(this.additionalData.type)) {
-          body += '<div class="msg-img" ng-click="fullscreenImage(\'' +
-            this.additionalData.url + '\', \'' + this.additionalData.name +
-            '\')"><img class="img-responsive " id="img-' + this.additionalData
-            .fileId + '" ng-src="' + this.additionalData
-            .url + '" style="cursor:pointer" /></div>';
-        } else {
-          body += '<label class="file-name">' + this.additionalData.name +
-            '</label>';
-          body +=
-            '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
-        }
-        if (this.canBeLived) {
-          if (this.currentChannel.canMemberSendMessage()) {
-            body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
-              this.additionalData.fileId + ', \'' + this.additionalData.name +
-              '\')">';
-            body += '<label dir="ltr">LIVE</label>';
-            body += '<i class="fa fa-circle"></i>';
-            body += '</a>';
-          }
-          body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData
-            .fileId +
-            ')" tooltip-placement="top" uib-tooltip="مشاهده">';
-          body += '<i class="fa fa-eye"></i>';
-        }
-        body += '<a class="dl-btn" href="' + this.additionalData.url +
-          '" download="' + this.additionalData.name +
-          '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
-        body += '<i class="zmdi zmdi-download"></i>';
-        body += '</a></div>';
-        return body;
-      } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
-        this.type === Message.TYPE.NOTIF.USER_REMOVED) {
-        body = '';
-        var addedMemberIds = this.additionalData;
-        angular.forEach(addedMemberIds, function (memberId) {
-          body += '@' + Team.getUsernameByMemberId(memberId) + ' و ';
-        });
-        body = body.slice(0, body.length - 3);
-        if (this.type === Message.TYPE.NOTIF.USER_ADDED) {
-          body += (addedMemberIds.length > 1) ?
-            ' به گروه اضافه شدند.' : ' به گروه اضافه شد.';
-        } else {
-          body += (addedMemberIds.length > 1) ?
-            ' از گروه حذف شدند.' : ' از گروه حذف شد.';
-        }
-      } else if (this.type === Message.TYPE.NOTIF.CHANNEL_CREATED) {
-        body = 'گروه ساخته شد.';
-      } else if (this.type === Message.TYPE.NOTIF.CHANNEL_EDITED) {
-        body = 'اطلاعات گروه تغییر کرد.';
-      } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
-        body = 'فایل "' + this.additionalData.fileName + '"، ' +
-          '<span class="live-btn"><label dir="ltr">LIVE</label>' +
-          '<i class="fa fa-circle"></i></span>' + ' شد.';
-      } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
-        body = 'فایل "' + this.additionalData.fileName + '"، از حالت ' +
-          '<span class="live-btn"><label dir="ltr">LIVE</label>' +
-          '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
-      } else if (this.type === Message.TYPE.LOADING) {
-        body = '<div class="cssload-container">' +
-          '<div class="loading-text">در حال بارگذاری...</div></div>';
-      }
+      if (this.type === Message.TYPE.TEXT)
+        body = this.addTextBody();
+      else if (this.isFile())
+        body = this.addFileBody();
+      else
+        body = this.addMessageNotifTypeBody();
       return body;
     };
 
@@ -173,6 +104,9 @@ app.factory('Message', [
           return Message.STATUS_TYPE.SEEN;
         }
       }
+      if (this.isFailed) {
+        return Message.STATUS_TYPE.FAILED;
+      }
       if (this.isPending) {
         return Message.STATUS_TYPE.PENDING;
       }
@@ -195,6 +129,8 @@ app.factory('Message', [
           return 'zmdi zmdi-check';
         case Message.STATUS_TYPE.SEEN:
           return 'zmdi zmdi-check-all';
+        case Message.STATUS_TYPE.FAILED:
+          return 'zmdi zmdi-alert-circle-o';
       }
     };
 
@@ -273,7 +209,7 @@ app.factory('Message', [
 
     Message.prototype.save = function () {
       var that = this;
-      db.getDb().then(function (database) {
+      Db.getDb().then(function (database) {
         database.put(that.getDbWellFormed())
           .catch(function (err) {
             $log.error('Saving message failed.', err);
@@ -309,6 +245,112 @@ app.factory('Message', [
       return dateUtil.getPersianTime(this.datetime);
     };
 
+    Message.prototype.addTextBody = function () {
+      var body = '';
+      if (this.about) {
+        body += '<a class="msg-attachment" ng-click="showFileLine(' +
+          this.about.fileId + ',' + this.about.lineNumber + ',' +
+          this.about.lineNumberTo +
+          ')" tooltip-placement="top" uib-tooltip="در مورد...">';
+        body += '<div><i class="zmdi zmdi-link"></i></div></a>';
+      }
+      body += Message.generateMessageWellFormedText(this.body);
+      return body;
+    };
+
+    Message.prototype.addFileBody = function () {
+      var body = '';
+      this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
+      body = '<div id="' + this.getFileTimestampId() +
+        '" class="ng-scope" dir="rtl">';
+      if (fileUtil.isPictureFormat(this.additionalData.type))
+        body += this.addImageViewerBody();
+      else
+        body += this.addFileMessageBody();
+      if (this.canBeLived)
+        body += this.addFileLiveAndViewBody();
+      if (!this.isFailed)
+        body += this.addFailedFileBody();
+      body += '</div>';
+      return body;
+    };
+
+    Message.prototype.addImageViewerBody = function () {
+      return '<img class="img-responsive" ng-src="' + this.additionalData
+        .url + '" style="cursor:pointer" fullscreen />';
+    };
+
+    Message.prototype.addFileMessageBody = function () {
+      return '<label class="file-name">' + this.additionalData.name +
+        '</label>' +
+        '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
+    };
+
+    Message.prototype.addFileLiveAndViewBody = function () {
+      var body = '';
+      if (this.currentChannel.canMemberSendMessage()) {
+        body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
+          this.additionalData.fileId + ', \'' + this.additionalData.name +
+          '\')">';
+        body += '<label dir="ltr">LIVE</label>';
+        body += '<i class="fa fa-circle"></i>';
+        body += '</a>';
+      }
+      body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData
+        .fileId +
+        ')" tooltip-placement="top" uib-tooltip="مشاهده">';
+      body += '<i class="fa fa-eye"></i>';
+      return body;
+    };
+
+    Message.prototype.addFailedFileBody = function () {
+      return '<a class="dl-btn" href="' + this.additionalData.url +
+        '" download="' + this.additionalData.name +
+        '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">' +
+        '<i class="zmdi zmdi-download"></i></a>';
+    };
+
+    Message.prototype.addMessageNotifTypeBody = function () {
+      var body = '';
+      if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
+        this.type === Message.TYPE.NOTIF.USER_REMOVED) {
+        body = this.addUserNotifBody(body);
+      } else if (this.type === Message.TYPE.NOTIF.CHANNEL_CREATED) {
+        body = 'گروه ساخته شد.';
+      } else if (this.type === Message.TYPE.NOTIF.CHANNEL_EDITED) {
+        body = 'اطلاعات گروه تغییر کرد.';
+      } else if (this.type === Message.TYPE.NOTIF.FILE_LIVED) {
+        body = 'فایل "' + this.additionalData.fileName + '"، ' +
+          '<span class="live-btn"><label dir="ltr">LIVE</label>' +
+          '<i class="fa fa-circle"></i></span>' + ' شد.';
+      } else if (this.type === Message.TYPE.NOTIF.FILE_DIED) {
+        body = 'فایل "' + this.additionalData.fileName + '"، از حالت ' +
+          '<span class="live-btn"><label dir="ltr">LIVE</label>' +
+          '<i class="fa fa-circle"></i></span>' + ' خارج شد.';
+      } else if (this.type === Message.TYPE.LOADING) {
+        body = '<div class="cssload-container">' +
+          '<div class="loading-text">در حال بارگذاری...</div></div>';
+      }
+      return body;
+    };
+
+    Message.prototype.addUserNotifBody = function () {
+      var body = '';
+      var addedMemberIds = this.additionalData;
+      angular.forEach(addedMemberIds, function (memberId) {
+        body += '@' + Team.getUsernameByMemberId(memberId) + ' و ';
+      });
+      body = body.slice(0, body.length - 3);
+      if (this.type === Message.TYPE.NOTIF.USER_ADDED) {
+        body += (addedMemberIds.length > 1) ?
+          ' به گروه اضافه شدند.' : ' به گروه اضافه شد.';
+      } else {
+        body += (addedMemberIds.length > 1) ?
+          ' از گروه حذف شدند.' : ' از گروه حذف شد.';
+      }
+      return body;
+    };
+
     Message.TYPE = {
       TEXT: 0,
       FILE: 1,
@@ -326,7 +368,8 @@ app.factory('Message', [
     Message.STATUS_TYPE = {
       PENDING: 0,
       SENT: 1,
-      SEEN: 2
+      SEEN: 2,
+      FAILED: 3
     };
 
     return Message;

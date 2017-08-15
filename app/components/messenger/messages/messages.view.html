@@ -9,7 +9,10 @@
         <i class="fa fa-spinner fa-spin fa-fw"></i>
         <span>در حال وصل شدن به سرور...</span>
       </div>
-      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadErrNotif" ng-cloak>
+      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadErrorNotif" ng-cloak>
+        <span>مشکل در آپلود فایل</span>
+      </div>
+      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadSizeLimitNotif" ng-cloak>
         <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
       </div>
       <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
@@ -28,6 +31,10 @@
             </label>
             <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
+            <div class="file-failed-btns">
+              <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
+              <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
+            </div>
           </div>
         </div>
         <!-- TODO: Fix this -->

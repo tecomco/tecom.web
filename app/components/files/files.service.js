@@ -111,6 +111,7 @@ app.service('filesService', [
           fileData.deferred.resolve(res);
         }, function (resp) {
           $log.error('Error status: ' + resp.status);
+          $rootScope.$broadcast('file:uploadError', 'uploadError');
           fileData.deferred.reject();
         }, function (evt) {
           var percent = parseInt(100.0 * evt.loaded / evt.total);

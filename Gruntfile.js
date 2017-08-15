@@ -15,6 +15,7 @@ module.exports = function (grunt) {
         'unused': false,
         'globalstrict': true,
         '-W100': true,
+        'validthis': true,
         'globals': {
           'angular': true,
           'app': true,

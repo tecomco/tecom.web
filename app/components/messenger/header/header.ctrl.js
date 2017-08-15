@@ -1,8 +1,8 @@
 'use strict';
 
 app.controller('headerController', ['$scope', '$localStorage', '$uibModal',
-  '$window', 'AuthService', 'db', 'channelsService', '$state',
-  function ($scope, $localStorage, $uibModal, $window, AuthService, db,
+  '$window', 'AuthService', 'Db', 'channelsService', '$state',
+  function ($scope, $localStorage, $uibModal, $window, AuthService, Db,
     channelsService, $state) {
 
     $scope.searchFocus = false;
@@ -26,7 +26,7 @@ app.controller('headerController', ['$scope', '$localStorage', '$uibModal',
 
     $scope.clearCache = function () {
       $localStorage.$reset();
-      db.destroy();
+      Db.destroy();
       AuthService.logout()
         .then(function () {
           $window.location.href = '/login';

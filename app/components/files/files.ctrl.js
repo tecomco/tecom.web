@@ -79,7 +79,7 @@ app.controller('filesController', [
       if (file)
       $rootScope.$broadcast('file:uploading', file);
       if (!file && errFiles[0])
-      $rootScope.$broadcast('file:uploadError');
+      $rootScope.$broadcast('file:uploadError','sizeLimit');
     });
 
     $scope.showViewedFileClickedWarning = function () {
