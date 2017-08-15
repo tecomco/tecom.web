@@ -9,8 +9,7 @@ app.service('CacheService', ['$window', function ($window) {
   createCache();
 
   function createCache() {
-    let cache = new $window.LRUMap(CACHE_MAX_SIZE);
-    self.cache = cache;
+    self.cache = new $window.LRUMap(CACHE_MAX_SIZE);
   }
 
   function getCache() {
