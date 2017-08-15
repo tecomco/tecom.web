@@ -19,99 +19,44 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
     CurrentMember.initializeDontDisturbMode = function () {
       CurrentMember.dontDisturb = {};
       if (!$localStorage.dontDisturb)
-        CurrentMember.initializeInitialJsons();
+        initializeInitialJsons();
       else {
         var duration = $localStorage.dontDisturb.duration;
         if (duration)
-          CurrentMember.checkShouldContinueTimeActive(duration);
+          checkShouldContinueTimeActive(duration);
         else {
           CurrentMember.dontDisturb.mode = $localStorage.dontDisturb.mode;
         }
       }
     };
 
-    CurrentMember.initializeInitialJsons = function () {
-      var initMode = {
-        mode: CurrentMember.DONT_DISTURB_MODE.DEACTIVE
-      };
-      $localStorage.dontDisturb = initMode;
-      CurrentMember.dontDisturb.mode = $localStorage.dontDisturb.mode;
-    };
-
-    CurrentMember.checkShouldContinueTimeActive = function (duration) {
-      var initTime = +new Date();
-      var startTime = $localStorage.dontDisturb.startTime;
-      if (initTime - startTime < duration) {
-        CurrentMember.activateTimeDontDisturbMode(startTime + duration -
-          initTime);
-      } else {
-        CurrentMember.removeDontDisturbModeTimeProperties();
-        CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
-          .DEACTIVE);
-      }
-    };
-
-    CurrentMember.setDontDisturbMode = function (mode) {
-      $localStorage.dontDisturb.mode = mode;
-      CurrentMember.dontDisturb.mode = mode;
-    };
-
     CurrentMember.activateTimeDontDisturbMode = function (miliseconds) {
-      CurrentMember.setDontDisturbModeTimeProperties(miliseconds);
-      CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE);
-      CurrentMember.setDontDisturbTimeout(miliseconds);
+      setDontDisturbModeTimeProperties(miliseconds);
+      setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE);
+      setDontDisturbTimeout(miliseconds);
       CurrentMember.dontDisturbInterval = $interval(function () {
-        CurrentMember.updateDontDisturbRemainingTime();
+        updateDontDisturbRemainingTime();
       }, 1000);
     };
 
     CurrentMember.activateDontDisturbMode = function () {
       if (CurrentMember.dontDisturb.mode === CurrentMember.DONT_DISTURB_MODE
         .TIMEACTIVE) {
-        CurrentMember.removeDontDisturbModeTimeProperties();
+        removeDontDisturbModeTimeProperties();
         $timeout.cancel(CurrentMember.dontDisturbTimeout);
-        CurrentMember.removeDontDisturbModeRemainingTime();
+        removeDontDisturbModeRemainingTime();
       }
-      CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.ACTIVE);
+      setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.ACTIVE);
     };
 
     CurrentMember.deactivateDontDisturbMode = function () {
       if (CurrentMember.dontDisturb.mode === CurrentMember.DONT_DISTURB_MODE
         .TIMEACTIVE) {
-        CurrentMember.removeDontDisturbModeTimeProperties();
+        removeDontDisturbModeTimeProperties();
         $timeout.cancel(CurrentMember.dontDisturbTimeout);
-        CurrentMember.removeDontDisturbModeRemainingTime();
+        removeDontDisturbModeRemainingTime();
       }
-      CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
-    };
-
-    CurrentMember.setDontDisturbModeTimeProperties = function (duration) {
-      var startTime = +new Date();
-      CurrentMember.dontDisturb.duration = duration;
-      $localStorage.dontDisturb.duration = duration;
-      CurrentMember.dontDisturb.startTime = startTime;
-      $localStorage.dontDisturb.startTime = startTime;
-    };
-
-    CurrentMember.removeDontDisturbModeTimeProperties = function () {
-      delete $localStorage.dontDisturb.duration;
-      CurrentMember.dontDisturb.duration = null;
-      delete $localStorage.dontDisturb.startTime;
-      CurrentMember.dontDisturb.startTime = null;
-    };
-
-    CurrentMember.removeDontDisturbModeRemainingTime = function () {
-      $interval.cancel(CurrentMember.dontDisturbInterval);
-      CurrentMember.dontDisturb.remainingTime = null;
-    };
-
-    CurrentMember.setDontDisturbTimeout = function (duration) {
-      CurrentMember.dontDisturbTimeout = $timeout(function () {
-        CurrentMember.removeDontDisturbModeTimeProperties();
-        CurrentMember.setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
-          .DEACTIVE);
-        $interval.cancel(CurrentMember.dontDisturbInterval);
-      }, duration);
+      setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.DEACTIVE);
     };
 
     CurrentMember.isDontDisturbModeActive = function () {
@@ -129,18 +74,74 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
         .TIMEACTIVE;
     };
 
-    CurrentMember.updateDontDisturbRemainingTime = function () {
-      CurrentMember.dontDisturb.remainingTime = CurrentMember.getLocaleDontDisturbRemainingTime();
-    };
+    function initializeInitialJsons() {
+      var initMode = {
+        mode: CurrentMember.DONT_DISTURB_MODE.DEACTIVE
+      };
+      $localStorage.dontDisturb = initMode;
+      CurrentMember.dontDisturb.mode = $localStorage.dontDisturb.mode;
+    }
 
-    CurrentMember.getLocaleDontDisturbRemainingTime = function () {
+    function checkShouldContinueTimeActive(duration) {
+      var initTime = +new Date();
+      var startTime = $localStorage.dontDisturb.startTime;
+      if (initTime - startTime < duration) {
+        CurrentMember.activateTimeDontDisturbMode(startTime + duration -
+          initTime);
+      } else {
+        removeDontDisturbModeTimeProperties();
+        setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
+          .DEACTIVE);
+      }
+    }
+
+    function setDontDisturbMode(mode) {
+      $localStorage.dontDisturb.mode = mode;
+      CurrentMember.dontDisturb.mode = mode;
+    }
+
+    function setDontDisturbModeTimeProperties(duration) {
+      var startTime = +new Date();
+      CurrentMember.dontDisturb.duration = duration;
+      $localStorage.dontDisturb.duration = duration;
+      CurrentMember.dontDisturb.startTime = startTime;
+      $localStorage.dontDisturb.startTime = startTime;
+    }
+
+    function removeDontDisturbModeTimeProperties() {
+      delete $localStorage.dontDisturb.duration;
+      CurrentMember.dontDisturb.duration = null;
+      delete $localStorage.dontDisturb.startTime;
+      CurrentMember.dontDisturb.startTime = null;
+    }
+
+    function removeDontDisturbModeRemainingTime() {
+      $interval.cancel(CurrentMember.dontDisturbInterval);
+      CurrentMember.dontDisturb.remainingTime = null;
+    }
+
+    function setDontDisturbTimeout(duration) {
+      CurrentMember.dontDisturbTimeout = $timeout(function () {
+        removeDontDisturbModeTimeProperties();
+        setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
+          .DEACTIVE);
+        $interval.cancel(CurrentMember.dontDisturbInterval);
+      }, duration);
+    }
+
+    function updateDontDisturbRemainingTime() {
+      CurrentMember.dontDisturb.remainingTime =
+        getLocaleDontDisturbRemainingTime();
+    }
+
+    function getLocaleDontDisturbRemainingTime() {
       var remainingSeconds = (CurrentMember.dontDisturb.duration +
         CurrentMember.dontDisturb
         .startTime - +new Date()) / 1000;
       var minutes = Math.floor(remainingSeconds / 60);
       var seconds = Math.floor(remainingSeconds % 60);
       return textUtil.persianify(seconds.toString() + ' : ' + minutes.toString());
-    };
+    }
 
     CurrentMember.DONT_DISTURB_MODE = {
       DEACTIVE: 0,

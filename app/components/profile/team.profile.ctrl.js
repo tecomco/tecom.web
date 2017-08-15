@@ -21,7 +21,7 @@ app.controller('teamProfileController', [
       else if (validationUtil.validateEmail(email)) {
         profileService.sendInvitationEmail(email)
           .then(function () {
-            email = '';
+            document.getElementById('invitedEmail').value = '';
             setInfoOrErrorMessage('info',
               'ایمیل دعوت به تیم با موفقیت ارسال شد.');
             $scope.inviteMode = false;

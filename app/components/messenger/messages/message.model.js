@@ -107,7 +107,6 @@ app.factory('Message', [
           '" download="' + this.additionalData.name +
           '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">';
         body += '<i class="zmdi zmdi-download"></i>';
-
         body += '</a></div>';
         return body;
       } else if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
