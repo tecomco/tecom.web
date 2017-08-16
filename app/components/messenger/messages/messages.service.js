@@ -9,6 +9,8 @@ app.service('messagesService', [
     FileManagerFile) {
 
     var self = this;
+    self.failedUploadedFiles = [];
+    self.repliesPromise = [];
     var MESSAGE_MAX_PACKET_LENGTH = 20;
     /**
      * @summary Socket listeners
@@ -17,7 +19,7 @@ app.service('messagesService', [
     socket.on('message:send', function (data) {
       var message = new Message(data.body, data.type, data.senderId,
         data.channelId, data.id, data.datetime, data.additionalData,
-        data.about);
+        data.about, data.replyTo);
       message.save();
       if (message.type === Message.TYPE.NOTIF) {
         var channel = channelsService.findChannelById(message.channelId);
@@ -145,7 +147,7 @@ app.service('messagesService', [
         var messages = res.messages.map(function (msg) {
           return new Message(msg.body, msg.type, msg.senderId,
             msg.channelId, msg.id, msg.datetime, msg.additionalData,
-            msg.about);
+            msg.about, msg.replyTo);
         });
         deferred.resolve(messages);
         var messagesForDb = messages.map(function (message) {
@@ -156,20 +158,92 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
+    function setMessageReplyProperty(message) {
+      var deferred = $q.defer();
+      var dataToBeSend = {
+        channelId: message.channelId,
+        teamId: message.teamId,
+        from: message.replyTo,
+        to: message.replyTo
+      };
+      socket.emit('message:get', dataToBeSend, function (res) {
+        message.replyBody = res.messages[0].body;
+        message.replySenderId = res.messages[0].senderId;
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
     function getMessagesByChannelId(channelId, lastMessageId) {
       var deferred = $q.defer();
-      getMessagesByChannelIdFromDb(channelId)
-        .then(function (res) {
-          var messages = res.docs.map(function (message) {
-            return new Message(message.body, message.type,
-              message.senderId, message.channelId, message._id,
-              message.datetime, message.additionalData, message.about
-            );
-          });
+      if (doesCacheContainsChannelMessages(channelId)) {
+        var messages = getChannelCachedMessageModels(channelId);
+        updateRepliedMessagesProperties(messages, messages)
+        $q.all(self.repliesPromise).then(function () {
           generateLoadingMessages(messages, channelId, lastMessageId);
+          pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+            channelId);
           deferred.resolve(messages);
         });
+      } else {
+        getMessagesByChannelIdFromDb(channelId)
+          .then(function (messagesData) {
+            cacheChannelMessagesData(channelId, messagesData.docs);
+            var messages = generateMessageModelsFromData(messagesData.docs);
+            updateRepliedMessagesProperties(messages, messages)
+            $q.all(self.repliesPromise).then(function () {
+              generateLoadingMessages(messages, channelId,
+                lastMessageId);
+              pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+                channelId);
+              deferred.resolve(messages);
+            });
+            generateLoadingMessages(messages, channelId, lastMessageId);
+            deferred.resolve(messages);
+          });
+      };
       return deferred.promise;
+    }
+
+    function generateMessageModelsFromData(messagesData) {
+      return messagesData.map(function (message) {
+        return new Message(message.body, message.type,
+          message.senderId, message.channelId, message._id,
+          message.datetime, message.additionalData, message.about,
+          message.replyTo
+        );
+      });
+    }
+
+    function pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+      channelId) {
+      var channelFailedUploadedFiles =
+        getFailedUploadedFilesByChannelId(channelId);
+      channelFailedUploadedFiles.forEach(function (data) {
+        messages.push(data.message);
+      });
+    }
+
+    function getChannelCachedMessageModels(channelId) {
+      var messagesData = getMessagesDataByChannelIdFromCache(channelId);
+      return generateMessageModelsFromData(messagesData);
+    }
+
+    function updateRepliedMessagesProperties(messages, allMessages) {
+      messages.forEach(function (message) {
+        if (message.replyTo) {
+          if (ArrayUtil.containsKeyValue(allMessages, 'id', message.replyTo)) {
+            var replyMessage = ArrayUtil.getElementByKeyValue(
+              allMessages,
+              'id', message.replyTo)
+            message.replyBody = replyMessage.body;
+            message.replySenderId = replyMessage.senderId;
+          } else {
+            var promise = setMessageReplyProperty(message);
+            self.repliesPromise.push(promise);
+          }
+        }
+      })
     }
 
     function generateLoadingMessages(messages, channelId, lastMessageId) {
@@ -231,8 +305,7 @@ app.service('messagesService', [
       };
       if (toId - fromId < MESSAGE_MAX_PACKET_LENGTH) {
         var loadingMessage = new Message(null, Message.TYPE.LOADING, null,
-          channelId, null, null,
-          additionalData, null, null);
+          channelId, null, null, additionalData, null, null, null);
         loadingMessage.setId(fromId);
         messages.push(loadingMessage);
       } else {
@@ -334,16 +407,8 @@ app.service('messagesService', [
       return gaps;
     }
 
-    function sendAndGetMessage(channelId, messageBody, type, fileName,
-      fileUrl) {
-      var additionalData = null;
+    function sendAndGetMessage(channelId, messageBody, replyTo) {
       var about = null;
-      if (fileName) {
-        additionalData = {
-          name: fileName,
-          url: fileUrl
-        };
-      }
       var livedFile = filesService.getLivedFile();
       if (livedFile) {
         var tempLines = livedFile.getTempLines();
@@ -355,9 +420,9 @@ app.service('messagesService', [
           };
         livedFile.deselectTempLines();
       }
-      var message = new Message(messageBody, type || Message.TYPE.TEXT,
-        CurrentMember.member.id, channelId, null, null, additionalData,
-        about, true);
+      var message = new Message(messageBody, Message.TYPE.TEXT,
+        CurrentMember.member.id, channelId, null, null, null,
+        about, replyTo, true, null);
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;
@@ -369,15 +434,52 @@ app.service('messagesService', [
       return message;
     }
 
-    function sendFileAndGetMessage(channelId, fileData, fileName) {
+    function sendFileAndGetMessage(channelId, fileData, replyTo) {
       var additionalData = {
         name: fileName
       };
       var message = new Message(null, Message.TYPE.FILE,
         CurrentMember.member.id, channelId, null, null, additionalData,
-        null, true, +new Date());
-      filesService.uploadFile(fileName, channelId, CurrentMember.member.id,
-          fileData, message)
+        null, replyTo, true, +new Date());
+      uploadFile(message, fileData);
+      return message;
+    }
+
+    function reuploadFile(fileTimestamp) {
+      var data = getFailedUploadedFileByfileTimestamp(fileTimestamp);
+      data.message.isFailed = false;
+      uploadFile(data.message, data.fileData);
+    }
+
+    function setUploadedFileMessageDetails(message, result) {
+      message.additionalData.url = result.file;
+      message.additionalData.fileId = result.id;
+      message.additionalData.type = result.type;
+      socket.emit('message:send', message.getServerWellFormed(),
+        function (res) {
+          message.isPending = false;
+          message.setIdAndDatetime(res.id, res.datetime, res.additionalData);
+          message.save();
+          updateCacheMessagesByChannelIdIfExists(message.channelId,
+            message.getDbWellFormed());
+          channelsService.updateChannelLastDatetime(message.channelId,
+            message.datetime);
+        });
+      filesService.createFileManagerFile(result.id, result.file, result.name,
+        result.date_uploaded, result.type);
+    }
+
+    function updateFailedUploadedFiles(message, fileData) {
+      message.isFailed = true;
+      self.failedUploadedFiles.push({
+        fileData: fileData,
+        message: message
+      });
+    }
+
+    function uploadFile(message, fileData) {
+      filesService.uploadFile(fileData.name, message.channelId,
+          CurrentMember.member.id, fileData, message)
         .then(function (res) {
           message.additionalData.url = res.data.file;
           message.additionalData.fileId = res.data.id;
@@ -409,6 +511,44 @@ app.service('messagesService', [
       channelsService.updateChannelNotification(channelId, 'empty');
     }
 
+    function getFailedUploadedFilesByChannelId(channelId) {
+      return self.failedUploadedFiles.filter(function (data) {
+        return data.message.channelId === channelId;
+      });
+    }
+
+    function findClosestLoadingMessage(loadingMessages, id) {
+      if (!loadingMessages.length)
+        return null;
+      var diff = Math.abs(loadingMessages[0].id - id);
+      var loadingMessageId = loadingMessages[0].id;
+      loadingMessages.forEach(function (loadingMessage) {
+        if (Math.abs(loadingMessage.id - id) < diff) {
+          loadingMessageId = loadingMessage.id;
+          diff = Math.abs(loadingMessage.id - id);
+        }
+      })
+      if (Math.abs(loadingMessageId - id) < MESSAGE_MAX_PACKET_LENGTH / 2) {
+        return ArrayUtil.getElementByKeyValue(loadingMessages, 'id',
+          loadingMessageId)
+      }
+      return null;
+    }
+
+    function findContainedLoadingMessage(loadingMessages, id) {
+      var diff = Math.abs(loadingMessages[0].id - id);
+      var loadingMessageId = loadingMessages[0].id;
+      loadingMessages.forEach(function (loadingMessage) {
+        if (Math.abs(loadingMessage.id - id) < diff && id -
+          loadingMessage.id > 0) {
+          loadingMessageId = loadingMessage.id;
+          diff = Math.abs(loadingMessage.id - id);
+        }
+      })
+      return ArrayUtil.getElementByKeyValue(loadingMessages, 'id',
+        loadingMessageId)
+    }
+
     function startTyping(channelId) {
       var data = {
         channelId: channelId
@@ -433,6 +573,8 @@ app.service('messagesService', [
       sendFileAndGetMessage: sendFileAndGetMessage,
       getMessagesRangeFromServer: getMessagesRangeFromServer,
       seenMessage: seenMessage,
+      findClosestLoadingMessage: findClosestLoadingMessage,
+      findContainedLoadingMessage: findContainedLoadingMessage,
       startTyping: startTyping,
       endTyping: endTyping,
     };

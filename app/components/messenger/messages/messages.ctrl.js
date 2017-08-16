@@ -82,7 +82,7 @@ app.controller('messagesController', [
     $scope.$on('file:uploading', function (event, file) {
       $scope.uploadErrNotif = false;
       var message = messagesService.sendFileAndGetMessage($scope.channel
-        .id, file, file.name);
+        .id, file, $scope.replyId);
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
@@ -121,7 +121,8 @@ app.controller('messagesController', [
       if (!messageBody) return;
       $scope.channel.seenLastMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
-        messageBody);
+        messageBody, $scope.replyId);
+      $scope.replyId = null;
       $scope.messages.push(message);
       scrollBottom();
       clearMessageInput();
@@ -142,6 +143,53 @@ app.controller('messagesController', [
         self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
+    };
+
+    $scope.setReplyMessage = function (id) {
+      var message = ArrayUtil.getElementByKeyValue($scope.messages, 'id',
+        id);
+      $scope.replyId = id;
+      $scope.replyBody = message.body;
+    };
+
+    $scope.getReplyMessageSenderUsername = function (message) {
+      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+        'id', message.replyTo);
+      if (replyMessage)
+        return replyMessage.getUsername();
+      if (message.replySenderId)
+        return message.replySenderId;
+    };
+
+    $scope.getReplyMessageBody = function (message) {
+      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+        'id',
+        message.replyTo);
+      if (replyMessage)
+        return replyMessage.body;
+      if (message.replyBody)
+        return message.replyBody;
+    };
+
+    $scope.scrollToReplyElement = function (replyId) {
+      var message;
+      getLoadingMessageIfBe(replyId)
+        .then(function () {
+          message = ArrayUtil.getElementByKeyValue($scope.messages, 'id',
+            replyId);
+          return getClosestLoadingMessageIfCloseEnoughByMessageId(
+            message.id)
+        })
+        .then(function () {
+          message.highlight();
+          isAnyLoadingMessageGetting = true;
+          scrollToMessageElementById(replyId)
+          isAnyLoadingMessageGetting = false;
+        })
+    };
+
+    $scope.closeReply = function () {
+      $scope.replyId = null;
     };
 
     $scope.showFileLine = function (fileId, startLine, endLine) {
@@ -271,18 +319,66 @@ app.controller('messagesController', [
     }
 
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
+      var deferred = $q.defer();
       messagesService.getMessagesRangeFromServer(channelId,
-        CurrentMember.member.teamId, from, to).then(function (messages) {
-        removeLoadingMessage(from);
-        messages.forEach(function (message) {
-          if (!ArrayUtil.containsKeyValue($scope.messages, 'id',
-              message.id)) {
+          CurrentMember.member.teamId, from, to)
+        .then(function (messages) {
+          removeLoadingMessage(from);
+          messages.forEach(function (message) {
             $scope.messages.push(message);
-          }
+          });
+          isAnyLoadingMessageGetting = false;
+          deferred.resolve();
+          getMessagePackagesIfLoadingsInView(isDirectionUp);
         });
-        isAnyLoadingMessageGetting = false;
-        getMessagePackagesIfLoadingsInView(isDirectionUp);
-      });
+      return deferred.promise;
+    }
+
+    function getClosestLoadingMessageIfCloseEnoughByMessageId(id) {
+      var deferred = $q.defer();
+      var loadingMessages = filterLoadingMessages();
+      var closestLoadingMessage = messagesService.findClosestLoadingMessage(
+        loadingMessages, id);
+      if (closestLoadingMessage) {
+        isAnyLoadingMessageGetting = true;
+        getLoadingMessages(closestLoadingMessage.additionalData.channelId,
+          closestLoadingMessage.additionalData.from, closestLoadingMessage
+          .additionalData.to).then(function () {
+          deferred.resolve()
+        });
+      } else
+        deferred.resolve();
+      return deferred.promise;
+    }
+
+    function getLoadingMessageThatContainThisMessage(id) {
+      var loadingMessages = filterLoadingMessages();
+      var containLoadingMessage = messagesService.findContainedLoadingMessage(
+        loadingMessages, id);
+      isAnyLoadingMessageGetting = true;
+      return getLoadingMessages(containLoadingMessage.additionalData.channelId,
+        containLoadingMessage.additionalData.from, containLoadingMessage.additionalData
+        .to);
+    }
+
+    function getLoadingMessageIfBe(replyId) {
+      var deferred = $q.defer();
+      var message = ArrayUtil.getElementByKeyValue($scope.messages, 'id',
+        replyId);
+      if (message) {
+        if (message.isLoading()) {
+          isAnyLoadingMessageGetting = true;
+          getLoadingMessages(message.additionalData.channelId, message.additionalData
+            .from, message.additionalData.to).then(deferred.resolve());
+        } else
+          deferred.resolve();
+      } else {
+        getLoadingMessageThatContainThisMessage(replyId)
+          .then(function () {
+            deferred.resolve();
+          });
+      }
+      return deferred.promise;
     }
 
     function setCurrentChannel() {
@@ -341,15 +437,15 @@ app.controller('messagesController', [
         var messageElement = getMessageElementById(elementId);
         if (messageElement)
           messagesHolder.scrollTop = messageElement.offsetTop -
-          messagesWindow.offsetTop;
+          messagesWindow.offsetTop - messagesWindow.scrollHeight / 2;
       }, 0, false);
     }
 
     function isElementInViewPort(element, isDirectionUp) {
       if (isDirectionUp) {
         return (element.offsetTop > messagesHolder.scrollTop &&
-          element.offsetTop < messagesHolder.scrollTop + messagesHolder.scrollHeight
-        );
+          element.offsetTop < messagesHolder.scrollTop + messagesWindow.scrollHeight
+        )
       } else {
         return (element.offsetTop > messagesHolder.scrollTop +
           messagesWindow.scrollHeight && element.offsetTop <
