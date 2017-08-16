@@ -1,4 +1,5 @@
-<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن. (۴/۸)" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left" tour-step-on-prev="navigateToHome()">
+<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن. (۴/۸)" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left"
+  tour-step-on-prev="navigateToHome()">
   <!-- TODO col-sm-9 col-lg-9 -->
   <div class="header clearfix">
     <div ui-view="header"></div>
@@ -17,7 +18,7 @@
       </div>
       <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
       <div class="main">
-        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}">
+        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" ng-class="message.getMessageHighlightClass()">
           <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
             <label>پیام های جدید</label>
           </div>
@@ -30,7 +31,15 @@
               <i ng-class="message.getStatusIcon()"></i>
             </label>
             <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
+            <div ng-if="message.replyTo">
+              <a ng-click="scrollToReplyElement(message.replyTo)">
+              <label>{{getReplyMessageSenderUsername(message)}}</label>
+              <br>
+              <label>{{getReplyMessageBody(message)}}</label>
+            </a>
+            </div>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
+            <a ng-click="setReplyMessage(message.id)"><i class="fa fa-reply"></i></a>
             <div class="file-failed-btns">
               <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
               <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
@@ -48,10 +57,14 @@
         </div>
       </div>
     </div>
-      <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
+    <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
         <i class="zmdi zmdi-chevron-down"></i>
         <span ng-show="hasUnreadNewMessages" class="fa fa-circle"></span>
       </a>
+    <div ng-show="replyId" class="reply">
+      <a ng-click="closeReply()"><i class="zmdi zmdi-close"></i></a>
+      <label>{{replyBody}}</label>
+    </div>
     <div ng-show="channel.canMemberSendMessage()" class="input-holder" id="inputHolder">
       <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
         <i class="fa fa-paperclip"></i>
@@ -80,7 +93,8 @@
     <div ui-view="filemanager"></div>
   </div>
 </div>
-<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-content="این‌جا محتوایی که راجع بهش صحبت می‌شه، نشون داده می‌شه. در حال حاضر تیکام فقط از فایل‌های کد برای این قابلیت پشتیبانی می‌کنه. (۵/۸)" tour-step-order="4" tour-step-backdrop="true" tour-step-placement="right">
+<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-content="این‌جا محتوایی که راجع بهش صحبت می‌شه، نشون داده می‌شه. در حال حاضر تیکام فقط از فایل‌های کد برای این قابلیت پشتیبانی می‌کنه. (۵/۸)" tour-step-order="4" tour-step-backdrop="true"
+  tour-step-placement="right">
   <!-- TODO col-sm-3 col-lg-3 -->
   <div ui-view="files"></div>
 </div>

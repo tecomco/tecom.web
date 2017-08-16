@@ -1,19 +1,21 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'Db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
-  'CurrentMember', 'Team',
-  function ($log, Db, textUtil, channelsService, fileUtil, dateUtil,
-    CurrentMember, Team) {
+  '$log', 'Db', '$timeout', 'textUtil', 'channelsService', 'fileUtil',
+  'dateUtil', 'CurrentMember', 'Team',
+  function ($log, Db, $timeout, textUtil, channelsService, fileUtil,
+    dateUtil, CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-      additionalData, about, isPending, fileTimestamp) {
+      additionalData, about, replyTo, isPending, fileTimestamp) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
-        additionalData, about, isPending, fileTimestamp);
+        additionalData, about, replyTo, isPending, fileTimestamp);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-      _id, datetime, additionalData, about, isPending, fileTimestamp) {
+      _id, datetime, additionalData, about, replyTo, isPending,
+      fileTimestamp
+    ) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -33,6 +35,7 @@ app.factory('Message', [
       }
       this.fileTimestamp = fileTimestamp;
       this.uploadProgressBar = null;
+      this.replyTo = replyTo;
     };
 
     Message.prototype.getUsername = function () {
@@ -157,6 +160,20 @@ app.factory('Message', [
       }
     };
 
+    Message.prototype.getMessageHighlightClass = function () {
+      if (this.isHighlighted)
+        return 'msg-highlight';
+      return '';
+    };
+
+    Message.prototype.highlight = function () {
+      this.isHighlighted = true;
+      var that = this;
+      $timeout(function () {
+        that.isHighlighted = false;
+      }, 1500);
+    };
+
     Message.prototype.setIdAndDatetime = function (_id, datetime) {
       this._id = _id;
       this.id = Message.generateIntegerId(_id);
@@ -177,7 +194,8 @@ app.factory('Message', [
         channelId: this.channelId,
         teamId: this.teamId,
         messageBody: this.body,
-        type: this.type
+        type: this.type,
+        replyTo: this.replyTo
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
@@ -196,7 +214,8 @@ app.factory('Message', [
         senderId: this.senderId,
         channelId: this.channelId,
         datetime: this.datetime,
-        type: this.type
+        type: this.type,
+        replyTo: this.replyTo
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
