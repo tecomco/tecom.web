@@ -53,7 +53,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'stage',
-            socketUri: 'ws.planfor.ir/'
+            socketUri: 'ws.tecomstage.ir/'
           }
         }
       },
