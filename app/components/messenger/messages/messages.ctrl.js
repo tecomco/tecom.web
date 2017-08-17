@@ -65,7 +65,7 @@ app.controller('messagesController', [
           });
         }
         var messageJson = [];
-        messageJson.push(message)
+        messageJson.push(message);
         messagesService.updateRepliedMessagesProperties(messageJson,
           $scope.messages);
         if ($rootScope.isTabFocused) {
@@ -89,7 +89,7 @@ app.controller('messagesController', [
       $scope.uploadSizeLimitNotif = false;
       var message = messagesService.sendFileAndGetMessage($scope.channel
         .id, file, $scope.replyTo);
-      $scope.replyTo = null
+      $scope.replyTo = null;
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
@@ -374,8 +374,8 @@ app.controller('messagesController', [
         if (message.isLoading()) {
           getLoadingMessages(message.additionalData.channelId, message.additionalData
             .from, message.additionalData.to).then(function () {
-            deferred.resolve()
-          })
+            deferred.resolve();
+          });
         } else
           deferred.resolve();
       } else {
