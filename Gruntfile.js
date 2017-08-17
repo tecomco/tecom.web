@@ -64,7 +64,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'prod',
-            socketUri: 'ws.tecom.me:4000/'
+            socketUri: 'ws.tecom.me/'
           }
         }
       },
