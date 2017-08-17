@@ -39,7 +39,7 @@
             </a>
             </div>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
-            <a ng-click="setReplyMessage(message.id)"><i class="fa fa-reply"></i></a>
+            <a ng-click="setReplyMessage(message)"><i class="fa fa-reply"></i></a>
             <div class="file-failed-btns">
               <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
               <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
@@ -61,7 +61,7 @@
         <i class="zmdi zmdi-chevron-down"></i>
         <span ng-show="hasUnreadNewMessages" class="fa fa-circle"></span>
       </a>
-    <div ng-show="replyId" class="reply">
+    <div ng-show="replyTo" class="reply">
       <a ng-click="closeReply()"><i class="zmdi zmdi-close"></i></a>
       <label>{{replyBody}}</label>
     </div>

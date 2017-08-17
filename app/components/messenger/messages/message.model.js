@@ -166,7 +166,7 @@ app.factory('Message', [
       return '';
     };
 
-    Message.prototype.highlight = function () {
+    Message.prototype.highlightIt = function () {
       this.isHighlighted = true;
       var that = this;
       $timeout(function () {

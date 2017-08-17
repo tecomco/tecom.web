@@ -525,31 +525,28 @@ app.service('messagesService', [
     function findClosestLoadingMessage(loadingMessages, id) {
       if (!loadingMessages.length)
         return null;
-      var diff = Math.abs(loadingMessages[0].id - id);
+      var idDifference = Math.abs(loadingMessages[0].id - id);
       var loadingMessageId = loadingMessages[0].id;
       loadingMessages.forEach(function (loadingMessage) {
-        if (Math.abs(loadingMessage.id - id) < diff) {
+        if (Math.abs(loadingMessage.id - id) < idDifference) {
           loadingMessageId = loadingMessage.id;
-          diff = Math.abs(loadingMessage.id - id);
+          idDifference = Math.abs(loadingMessage.id - id);
         }
       });
-      if (Math.abs(loadingMessageId - id) < MESSAGE_MAX_PACKET_LENGTH / 2) {
+      if (idDifference < MESSAGE_MAX_PACKET_LENGTH / 2)
         return ArrayUtil.getElementByKeyValue(loadingMessages, 'id',
           loadingMessageId);
-      }
       return null;
     }
 
-    function findContainedLoadingMessage(loadingMessages, id) {
-      var diff = Math.abs(loadingMessages[0].id - id);
-      var loadingMessageId = loadingMessages[0].id;
-      loadingMessages.forEach(function (loadingMessage) {
-        if (Math.abs(loadingMessage.id - id) < diff && id -
-          loadingMessage.id > 0) {
-          loadingMessageId = loadingMessage.id;
-          diff = Math.abs(loadingMessage.id - id);
+    function findLoadingMessageContainsReplyMessage(loadingMessages, id) {
+      var loadingMessageId;
+      for (var i = 0; i < loadingMessages.length; i++) {
+        if (loadingMessages[i].id - id <= 0) {
+          loadingMessageId = loadingMessages[i].id;
+          break;
         }
-      });
+      }
       return ArrayUtil.getElementByKeyValue(loadingMessages, 'id',
         loadingMessageId);
     }
@@ -598,6 +595,7 @@ app.service('messagesService', [
 
     return {
       getMessagesByChannelId: getMessagesByChannelId,
+      updateRepliedMessagesProperties: updateRepliedMessagesProperties,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
       reuploadFile: reuploadFile,
@@ -605,7 +603,7 @@ app.service('messagesService', [
       removeUploadFailedFileByFileTimestamp: removeUploadFailedFileByFileTimestamp,
       seenMessage: seenMessage,
       findClosestLoadingMessage: findClosestLoadingMessage,
-      findContainedLoadingMessage: findContainedLoadingMessage,
+      findLoadingMessageContainsReplyMessage: findLoadingMessageContainsReplyMessage,
       startTyping: startTyping,
       endTyping: endTyping,
     };
