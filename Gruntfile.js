@@ -63,24 +63,95 @@ module.exports = function (grunt) {
         }
       }
     },
-    uglify: {
-      my_target: {
-        options: {
-          mangle: false,
-          beautify: true
-        },
+    ngAnnotate: {
+      options: {
+        singleQuotes: true
+      },
+      app: {
         files: {
-          'app/tecom.min.js': UGLIFY_SRC_FILES
+          'dist/min-safe/app.js': ['app/app.module.js',
+            'app/app.routes.js', 'app/app.config.js'
+          ],
+          'dist/min-safe/shared.js': ['app/shared/utils/array.util.js',
+            'app/shared/utils/text.util.js',
+            'app/shared/utils/domain.util.js',
+            'app/shared/utils/validation.util.js',
+            'app/shared/utils/date.util.js',
+            'app/shared/utils/file.util.js',
+            'app/shared/directives/compile.directive.js',
+            'app/shared/directives/confirmDialog.directive.js',
+            'app/shared/socket/socket.service.js',
+            'app/shared/auth/user.model.js',
+            'app/shared/auth/team.model.js',
+            'app/shared/auth/team.service.js',
+            'app/shared/auth/current-member.model.js',
+            'app/shared/auth/member.model.js',
+            'app/shared/auth/auth.service.js',
+            'app/shared/db/db.service.js', 'app/shared/cache/cache.js',
+            'app/shared/cache/cache.service.js',
+            'app/shared/exceptions/exception-handler.js',
+            'app/shared/http/http.interceptors.js'
+          ],
+          'dist/min-safe/components.js': [
+            'app/components/messenger/messenger.ctrl.js',
+            'app/components/messenger/channels/channel.model.js',
+            'app/components/messenger/channels/channels.ctrl.js',
+            'app/components/messenger/channels/channel-create.ctrl.js',
+            'app/components/messenger/channels/channel-details.ctrl.js',
+            'app/components/messenger/channels/channels.service.js',
+            'app/components/messenger/channels/channel-member-item.model.js',
+            'app/components/messenger/header/header.ctrl.js',
+            'app/components/messenger/messages/message.model.js',
+            'app/components/messenger/messages/messages.ctrl.js',
+            'app/components/messenger/messages/messages.service.js',
+            'app/components/files/files.ctrl.js',
+            'app/components/files/filemanager-files.ctrl.js',
+            'app/components/files/files.service.js',
+            'app/components/files/file.model.js',
+            'app/components/files/filemanager-file.model.js',
+            'app/components/profile/user.profile.ctrl.js',
+            'app/components/profile/team.profile.ctrl.js',
+            'app/components/profile/profile.service.js'
+          ],
         }
       }
-    }
+    },
+    concat: {
+      js: {
+        src: ['dist/min-safe/app.js', 'dist/min-safe/shared.js',
+          'dist/min-safe/components.js'
+        ],
+        dest: 'dist/tecom.min.js'
+      }
+    },
+    uglify: {
+      js: {
+        src: ['dist/tecom.min.js'],
+        dest: 'app/tecom.min.js'
+      }
+    },
+    // uglify: {
+    //   my_target: {
+    //     options: {
+    //       mangle: false,
+    //       beautify: true
+    //     },
+    //     files: {
+    //       'app/tecom.min.js': UGLIFY_SRC_FILES
+    //     }
+    //   }
+    // },
+    pkg: grunt.file.readJSON('package.json')
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-ng-constant');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
   grunt.registerTask('prod', ['jshint', 'ngconstant:prod']);
   grunt.registerTask('lint', ['jshint']);
+  grunt.registerTask('default', ['ngAnnotate', 'concat', 'uglify']);
 };
