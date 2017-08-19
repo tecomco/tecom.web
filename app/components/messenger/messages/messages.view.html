@@ -1,4 +1,5 @@
-<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن. (۴/۸)" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left" tour-step-on-prev="navigateToHome()">
+<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن. (۴/۸)" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left"
+  tour-step-on-prev="navigateToHome()">
   <!-- TODO col-sm-9 col-lg-9 -->
   <div class="header clearfix">
     <div ui-view="header"></div>
@@ -24,8 +25,11 @@
           <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
             <label>{{message.getLocaleDate()}}</label>
           </div>
+          <div class="g-m-one" ng-if="message.senderId" ng-show="isMessageMemberLastMessage(message)">
+            <img ng-src="{{getImageByMemberId(message.senderId)}}" />
+          </div>
           <div ng-class="message.getCssClass()" class="msg-holder">
-            <label class="name" ng-style="message.getUsernameColor()">{{message.getUsername()}}</label>
+            <label class="name" ng-style="message.getUsernameColor()" ng-show="isMessageMemberFirstMessage(message)">{{message.getUsername()}}</label>
             <label class="status" ng-show="message.isFromMe()">
               <i ng-class="message.getStatusIcon()"></i>
             </label>
@@ -48,7 +52,7 @@
         </div>
       </div>
     </div>
-      <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
+    <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
         <i class="zmdi zmdi-chevron-down"></i>
         <span ng-show="hasUnreadNewMessages" class="fa fa-circle"></span>
       </a>
@@ -80,7 +84,8 @@
     <div ui-view="filemanager"></div>
   </div>
 </div>
-<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-content="این‌جا محتوایی که راجع بهش صحبت می‌شه، نشون داده می‌شه. در حال حاضر تیکام فقط از فایل‌های کد برای این قابلیت پشتیبانی می‌کنه. (۵/۸)" tour-step-order="4" tour-step-backdrop="true" tour-step-placement="right">
+<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-content="این‌جا محتوایی که راجع بهش صحبت می‌شه، نشون داده می‌شه. در حال حاضر تیکام فقط از فایل‌های کد برای این قابلیت پشتیبانی می‌کنه. (۵/۸)" tour-step-order="4" tour-step-backdrop="true"
+  tour-step-placement="right">
   <!-- TODO col-sm-3 col-lg-3 -->
   <div ui-view="files"></div>
 </div>

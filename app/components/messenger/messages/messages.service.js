@@ -418,7 +418,7 @@ app.service('messagesService', [
     }
 
     function reuploadFile(fileTimestamp) {
-      var data = getFailedUploadedFileByfileTimestamp(fileTimestamp);
+      var data = getFailedUploadedFileByTimestamp(fileTimestamp);
       data.message.isFailed = false;
       uploadFile(data.message, data.fileData);
     }
@@ -459,7 +459,7 @@ app.service('messagesService', [
         });
     }
 
-    function getFailedUploadedFileByfileTimestamp(fileTimestamp) {
+    function getFailedUploadedFileByTimestamp(fileTimestamp) {
       var data = ArrayUtil.getElementByKeyValue(self.failedUploadedFiles,
         'message.fileTimestamp', fileTimestamp);
       removeUploadFailedFileByFileTimestamp(fileTimestamp);

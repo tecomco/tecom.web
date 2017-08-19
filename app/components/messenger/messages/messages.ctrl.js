@@ -4,9 +4,10 @@ app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
+  'Team',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, Team
   ) {
 
     var self = this;
@@ -152,6 +153,26 @@ app.controller('messagesController', [
         self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
+    };
+
+    $scope.getImageByMemberId = function (memberId) {
+      return Team.getImageByMemberId(memberId);
+    };
+
+    $scope.isMessageMemberFirstMessage = function (message) {
+      var nextMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+        'id', message.id - 1)
+      if (nextMessage)
+        return message.senderId !== nextMessage.senderId;
+      return true;
+    };
+
+    $scope.isMessageMemberLastMessage = function (message) {
+      var nextMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+        'id', message.id + 1)
+      if (nextMessage)
+        return message.senderId !== nextMessage.senderId;
+      return true;
     };
 
     $scope.showFileLine = function (fileId, startLine, endLine) {

@@ -92,7 +92,7 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
 
     Team.getImageByMemberId = function (memberId) {
       var member = Team.getMemberByMemberId(memberId);
-      return member.image;
+      return member.user.image;
     };
 
     return Team;

@@ -64,13 +64,12 @@ app.factory('Message', [
     };
 
     Message.prototype.getViewWellFormed = function () {
-      var body = '';
       if (this.type === Message.TYPE.TEXT)
-        body = this.addTextBody();
+        body = this.generateTextBody();
       else if (this.isFile())
-        body = this.addFileBody();
+        body = this.generateFileBody();
       else
-        body = this.addMessageNotifTypeBody();
+        body = this.generateMessageNotifTypeBody();
       return body;
     };
 
@@ -245,7 +244,7 @@ app.factory('Message', [
       return dateUtil.getPersianTime(this.datetime);
     };
 
-    Message.prototype.addTextBody = function () {
+    Message.prototype.generateTextBody = function () {
       var body = '';
       if (this.about) {
         body += '<a class="msg-attachment" ng-click="showFileLine(' +
@@ -258,24 +257,24 @@ app.factory('Message', [
       return body;
     };
 
-    Message.prototype.addFileBody = function () {
+    Message.prototype.generateFileBody = function () {
       var body = '';
       this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
       body = '<div id="' + this.getFileTimestampId() +
         '" class="ng-scope" dir="rtl">';
       if (fileUtil.isPictureFormat(this.additionalData.type))
-        body += this.addImageViewerBody();
+        body += this.generateImageViewerBody();
       else
-        body += this.addFileMessageBody();
+        body += this.generateFileMessageBody();
       if (this.canBeLived)
-        body += this.addFileLiveAndViewBody();
+        body += this.generateFileLiveAndViewBody();
       if (!this.isFailed)
-        body += this.addFileDownloadBody();
+        body += this.generateFileDownloadBody();
       body += '</div>';
       return body;
     };
 
-    Message.prototype.addImageViewerBody = function () {
+    Message.prototype.generateImageViewerBody = function () {
       return '<div class="msg-img" ng-click="fullscreenImage(\'' +
         this.additionalData.url + '\', \'' + this.additionalData.name +
         '\')"><img class="img-responsive " id="img-' + this.additionalData
@@ -283,13 +282,13 @@ app.factory('Message', [
         .url + '" style="cursor:pointer" /></div>';
     };
 
-    Message.prototype.addFileMessageBody = function () {
+    Message.prototype.generateFileMessageBody = function () {
       return '<label class="file-name">' + this.additionalData.name +
         '</label>' +
         '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
     };
 
-    Message.prototype.addFileLiveAndViewBody = function () {
+    Message.prototype.generateFileLiveAndViewBody = function () {
       var body = '';
       if (this.currentChannel.canMemberSendMessage()) {
         body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
@@ -306,18 +305,18 @@ app.factory('Message', [
       return body;
     };
 
-    Message.prototype.addFileDownloadBody = function () {
+    Message.prototype.generateFileDownloadBody = function () {
       return '<a class="dl-btn" href="' + this.additionalData.url +
         '" download="' + this.additionalData.name +
         '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">' +
         '<i class="zmdi zmdi-download"></i></a>';
     };
 
-    Message.prototype.addMessageNotifTypeBody = function () {
+    Message.prototype.generateMessageNotifTypeBody = function () {
       var body = '';
       if (this.type === Message.TYPE.NOTIF.USER_ADDED ||
         this.type === Message.TYPE.NOTIF.USER_REMOVED) {
-        body = this.addUserNotifBody(body);
+        body = this.generateUserNotifBody(body);
       } else if (this.type === Message.TYPE.NOTIF.CHANNEL_CREATED) {
         body = 'گروه ساخته شد.';
       } else if (this.type === Message.TYPE.NOTIF.CHANNEL_EDITED) {
@@ -337,7 +336,7 @@ app.factory('Message', [
       return body;
     };
 
-    Message.prototype.addUserNotifBody = function () {
+    Message.prototype.generateUserNotifBody = function () {
       var body = '';
       var addedMemberIds = this.additionalData;
       angular.forEach(addedMemberIds, function (memberId) {
