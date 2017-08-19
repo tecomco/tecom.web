@@ -88,8 +88,8 @@ app.controller('messagesController', [
       $scope.uploadErrorNotif = false;
       $scope.uploadSizeLimitNotif = false;
       var message = messagesService.sendFileAndGetMessage($scope.channel
-        .id, file, $scope.replyTo);
-      $scope.replyTo = null;
+        .id, file, $scope.replyMessage.id);
+      $scope.replyMessage = null;
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
@@ -137,8 +137,8 @@ app.controller('messagesController', [
       if (!messageBody) return;
       $scope.channel.seenLastMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
-        messageBody, $scope.replyTo);
-      $scope.replyTo = null;
+        messageBody, $scope.replyMessage.id);
+      $scope.replyMessage = null;
       $scope.messages.push(message);
       scrollBottom();
       clearMessageInput();
@@ -162,27 +162,44 @@ app.controller('messagesController', [
     };
 
     $scope.setReplyMessage = function (message) {
-      $scope.replyTo = message.id;
-      $scope.replyBody = message.body;
+      $scope.replyMessage = message;
+      document.getElementById('inputPlaceHolder').focus();
     };
 
     $scope.getReplyMessageSenderUsername = function (message) {
       var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.replyTo);
+        'id', message.reply.id);
       if (replyMessage)
         return replyMessage.getUsername();
-      if (message.replySenderId)
-        return Team.getUsernameByMemberId(message.replySenderId);
+      return Team.getUsernameByMemberId(message.reply.senderId);
     };
 
     $scope.getReplyMessageBody = function (message) {
       var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id',
-        message.replyTo);
+        'id', message.reply.id);
       if (replyMessage)
-        return replyMessage.body;
-      if (message.replyBody)
-        return message.replyBody;
+        return replyMessage.getReplyMessageBody();
+      return message.reply.body;
+    };
+
+    $scope.isReplyImage = function (message) {
+      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+        'id', message.reply.id);
+      if (replyMessage)
+        return replyMessage.isFile() && replyMessage.isImage();
+      return message.reply.isReplyImage;
+    };
+
+    $scope.isReplyFile = function (message) {
+      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+        'id', message.reply.id);
+      if (replyMessage)
+        return replyMessage.isFile() && !replyMessage.isImage();
+      return message.reply.isReplyFile;
+    };
+
+    $scope.closeReply = function () {
+      $scope.replyMessage = null;
     };
 
     $scope.scrollToReplyElement = function (replyTo) {
@@ -199,10 +216,6 @@ app.controller('messagesController', [
           scrollToMessageElementById(replyTo);
           hasUnreadInitializeMessages = true;
         });
-    };
-
-    $scope.closeReply = function () {
-      $scope.replyTo = null;
     };
 
     $scope.showFileLine = function (fileId, startLine, endLine) {

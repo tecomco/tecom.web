@@ -35,7 +35,9 @@ app.factory('Message', [
       }
       this.fileTimestamp = fileTimestamp;
       this.uploadProgressBar = null;
-      this.replyTo = replyTo;
+      this.reply = {
+        id: replyTo
+      };
     };
 
     Message.prototype.getUsername = function () {
@@ -160,6 +162,28 @@ app.factory('Message', [
       }
     };
 
+    Message.prototype.getReplyMessageBody = function () {
+      switch (this.type) {
+        case Message.TYPE.TEXT:
+          return this.body;
+        case Message.TYPE.FILE:
+          return this.additionalData.name;
+        case Message.TYPE.NOTIF.USER_ADDED:
+          return this.addUserNotifBody();
+        case Message.TYPE.NOTIF.USER_REMOVED:
+          return this.addUserNotifBody();
+        case Message.TYPE.NOTIF.FILE_LIVED:
+          return 'فایل "' + this.additionalData.fileName + '"، LIVE شد.';
+        case Message.TYPE.NOTIF.FILE_DIED:
+          return 'فایل "' + this.additionalData.fileName +
+            '"، از حالت LIVE خارج شد.';
+        case Message.TYPE.NOTIF.CHANNEL_CREATED:
+          return 'گروه ساخته شد.';
+        case Message.TYPE.NOTIF.CHANNEL_EDITED:
+          return 'اطلاعات گروه تغییر کرد.';
+      }
+    };
+
     Message.prototype.getMessageHighlightClass = function () {
       if (this.isHighlighted)
         return 'msg-highlight';
@@ -195,7 +219,7 @@ app.factory('Message', [
         teamId: this.teamId,
         messageBody: this.body,
         type: this.type,
-        replyTo: this.replyTo
+        replyTo: this.reply.id
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
@@ -215,7 +239,7 @@ app.factory('Message', [
         channelId: this.channelId,
         datetime: this.datetime,
         type: this.type,
-        replyTo: this.replyTo
+        replyTo: this.reply.id
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
@@ -264,6 +288,10 @@ app.factory('Message', [
       return dateUtil.getPersianTime(this.datetime);
     };
 
+    Message.prototype.isImage = function () {
+      return fileUtil.isPictureFormat(this.additionalData.type);
+    };
+
     Message.prototype.addTextBody = function () {
       var body = '';
       if (this.about) {
@@ -282,7 +310,7 @@ app.factory('Message', [
       this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
       body = '<div id="' + this.getFileTimestampId() +
         '" class="ng-scope" dir="rtl">';
-      if (fileUtil.isPictureFormat(this.additionalData.type))
+      if (this.isImage())
         body += this.addImageViewerBody();
       else
         body += this.addFileMessageBody();

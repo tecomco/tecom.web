@@ -168,12 +168,22 @@ app.service('messagesService', [
       var dataToBeSend = {
         channelId: message.channelId,
         teamId: message.teamId,
-        from: message.replyTo,
-        to: message.replyTo
+        from: message.reply.id,
+        to: message.reply.id
       };
       socket.emit('message:get', dataToBeSend, function (res) {
-        message.replyBody = res.messages[0].body;
-        message.replySenderId = res.messages[0].senderId;
+        var messages = res.messages.map(function (msg) {
+          return new Message(msg.body, msg.type, msg.senderId,
+            msg.channelId, msg.id, msg.datetime, msg.additionalData,
+            msg.about, msg.replyTo);
+        });
+        var neededMessage = messages[0];
+        message.reply.body = neededMessage.body;
+        message.reply.senderId = neededMessage.senderId;
+        message.reply.isReplyImage = neededMessage.isFile() &&
+          neededMessage.isImage();
+        message.reply.isReplyFile = neededMessage.isFile() && !
+          neededMessage.isImage();
         deferred.resolve();
       });
       return deferred.promise;
@@ -235,13 +245,13 @@ app.service('messagesService', [
 
     function updateRepliedMessagesProperties(messages, allMessages) {
       messages.forEach(function (message) {
-        if (message.replyTo) {
-          if (ArrayUtil.containsKeyValue(allMessages, 'id', message.replyTo)) {
+        if (message.reply.id) {
+          if (ArrayUtil.containsKeyValue(allMessages, 'id', message.reply
+              .id)) {
             var replyMessage = ArrayUtil.getElementByKeyValue(
-              allMessages,
-              'id', message.replyTo);
-            message.replyBody = replyMessage.body;
-            message.replySenderId = replyMessage.senderId;
+              allMessages, 'id', message.reply.id);
+            message.reply.body = replyMessage.getReplyMessageBody();
+            message.reply.senderId = replyMessage.senderId;
           } else {
             var promise = setMessageReplyProperty(message);
             self.repliesPromise.push(promise);
