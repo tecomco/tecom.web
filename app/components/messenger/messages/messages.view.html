@@ -33,11 +33,11 @@
             <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
             <div ng-if="message.reply.id">
               <a ng-click="scrollToReplyElement(message.reply.id)">
-              <label>{{getReplyMessageSenderUsername(message)}}</label>
+              <label>{{message.reply.getUsername()}}</label>
               <br>
-              <i ng-show="isReplyImage(message)" class="fa fa-image"></i>
-              <i ng-show="isReplyFile(message)" class="fa fa-file-o"></i>
-              <label>{{getReplyMessageBody(message)}}</label>
+              <i ng-show="message.reply.isFile() && message.reply.isImage()" class="fa fa-image"></i>
+              <i ng-show="message.reply.isFile() && !message.reply.isImage()" class="fa fa-file-o"></i>
+              <label>{{message.reply.getReplyMessageBody()}}</label>
             </a>
             </div>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>

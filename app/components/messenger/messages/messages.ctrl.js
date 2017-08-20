@@ -13,10 +13,12 @@ app.controller('messagesController', [
     var self = this;
     $scope.messages = [];
     $scope.hasUnreadNewMessages = false;
+    $scope.replyMessage = {};
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
+    var inputPlaceHolder = document.getElementById('inputPlaceHolder');
     var initialMemberLastSeenId;
     var initialLastMessageId;
     var isJumpDownScrollingDown = false;
@@ -66,8 +68,6 @@ app.controller('messagesController', [
         }
         var messageJson = [];
         messageJson.push(message);
-        messagesService.updateRepliedMessagesProperties(messageJson,
-          $scope.messages);
         if ($rootScope.isTabFocused) {
           $scope.channel.seenLastMessage();
           messagesService.seenMessage($scope.channel.id, message.id,
@@ -87,9 +87,9 @@ app.controller('messagesController', [
     $scope.$on('file:uploading', function (event, file) {
       $scope.uploadErrorNotif = false;
       $scope.uploadSizeLimitNotif = false;
-      var message = messagesService.sendFileAndGetMessage($scope.channel
-        .id, file, $scope.replyMessage.id);
-      $scope.replyMessage = null;
+      var message = messagesService.sendFileAndGetMessage(
+        $scope.channel.id, file, $scope.replyMessage);
+      $scope.replyMessage = {};
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
@@ -137,8 +137,8 @@ app.controller('messagesController', [
       if (!messageBody) return;
       $scope.channel.seenLastMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
-        messageBody, $scope.replyMessage.id);
-      $scope.replyMessage = null;
+        messageBody, $scope.replyMessage);
+      $scope.replyMessage = {};
       $scope.messages.push(message);
       scrollBottom();
       clearMessageInput();
@@ -163,56 +163,22 @@ app.controller('messagesController', [
 
     $scope.setReplyMessage = function (message) {
       $scope.replyMessage = message;
-      document.getElementById('inputPlaceHolder').focus();
-    };
-
-    $scope.getReplyMessageSenderUsername = function (message) {
-      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.reply.id);
-      if (replyMessage)
-        return replyMessage.getUsername();
-      return Team.getUsernameByMemberId(message.reply.senderId);
-    };
-
-    $scope.getReplyMessageBody = function (message) {
-      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.reply.id);
-      if (replyMessage)
-        return replyMessage.getReplyMessageBody();
-      return message.reply.body;
-    };
-
-    $scope.isReplyImage = function (message) {
-      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.reply.id);
-      if (replyMessage)
-        return replyMessage.isFile() && replyMessage.isImage();
-      return message.reply.isReplyImage;
-    };
-
-    $scope.isReplyFile = function (message) {
-      var replyMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.reply.id);
-      if (replyMessage)
-        return replyMessage.isFile() && !replyMessage.isImage();
-      return message.reply.isReplyFile;
+      inputPlaceHolder.focus();
     };
 
     $scope.closeReply = function () {
-      $scope.replyMessage = null;
+      $scope.replyMessage = {};
     };
 
     $scope.scrollToReplyElement = function (replyTo) {
-      var message;
-      getReplyMessageIfNotExists(replyTo)
+      getScrollMessageIfNotExists(replyTo)
         .then(function () {
-          message = ArrayUtil.getElementByKeyValue($scope.messages, 'id',
-            replyTo);
           return getClosestLoadingMessageIfCloseEnoughByMessageId(
-            message.id);
+            replyTo);
         })
         .then(function () {
-          message.highlightIt();
+          var message = getChannelMessageById(replyTo);
+          message.highlight();
           scrollToMessageElementById(replyTo);
           hasUnreadInitializeMessages = true;
         });
@@ -239,9 +205,7 @@ app.controller('messagesController', [
       if (message.id === 1)
         return true;
       else {
-        var previousMessage =
-          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
-            1);
+        var previousMessage = getChannelMessageById(message.id - 1);
         if (previousMessage) {
           var timeDiff =
             Math.abs(message.datetime.getTime() - previousMessage.datetime
@@ -297,9 +261,7 @@ app.controller('messagesController', [
       if (message.id === 1)
         return true;
       else {
-        var previousMessage =
-          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
-            1);
+        var previousMessage = getChannelMessageById(message.id - 1);
         if (previousMessage) {
           var timeDiff =
             Math.abs(message.datetime.getTime() - previousMessage.datetime
@@ -342,8 +304,6 @@ app.controller('messagesController', [
           CurrentMember.member.teamId, from, to, true)
         .then(function (messages) {
           removeLoadingMessage(from);
-          messagesService.updateRepliedMessagesProperties(messages, $scope
-            .messages);
           messages.forEach(function (message) {
             $scope.messages.push(message);
           });
@@ -354,11 +314,11 @@ app.controller('messagesController', [
       return deferred.promise;
     }
 
-    function getClosestLoadingMessageIfCloseEnoughByMessageId(id) {
+    function getClosestLoadingMessageIfCloseEnoughByMessageId(messageId) {
       var deferred = $q.defer();
       var loadingMessages = filterLoadingMessages();
       var closestLoadingMessage = messagesService.findClosestLoadingMessage(
-        loadingMessages, id);
+        loadingMessages, messageId);
       if (closestLoadingMessage) {
         getLoadingMessages(closestLoadingMessage.additionalData.channelId,
           closestLoadingMessage.additionalData.from, closestLoadingMessage
@@ -370,19 +330,19 @@ app.controller('messagesController', [
       return deferred.promise;
     }
 
-    function getLoadingMessageThatContainsReplyMessage(id) {
+    function getLoadingMessageContainingReplyMessage(messageId) {
       var loadingMessages = filterLoadingMessages();
-      var loadingMessageContainsReplyMessage = messagesService.findLoadingMessageContainsReplyMessage(
-        loadingMessages, id);
-      return getLoadingMessages(loadingMessageContainsReplyMessage.additionalData
-        .channelId, loadingMessageContainsReplyMessage.additionalData.from,
-        loadingMessageContainsReplyMessage.additionalData.to);
+      var loadingMessageContainingReplyMessage = messagesService.findLoadingMessageContainsReplyMessage(
+        loadingMessages, messageId);
+      return getLoadingMessages(
+        loadingMessageContainingReplyMessage.additionalData.channelId,
+        loadingMessageContainingReplyMessage.additionalData.from,
+        loadingMessageContainingReplyMessage.additionalData.to);
     }
 
-    function getReplyMessageIfNotExists(replyTo) {
+    function getScrollMessageIfNotExists(replyTo) {
       var deferred = $q.defer();
-      var message = ArrayUtil.getElementByKeyValue($scope.messages, 'id',
-        replyTo);
+      var message = getChannelMessageById(replyTo);
       if (message) {
         if (message.isLoading()) {
           getLoadingMessages(message.additionalData.channelId, message.additionalData
@@ -392,7 +352,7 @@ app.controller('messagesController', [
         } else
           deferred.resolve();
       } else {
-        getLoadingMessageThatContainsReplyMessage(replyTo)
+        getLoadingMessageContainingReplyMessage(replyTo)
           .then(function () {
             deferred.resolve();
           });
@@ -420,8 +380,7 @@ app.controller('messagesController', [
           $scope.messages = messages;
           scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {
-            var lastMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-              'id', $scope.channel.lastMessageId);
+            var lastMessage = getChannelMessageById($scope.channel.lastMessageId);
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
             $timeout(function () {
@@ -445,6 +404,10 @@ app.controller('messagesController', [
 
     function clearMessageInput() {
       $scope.inputMessage = '';
+    }
+
+    function getChannelMessageById(messageId) {
+      return ArrayUtil.getElementByKeyValue($scope.messages, 'id', messageId);
     }
 
     function removeLoadingMessage(messageId) {
@@ -523,8 +486,8 @@ app.controller('messagesController', [
       return loadingMessages;
     }
 
-    function getMessageElementById(id) {
-      var element = document.getElementById('message_' + id);
+    function getMessageElementById(messageId) {
+      var element = document.getElementById('message_' + messageId);
       return element;
     }
 
@@ -552,7 +515,7 @@ app.controller('messagesController', [
         messagesHolder.scrollHeight;
     }
 
-    document.getElementById('inputPlaceHolder').focus();
+    inputPlaceHolder.focus();
 
     angular.element(messagesHolder)
       .bind('scroll', function () {

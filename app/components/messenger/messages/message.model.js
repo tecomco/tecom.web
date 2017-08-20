@@ -14,8 +14,7 @@ app.factory('Message', [
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
       _id, datetime, additionalData, about, replyTo, isPending,
-      fileTimestamp
-    ) {
+      fileTimestamp) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -33,11 +32,9 @@ app.factory('Message', [
       if (this.currentChannel) {
         this.teamId = this.currentChannel.teamId;
       }
-      this.fileTimestamp = fileTimestamp;
+      this.fileTimestamp = fileTimestamp || null;
       this.uploadProgressBar = null;
-      this.reply = {
-        id: replyTo
-      };
+      this.replyTo = replyTo;
     };
 
     Message.prototype.getUsername = function () {
@@ -56,16 +53,14 @@ app.factory('Message', [
     };
 
     Message.prototype.getUsernameColor = function () {
-      if (CurrentMember.member.isTecomBot() || !this.senderId || this.senderId ===
-        CurrentMember.member.id) {
+      if (CurrentMember.member.isTecomBot() || !this.senderId ||
+        this.senderId === CurrentMember.member.id) {
         return {};
       }
       var member = Team.getMemberByMemberId(this.senderId);
-      if (member)
-        return {
-          'color': Team.getMemberByMemberId(this.senderId).user.usernameColor
-        };
-      return {};
+      return {
+        color: member.user.usernameColor
+      };
     };
 
     Message.prototype.getViewWellFormed = function () {
@@ -190,7 +185,7 @@ app.factory('Message', [
       return '';
     };
 
-    Message.prototype.highlightIt = function () {
+    Message.prototype.highlight = function () {
       this.isHighlighted = true;
       var that = this;
       $timeout(function () {
@@ -219,7 +214,7 @@ app.factory('Message', [
         teamId: this.teamId,
         messageBody: this.body,
         type: this.type,
-        replyTo: this.reply.id
+        replyTo: this.replyTo
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
@@ -239,7 +234,7 @@ app.factory('Message', [
         channelId: this.channelId,
         datetime: this.datetime,
         type: this.type,
-        replyTo: this.reply.id
+        replyTo: this.replyTo
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
