@@ -64,6 +64,7 @@ app.factory('Message', [
     };
 
     Message.prototype.getViewWellFormed = function () {
+      var body;
       if (this.type === Message.TYPE.TEXT)
         body = this.generateTextBody();
       else if (this.isFile())
@@ -234,6 +235,10 @@ app.factory('Message', [
 
     Message.prototype.isFile = function () {
       return this.type === Message.TYPE.FILE;
+    };
+
+    Message.prototype.getSenderImageByMemberId = function () {
+      return Team.getImageByMemberId(this.senderId);
     };
 
     Message.prototype.getLocaleDate = function () {

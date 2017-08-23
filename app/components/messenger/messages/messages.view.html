@@ -26,7 +26,7 @@
             <label>{{message.getLocaleDate()}}</label>
           </div>
           <div class="g-m-one" ng-if="message.senderId" ng-show="isMessageMemberLastMessage(message)">
-            <img ng-src="{{getImageByMemberId(message.senderId)}}" />
+            <img ng-src="{{message.getSenderImageByMemberId()}}" />
           </div>
           <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name" ng-style="message.getUsernameColor()" ng-show="isMessageMemberFirstMessage(message)">{{message.getUsername()}}</label>

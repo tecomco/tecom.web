@@ -155,21 +155,19 @@ app.controller('messagesController', [
       }, 2000);
     };
 
-    $scope.getImageByMemberId = function (memberId) {
-      return Team.getImageByMemberId(memberId);
-    };
-
     $scope.isMessageMemberFirstMessage = function (message) {
-      var nextMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.id - 1)
-      if (nextMessage)
-        return message.senderId !== nextMessage.senderId;
+      if (!message.senderId)
+        return false;
+      var previousMessage = ArrayUtil.getElementByKeyValue($scope.messages,
+        'id', message.id - 1);
+      if (previousMessage)
+        return message.senderId !== previousMessage.senderId;
       return true;
     };
 
     $scope.isMessageMemberLastMessage = function (message) {
       var nextMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.id + 1)
+        'id', message.id + 1);
       if (nextMessage)
         return message.senderId !== nextMessage.senderId;
       return true;
