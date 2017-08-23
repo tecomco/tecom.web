@@ -66,8 +66,6 @@ app.controller('messagesController', [
             $scope.$apply();
           });
         }
-        var messageJson = [];
-        messageJson.push(message);
         if ($rootScope.isTabFocused) {
           $scope.channel.seenLastMessage();
           messagesService.seenMessage($scope.channel.id, message.id,
@@ -171,13 +169,13 @@ app.controller('messagesController', [
     };
 
     $scope.scrollToReplyElement = function (replyTo) {
-      getScrollMessageIfNotExists(replyTo)
+      getMessageIfNotExists(replyTo)
         .then(function () {
           return getClosestLoadingMessageIfCloseEnoughByMessageId(
             replyTo);
         })
         .then(function () {
-          var message = getChannelMessageById(replyTo);
+          var message = getMessageById(replyTo);
           message.highlight();
           scrollToMessageElementById(replyTo);
           hasUnreadInitializeMessages = true;
@@ -205,7 +203,7 @@ app.controller('messagesController', [
       if (message.id === 1)
         return true;
       else {
-        var previousMessage = getChannelMessageById(message.id - 1);
+        var previousMessage = getMessageById(message.id - 1);
         if (previousMessage) {
           var timeDiff =
             Math.abs(message.datetime.getTime() - previousMessage.datetime
@@ -261,7 +259,7 @@ app.controller('messagesController', [
       if (message.id === 1)
         return true;
       else {
-        var previousMessage = getChannelMessageById(message.id - 1);
+        var previousMessage = getMessageById(message.id - 1);
         if (previousMessage) {
           var timeDiff =
             Math.abs(message.datetime.getTime() - previousMessage.datetime
@@ -340,9 +338,9 @@ app.controller('messagesController', [
         loadingMessageContainingReplyMessage.additionalData.to);
     }
 
-    function getScrollMessageIfNotExists(replyTo) {
+    function getMessageIfNotExists(replyTo) {
       var deferred = $q.defer();
-      var message = getChannelMessageById(replyTo);
+      var message = getMessageById(replyTo);
       if (message) {
         if (message.isLoading()) {
           getLoadingMessages(message.additionalData.channelId, message.additionalData
@@ -380,7 +378,7 @@ app.controller('messagesController', [
           $scope.messages = messages;
           scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {
-            var lastMessage = getChannelMessageById($scope.channel.lastMessageId);
+            var lastMessage = getMessageById($scope.channel.lastMessageId);
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
             $timeout(function () {
@@ -406,7 +404,7 @@ app.controller('messagesController', [
       $scope.inputMessage = '';
     }
 
-    function getChannelMessageById(messageId) {
+    function getMessageById(messageId) {
       return ArrayUtil.getElementByKeyValue($scope.messages, 'id', messageId);
     }
 
@@ -487,8 +485,7 @@ app.controller('messagesController', [
     }
 
     function getMessageElementById(messageId) {
-      var element = document.getElementById('message_' + messageId);
-      return element;
+      return document.getElementById('message_' + messageId);
     }
 
     function getMessagePackagesIfLoadingsInView(isDirectionUp) {

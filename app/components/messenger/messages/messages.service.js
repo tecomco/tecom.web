@@ -10,8 +10,9 @@ app.service('messagesService', [
 
     var self = this;
     self.failedUploadedFiles = [];
-    self.channelMessages = [];
+    self.currentChannelMessages = [];
     var MESSAGE_MAX_PACKET_LENGTH = 20;
+
     /**
      * @summary Socket listeners
      */
@@ -24,23 +25,16 @@ app.service('messagesService', [
       updateCacheMessagesByChannelIdIfExists(message.channelId, message
         .getDbWellFormed());
       updateChannelMessagesIfActive(message.channelId, [message]);
-      if (message.type === Message.TYPE.NOTIF) {
-        var channel = channelsService.findChannelById(message.channelId);
-        if (message.type === Message.TYPE.NOTIF.USER_ADDED)
-          channel.membersCount = channel.membersCount + message.additionalData
-          .length;
-        else if (message.type === Message.TYPE.NOTIF.USER_REMOVED)
-          channel.membersCount--;
-      }
+      if (message.type === Message.TYPE.NOTIF)
+        updateChannelMembersCount(message);
       setRepliedMessagesReplyPropertyIfChannelActive(message)
         .then(function () {
           $rootScope.$broadcast('message', message);
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
           if (message.about) {
-            filesService.showFileLine(message.about.fileId, message.about
-              .lineNumber,
-              message.about.lineNumberTo);
+            filesService.showFileLine(message.about.fileId,
+              message.about.lineNumber, message.about.lineNumberTo);
           }
         });
     });
@@ -153,7 +147,7 @@ app.service('messagesService', [
           if (areLoadingMessagesGetting) {
             updateCacheMessagesByChannelId(channelId, messagesForDb);
             updateActiveChannelMessages(messages);
-            setRepliedMessagesReplyProperty(messages, self.channelMessages)
+            setRepliedMessagesReplyProperty(messages, self.currentChannelMessages)
               .then(function () {
                 deferred.resolve(messages);
               });
@@ -166,11 +160,12 @@ app.service('messagesService', [
 
     function setMessageReplyPropertyFromServer(message) {
       var deferred = $q.defer();
-      getMessagesFromServer(message.channelId, message.teamId, message.reply
-        .id, message.replyTo).then(function (messages) {
-        message.reply = messages[0];
-        deferred.resolve();
-      });
+      getMessagesFromServer(message.channelId, message.teamId,
+          message.reply.id, message.replyTo)
+        .then(function (messages) {
+          message.reply = messages[0];
+          deferred.resolve();
+        });
       return deferred.promise;
     }
 
@@ -197,7 +192,7 @@ app.service('messagesService', [
       var deferred = $q.defer();
       if (doesCacheContainsChannelMessages(channelId)) {
         var messages = getChannelCachedMessageModels(channelId);
-        setMessageAdditionalData(messages, channelId, lastMessageId)
+        makeMessagesReadyForView(messages, channelId, lastMessageId)
           .then(function () {
             deferred.resolve(messages);
           });
@@ -206,8 +201,8 @@ app.service('messagesService', [
           .then(function (messagesData) {
             cacheChannelMessagesData(channelId, messagesData.docs);
             var messages = generateMessageModelsFromData(messagesData.docs);
-            setMessageAdditionalData(messages, channelId, lastMessageId).then(
-              function () {
+            makeMessagesReadyForView(messages, channelId, lastMessageId)
+              .then(function () {
                 deferred.resolve(messages);
               });
           });
@@ -239,7 +234,7 @@ app.service('messagesService', [
       return generateMessageModelsFromData(messagesData);
     }
 
-    function setMessageAdditionalData(messages, channelId, lastMessageId) {
+    function makeMessagesReadyForView(messages, channelId, lastMessageId) {
       var deferred = $q.defer();
       setRepliedMessagesReplyProperty(messages, messages)
         .then(function () {
@@ -253,7 +248,6 @@ app.service('messagesService', [
     }
 
     function setRepliedMessagesReplyProperty(messages, channelMessages) {
-      var deferred = $q.defer();
       var repliesPromise = [];
       messages.forEach(function (message) {
         if (message.replyTo) {
@@ -267,16 +261,13 @@ app.service('messagesService', [
           }
         }
       });
-      $q.all(repliesPromise).then(function () {
-        deferred.resolve();
-      });
-      return deferred.promise;
+      return $q.all(repliesPromise);
     }
 
     function setRepliedMessagesReplyPropertyIfChannelActive(message) {
       var deferred = $q.defer();
-      if (doesMessagesBelongToActiveChannel(message.channelId))
-        setRepliedMessagesReplyProperty([message], self.channelMessages)
+      if (isChannelIdActiveChannel(message.channelId))
+        setRepliedMessagesReplyProperty([message], self.currentChannelMessages)
         .then(function () {
           deferred.resolve();
         });
@@ -586,6 +577,15 @@ app.service('messagesService', [
       }
     }
 
+    function updateChannelMembersCount(message) {
+      var channel = channelsService.findChannelById(message.channelId);
+      if (message.type === Message.TYPE.NOTIF.USER_ADDED)
+        channel.membersCount = channel.membersCount + message.additionalData
+        .length;
+      else if (message.type === Message.TYPE.NOTIF.USER_REMOVED)
+        channel.membersCount--;
+    }
+
     function startTyping(channelId) {
       var data = {
         channelId: channelId
@@ -624,7 +624,7 @@ app.service('messagesService', [
         updateCacheMessagesByChannelId(channelId, messages);
     }
 
-    function doesMessagesBelongToActiveChannel(channelId) {
+    function isChannelIdActiveChannel(channelId) {
       var currentChannel = channelsService.getCurrentChannel();
       if (currentChannel)
         return channelsService.getCurrentChannel().id === channelId;
@@ -632,15 +632,16 @@ app.service('messagesService', [
     }
 
     function setActiveChannelMessages(messages) {
-      self.channelMessages = messages;
+      self.currentChannelMessages = messages;
     }
 
     function updateActiveChannelMessages(messages) {
-      self.channelMessages = self.channelMessages.concat(messages);
+      self.currentChannelMessages = self.currentChannelMessages.concat(
+        messages);
     }
 
     function updateChannelMessagesIfActive(channelId, messages) {
-      if (doesMessagesBelongToActiveChannel(channelId))
+      if (isChannelIdActiveChannel(channelId))
         updateActiveChannelMessages(messages);
     }
 
@@ -650,7 +651,6 @@ app.service('messagesService', [
 
     return {
       getMessagesByChannelId: getMessagesByChannelId,
-      setRepliedMessagesReplyProperty: setRepliedMessagesReplyProperty,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
       reuploadFile: reuploadFile,
