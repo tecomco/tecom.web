@@ -18,7 +18,7 @@
       </div>
       <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
       <div class="main">
-        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" class="msg-one">
+        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" ng-class="message.getMessageHighlightClass()" class="msg-one">
           <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
             <label>پیام‌های جدید</label>
           </div>
@@ -29,11 +29,21 @@
             <label class="name" ng-style="message.getUsernameColor()" ng-show="isMessageMemberFirstMessage(message)">{{message.getUsername()}}</label>
             <div class="details">
               <label class="status" ng-show="message.isFromMe()">
-              <i ng-class="message.getStatusIcon()"></i>
-            </label>
+                <i ng-class="message.getStatusIcon()"></i>
+              </label>
               <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
             </div>
+            <div ng-if="message.reply.id">
+              <a ng-click="scrollToReplyElement(message.reply.id)" class="msg-reply current-reply">
+              <label class="reply-name">{{message.reply.getUsername()}}</label>
+              <br>
+              <i ng-show="message.reply.isFile() && message.reply.isImage()" class="fa fa-image"></i>
+              <i ng-show="message.reply.isFile() && !message.reply.isImage()" class="fa fa-file-o"></i>
+              <span class="reply-one-line">{{message.reply.getReplyMessageBody()}}</span>
+            </a>
+            </div>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
+            <a ng-click="setReplyMessage(message)" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
             <div class="file-failed-btns">
               <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
               <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
@@ -53,11 +63,20 @@
           </div>
         </div>
       </div>
+      <div ng-if="replyMessage.id" class="fake-height"></div>
     </div>
     <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
         <i class="zmdi zmdi-chevron-down"></i>
         <span ng-show="hasUnreadNewMessages" class="fa fa-circle"></span>
       </a>
+    <div ng-if="replyMessage.id" class="current-reply-holder">
+      <div class="current-reply msg-reply">
+        <a ng-click="closeReply()" class="cancel-reply"><i class="zmdi zmdi-close"></i></a>
+        <i ng-show="replyMessage.isFile() && replyMessage.isImage()" class="fa fa-image"></i>
+        <i ng-show="replyMessage.isFile() && !replyMessage.isImage()" class="fa fa-file-o"></i>
+        <span>{{replyMessage.getReplyMessageBody()}}</span>
+      </div>
+    </div>
     <div ng-show="channel.canMemberSendMessage()" class="input-holder" id="inputHolder">
       <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
         <i class="fa fa-paperclip"></i>
