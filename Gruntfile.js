@@ -151,19 +151,7 @@ module.exports = function (grunt) {
         src: ['dist/tecom.min.js'],
         dest: 'app/tecom.min.js'
       }
-    },
-    // uglify: {
-    //   my_target: {
-    //     options: {
-    //       mangle: false,
-    //       beautify: true
-    //     },
-    //     files: {
-    //       'app/tecom.min.js': UGLIFY_SRC_FILES
-    //     }
-    //   }
-    // },
-    pkg: grunt.file.readJSON('package.json')
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
