@@ -137,7 +137,16 @@ app.factory('Message', [
     Message.prototype.getCssClass = function () {
       switch (this.type) {
         case Message.TYPE.TEXT:
-          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+          if (this.isFromMe()) {
+            return 'msg msg-send';
+          } else {
+            if (this.about) {
+              return 'msg msg-recieve msg-has-attachment';
+            } else {
+              return 'msg msg-recieve';
+            }
+          }
+          break;
         case Message.TYPE.FILE:
           return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
         case Message.TYPE.NOTIF.USER_ADDED:

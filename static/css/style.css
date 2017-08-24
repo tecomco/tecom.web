@@ -360,6 +360,7 @@ a * {
   border-radius: 4px;
   background: #fff;
 }
+
 .search-results.coming-soon {
   font-size: 20px;
   text-align: center;
@@ -1459,6 +1460,10 @@ ol.linenums, ol.linenums-view {
   font-size: 15px;
   word-wrap: break-word;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
 }
 
 .msg a[href]:not([download]):not(.msg-attachment) {
@@ -1518,6 +1523,7 @@ ol.linenums, ol.linenums-view {
 .msg .status .zmdi-time {
   color: #bbb;
 }
+
 .msg .status .zmdi-alert-circle-o {
   color: rgb(230, 77, 77);
 }
@@ -1646,22 +1652,24 @@ ol.linenums, ol.linenums-view {
   opacity: 1;
 }
 
-.file-failed-btns{
+.file-failed-btns {
   display: table;
   width: 100%;
 }
-.file-failed-btns a{
+
+.file-failed-btns a {
   width: 50%;
   text-align: center;
   color: #888;
   padding: 4px;
   display: table-cell;
 }
-.file-failed-btns a i{
+
+.file-failed-btns a i {
   padding-left: 4px;
 }
 
-.file-failed-btns a span{
+.file-failed-btns a span {
   font-size: 12px;
 }
 
@@ -1708,6 +1716,7 @@ ol.linenums, ol.linenums-view {
 .jump-btn {
   position: absolute;
   bottom: 0;
+  z-index: 4;
   left: 30px;
   width: 40px;
   height: 40px;
@@ -1832,18 +1841,119 @@ ol.linenums, ol.linenums-view {
   color: #aaa;
 }
 
-.reply {
-  background: #eee;
+.reply-btn {
   position: absolute;
-  bottom: 60px;
-  left: 0;
-  right: 0;
-  padding: 8px 32px;
-  /*z-index: 3;*/
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+  text-align: center;
+  bottom: 4px;
+  padding: 2px;
+  border-radius: 50%;
+  background: rgba(36, 167, 114, 0.1);
+  color: rgba(36, 167, 114, 0.8);
 }
 
-.msg-highlight {
-  background: red;
+.reply-btn:hover {
+  background: rgba(36, 167, 114, 0.2);
+  color: rgba(36, 167, 114, 1);
+}
+
+.msg.msg-send .reply-btn {
+  left: -30px;
+}
+
+.msg.msg-recieve .reply-btn, .notif .reply-btn {
+  right: -30px;
+}
+
+.msg.msg-recieve.msg-has-attachment .reply-btn{
+  right: -53px;
+}
+
+.current-reply-holder {
+  background: #eee;
+  position: absolute;
+  bottom: 57px;
+  left: 0;
+  right: 0;
+  padding: 8px 33px 0;
+  animation: reply-anim 0.3s ease;
+  animation-fill-mode: forwards;
+  -webkit-animation: reply-anim 0.3s ease;
+  z-index: 3;
+}
+
+@keyframes reply-anim {
+  0% {
+    height: 0;
+    bottom: 40px;
+    opacity: 0
+  }
+  90% {
+    height: auto;
+    bottom: 57px;
+    opacity: 1;
+  }
+  100% {
+    height: auto;
+    bottom: 57px;
+    opacity: 1;
+  }
+}
+
+.current-reply {
+  border-right: 4px solid rgba(36, 167, 114, 0.8);
+  background: rgba(36, 167, 114, 0.1);
+  padding: 4px 8px 4px 32px;
+  position: relative;
+}
+
+.current-reply label {
+  color: #444;
+  position: static;
+  margin-bottom: 0
+}
+
+.current-reply.msg-reply {
+  width: 100%;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.current-reply label.reply-name {
+  font-size: 12px;
+  width: 100%;
+  color: rgba(36, 167, 114, 0.8);
+}
+
+.current-reply span.reply-one-line {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cancel-reply {
+  color: rgba(36, 167, 114, 0.8);
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  font-size: 20px;
+}
+
+.cancel-reply:hover {
+  color: rgba(36, 167, 114, 1);
+}
+
+.msg-highlight .msg {
+  background: rgba(225, 245, 237, 1);
+}
+.fake-height{
+  height: 30px;
 }
 
 .input-holder {
@@ -2958,7 +3068,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 }
 
 .modal-global-err:not(.ng-hide) {
-  animation: err-anim 3s ease;
+  tion: err-anim 3s ease;
   animation-fill-mode: forwards;
   -webkit-animation: err-anim 3s ease;
 }
@@ -3134,7 +3244,6 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   left: -50%;
   padding: 5px;
 }
-
 
 .popover-content [ng-click="tour.prev()"]:after {
   content: 'قبلی';
@@ -3350,12 +3459,11 @@ label {
   }
 }
 
-
 @-moz-document url-prefix() {
   .popover-content [ng-click="tour.prev()"]:after, .popover-content [ng-click="tour.next()"]:after, .popover-content [ng-click="tour.end()"]:after {
     left: -75%;
   }
-  .header ul li{
+  .header ul li {
     display: table-cell;
   }
 }
