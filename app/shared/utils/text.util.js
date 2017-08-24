@@ -71,6 +71,8 @@ app.factory('textUtil', function () {
     return text.replace(directionRegex, function (englishPart) {
       if (englishPart === ' ')
         return englishPart;
+      if (!EnglishRegex.test(englishPart))
+        return englishPart
       var hasFirstSpace = englishPart[0] === ' ';
       var hasLastSpace = englishPart[englishPart.length - 1] === ' ';
       return (hasFirstSpace ? ' ' : '') +

@@ -10,6 +10,11 @@
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
      var isFullscreenVisible = false;
+     var socket;
+
+     $rootScope.$on('socket:connected', function (event, soc) {
+       socket = soc;
+     });
 
      $scope.openUserProfileModal = function () {
        var modalInstance = $uibModal.open({
@@ -95,10 +100,12 @@
      };
 
      $scope.activateDontDisturbMode = function () {
+       socket.disconnect();
        CurrentMember.activateDontDisturbMode();
      };
 
      $scope.deactivateDontDisturbMode = function () {
+       socket.connect();
        CurrentMember.deactivateDontDisturbMode();
      };
 

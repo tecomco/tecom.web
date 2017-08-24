@@ -100,7 +100,7 @@ app.service('channelsService', [
      * @summary RootScope listeners.
      */
 
-    $rootScope.$on('socket:connected', function () {
+    $rootScope.$on('socket:connected', function (event, socket) {
       if (self.initialChannelsGottenForFirstTime) {
         getInitialChannels();
       }
