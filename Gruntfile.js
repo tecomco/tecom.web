@@ -6,10 +6,6 @@ module.exports = function (grunt) {
     '*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
   ];
 
-  var UGLIFY_SRC_FILES = [
-    'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
-  ];
-
   var ENV_CONFIG_PATH = 'app/app.config.js';
 
   grunt.initConfig({
@@ -70,7 +66,8 @@ module.exports = function (grunt) {
       app: {
         files: {
           'dist/min-safe/app.js': ['app/app.module.js',
-            'app/app.routes.js', 'app/app.config.js'
+            'app/app.routes.js',
+            'app/app.config.js'
           ],
           'dist/min-safe/shared.js': ['app/shared/utils/array.util.js',
             'app/shared/utils/text.util.js',
@@ -87,7 +84,8 @@ module.exports = function (grunt) {
             'app/shared/auth/current-member.model.js',
             'app/shared/auth/member.model.js',
             'app/shared/auth/auth.service.js',
-            'app/shared/db/db.service.js', 'app/shared/cache/cache.js',
+            'app/shared/db/db.service.js',
+            'app/shared/cache/cache.js',
             'app/shared/cache/cache.service.js',
             'app/shared/exceptions/exception-handler.js',
             'app/shared/http/http.interceptors.js'
@@ -118,29 +116,19 @@ module.exports = function (grunt) {
     },
     concat: {
       js: {
-        src: ['dist/min-safe/app.js', 'dist/min-safe/shared.js',
+        src: ['dist/min-safe/app.js',
+          'dist/min-safe/shared.js',
           'dist/min-safe/components.js'
         ],
-        dest: 'dist/tecom.min.js'
+        dest: 'dist/tecom.concat.js'
       }
     },
     uglify: {
       js: {
-        src: ['dist/tecom.min.js'],
-        dest: 'app/tecom.min.js'
+        src: ['dist/tecom.concat.js'],
+        dest: 'dist/tecom.js'
       }
     },
-    // uglify: {
-    //   my_target: {
-    //     options: {
-    //       mangle: false,
-    //       beautify: true
-    //     },
-    //     files: {
-    //       'app/tecom.min.js': UGLIFY_SRC_FILES
-    //     }
-    //   }
-    // },
     pkg: grunt.file.readJSON('package.json')
   });
 
@@ -150,8 +138,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
-  grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
-  grunt.registerTask('prod', ['jshint', 'ngconstant:prod']);
+  grunt.registerTask('stage', ['jshint', 'ngconstant:stage', 'minify']);
+  grunt.registerTask('prod', ['jshint', 'ngconstant:prod', 'minify']);
   grunt.registerTask('lint', ['jshint']);
-  grunt.registerTask('default', ['ngAnnotate', 'concat', 'uglify']);
+  grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);
 };
