@@ -451,7 +451,7 @@ app.controller('messagesController', [
     function scrollBottom() {
       $timeout(function () {
         messagesHolder.scrollTop = messagesHolder.scrollHeight;
-      }, 0, false);
+      }, 150, false);
     }
 
     function checkShouldScrollBottom() {
