@@ -221,7 +221,7 @@ a * {
   text-align: center;
   position: relative;
   max-width: 50%;
-  padding: 8px 12px;
+  padding: 8px 45px;
   background: rgba(226, 226, 226, 0.53);
   border-radius: 8px;
   font-weight: 100;
@@ -360,6 +360,7 @@ a * {
   border-radius: 4px;
   background: #fff;
 }
+
 .search-results.coming-soon {
   font-size: 20px;
   text-align: center;
@@ -801,7 +802,8 @@ ul.dropdown-menu {
 }
 
 .group-holder ul li a .badge-grey {
-  background: #8e8e8e;
+  background: #ccc;
+  text-shadow: 0 0 1px #555;
 }
 
 .group-holder ul li a:hover {
@@ -893,6 +895,7 @@ ul.dropdown-menu {
   height: calc(100vh - 115px);
   height: -moz-calc(100vh - 115px);
   height: -webkit-calc(100vh - 115px);
+  padding: 0 20px;
   overflow-y: scroll;
   overflow-x: hidden;
   background-image: url("../img/landing-bg.png");
@@ -1446,6 +1449,27 @@ ol.linenums, ol.linenums-view {
   font-weight: 300;
 }
 
+.msg-one {
+  position: relative;
+}
+
+.msg-one .g-m-one {
+  position: absolute;
+  bottom: 4px;
+}
+.msg-one .g-m-one img{
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+  border: 0;
+}
+
+.msg-send+.g-m-one {
+  right: -45px;
+}
+
+.msg-recieve+.g-m-one {
+  left: -45px;
+}
+
 .msg {
   display: inline-block;
   min-width: 200px;
@@ -1483,7 +1507,7 @@ ol.linenums, ol.linenums-view {
 }
 
 .msg .name {
-  display: block;
+  display: inline-block;
   margin-bottom: 4px;
   font-weight: 400;
 }
@@ -1496,18 +1520,22 @@ ol.linenums, ol.linenums-view {
   display: none;
 }
 
+.msg .details {
+  float: left;
+  height: 1px;
+  padding-right: 10px;
+  display: inline-block;
+}
+
 .msg .time {
-  position: absolute;
-  top: 8px;
-  left: 12px;
+  float: left;
   color: #bbb;
   font-weight: 100;
 }
 
 .msg .status {
-  position: absolute;
-  top: 10px;
-  left: 50px;
+  position: relative;
+  left: 4px;
   font-size: 12px;
 }
 
@@ -1518,6 +1546,7 @@ ol.linenums, ol.linenums-view {
 .msg .status .zmdi-time {
   color: #bbb;
 }
+
 .msg .status .zmdi-alert-circle-o {
   color: rgb(230, 77, 77);
 }
@@ -1532,14 +1561,22 @@ ol.linenums, ol.linenums-view {
 
 .msg-attachment {
   position: absolute;
-  right: -24px;
   top: 0;
   bottom: 0;
   text-align: center;
   width: 32px;
   background: rgba(72, 203, 150, 1);
-  border-radius: 0 8px 8px 0;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+}
+
+.msg-send .msg-attachment {
+  left: -24px;
+  border-radius: 8px 0 0 8px;
+}
+
+.msg-recieve .msg-attachment {
+  right: -24px;
+  border-radius: 0 8px 8px 0;
 }
 
 .msg-attachment:hover, .msg:hover .msg-attachment {
@@ -1646,22 +1683,24 @@ ol.linenums, ol.linenums-view {
   opacity: 1;
 }
 
-.file-failed-btns{
+.file-failed-btns {
   display: table;
   width: 100%;
 }
-.file-failed-btns a{
+
+.file-failed-btns a {
   width: 50%;
   text-align: center;
   color: #888;
   padding: 4px;
   display: table-cell;
 }
-.file-failed-btns a i{
+
+.file-failed-btns a i {
   padding-left: 4px;
 }
 
-.file-failed-btns a span{
+.file-failed-btns a span {
   font-size: 12px;
 }
 
@@ -3121,7 +3160,6 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   padding: 5px;
 }
 
-
 .popover-content [ng-click="tour.prev()"]:after {
   content: 'قبلی';
 }
@@ -3336,12 +3374,11 @@ label {
   }
 }
 
-
 @-moz-document url-prefix() {
   .popover-content [ng-click="tour.prev()"]:after, .popover-content [ng-click="tour.next()"]:after, .popover-content [ng-click="tour.end()"]:after {
     left: -75%;
   }
-  .header ul li{
+  .header ul li {
     display: table-cell;
   }
 }

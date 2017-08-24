@@ -18,27 +18,29 @@
       </div>
       <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
       <div class="main">
-        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}">
+        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" class="msg-one">
           <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
             <label>پیام های جدید</label>
           </div>
           <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
             <label>{{message.getLocaleDate()}}</label>
           </div>
-          <div class="g-m-one" ng-if="message.senderId" ng-show="isMessageMemberLastMessage(message)">
-            <img ng-src="{{message.getSenderImageByMemberId()}}" />
-          </div>
           <div ng-class="message.getCssClass()" class="msg-holder">
             <label class="name" ng-style="message.getUsernameColor()" ng-show="isMessageMemberFirstMessage(message)">{{message.getUsername()}}</label>
-            <label class="status" ng-show="message.isFromMe()">
+            <div class="details">
+              <label class="status" ng-show="message.isFromMe()">
               <i ng-class="message.getStatusIcon()"></i>
             </label>
-            <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
+              <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
+            </div>
             <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
             <div class="file-failed-btns">
               <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
               <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
             </div>
+          </div>
+          <div class="g-m-one" ng-if="message.senderId" ng-show="isMessageMemberLastMessage(message)">
+            <img ng-src="{{message.getSenderImageByMemberId()}}" />
           </div>
         </div>
         <!-- TODO: Fix this -->
