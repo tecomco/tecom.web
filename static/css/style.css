@@ -148,14 +148,21 @@ a * {
 .loading {
   background-color: #24A772;
   opacity: 1;
+  visibility: visible;
   position: relative;
   z-index: 3;
   width: 100%;
   height: 100%;
-  transition: all 0.2s ease;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
+  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  -moz-transition: all 0.4s ease;
+  -o-transition: all 0.4s ease;
+}
+
+.loading.ng-hide{
+  opacity: 0;
+  visibility: hidden;
+  display: block !important;
 }
 
 .loading-fade {
@@ -1427,8 +1434,8 @@ ol.linenums, ol.linenums-view {
 .unread-msgs:after {
   height: 26px;
   top: 12px;
-  right: -60px;
-  left: -60px;
+  right: -50px;
+  left: -50px;
   background: #ddd;
 }
 
@@ -1638,8 +1645,8 @@ ol.linenums, ol.linenums-view {
   left: 0;
   right: 0;
   z-index: 4;
-  opacity: 0;
-  visibility: hidden;
+  opacity: 1;
+  visibility: visible;
   text-align: center;
   background: rgba(0, 0, 0, 0.8);
   transition: all 0.3s ease;
@@ -1648,9 +1655,10 @@ ol.linenums, ol.linenums-view {
   -webkit-transition: all 0.3s ease;
 }
 
-.img-overlay-holder.visible {
-  opacity: 1;
-  visibility: visible;
+.img-overlay-holder.ng-hide {
+  opacity: 0;
+  visibility: hidden;
+  display: block !important;
 }
 
 .img-overlay {
@@ -1768,6 +1776,7 @@ ol.linenums, ol.linenums-view {
 }
 
 .jump-btn.ng-hide {
+  display: block !important;
   opacity: 0;
   position: absolute;
   bottom: 0;

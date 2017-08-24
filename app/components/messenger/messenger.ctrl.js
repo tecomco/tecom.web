@@ -9,7 +9,7 @@
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
-     var isFullscreenVisible = false;
+     $scope.isFullscreenVisible = false;
      var socket;
 
      $rootScope.$on('socket:connected', function (event, soc) {
@@ -50,17 +50,11 @@
      $scope.$on('image:fullscreen', function (event, url, name) {
        $scope.fullscreenImageSrc = url;
        $scope.fullscreenImageName = name;
-       isFullscreenVisible = true;
+       $scope.isFullscreenVisible = true;
      });
 
-     $scope.getFullscreenImageClass = function () {
-       if (isFullscreenVisible)
-         return 'img-overlay-holder visible';
-       return 'img-overlay-holder';
-     };
-
      $scope.closeFullscreenImage = function () {
-       isFullscreenVisible = false;
+       $scope.isFullscreenVisible = false;
      };
 
      $scope.getPannelsCSS = function (pannel) {
