@@ -20,7 +20,7 @@
       <div class="main">
         <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" class="msg-one">
           <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
-            <label>پیام های جدید</label>
+            <label>پیام‌های جدید</label>
           </div>
           <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
             <label>{{message.getLocaleDate()}}</label>

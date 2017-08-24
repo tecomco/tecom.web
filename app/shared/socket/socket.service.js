@@ -22,7 +22,7 @@ app.factory('socket', [
     self.socket.on('connect', function () {
       $log.info('Socket opened and connection established successfuly.');
       $rootScope.socketConnected = true;
-      $rootScope.$broadcast('socket:connected');
+      $rootScope.$broadcast('socket:connected',self.socket);
     });
 
     self.socket.on('disconnect', function () {
