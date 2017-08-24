@@ -128,8 +128,7 @@ module.exports = function (grunt) {
         src: ['dist/tecom.concat.js'],
         dest: 'dist/tecom.js'
       }
-    },
-    pkg: grunt.file.readJSON('package.json')
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
