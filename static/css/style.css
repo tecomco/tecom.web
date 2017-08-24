@@ -1868,8 +1868,12 @@ ol.linenums, ol.linenums-view {
   right: -30px;
 }
 
-.msg.msg-recieve.msg-has-attachment .reply-btn{
+.msg.msg-recieve.msg-has-attachment .reply-btn {
   right: -53px;
+}
+
+.msg.msg-send.msg-has-attachment .reply-btn {
+  left: -53px;
 }
 
 .current-reply-holder {
@@ -1952,7 +1956,8 @@ ol.linenums, ol.linenums-view {
 .msg-highlight .msg {
   background: rgba(225, 245, 237, 1);
 }
-.fake-height{
+
+.fake-height {
   height: 30px;
 }
 

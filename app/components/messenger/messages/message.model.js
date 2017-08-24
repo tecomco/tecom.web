@@ -138,7 +138,11 @@ app.factory('Message', [
       switch (this.type) {
         case Message.TYPE.TEXT:
           if (this.isFromMe()) {
-            return 'msg msg-send';
+            if (this.about) {
+              return 'msg msg-send msg-has-attachment';
+            } else {
+              return 'msg msg-send';
+            }
           } else {
             if (this.about) {
               return 'msg msg-recieve msg-has-attachment';
