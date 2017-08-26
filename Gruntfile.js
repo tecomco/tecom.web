@@ -53,7 +53,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'stage',
-            socketUri: 'ws.tecomstage.ir:4000/'
+            socketUri: 'ws.tecomstage.ir/'
           }
         }
       },
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'prod',
-            socketUri: 'ws.tecom.me:4000/'
+            socketUri: 'ws.tecom.me/'
           }
         }
       },
