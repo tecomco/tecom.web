@@ -157,6 +157,42 @@ app.factory('Message', [
       }
     };
 
+    Message.prototype.getReplyMessageBody = function () {
+      switch (this.type) {
+        case Message.TYPE.TEXT:
+          return this.body;
+        case Message.TYPE.FILE:
+          return this.additionalData.name;
+        case Message.TYPE.NOTIF.USER_ADDED:
+          return this.addUserNotifBody();
+        case Message.TYPE.NOTIF.USER_REMOVED:
+          return this.addUserNotifBody();
+        case Message.TYPE.NOTIF.FILE_LIVED:
+          return 'فایل "' + this.additionalData.fileName + '" LIVE شد.';
+        case Message.TYPE.NOTIF.FILE_DIED:
+          return 'فایل "' + this.additionalData.fileName +
+            '"، از حالت LIVE خارج شد.';
+        case Message.TYPE.NOTIF.CHANNEL_CREATED:
+          return 'گروه ساخته شد.';
+        case Message.TYPE.NOTIF.CHANNEL_EDITED:
+          return 'اطلاعات گروه تغییر کرد.';
+      }
+    };
+
+    Message.prototype.getMessageHighlightClass = function () {
+      if (this.isHighlighted)
+        return 'msg-highlight';
+      return '';
+    };
+
+    Message.prototype.highlight = function () {
+      this.isHighlighted = true;
+      var that = this;
+      $timeout(function () {
+        that.isHighlighted = false;
+      }, 1500);
+    };
+
     Message.prototype.setIdAndDatetime = function (_id, datetime) {
       this._id = _id;
       this.id = Message.generateIntegerId(_id);

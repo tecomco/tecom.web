@@ -134,7 +134,7 @@ app.controller('messagesController', [
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody);
       $scope.messages.push(message);
-      scrollBottom();
+      scrollBottomWithDelay();
       clearMessageInput();
       messagesService.endTyping($scope.channel.id);
       $timeout.cancel(self.isTypingTimeout);
@@ -190,23 +190,6 @@ app.controller('messagesController', [
       isAnyLoadingMessageGetting = true;
       scrollToMessageElementById($scope.channel.lastMessageId);
       isAnyLoadingMessageGetting = false;
-    };
-
-    $scope.isMessageDateInAnotherDay = function (message) {
-      if (message.id === 1)
-        return true;
-      else {
-        var previousMessage =
-          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
-            1);
-        if (previousMessage) {
-          var timeDiff =
-            Math.abs(message.datetime.getTime() - previousMessage.datetime
-              .getTime());
-          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
-          return (diffDays === 0) ? false : true;
-        }
-      }
     };
 
     $scope.goLive = function (fileId, fileName) {
@@ -377,7 +360,15 @@ app.controller('messagesController', [
     function scrollBottom() {
       $timeout(function () {
         messagesHolder.scrollTop = messagesHolder.scrollHeight;
-      }, 0, false);
+      });
+    }
+
+    function scrollBottomWithDelay() {
+      $timeout(function () {
+        $timeout(function () {
+          messagesHolder.scrollTop = messagesHolder.scrollHeight;
+        }, 300, false);
+      });
     }
 
     function checkShouldScrollBottom() {

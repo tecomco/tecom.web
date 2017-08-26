@@ -139,6 +139,38 @@ app.service('messagesService', [
     function getMessagesRangeFromServer(channelId, teamId, fromId, toId,
       areLoadingMessagesGetting) {
       var deferred = $q.defer();
+      getMessagesFromServer(channelId, teamId, fromId, toId)
+        .then(function (messages) {
+          var messagesForDb = messages.map(function (message) {
+            return message.getDbWellFormed();
+          });
+          if (areLoadingMessagesGetting) {
+            updateCacheMessagesByChannelId(channelId, messagesForDb);
+            updateActiveChannelMessages(messages);
+            setRepliedMessagesReplyProperty(messages, self.currentChannelMessages)
+              .then(function () {
+                deferred.resolve(messages);
+              });
+          } else
+            deferred.resolve(messages);
+          bulkSaveMessage(messagesForDb);
+        });
+      return deferred.promise;
+    }
+
+    function setMessageReplyPropertyFromServer(message) {
+      var deferred = $q.defer();
+      getMessagesFromServer(message.channelId, message.teamId,
+          message.replyTo, message.replyTo)
+        .then(function (messages) {
+          message.reply = messages[0];
+          deferred.resolve();
+        });
+      return deferred.promise;
+    }
+
+    function getMessagesFromServer(channelId, teamId, fromId, toId) {
+      var deferred = $q.defer();
       var dataToBeSend = {
         channelId: channelId,
         teamId: teamId,
