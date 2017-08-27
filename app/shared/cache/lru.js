@@ -80,7 +80,7 @@ LRUMap.prototype.assign = function(entries) {
       e[OLDER] = entry;
     }
     entry = e;
-    if (limit-- == 0) {
+    if (limit-- === 0) {
       throw new Error('overflow');
     }
   }
