@@ -2,9 +2,9 @@
 
 app.service('channelsService', [
   '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state',
-  'CurrentMember', 'Team', 'ArrayUtil',
+  'CurrentMember', 'Team', 'ArrayUtil', 'CacheService',
   function ($rootScope, $http, $q, $log, socket, Channel, $state,
-    CurrentMember, Team, ArrayUtil) {
+    CurrentMember, Team, ArrayUtil, CacheService) {
 
     var self = this;
     var MAX_INITIAL_CHANNELS = 5;
@@ -50,7 +50,6 @@ app.service('channelsService', [
       $rootScope.$broadcast('channels:updated');
     });
 
-    // TODO: tofmali
     socket.on('channel:members:add', function (result) {
       $log.info('add member:', result);
       var channel;
@@ -100,8 +99,9 @@ app.service('channelsService', [
      * @summary RootScope listeners.
      */
 
-    $rootScope.$on('socket:connected', function (event, socket) {
+    $rootScope.$on('socket:connected', function () {
       if (self.initialChannelsGottenForFirstTime) {
+        CacheService.getCache().clear();
         getInitialChannels();
       }
     });
@@ -347,6 +347,7 @@ app.service('channelsService', [
         if (self.messagesPromise.length == maxInitialChannels) {
           $q.all(self.messagesPromise).then(function () {
             $rootScope.$broadcast('channels:updated', 'init');
+            self.messagesPromise = [];
           });
         }
       }

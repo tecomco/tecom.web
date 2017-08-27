@@ -3,20 +3,22 @@
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Message', 'messagesService', 'channelsService', 'filesService',
-  '$q', 'ArrayUtil', 'textUtil', 'CurrentMember', 'ngProgressFactory',
-  'Team',
+  '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
+  'ngProgressFactory',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
-    Message, messagesService, channelsService, filesService, $q,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, Team
+    Message, messagesService, channelsService, filesService, $q, Team,
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
 
     var self = this;
     $scope.messages = [];
     $scope.hasUnreadNewMessages = false;
+    $scope.replyMessage = {};
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
+    var inputPlaceHolder = document.getElementById('inputPlaceHolder');
     var initialMemberLastSeenId;
     var initialLastMessageId;
     var isJumpDownScrollingDown = false;
@@ -55,6 +57,9 @@ app.controller('messagesController', [
         checkShouldScrollBottom();
     });
 
+    $scope.$on('close:channel', function () {
+      $state.go('messenger.home');
+    });
 
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
@@ -83,8 +88,9 @@ app.controller('messagesController', [
     $scope.$on('file:uploading', function (event, file) {
       $scope.uploadErrorNotif = false;
       $scope.uploadSizeLimitNotif = false;
-      var message = messagesService.sendFileAndGetMessage($scope.channel
-        .id, file);
+      var message = messagesService.sendFileAndGetMessage(
+        $scope.channel.id, file, $scope.replyMessage);
+      $scope.replyMessage = {};
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
@@ -132,7 +138,8 @@ app.controller('messagesController', [
       if (!messageBody) return;
       $scope.channel.seenLastMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
-        messageBody);
+        messageBody, $scope.replyMessage);
+      $scope.replyMessage = {};
       $scope.messages.push(message);
       scrollBottomWithDelay();
       clearMessageInput();
@@ -156,21 +163,45 @@ app.controller('messagesController', [
     };
 
     $scope.isMessageMemberFirstMessage = function (message) {
-      if (!message.senderId)
+      if (!message.senderId || !message.id)
         return false;
-      var previousMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.id - 1);
+      var previousMessage = getMessageById(message.id - 1);
       if (previousMessage)
         return message.senderId !== previousMessage.senderId;
       return true;
     };
 
     $scope.isMessageMemberLastMessage = function (message) {
-      var nextMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-        'id', message.id + 1);
+      if (!message.id)
+        return false;
+      var nextMessage = getMessageById(message.id + 1);
       if (nextMessage)
         return message.senderId !== nextMessage.senderId;
       return true;
+    };
+
+    $scope.setReplyMessage = function (message) {
+      $scope.replyMessage = message;
+      shouldScrollToSeeRepliedMessage(message.id);
+      inputPlaceHolder.focus();
+    };
+
+    $scope.closeReply = function () {
+      $scope.replyMessage = {};
+    };
+
+    $scope.scrollToReplyElement = function (replyTo) {
+      getMessageIfNotExists(replyTo)
+        .then(function () {
+          return getClosestLoadingMessageIfCloseEnoughByMessageId(
+            replyTo);
+        })
+        .then(function () {
+          var message = getMessageById(replyTo);
+          message.highlight();
+          scrollToMessageElementById(replyTo);
+          hasUnreadInitializeMessages = true;
+        });
     };
 
     $scope.showFileLine = function (fileId, startLine, endLine) {
@@ -187,9 +218,7 @@ app.controller('messagesController', [
     };
 
     $scope.jumpDown = function () {
-      isAnyLoadingMessageGetting = true;
       scrollToMessageElementById($scope.channel.lastMessageId);
-      isAnyLoadingMessageGetting = false;
     };
 
     $scope.goLive = function (fileId, fileName) {
@@ -237,9 +266,7 @@ app.controller('messagesController', [
       if (message.id === 1)
         return true;
       else {
-        var previousMessage =
-          ArrayUtil.getElementByKeyValue($scope.messages, 'id', message.id -
-            1);
+        var previousMessage = getMessageById(message.id - 1);
         if (previousMessage) {
           var timeDiff =
             Math.abs(message.datetime.getTime() - previousMessage.datetime
@@ -276,6 +303,8 @@ app.controller('messagesController', [
     }
 
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
+      var deferred = $q.defer();
+      isAnyLoadingMessageGetting = true;
       messagesService.getMessagesRangeFromServer(channelId,
           CurrentMember.member.teamId, from, to, true)
         .then(function (messages) {
@@ -284,8 +313,58 @@ app.controller('messagesController', [
             $scope.messages.push(message);
           });
           isAnyLoadingMessageGetting = false;
-          getMessagePackagesIfLoadingsInView(isDirectionUp);
+          deferred.resolve();
+          $timeout(function () {
+            getMessagePackagesIfLoadingsInView(isDirectionUp);
+          });
         });
+      return deferred.promise;
+    }
+
+    function getClosestLoadingMessageIfCloseEnoughByMessageId(messageId) {
+      var deferred = $q.defer();
+      var loadingMessages = filterLoadingMessages();
+      var closestLoadingMessage = messagesService.findClosestLoadingMessage(
+        loadingMessages, messageId);
+      if (closestLoadingMessage) {
+        getLoadingMessages(closestLoadingMessage.additionalData.channelId,
+          closestLoadingMessage.additionalData.from, closestLoadingMessage
+          .additionalData.to).then(function () {
+          deferred.resolve();
+        });
+      } else
+        deferred.resolve();
+      return deferred.promise;
+    }
+
+    function getLoadingMessageContainingReplyMessage(messageId) {
+      var loadingMessages = filterLoadingMessages();
+      var loadingMessageContainingReplyMessage = messagesService.findLoadingMessageContainsReplyMessage(
+        loadingMessages, messageId);
+      return getLoadingMessages(
+        loadingMessageContainingReplyMessage.additionalData.channelId,
+        loadingMessageContainingReplyMessage.additionalData.from,
+        loadingMessageContainingReplyMessage.additionalData.to);
+    }
+
+    function getMessageIfNotExists(replyTo) {
+      var deferred = $q.defer();
+      var message = getMessageById(replyTo);
+      if (message) {
+        if (message.isLoading()) {
+          getLoadingMessages(message.additionalData.channelId, message.additionalData
+            .from, message.additionalData.to).then(function () {
+            deferred.resolve();
+          });
+        } else
+          deferred.resolve();
+      } else {
+        getLoadingMessageContainingReplyMessage(replyTo)
+          .then(function () {
+            deferred.resolve();
+          });
+      }
+      return deferred.promise;
     }
 
     function setCurrentChannel() {
@@ -308,8 +387,7 @@ app.controller('messagesController', [
           $scope.messages = messages;
           scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {
-            var lastMessage = ArrayUtil.getElementByKeyValue($scope.messages,
-              'id', $scope.channel.lastMessageId);
+            var lastMessage = getMessageById($scope.channel.lastMessageId);
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
             $timeout(function () {
@@ -333,6 +411,10 @@ app.controller('messagesController', [
 
     function clearMessageInput() {
       $scope.inputMessage = '';
+    }
+
+    function getMessageById(messageId) {
+      return ArrayUtil.getElementByKeyValue($scope.messages, 'id', messageId);
     }
 
     function removeLoadingMessage(messageId) {
@@ -377,6 +459,21 @@ app.controller('messagesController', [
         scrollBottom();
     }
 
+    function shouldScrollToSeeRepliedMessage(id) {
+      var element = getMessageElementById(id);
+      var heightDifference = element.offsetTop + element.scrollHeight -
+        messagesHolder.scrollTop - messagesWindow.scrollHeight + 40;
+      if (heightDifference > 0 && heightDifference < 60)
+        scrollToSeeRepliedMessage(heightDifference);
+    }
+
+    function scrollToSeeRepliedMessage(heightDifference) {
+      $timeout(function () {
+        messagesHolder.scrollTop = messagesHolder.scrollTop +
+          heightDifference;
+      });
+    }
+
     function scrollToUnseenMessage() {
       if ($scope.channel.areAllMessagesHaveBeenSeen())
         scrollToMessageElementById($scope.channel.memberLastSeenId);
@@ -391,22 +488,26 @@ app.controller('messagesController', [
 
     function scrollToMessageElementById(elementId) {
       $timeout(function () {
+        isAnyLoadingMessageGetting = true;
         var messageElement = getMessageElementById(elementId);
         if (messageElement)
           messagesHolder.scrollTop = messageElement.offsetTop -
-          messagesWindow.offsetTop;
+          messagesWindow.offsetTop - messagesWindow.scrollHeight / 3;
+        isAnyLoadingMessageGetting = false;
       }, 0, false);
     }
 
     function isElementInViewPort(element, isDirectionUp) {
       if (isDirectionUp) {
-        return (element.offsetTop > messagesHolder.scrollTop &&
-          element.offsetTop < messagesHolder.scrollTop + messagesHolder.scrollHeight
+        return (element.offsetTop + element.scrollHeight + 350 >
+          messagesHolder.scrollTop + messagesWindow.offsetTop &&
+          element.offsetTop + element.scrollHeight < messagesHolder.scrollTop +
+          messagesWindow.offsetTop + messagesWindow.scrollHeight
         );
       } else {
-        return (element.offsetTop > messagesHolder.scrollTop +
-          messagesWindow.scrollHeight && element.offsetTop <
-          messagesHolder.scrollTop + 2 * messagesWindow.scrollHeight);
+        return (element.offsetTop - 350 < messagesHolder.scrollTop +
+          messagesWindow.scrollHeight && element.offsetTop >
+          messagesHolder.scrollTop);
       }
     }
 
@@ -417,9 +518,8 @@ app.controller('messagesController', [
       return loadingMessages;
     }
 
-    function getMessageElementById(id) {
-      var element = document.getElementById('message_' + id);
-      return element;
+    function getMessageElementById(messageId) {
+      return document.getElementById('message_' + messageId);
     }
 
     function getMessagePackagesIfLoadingsInView(isDirectionUp) {
@@ -430,7 +530,6 @@ app.controller('messagesController', [
           getLoadingMessages(message.additionalData.channelId,
             message.additionalData.from, message.additionalData.to,
             isDirectionUp);
-          isAnyLoadingMessageGetting = true;
         }
       });
     }
@@ -447,7 +546,7 @@ app.controller('messagesController', [
         messagesHolder.scrollHeight;
     }
 
-    document.getElementById('inputPlaceHolder').focus();
+    inputPlaceHolder.focus();
 
     angular.element(messagesHolder)
       .bind('scroll', function () {
@@ -472,13 +571,15 @@ app.controller('messagesController', [
     document.onkeydown = function (evt) {
       evt = evt || $window.event;
       if (evt.keyCode == 27) {
-        $state.go('messenger.home');
+        $rootScope.$broadcast('close:imageViewer');
       }
     };
 
     $scope.$on('tab:focus:changed', function () {
-      if ($rootScope.isTabFocused)
+      if ($rootScope.isTabFocused) {
         seenLastUnSeenMessage();
+        inputPlaceHolder.focus();
+      }
     });
 
   }

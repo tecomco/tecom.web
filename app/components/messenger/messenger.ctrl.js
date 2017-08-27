@@ -9,12 +9,7 @@
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
-     var isFullscreenVisible = false;
-     var socket;
-
-     $rootScope.$on('socket:connected', function (event, soc) {
-       socket = soc;
-     });
+     $scope.isFullscreenVisible = false;
 
      $scope.openUserProfileModal = function () {
        var modalInstance = $uibModal.open({
@@ -50,17 +45,18 @@
      $scope.$on('image:fullscreen', function (event, url, name) {
        $scope.fullscreenImageSrc = url;
        $scope.fullscreenImageName = name;
-       isFullscreenVisible = true;
+       $scope.isFullscreenVisible = true;
      });
 
-     $scope.getFullscreenImageClass = function () {
-       if (isFullscreenVisible)
-         return 'img-overlay-holder visible';
-       return 'img-overlay-holder';
-     };
+     $scope.$on('close:imageViewer', function () {
+       if ($scope.isFullscreenVisible)
+         $scope.closeFullscreenImage();
+       else
+         $rootScope.$broadcast('close:channel');
+     });
 
      $scope.closeFullscreenImage = function () {
-       isFullscreenVisible = false;
+       $scope.isFullscreenVisible = false;
      };
 
      $scope.getPannelsCSS = function (pannel) {
@@ -100,12 +96,10 @@
      };
 
      $scope.activateDontDisturbMode = function () {
-       socket.disconnect();
        CurrentMember.activateDontDisturbMode();
      };
 
      $scope.deactivateDontDisturbMode = function () {
-       socket.connect();
        CurrentMember.deactivateDontDisturbMode();
      };
 

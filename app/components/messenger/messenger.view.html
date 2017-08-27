@@ -70,7 +70,7 @@
     </div>
   </div>
 <!-- TODO add class 'visible' to bottom div -->
-<div ng-class="getFullscreenImageClass()">
+<div ng-hide="!isFullscreenVisible" class="img-overlay-holder ng-hide ng-cloak">
     <img ng-src="{{fullscreenImageSrc}}" class="img-overlay" />
     <a class="img-overlay-close-btn" ng-click="closeFullscreenImage()">
       <i class="zmdi zmdi-close"></i>
