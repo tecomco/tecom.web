@@ -1,10 +1,10 @@
 'use strict';
 
 app.service('filesService', [
-  '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q',
+  '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q', 'Team',
   'channelsService', 'File', 'FileManagerFile', 'fileUtil', 'Upload',
-  function ($rootScope, $http, $log, socket, ArrayUtil, $q, channelsService,
-    File, FileManagerFile, fileUtil, Upload) {
+  function ($rootScope, $http, $log, socket, ArrayUtil, $q, Team,
+    channelsService, File, FileManagerFile, fileUtil, Upload) {
 
     var self = this;
     var uploadQueue = [];
@@ -166,6 +166,7 @@ app.service('filesService', [
 
     function sendLiveFileDataToServer(type, channelId, fileName, fileId) {
       var data = {
+        teamId: Team.id,
         channelId: channelId,
         fileName: fileName
       };
