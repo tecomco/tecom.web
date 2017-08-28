@@ -18,9 +18,13 @@ app.factory('Member', ['User', function (User) {
     return this.status !== Member.STATUS.DEACTIVE;
   };
 
+  /**
+   * @todo Create an exclusive image for tecom-bot.
+   */
   Member.TECOM_BOT = {
     id: 0,
-    username: 'تیک-بات'
+    username: 'تیک-بات',
+    image: '/static/img/user-def.png'
   };
 
   Member.STATUS = {

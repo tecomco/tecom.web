@@ -49,7 +49,7 @@
               <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
             </div>
           </div>
-          <div class="g-m-one" ng-if="message.senderId" ng-show="isMessageMemberLastMessage(message)">
+          <div class="g-m-one" ng-if="message.senderId !== null" ng-show="isMessageMemberLastMessage(message)">
             <img ng-src="{{message.getSenderImageByMemberId()}}" />
           </div>
         </div>

@@ -38,18 +38,8 @@ app.factory('Message', [
     };
 
     Message.prototype.getUsername = function () {
-      if (CurrentMember.member.isTecomBot() || this.isLoading()) {
-        return '';
-      }
-      var username = Team.getUsernameByMemberId(this.senderId);
-      if (!this.isNotif() && username === '') {
-
-        /**
-         * @todo Please fix this shit boi.
-         */
-        $log.error('Empty username problem. Team members:');
-      }
-      return username;
+      if (this.isLoading() || this.isNotif()) return '';
+      return Team.getUsernameByMemberId(this.senderId);
     };
 
     Message.prototype.getUsernameColor = function () {
