@@ -47,7 +47,7 @@ app.controller('fileManagerController', [
 
     $scope.getFileManagerToggleClass = function () {
       if (isLoading)
-        return 'fa fa-spinner';
+        return 'fa fa-spinner fa-spin';
       else
         return 'mime-menu-toggle';
     };
