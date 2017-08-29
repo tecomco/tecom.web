@@ -49,7 +49,9 @@ app.controller('messagesController', [
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel().then(function () {
         $scope.channel.initialMessagesPromise
-          .then(initialize());
+          .then(function () {
+            initialize();
+          });
       });
     }
 
@@ -501,13 +503,13 @@ app.controller('messagesController', [
 
     function isElementInViewPort(element, isDirectionUp) {
       if (isDirectionUp) {
-        return (element.offsetTop + element.scrollHeight + 350 >
+        return (element.offsetTop + element.scrollHeight + 250 >
           messagesHolder.scrollTop + messagesWindow.offsetTop &&
           element.offsetTop + element.scrollHeight < messagesHolder.scrollTop +
           messagesWindow.offsetTop + messagesWindow.scrollHeight
         );
       } else {
-        return (element.offsetTop - 350 < messagesHolder.scrollTop +
+        return (element.offsetTop - 250 < messagesHolder.scrollTop +
           messagesWindow.scrollHeight && element.offsetTop >
           messagesHolder.scrollTop);
       }

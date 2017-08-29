@@ -1648,7 +1648,7 @@ ol.linenums, ol.linenums-view {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 4;
+  z-index: 11;
   opacity: 1;
   visibility: visible;
   text-align: center;

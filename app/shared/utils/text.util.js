@@ -66,6 +66,8 @@ app.factory('textUtil', function () {
   function directionify(text) {
     if (!text.match(/[a-zA-Z]/i))
       return text;
+    if (isEnglish(text))
+      return generateDirectionifyText(text);
     var directionifiedText = '';
     var englishTempText = '';
     text.trim().split(' ').forEach(function (word, index, array) {
@@ -101,7 +103,7 @@ app.factory('textUtil', function () {
 
   function generateEnglishTempTextIfExists(englishTempText) {
     if (englishTempText.length)
-      return generateDirectionifyText(englishTempText) + ' ';
+      return generateDirectionifyText(englishTempText.trim()) + ' ';
     else
       return '';
   }

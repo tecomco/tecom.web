@@ -53,7 +53,7 @@
             </a>
               </div>
               <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
-              <a ng-click="setReplyMessage(message)" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
+              <a ng-click="setReplyMessage(message)" ng-if="!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
               <div class="file-failed-btns">
                 <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
                 <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
