@@ -1491,10 +1491,10 @@ ol.linenums, ol.linenums-view {
   font-size: 15px;
   word-wrap: break-word;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  /*transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;*/
 }
 
 .msg a[href]:not([download]):not(.msg-attachment) {

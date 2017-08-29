@@ -2,9 +2,9 @@
 
 app.factory('Channel', [
   '$stateParams', 'textUtil', 'ArrayUtil', '$q', 'CurrentMember', 'Team',
-  'Member',
+  'Member', '$http',
   function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team,
-    Member) {
+    Member, $http) {
 
     function Channel(name, slug, description, type, id, membersCount,
       memberId, isFakeDirect, liveFileId, teamId,
@@ -149,6 +149,7 @@ app.factory('Channel', [
           }
           if (this.slug === Member.TECOM_BOT.username)
             return 'fa fa-heart member-status status-online';
+          if (!this.member) return this.handleIconClassError();
           switch (this.member.status) {
             case Member.STATUS.OFFLINE:
               return 'zmdi zmdi-circle member-status status-offline';
@@ -158,6 +159,26 @@ app.factory('Channel', [
               return 'zmdi zmdi-close-circle-o member-status status-deactive';
           }
       }
+    };
+
+    /**
+     * @description This is a temporary method only for debugging purposes.
+     * @todo Please remove!
+     */
+    Channel.prototype.handleIconClassError = function () {
+      if (!this.hasSentIconError) {
+        $http.post('/api/v1/logs/create/', {
+          message: 'getIconClass error. Slug: ' + this.slug +
+            ', Team member ids: [' +
+            Team.members.map(function (member) {
+              return member.id;
+            }) + ']',
+          member: CurrentMember.member.id
+        });
+        this.hasSentIconError = true;
+        console.log('getIconClass error sent.');
+      }
+      return 'zmdi zmdi-circle member-status status-offline';
     };
 
     Channel.prototype.getDirectStatus = function () {

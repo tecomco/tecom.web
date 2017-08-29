@@ -146,7 +146,7 @@ app.controller('messagesController', [
         messageBody, $scope.replyMessage);
       $scope.replyMessage = null;
       $scope.messages.push(message);
-      scrollBottomWithDelay();
+      scrollBottom();
       clearMessageInput();
       messagesService.endTyping($scope.channel.id);
       $timeout.cancel(self.isTypingTimeout);
@@ -455,14 +455,6 @@ app.controller('messagesController', [
       });
     }
 
-    function scrollBottomWithDelay() {
-      $timeout(function () {
-        $timeout(function () {
-          messagesHolder.scrollTop = messagesHolder.scrollHeight;
-        }, 300, false);
-      });
-    }
-
     function checkShouldScrollBottom() {
       if (messagesHolder.scrollHeight - messagesHolder.scrollTop < 1.5 *
         messagesWindow.scrollHeight)
@@ -581,9 +573,11 @@ app.controller('messagesController', [
     document.onkeydown = function (evt) {
       evt = evt || $window.event;
       if (evt.keyCode == 27) {
-        if ($scope.isFullscreenVisible)
-          $scope.isFullscreenVisible = false;
-        else
+        if ($scope.isFullscreenVisible) {
+          $timeout(function () {
+            $scope.closeFullscreenImage();
+          });
+        } else
           $state.go('messenger.home');
       }
     };
