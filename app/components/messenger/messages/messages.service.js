@@ -442,6 +442,7 @@ app.service('messagesService', [
     }
 
     function sendAndGetMessage(channelId, messageBody, replyMessage) {
+      var replyId = null;
       var about = null;
       var livedFile = filesService.getLivedFile();
       if (livedFile) {
@@ -454,10 +455,13 @@ app.service('messagesService', [
           };
         livedFile.deselectTempLines();
       }
+      if (replyMessage)
+        replyId = replyMessage.id;
       var message = new Message(messageBody, Message.TYPE.TEXT,
         CurrentMember.member.id, channelId, null, null, null,
-        about, replyMessage.id, true);
-      message.reply = replyMessage;
+        about, replyId, true);
+      if (replyMessage)
+        message.reply = replyMessage;
       socket.emit('message:send', message.getServerWellFormed(),
         function (data) {
           message.isPending = false;
@@ -473,13 +477,17 @@ app.service('messagesService', [
     }
 
     function sendFileAndGetMessage(channelId, fileData, replyMessage) {
+      var replyId = null;
       var additionalData = {
         name: fileData.name
       };
+      if (replyMessage)
+        replyId = replyMessage.id;
       var message = new Message(null, Message.TYPE.FILE,
         CurrentMember.member.id, channelId, null, null, additionalData,
-        null, replyMessage.id, true, +new Date());
-      message.reply = replyMessage;
+        null, replyId, true, +new Date());
+      if (replyMessage)
+        message.reply = replyMessage;
       uploadFile(message, fileData);
       return message;
     }
@@ -584,8 +592,8 @@ app.service('messagesService', [
     function updateChannelMembersCount(message) {
       var channel = channelsService.findChannelById(message.channelId);
       if (message.type === Message.TYPE.NOTIF.USER_ADDED)
-        channel.membersCount = channel.membersCount + message.additionalData
-        .length;
+        channel.membersCount = channel.membersCount +
+        message.additionalData.length;
       else if (message.type === Message.TYPE.NOTIF.USER_REMOVED)
         channel.membersCount--;
     }

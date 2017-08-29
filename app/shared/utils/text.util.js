@@ -64,40 +64,46 @@ app.factory('textUtil', function () {
   }
 
   function directionify(text) {
-    var EnglishRegex = /\b((?!=|\,|\.).)+(.)\b/;
-    if (!EnglishRegex.test(text))
+    if (!text.match(/[a-zA-Z]/i))
       return text;
-    var textBody = '';
-    var englishTextTemp = '';
-    var textParts = text.split(' ');
-    for (var i = 0; i < textParts.length; i++) {
-      if (!isEnglish(textParts[i])) {
-        if (englishTextTemp.length) {
-          textBody += generateDirectionifyText(englishTextTemp.trim());
-          englishTextTemp = '';
-          textBody += ' ';
-        }
-        textBody += generateDirectionifyText(textParts[i]);
-        if (i !== textParts.length - 1)
-          textBody += ' ';
+    var directionifiedText = '';
+    var englishTempText = '';
+    text.trim().split(' ').forEach(function (word, index, array) {
+      if (word === '') {
+        directionifiedText += generateEnglishTempTextIfExists(
+          englishTempText);
+        englishTempText = '';
+        directionifiedText += ' ';
+      } else if (!word.match(/[a-zA-Z]/i)) {
+        directionifiedText += generateEnglishTempTextIfExists(
+          englishTempText);
+        englishTempText = '';
+        directionifiedText += generateDirectionifyText(word);
+        if (index !== array.length - 1)
+          directionifiedText += ' ';
       } else {
-        englishTextTemp += textParts[i];
-        if (i !== textParts.length - 1)
-          englishTextTemp += ' ';
+        englishTempText += word;
+        if (index !== array.length - 1)
+          englishTempText += ' ';
       }
-    }
-    if (englishTextTemp.length)
-      textBody += generateDirectionifyText(englishTextTemp.trim());
-    return textBody;
+    });
+    directionifiedText += generateEnglishTempTextIfExists(
+      englishTempText);
+    return directionifiedText;
   }
 
   function generateDirectionifyText(word) {
-    if (word === ' ')
-      return '';
-    else if (!isEnglish(word))
+    if (!word.match(/[a-zA-Z]/i))
       return word;
     else
       return '<span style="direction:ltr" dir="ltr">' + word + '</span> ';
+  }
+
+  function generateEnglishTempTextIfExists(englishTempText) {
+    if (englishTempText.length)
+      return generateDirectionifyText(englishTempText) + ' ';
+    else
+      return '';
   }
 
   /**

@@ -9,7 +9,6 @@
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
-     $scope.isFullscreenVisible = false;
 
      $scope.openUserProfileModal = function () {
        var modalInstance = $uibModal.open({
@@ -41,23 +40,6 @@
      $scope.$on('loading:finished', function () {
        checkIfUserSeenTour();
      });
-
-     $scope.$on('image:fullscreen', function (event, url, name) {
-       $scope.fullscreenImageSrc = url;
-       $scope.fullscreenImageName = name;
-       $scope.isFullscreenVisible = true;
-     });
-
-     $scope.$on('close:imageViewer', function () {
-       if ($scope.isFullscreenVisible)
-         $scope.closeFullscreenImage();
-       else
-         $rootScope.$broadcast('close:channel');
-     });
-
-     $scope.closeFullscreenImage = function () {
-       $scope.isFullscreenVisible = false;
-     };
 
      $scope.getPannelsCSS = function (pannel) {
        if (pannel === 'messages') {

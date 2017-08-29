@@ -4,105 +4,116 @@
   <div class="header clearfix">
     <div ui-view="header"></div>
   </div>
-  <div id=messagesWindow ng-controller="messagesController">
-    <div id="messagesHolder" class="chat">
-      <div class="server-msg ng-cloak ng-hide" ng-hide="socketConnected" ng-cloak>
-        <i class="fa fa-spinner fa-spin fa-fw"></i>
-        <span>در حال وصل شدن به سرور...</span>
-      </div>
-      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadErrorNotif" ng-cloak>
-        <span>مشکل در آپلود فایل</span>
-      </div>
-      <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadSizeLimitNotif" ng-cloak>
-        <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
-      </div>
-      <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
-      <div class="main">
-        <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" ng-class="message.getMessageHighlightClass()" class="msg-one">
-          <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
-            <label>پیام‌های جدید</label>
-          </div>
-          <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
-            <label>{{message.getLocaleDate()}}</label>
-          </div>
-          <div ng-class="message.getCssClass()" class="msg-holder">
-            <label class="name" ng-style="message.getUsernameColor()" ng-if="isMessageMemberFirstMessage(message)">{{message.getUsername()}}</label>
-            <div class="details">
-              <label class="status" ng-show="message.isFromMe()">
+  <div ng-controller="messagesController">
+    <div ng-hide="!isFullscreenVisible" class="img-overlay-holder ng-hide ng-cloak">
+      <img ng-src="{{fullscreenImageSrc}}" class="img-overlay" />
+      <a class="img-overlay-close-btn" ng-click="closeFullscreenImage()">
+          <i class="zmdi zmdi-close"></i>
+        </a>
+      <a class="img-overlay-dl-btn" ng-href="{{fullscreenImageSrc}}" download="{{fullscreenImageName}}" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">
+          <i class="zmdi zmdi-download"></i>
+        </a>
+    </div>
+    <div id="messagesWindow">
+      <div id="messagesHolder" class="chat">
+        <div class="server-msg ng-cloak ng-hide" ng-hide="socketConnected" ng-cloak>
+          <i class="fa fa-spinner fa-spin fa-fw"></i>
+          <span>در حال وصل شدن به سرور...</span>
+        </div>
+        <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadErrorNotif" ng-cloak>
+          <span>مشکل در آپلود فایل</span>
+        </div>
+        <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadSizeLimitNotif" ng-cloak>
+          <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
+        </div>
+        <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
+        <div class="main">
+          <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" ng-class="message.getMessageHighlightClass()" class="msg-one">
+            <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
+              <label>پیام‌های جدید</label>
+            </div>
+            <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
+              <label>{{message.getLocaleDate()}}</label>
+            </div>
+            <div ng-class="message.getCssClass()" class="msg-holder">
+              <label class="name" ng-style="message.getUsernameColor()" ng-if="isMessageMemberFirstMessage(message)">{{message.getUsername()}}</label>
+              <div class="details">
+                <label class="status" ng-show="message.isFromMe()">
                 <i ng-class="message.getStatusIcon()"></i>
               </label>
-              <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
-            </div>
-            <div ng-if="message.reply.id">
-              <a ng-click="scrollToReplyElement(message.reply.id)" class="msg-reply current-reply">
+                <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
+              </div>
+              <div ng-if="message.reply.id">
+                <a ng-click="scrollToSelectedMessage(message.reply.id)" class="msg-reply current-reply">
               <label class="reply-name">{{message.reply.getUsername()}}</label>
               <br>
               <i ng-show="message.reply.isFile() && message.reply.isImage()" class="fa fa-image"></i>
               <i ng-show="message.reply.isFile() && !message.reply.isImage()" class="fa fa-file-o"></i>
               <span class="reply-one-line">{{message.reply.getReplyMessageBody()}}</span>
             </a>
+              </div>
+              <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
+              <a ng-click="setReplyMessage(message)" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
+              <div class="file-failed-btns">
+                <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
+                <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
+              </div>
             </div>
-            <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
-            <a ng-click="setReplyMessage(message)" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
-            <div class="file-failed-btns">
-              <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
-              <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
+            <div class="g-m-one" ng-if="message.senderId !== null" ng-show="isMessageMemberLastMessage(message)">
+              <img ng-src="{{message.getSenderImageByMemberId()}}" />
             </div>
           </div>
-          <div class="g-m-one" ng-if="message.senderId !== null" ng-show="isMessageMemberLastMessage(message)">
-            <img ng-src="{{message.getSenderImageByMemberId()}}" />
+          <!-- TODO: Fix this -->
+          <div ng-show="channel.anyoneTyping()" class="msg-holder">
+            <div class="is-typing">
+              <label class="name">{{channel.getIsTypingString()}}</label>
+              <span><i class="zmdi zmdi-circle"></i></span>
+              <span><i class="zmdi zmdi-circle"></i></span>
+              <span><i class="zmdi zmdi-circle"></i></span>
+            </div>
           </div>
         </div>
-        <!-- TODO: Fix this -->
-        <div ng-show="channel.anyoneTyping()" class="msg-holder">
-          <div class="is-typing">
-            <label class="name">{{channel.getIsTypingString()}}</label>
-            <span><i class="zmdi zmdi-circle"></i></span>
-            <span><i class="zmdi zmdi-circle"></i></span>
-            <span><i class="zmdi zmdi-circle"></i></span>
-          </div>
-        </div>
+        <div ng-if="replyMessage" class="fake-height"></div>
       </div>
-      <div ng-if="replyMessage.id" class="fake-height"></div>
-    </div>
-    <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
+      <a class="jump-btn ng-hide ng-cloak" ng-click="jumpDown()" ng-show="shouldShowJumpDownButton()" ng-cloak>
         <i class="zmdi zmdi-chevron-down"></i>
         <span ng-show="hasUnreadNewMessages" class="fa fa-circle"></span>
       </a>
-    <div ng-if="replyMessage.id" class="current-reply-holder" id="replys">
-      <div class="current-reply msg-reply">
-        <a ng-click="closeReply()" class="cancel-reply"><i class="zmdi zmdi-close"></i></a>
-        <i ng-show="replyMessage.isFile() && replyMessage.isImage()" class="fa fa-image"></i>
-        <i ng-show="replyMessage.isFile() && !replyMessage.isImage()" class="fa fa-file-o"></i>
-        <span>{{replyMessage.getReplyMessageBody()}}</span>
+      <div ng-if="replyMessage" class="current-reply-holder">
+        <div class="current-reply msg-reply">
+          <a ng-click="closeReply()" class="cancel-reply"><i class="zmdi zmdi-close"></i></a>
+          <i ng-show="replyMessage.isFile() && replyMessage.isImage()" class="fa fa-image"></i>
+          <i ng-show="replyMessage.isFile() && !replyMessage.isImage()" class="fa fa-file-o"></i>
+          <span>{{replyMessage.getReplyMessageBody()}}</span>
+        </div>
       </div>
-    </div>
-    <div ng-show="channel.canMemberSendMessage()" class="input-holder" id="inputHolder">
-      <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
+      <div ng-show="channel.canMemberSendMessage()" class="input-holder" id="inputHolder">
+        <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
         <i class="fa fa-paperclip"></i>
       </a>
-      <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-style="getInputStyle()" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
-      <a class="send-btn" href="#" ng-click="sendMessage($event)">
+        <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-style="getInputStyle()" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
+        <a class="send-btn" href="#" ng-click="sendMessage($event)">
         <i class="zmdi zmdi-mail-send"></i>
       </a>
+      </div>
+      <div ng-show="channel.getIsRemoved() && !channel.isPublic()" class="input-holder bottom-msg">
+        <label>شما از این گروه حذف شدین.</label>
+        <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
+      </div>
+      <div ng-show="channel.getIsArchived() && channel.active" class="input-holder bottom-msg">
+        <label>این گروه توسط ادمین حذف شده و دیگر به آن دسترسی ندارید.</label>
+        <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
+      </div>
+      <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && !channel.isCurrentMemberPublicChannelMember()" class="input-holder bottom-msg">
+        <label>شما در این گروه عمومی عضو نیستید.</label>
+        <button class="btn" ng-click="joinPublicChannel()">همین الان عضو شو!</button>
+      </div>
+      <div ng-show="!channel.active" class="input-holder">
+        <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>
+        <button class="btn" ng-click="archiveDirect(channel)">حذف و بستن مکالمه</button>
+      </div>
+      <div ui-view="filemanager"></div>
     </div>
-    <div ng-show="channel.getIsRemoved() && !channel.isPublic()" class="input-holder bottom-msg">
-      <label>شما از این گروه حذف شدین.</label>
-      <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
-    </div>
-    <div ng-show="channel.getIsArchived() && channel.active" class="input-holder bottom-msg">
-      <label>این گروه توسط ادمین حذف شده و دیگر به آن دسترسی ندارید.</label>
-      <button class="btn" ng-click="removeAndCloseChannel(channel)">حذف و بستن گروه</button>
-    </div>
-    <div ng-show="!channel.getIsRemoved() && !channel.getIsArchived() && channel.active && !channel.isCurrentMemberPublicChannelMember()" class="input-holder bottom-msg">
-      <label>شما در این گروه عمومی عضو نیستید.</label>
-      <button class="btn" ng-click="joinPublicChannel()">همین الان عضو شو!</button>
-    </div>
-    <div ng-show="!channel.active" class="input-holder">
-      <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>
-      <button class="btn" ng-click="archiveDirect(channel)">حذف و بستن مکالمه</button>
-    </div>
-    <div ui-view="filemanager"></div>
   </div>
 </div>
 <div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-content="این‌جا محتوایی که راجع بهش صحبت می‌شه، نشون داده می‌شه. در حال حاضر تیکام فقط از فایل‌های کد برای این قابلیت پشتیبانی می‌کنه. (۵/۸)" tour-step-order="4" tour-step-backdrop="true"

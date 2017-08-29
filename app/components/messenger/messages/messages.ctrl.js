@@ -13,7 +13,8 @@ app.controller('messagesController', [
     var self = this;
     $scope.messages = [];
     $scope.hasUnreadNewMessages = false;
-    $scope.replyMessage = {};
+    $scope.replyMessage = null;
+    $scope.isFullscreenVisible = false;
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var messagesHolder = document.getElementById('messagesHolder');
@@ -57,10 +58,6 @@ app.controller('messagesController', [
         checkShouldScrollBottom();
     });
 
-    $scope.$on('close:channel', function () {
-      $state.go('messenger.home');
-    });
-
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
         if (!isBottomOfMessagesHolder()) {
@@ -90,7 +87,7 @@ app.controller('messagesController', [
       $scope.uploadSizeLimitNotif = false;
       var message = messagesService.sendFileAndGetMessage(
         $scope.channel.id, file, $scope.replyMessage);
-      $scope.replyMessage = {};
+      $scope.replyMessage = null;
       $scope.messages.push(message);
       scrollBottom();
       generateUploadProgressBar(message);
@@ -105,6 +102,14 @@ app.controller('messagesController', [
       else if (err === 'sizeLimit')
         setUploadSizeLimitNotif();
     });
+
+    $scope.$on('image:fullscreen', function (event, url, name) {
+      setFullscreenImageProperty(url, name);
+    });
+
+    $scope.closeFullscreenImage = function () {
+      $scope.isFullscreenVisible = false;
+    };
 
     $scope.upload = function (file, errFiles) {
       $rootScope.$broadcast('file:upload', file, errFiles);
@@ -139,7 +144,7 @@ app.controller('messagesController', [
       $scope.channel.seenLastMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody, $scope.replyMessage);
-      $scope.replyMessage = {};
+      $scope.replyMessage = null;
       $scope.messages.push(message);
       scrollBottomWithDelay();
       clearMessageInput();
@@ -186,10 +191,10 @@ app.controller('messagesController', [
     };
 
     $scope.closeReply = function () {
-      $scope.replyMessage = {};
+      $scope.replyMessage = null;
     };
 
-    $scope.scrollToReplyElement = function (replyTo) {
+    $scope.scrollToSelectedMessage = function (replyTo) {
       getMessageIfNotExists(replyTo)
         .then(function () {
           return getClosestLoadingMessageIfCloseEnoughByMessageId(
@@ -229,7 +234,7 @@ app.controller('messagesController', [
     };
 
     $scope.fullscreenImage = function (url, name) {
-      $rootScope.$broadcast('image:fullscreen', url, name);
+      setFullscreenImageProperty(url, name);
     };
 
     $scope.archiveDirect = function (channel) {
@@ -420,6 +425,12 @@ app.controller('messagesController', [
       ArrayUtil.removeElementByKeyValue($scope.messages, 'id', messageId);
     }
 
+    function setFullscreenImageProperty(url, name) {
+      $scope.fullscreenImageSrc = url;
+      $scope.fullscreenImageName = name;
+      $scope.isFullscreenVisible = true;
+    }
+
     function setUploadErrorNotif() {
       if (!$scope.uploadErrorNotif) {
         $scope.uploadErrorNotif = true;
@@ -570,7 +581,10 @@ app.controller('messagesController', [
     document.onkeydown = function (evt) {
       evt = evt || $window.event;
       if (evt.keyCode == 27) {
-        $rootScope.$broadcast('close:imageViewer');
+        if ($scope.isFullscreenVisible)
+          $scope.isFullscreenVisible = false;
+        else
+          $state.go('messenger.home');
       }
     };
 
