@@ -161,6 +161,7 @@ app.service('channelsService', [
           fakeDirect.setValues(channel.name, channel.slug, channel.description,
             channel.type, channel.id, channel.membersCount, null,
             channel.memberId, false, channel.liveFileId);
+          fakeDirect.fakeDirectDeffered.resolve();
           return fakeDirect;
         }
       }

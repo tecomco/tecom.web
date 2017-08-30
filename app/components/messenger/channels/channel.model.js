@@ -34,6 +34,10 @@ app.factory('Channel', [
         this.member = Team.getMemberByMemberId(memberId);
       }
       this.isFakeDirect = isFakeDirect;
+      if (isFakeDirect) {
+        this.fakeDirectDeffered = $q.defer();
+        this.fakeDirectPromise = this.fakeDirectDeffered.promise;
+      }
       this.liveFileId = liveFileId;
       this.teamId = teamId;
       this.active = true;
