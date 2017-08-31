@@ -177,7 +177,12 @@ app.controller('messagesController', [
     };
 
     $scope.isMessageMemberFirstMessage = function (message) {
-      if (message.senderId === null || !message.id) return false;
+      if (message.senderId === null) return false;
+      if (!message.id) {
+        var lastMessage = getMessageById($scope.channel.lastMessageId - 1);
+        if (lastMessage)
+          return message.senderId !== lastMessage.senderId;
+      }
       var previousMessage = getMessageById(message.id - 1);
       if (previousMessage)
         return message.senderId !== previousMessage.senderId;
