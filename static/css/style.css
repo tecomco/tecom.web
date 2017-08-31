@@ -1638,7 +1638,7 @@ ol.linenums, ol.linenums-view {
 }
 
 .msg .msg-img {
-  max-height: 400px;
+  height: 400px;
   overflow: hidden;
 }
 
