@@ -179,9 +179,10 @@ app.controller('messagesController', [
     $scope.isMessageMemberFirstMessage = function (message) {
       if (message.senderId === null) return false;
       if (!message.id) {
-        var lastMessage = getMessageById($scope.channel.lastMessageId - 1);
-        if (lastMessage)
-          return message.senderId !== lastMessage.senderId;
+        var oneBeforeTheLastMessage = getMessageById(
+          $scope.channel.lastMessageId - 1);
+        if (oneBeforeTheLastMessage)
+          return message.senderId !== oneBeforeTheLastMessage.senderId;
       }
       var previousMessage = getMessageById(message.id - 1);
       if (previousMessage)
@@ -492,7 +493,7 @@ app.controller('messagesController', [
 
     function scrollToUnseenMessage() {
       if ($scope.channel.areAllMessagesHaveBeenSeen())
-        scrollToMessageElementById($scope.channel.memberLastSeenId);
+        scrollBottom();
       else
         scrollToMessageElementById($scope.channel.memberLastSeenId + 1);
     }
