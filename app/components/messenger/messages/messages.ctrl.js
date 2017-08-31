@@ -17,6 +17,8 @@ app.controller('messagesController', [
     $scope.isFullscreenVisible = false;
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
+    var isDirectionUp;
+    var prevIsDirectionUp;
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
     var inputPlaceHolder = document.getElementById('inputPlaceHolder');
@@ -561,7 +563,7 @@ app.controller('messagesController', [
 
     angular.element(messagesHolder)
       .bind('scroll', function () {
-        var isDirectionUp;
+        var prevIsDirectionUp = isDirectionUp;
         var scrollTop = messagesHolder.scrollTop;
         if (prevScrollTop) {
           if (prevScrollTop > scrollTop)
@@ -576,7 +578,8 @@ app.controller('messagesController', [
           isJumpDownScrollingDown = false;
         getMessagePackagesIfLoadingsInView(isDirectionUp);
         updateUnreadFlagsToCheckIfSeenMessages();
-        $scope.$apply();
+        if (isDirectionUp !== prevIsDirectionUp)
+          $scope.$apply();
       });
 
     document.onkeydown = function (evt) {
