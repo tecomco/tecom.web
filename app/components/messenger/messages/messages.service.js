@@ -145,13 +145,8 @@ app.service('messagesService', [
             return message.getDbWellFormed();
           });
           if (areLoadingMessagesGetting) {
-            updateCacheMessagesByChannelId(channelId, messagesForDb);
-            updateActiveChannelMessages(messages);
-            setRepliedMessagesReplyProperty(messages, self.currentChannelMessages)
-              .then(function () {
-                deferred.resolve(messages);
-                bulkSaveMessage(messagesForDb);
-              });
+            deferred.resolve(messages);
+            bulkSaveMessage(messagesForDb);
           } else {
             bulkSaveMessage(messagesForDb)
               .then(function () {
@@ -367,17 +362,68 @@ app.service('messagesService', [
             }
           },
           sort: [{
-            id: 'asc'
+            id: 'desc'
           }],
+          limit: 2 * MESSAGE_MAX_PACKET_LENGTH
         }).then(function (docs) {
+          ArrayUtil.sortByKeyAsc(docs.docs, 'id');
           deferred.resolve(docs);
         });
       });
       return deferred.promise;
     }
 
+    function getLoadingMessagesByChannelId(channelId, teamId, from, to,
+      shouldSkipDb) {
+      var deferred = $q.defer();
+      getDbAndServerLoadingMessages(channelId, teamId, from, to,
+          shouldSkipDb)
+        .then(function (messages) {
+          var messagesForDb = messages.map(function (message) {
+            return message.getDbWellFormed();
+          });
+          updateCacheMessagesByChannelId(channelId, messagesForDb);
+          updateActiveChannelMessages(messages);
+          setRepliedMessagesReplyProperty(messages, self.currentChannelMessages)
+            .then(function () {
+              deferred.resolve(messages);
+            });
+        });
+      return deferred.promise;
+    }
+
+    function getDbAndServerLoadingMessages(channelId, teamId, from, to,
+      shouldSkipDb) {
+      return getPrimaryMessagesByChannelIdFromDb(channelId, from, to, true,
+          shouldSkipDb)
+        .then(function (messagesData) {
+          var messages = generateMessageModelsFromData(messagesData);
+          if (to - from + 1 !== messagesData.length) {
+            var ids = [];
+            messagesData.forEach(function (messageData) {
+              ids.push({
+                id: messageData.id
+              });
+            });
+            var gaps = findGaps(ids, from, to);
+            var promises = gaps.map(function (gap) {
+              return getMessagesRangeFromServer(channelId, teamId,
+                gap.from, gap.to, true);
+            });
+            return $q.all(promises)
+              .then(function () {
+                promises.forEach(function (promise) {
+                  messages = messages.concat(promise.$$state.value);
+                });
+                ArrayUtil.sortByKeyAsc(messages, 'id');
+                return messages;
+              });
+          } else return messages;
+        });
+    }
+
     function getInitialMessagesByChannelId(channelId, teamId, from, to) {
-      return getInitialMessagesIdByChannelIdFromDb(channelId, from, to)
+      return getPrimaryMessagesByChannelIdFromDb(channelId, from, to)
         .then(function (ids) {
           var gaps = findGaps(ids, from, to);
           if (gaps.length) {
@@ -390,8 +436,16 @@ app.service('messagesService', [
         });
     }
 
-    function getInitialMessagesIdByChannelIdFromDb(channelId, from, to) {
+    function getPrimaryMessagesByChannelIdFromDb(channelId, from, to,
+      areLoadingMessagesGetting, shouldSkipDb) {
       var deferred = $q.defer();
+      if (shouldSkipDb) {
+        deferred.resolve([]);
+        return deferred.promise;
+      }
+      var queryField = ['id'];
+      if (areLoadingMessagesGetting)
+        queryField = null;
       Db.getDb().then(function (database) {
         database.find({
           selector: {
@@ -403,7 +457,7 @@ app.service('messagesService', [
               $eq: channelId
             }
           },
-          fields: ['id'],
+          fields: queryField,
           sort: [{
             id: 'asc'
           }],
@@ -663,6 +717,7 @@ app.service('messagesService', [
 
     return {
       getMessagesByChannelId: getMessagesByChannelId,
+      getLoadingMessagesByChannelId: getLoadingMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
       reuploadFile: reuploadFile,
