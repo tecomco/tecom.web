@@ -234,7 +234,9 @@ app.controller('messagesController', [
 
     $scope.jumpDown = function () {
       scrollToMessageElementById($scope.channel.lastMessageId);
-      $scope.$apply();
+      $timeout(function () {
+        $scope.$apply();
+      }, 100, false);
     };
 
     $scope.goLive = function (fileId, fileName) {
@@ -321,9 +323,8 @@ app.controller('messagesController', [
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
       var deferred = $q.defer();
       isAnyLoadingMessageGetting = true;
-      var shouldSkipDb = from > initialMemberLastSeenId;
       messagesService.getLoadingMessagesByChannelId(channelId,
-          CurrentMember.member.teamId, from, to, shouldSkipDb)
+          CurrentMember.member.teamId, from, to)
         .then(function (messages) {
           removeLoadingMessage(from);
           messages.forEach(function (message) {
@@ -398,8 +399,10 @@ app.controller('messagesController', [
 
     function bindMessages() {
       var deferred = $q.defer();
-      messagesService.getMessagesByChannelId($scope.channel.id, $scope.channel
-          .lastMessageId)
+      messagesService.getMessagesByChannelId($scope.channel.id,
+          $scope.channel.teamId, $scope.channel.memberLastSeenId,
+          $scope.channel.lastMessageId
+        )
         .then(function (messages) {
           $scope.messages = messages;
           scrollToUnseenMessage();
