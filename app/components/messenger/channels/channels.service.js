@@ -24,9 +24,8 @@ app.service('channelsService', [
 
     socket.on('channel:new', function (result) {
       var channel = createAndPushChannel(result.channel);
-      var deferred = $q.defer();
-      deferred.resolve();
-      channel.setInitialMessagesPromise(deferred.promise);
+      if (!channel.isFakeDirect)
+        channel.channelInitialDefer.resolve();
       if (result.channel.creatorId === CurrentMember.member.id) {
         $state.go('messenger.messages', {
           slug: channel.getUrlifiedSlug()
@@ -161,7 +160,6 @@ app.service('channelsService', [
           fakeDirect.setValues(channel.name, channel.slug, channel.description,
             channel.type, channel.id, channel.membersCount, null,
             channel.memberId, false, channel.liveFileId);
-          fakeDirect.fakeDirectDeffered.resolve();
           return fakeDirect;
         }
       }

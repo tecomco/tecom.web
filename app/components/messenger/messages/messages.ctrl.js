@@ -48,17 +48,10 @@ app.controller('messagesController', [
       return;
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel().then(function () {
-        if ($scope.channel.isFakeDirect) {
-          $scope.channel.fakeDirectPromise
-            .then(function () {
-              initialize();
-            });
-        } else {
-          $scope.channel.initialMessagesPromise
-            .then(function () {
-              initialize();
-            });
-        }
+        $scope.channel.channelInitialPromise
+          .then(function () {
+            initialize();
+          });
       });
     }
 

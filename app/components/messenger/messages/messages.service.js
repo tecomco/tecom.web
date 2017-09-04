@@ -69,7 +69,6 @@ app.service('messagesService', [
       } else {
         promise = getAndSaveInitialMessagesByChannelFromServer(channel);
       }
-      channel.setInitialMessagesPromise(promise);
       channelsService.addMessagesPromise(promise);
     });
 
@@ -84,7 +83,10 @@ app.service('messagesService', [
         return getInitialMessagesByChannelId(channel.id, channel.teamId,
           period.from, period.to);
       });
-      return $q.all(promises);
+      return $q.all(promises)
+        .then(function () {
+          channel.channelInitialDefer.resolve();
+        });
     }
 
     function generateFromAndTo(memberLastSeenId, lastMessageId) {

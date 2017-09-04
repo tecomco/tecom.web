@@ -10,13 +10,15 @@ app.factory('Channel', [
       memberId, isFakeDirect, liveFileId, teamId,
       isCurrentMemberChannelMember, isMuted, lastSeenId, lastDatetime,
       lastMessageId, memberLastSeenId) {
+      var deferred = $q.defer();
       this.setValues(name, slug, description, type, id, membersCount,
         memberId, isFakeDirect, liveFileId, teamId,
         isCurrentMemberChannelMember, isMuted, lastSeenId, lastDatetime,
         lastMessageId, memberLastSeenId);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
-      this.initialMessagesPromise = null;
+      this.channelInitialDefer = deferred;
+      this.channelInitialPromise = deferred.promise;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,
@@ -34,10 +36,6 @@ app.factory('Channel', [
         this.member = Team.getMemberByMemberId(memberId);
       }
       this.isFakeDirect = isFakeDirect;
-      if (isFakeDirect) {
-        this.fakeDirectDeffered = $q.defer();
-        this.fakeDirectPromise = this.fakeDirectDeffered.promise;
-      }
       this.liveFileId = liveFileId;
       this.teamId = teamId;
       this.active = true;
@@ -135,10 +133,6 @@ app.factory('Channel', [
     Channel.prototype.isSelected = function () {
       var slug = this.isDirect() ? '@' + this.slug : this.slug;
       return $stateParams.slug === slug;
-    };
-
-    Channel.prototype.setInitialMessagesPromise = function (promise) {
-      this.initialMessagesPromise = promise;
     };
 
     Channel.prototype.getIconClass = function () {
