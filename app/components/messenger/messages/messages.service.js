@@ -222,9 +222,9 @@ app.service('messagesService', [
           period.to, true);
       });
       return $q.all(promises)
-        .then(function () {
-          promises.forEach(function (promise) {
-            messagesData = messagesData.concat(promise.$$state.value);
+        .then(function (messagesDataArray) {
+          messagesDataArray.forEach(function (messageData) {
+            messagesData = messagesData.concat(messageData);
           });
           return messagesData;
         });
@@ -449,10 +449,10 @@ app.service('messagesService', [
           dbGap.to, true);
       });
       $q.all(dbPromises)
-        .then(function () {
-          dbPromises.forEach(function (dbPromise) {
+        .then(function (dbRangedMessagesDataArray) {
+          dbRangedMessagesDataArray.forEach(function (dbRangedMessagesData) {
             var dbRangedMessageModels = generateMessageModelsFromData(
-              dbPromise.$$state.value);
+              dbRangedMessagesData);
             dbMessageModels = dbMessageModels.concat(
               dbRangedMessageModels);
           });
@@ -471,10 +471,10 @@ app.service('messagesService', [
           serverGap.from, serverGap.to, true);
       });
       $q.all(serverPromises)
-        .then(function () {
-          serverPromises.forEach(function (serverPromise) {
+        .then(function (serverMessageModelsArray) {
+          serverMessageModelsArray.forEach(function (serverMessageModel) {
             serverMessageModels = serverMessageModels.concat(
-              serverPromise.$$state.value);
+              serverMessageModel);
           });
           deferred.resolve(serverMessageModels);
         });
