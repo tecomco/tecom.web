@@ -315,7 +315,7 @@ app.service('messagesService', [
         if (i !== messages.length - 1) {
           if (messages[i + 1].id - messages[i].id > 1 && !messages[i].isLoading()) {
             createAndPushLoadingMessage(messages, channelId, messages[i].id +
-              1, messages[i + 1].id - 1, true);
+              1, messages[i + 1].id - 1);
           }
         }
       }
@@ -347,25 +347,22 @@ app.service('messagesService', [
       }
     }
 
-    function createAndPushLoadingMessage(messages, channelId, fromId, toId,
-      a) {
+    function createAndPushLoadingMessage(messages, channelId, fromId, toId) {
       var additionalData = {
         channelId: channelId,
         from: fromId,
         to: toId
       };
-      if (a) {}
       if (toId - fromId < MESSAGE_MAX_PACKET_LENGTH) {
         var loadingMessage = new Message(null, Message.TYPE.LOADING, null,
           channelId, null, null, additionalData);
-        if (a)
-          loadingMessage.setId(fromId);
+        loadingMessage.setId(fromId);
         messages.push(loadingMessage);
       } else {
         createAndPushLoadingMessage(messages, channelId, fromId, fromId +
-          MESSAGE_MAX_PACKET_LENGTH - 1, a);
+          MESSAGE_MAX_PACKET_LENGTH - 1);
         createAndPushLoadingMessage(messages, channelId, fromId +
-          MESSAGE_MAX_PACKET_LENGTH, toId, a);
+          MESSAGE_MAX_PACKET_LENGTH, toId);
       }
     }
 
