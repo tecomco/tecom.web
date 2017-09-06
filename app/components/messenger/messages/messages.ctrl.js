@@ -17,6 +17,8 @@ app.controller('messagesController', [
     $scope.isFullscreenVisible = false;
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
+    var isDirectionUp;
+    var prevIsDirectionUp;
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
     var inputPlaceHolder = document.getElementById('inputPlaceHolder');
@@ -231,6 +233,9 @@ app.controller('messagesController', [
 
     $scope.jumpDown = function () {
       scrollToMessageElementById($scope.channel.lastMessageId);
+      $timeout(function () {
+        $scope.$apply();
+      }, 100, false);
     };
 
     $scope.goLive = function (fileId, fileName) {
@@ -317,8 +322,8 @@ app.controller('messagesController', [
     function getLoadingMessages(channelId, from, to, isDirectionUp) {
       var deferred = $q.defer();
       isAnyLoadingMessageGetting = true;
-      messagesService.getMessagesRangeFromServer(channelId,
-          CurrentMember.member.teamId, from, to, true)
+      messagesService.getLoadingMessagesByChannelId(channelId,
+          CurrentMember.member.teamId, from, to)
         .then(function (messages) {
           removeLoadingMessage(from);
           messages.forEach(function (message) {
@@ -393,8 +398,9 @@ app.controller('messagesController', [
 
     function bindMessages() {
       var deferred = $q.defer();
-      messagesService.getMessagesByChannelId($scope.channel.id, $scope.channel
-          .lastMessageId)
+      messagesService.getMessagesByChannelId($scope.channel.id,
+          $scope.channel.teamId, $scope.channel.memberLastSeenId,
+          $scope.channel.lastMessageId)
         .then(function (messages) {
           $scope.messages = messages;
           scrollToUnseenMessage();
@@ -560,7 +566,7 @@ app.controller('messagesController', [
 
     angular.element(messagesHolder)
       .bind('scroll', function () {
-        var isDirectionUp;
+        var prevIsDirectionUp = isDirectionUp;
         var scrollTop = messagesHolder.scrollTop;
         if (prevScrollTop) {
           if (prevScrollTop > scrollTop)
@@ -575,7 +581,8 @@ app.controller('messagesController', [
           isJumpDownScrollingDown = false;
         getMessagePackagesIfLoadingsInView(isDirectionUp);
         updateUnreadFlagsToCheckIfSeenMessages();
-        $scope.$apply();
+        if (isDirectionUp !== prevIsDirectionUp)
+          $scope.$apply();
       });
 
     document.onkeydown = function (evt) {

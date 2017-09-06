@@ -147,13 +147,8 @@ app.service('messagesService', [
             return message.getDbWellFormed();
           });
           if (areLoadingMessagesGetting) {
-            updateCacheMessagesByChannelId(channelId, messagesForDb);
-            updateActiveChannelMessages(messages);
-            setRepliedMessagesReplyProperty(messages, self.currentChannelMessages)
-              .then(function () {
-                deferred.resolve(messages);
-                bulkSaveMessage(messagesForDb);
-              });
+            deferred.resolve(messages);
+            bulkSaveMessage(messagesForDb);
           } else {
             bulkSaveMessage(messagesForDb)
               .then(function () {
@@ -194,26 +189,38 @@ app.service('messagesService', [
       return deferred.promise;
     }
 
-    function getMessagesByChannelId(channelId, lastMessageId) {
-      var deferred = $q.defer();
-      if (doesCacheContainsChannelMessages(channelId)) {
-        var messages = getChannelCachedMessageModels(channelId);
-        makeMessagesReadyForView(messages, channelId, lastMessageId)
-          .then(function () {
-            deferred.resolve(messages);
+    function getMessagesByChannelId(channelId, teamId, memberLastSeenId,
+      lastMessageId) {
+      var messagesPromise;
+      if (doesCacheContainsChannelMessages(channelId))
+        messagesPromise = getInitialMessagesByChannelIdFromCache(channelId,
+          memberLastSeenId, lastMessageId);
+      else
+        messagesPromise = getInitialMessagesByChannelIdFromDb(channelId,
+          teamId, memberLastSeenId, lastMessageId);
+      return messagesPromise.then(function (messages) {
+        return makeMessagesReadyForView(messages, channelId,
+          lastMessageId);
+      });
+    }
+
+    function getInitialMessagesByChannelIdFromDb(channelId, teamId,
+      memberLastSeenId, lastMessageId) {
+      var messagesData = [];
+      var periods = generateFromAndTo(memberLastSeenId, lastMessageId);
+      var promises = periods.map(function (period) {
+        return getMessagesRangeByChannelIdFromDb(channelId, period.from,
+          period.to, true);
+      });
+      return $q.all(promises)
+        .then(function (messagesDataArray) {
+          messagesDataArray.forEach(function (messageData) {
+            messagesData = messagesData.concat(messageData);
           });
-      } else {
-        getMessagesByChannelIdFromDb(channelId)
-          .then(function (messagesData) {
-            cacheChannelMessagesData(channelId, messagesData.docs);
-            var messages = generateMessageModelsFromData(messagesData.docs);
-            makeMessagesReadyForView(messages, channelId, lastMessageId)
-              .then(function () {
-                deferred.resolve(messages);
-              });
-          });
-      }
-      return deferred.promise;
+          ArrayUtil.sortByKeyAsc(messagesData, 'id');
+          cacheChannelMessagesData(channelId, messagesData);
+          return generateMessageModelsFromData(messagesData);
+        });
     }
 
     function generateMessageModelsFromData(messagesData) {
@@ -235,9 +242,13 @@ app.service('messagesService', [
       });
     }
 
-    function getChannelCachedMessageModels(channelId) {
-      var messagesData = getMessagesDataByChannelIdFromCache(channelId);
-      return generateMessageModelsFromData(messagesData);
+    function getInitialMessagesByChannelIdFromCache(channelId,
+      memberLastSeenId, lastMessageId) {
+      var deferred = $q.defer();
+      var periods = generateFromAndTo(memberLastSeenId, lastMessageId);
+      var messages = getCacheRangeMessages(channelId, periods);
+      deferred.resolve(messages);
+      return deferred.promise;
     }
 
     function makeMessagesReadyForView(messages, channelId, lastMessageId) {
@@ -248,7 +259,7 @@ app.service('messagesService', [
           pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
             channelId);
           setActiveChannelMessages(messages);
-          deferred.resolve();
+          deferred.resolve(messages);
         });
       return deferred.promise;
     }
@@ -298,10 +309,9 @@ app.service('messagesService', [
     function generateMainLoadingMessages(messages, channelId) {
       for (var i = 0; i < messages.length; i++) {
         if (i !== messages.length - 1) {
-          if (messages[i + 1].id - messages[i].id > 1) {
+          if (messages[i + 1].id - messages[i].id > 1 && !messages[i].isLoading()) {
             createAndPushLoadingMessage(messages, channelId, messages[i].id +
-              1,
-              messages[i + 1].id - 1);
+              1, messages[i + 1].id - 1);
           }
         }
       }
@@ -348,38 +358,147 @@ app.service('messagesService', [
         createAndPushLoadingMessage(messages, channelId, fromId, fromId +
           MESSAGE_MAX_PACKET_LENGTH - 1);
         createAndPushLoadingMessage(messages, channelId, fromId +
-          MESSAGE_MAX_PACKET_LENGTH,
-          toId);
+          MESSAGE_MAX_PACKET_LENGTH, toId);
       }
     }
 
-    /**
-     * @todo Create a static variable for limit count.
-     */
-    function getMessagesByChannelIdFromDb(channelId) {
+    function getLoadingMessagesByChannelId(channelId, teamId, from, to) {
       var deferred = $q.defer();
-      Db.getDb().then(function (database) {
-        database.find({
-          selector: {
-            id: {
-              $gt: null
-            },
-            channelId: {
-              $eq: channelId
-            }
-          },
-          sort: [{
-            id: 'asc'
-          }],
-        }).then(function (docs) {
-          deferred.resolve(docs);
+      getCacheAndDbAndServerLoadingMessages(channelId, teamId, from, to)
+        .then(function (messages) {
+          var messagesForDb = messages.map(function (message) {
+            return message.getDbWellFormed();
+          });
+          updateCacheMessagesByChannelId(channelId, messagesForDb);
+          updateActiveChannelMessages(messages);
+          setRepliedMessagesReplyProperty(messages, self.currentChannelMessages)
+            .then(function () {
+              deferred.resolve(messages);
+            });
         });
+      return deferred.promise;
+    }
+
+    function getCacheAndDbAndServerLoadingMessages(channelId, teamId, from,
+      to) {
+      var deferred = $q.defer();
+      var periods = [{
+        from: from,
+        to: to
+      }];
+      var cacheMessages = getCacheRangeMessages(channelId, periods);
+      getRestOfLoadingMessagesFromDbAndServerIfNeeded(channelId, teamId,
+          cacheMessages, from, to)
+        .then(function (messages) {
+          deferred.resolve(messages);
+        });
+      return deferred.promise;
+    }
+
+    function getCacheRangeMessages(channelId, periods) {
+      var cacheMessages = [];
+      var messagesData = getMessagesDataByChannelIdFromCache(channelId);
+      periods.forEach(function (period) {
+        var rangedMessagesData = ArrayUtil.getElementsRangeByKeyValue(
+          messagesData, 'id', period.from, period.to);
+        var rangedMessageModels = generateMessageModelsFromData(
+          rangedMessagesData);
+        cacheMessages = cacheMessages.concat(rangedMessageModels);
       });
+      return cacheMessages;
+    }
+
+    function getRestOfLoadingMessagesFromDbAndServerIfNeeded(channelId,
+      teamId, cacheMessages, from, to) {
+      var deferred = $q.defer();
+      if (to - from + 1 === cacheMessages.length) {
+        ArrayUtil.sortByKeyAsc(cacheMessages, 'id');
+        deferred.resolve(cacheMessages);
+      } else {
+        getRestOfLoadingMessagesFromDb(channelId, cacheMessages, from, to)
+          .then(function (dbMessageModels) {
+            var cacheAndDbMessages = cacheMessages.concat(dbMessageModels);
+            return getRestOfLoadingMessagesFromDbIfNeeded(channelId,
+              teamId, cacheAndDbMessages, from, to);
+          })
+          .then(function (messages) {
+            deferred.resolve(messages);
+          });
+      }
+      return deferred.promise;
+    }
+
+    function getRestOfLoadingMessagesFromDbIfNeeded(channelId, teamId,
+      cacheAndDbMessages, from, to) {
+      var deferred = $q.defer();
+      if (to - from + 1 === cacheAndDbMessages.length) {
+        ArrayUtil.sortByKeyAsc(cacheAndDbMessages, 'id');
+        deferred.resolve(cacheAndDbMessages);
+      } else {
+        getRestOfLoadingMessagesFromServer(channelId, teamId,
+            cacheAndDbMessages, from, to)
+          .then(function (serverMessageModels) {
+            var cacheAndDbAndServerMessages = cacheAndDbMessages.concat(
+              serverMessageModels);
+            ArrayUtil.sortByKeyAsc(cacheAndDbAndServerMessages, 'id');
+            deferred.resolve(cacheAndDbAndServerMessages);
+          });
+      }
+      return deferred.promise;
+    }
+
+    function findMessagesGaps(messages, from, to) {
+      var ids = messages.map(function (message) {
+        return {
+          id: message.id
+        };
+      });
+      return findGaps(ids, from, to);
+    }
+
+    function getRestOfLoadingMessagesFromDb(channelId, messages, from, to) {
+      var deferred = $q.defer();
+      var dbMessageModels = [];
+      var dbGaps = findMessagesGaps(messages, from, to);
+      var dbPromises = dbGaps.map(function (dbGap) {
+        return getMessagesRangeByChannelIdFromDb(channelId, dbGap.from,
+          dbGap.to, true);
+      });
+      $q.all(dbPromises)
+        .then(function (dbRangedMessagesDataArray) {
+          dbRangedMessagesDataArray.forEach(function (dbRangedMessagesData) {
+            var dbRangedMessageModels = generateMessageModelsFromData(
+              dbRangedMessagesData);
+            dbMessageModels = dbMessageModels.concat(
+              dbRangedMessageModels);
+          });
+          deferred.resolve(dbMessageModels);
+        });
+      return deferred.promise;
+    }
+
+    function getRestOfLoadingMessagesFromServer(channelId, teamId, messages,
+      from, to) {
+      var deferred = $q.defer();
+      var serverMessageModels = [];
+      var serverGaps = findMessagesGaps(messages, from, to);
+      var serverPromises = serverGaps.map(function (serverGap) {
+        return getMessagesRangeFromServer(channelId, teamId,
+          serverGap.from, serverGap.to, true);
+      });
+      $q.all(serverPromises)
+        .then(function (serverMessageModelsArray) {
+          serverMessageModelsArray.forEach(function (serverMessageModel) {
+            serverMessageModels = serverMessageModels.concat(
+              serverMessageModel);
+          });
+          deferred.resolve(serverMessageModels);
+        });
       return deferred.promise;
     }
 
     function getInitialMessagesByChannelId(channelId, teamId, from, to) {
-      return getInitialMessagesIdByChannelIdFromDb(channelId, from, to)
+      return getMessagesRangeByChannelIdFromDb(channelId, from, to)
         .then(function (ids) {
           var gaps = findGaps(ids, from, to);
           if (gaps.length) {
@@ -392,8 +511,12 @@ app.service('messagesService', [
         });
     }
 
-    function getInitialMessagesIdByChannelIdFromDb(channelId, from, to) {
+    function getMessagesRangeByChannelIdFromDb(channelId, from, to,
+      shouldSendAllMessageData) {
       var deferred = $q.defer();
+      var queryField = ['id'];
+      if (shouldSendAllMessageData)
+        queryField = null;
       Db.getDb().then(function (database) {
         database.find({
           selector: {
@@ -405,7 +528,7 @@ app.service('messagesService', [
               $eq: channelId
             }
           },
-          fields: ['id'],
+          fields: queryField,
           sort: [{
             id: 'asc'
           }],
@@ -665,10 +788,10 @@ app.service('messagesService', [
 
     return {
       getMessagesByChannelId: getMessagesByChannelId,
+      getLoadingMessagesByChannelId: getLoadingMessagesByChannelId,
       sendAndGetMessage: sendAndGetMessage,
       sendFileAndGetMessage: sendFileAndGetMessage,
       reuploadFile: reuploadFile,
-      getMessagesRangeFromServer: getMessagesRangeFromServer,
       removeUploadFailedFileByFileTimestamp: removeUploadFailedFileByFileTimestamp,
       seenMessage: seenMessage,
       findClosestLoadingMessage: findClosestLoadingMessage,

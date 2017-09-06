@@ -28,39 +28,39 @@
         </div>
         <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
         <div class="main">
-          <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{message.id}}" ng-class="message.getMessageHighlightClass()" class="msg-one">
-            <div class="date-holder unread-msgs" ng-if="isMessageFirstUnread(message)">
+          <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{::message.id}}" ng-class="message.getMessageHighlightClass()" class="msg-one">
+            <div class="date-holder unread-msgs" ng-if="::isMessageFirstUnread(message)">
               <label>پیام‌های جدید</label>
             </div>
-            <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
-              <label>{{message.getLocaleDate()}}</label>
+            <div class="date-holder" ng-if="::isMessageDateInAnotherDay(message)">
+              <label>{{::message.getLocaleDate()}}</label>
             </div>
-            <div ng-class="message.getCssClass()" class="msg-holder">
-              <label class="name" ng-style="message.getUsernameColor()" ng-if="isMessageMemberFirstMessage(message)">{{message.getUsername()}}</label>
+            <div ng-class="::message.getCssClass()" class="msg-holder">
+              <label class="name" ng-style="::message.getUsernameColor()" ng-if="isMessageMemberFirstMessage(message)">{{::message.getUsername()}}</label>
               <div class="details">
-                <label class="status" ng-show="message.isFromMe()">
+                <label class="status" ng-show="::message.isFromMe()">
                 <i ng-class="message.getStatusIcon()"></i>
               </label>
-                <label class="time" ng-hide="message.isLoading()">{{message.getLocaleTime()}}</label>
+                <label class="time" ng-hide="::message.isLoading()">{{message.getLocaleTime()}}</label>
               </div>
-              <div ng-if="message.reply.id">
+              <div ng-if="::message.reply.id">
                 <a ng-click="scrollToSelectedMessage(message.reply.id)" class="msg-reply current-reply">
-              <label class="reply-name">{{message.reply.getUsername()}}</label>
+              <label class="reply-name">{{::message.reply.getUsername()}}</label>
               <br>
-              <i ng-show="message.reply.isFile() && message.reply.isImage()" class="fa fa-image"></i>
-              <i ng-show="message.reply.isFile() && !message.reply.isImage()" class="fa fa-file-o"></i>
-              <span class="reply-one-line">{{message.reply.getReplyMessageBody()}}</span>
+              <i ng-show="::message.reply.isFile() && message.reply.isImage()" class="fa fa-image"></i>
+              <i ng-show="::message.reply.isFile() && !message.reply.isImage()" class="fa fa-file-o"></i>
+              <span class="reply-one-line">{{::message.reply.getReplyMessageBody()}}</span>
             </a>
               </div>
-              <div compile template="{{message.getViewWellFormed()}}" ng-style="message.getStyle()"></div>
-              <a ng-click="setReplyMessage(message)" ng-if="!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
+              <div compile template="{{::message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
+              <a ng-click="setReplyMessage(message)" ng-if="::!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
               <div class="file-failed-btns">
                 <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
                 <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
               </div>
             </div>
             <div class="g-m-one" ng-if="message.senderId !== null" ng-show="isMessageMemberLastMessage(message)">
-              <img ng-src="{{message.getSenderImageByMemberId()}}" />
+              <img ng-src="{{::message.getSenderImageByMemberId()}}" />
             </div>
           </div>
           <!-- TODO: Fix this -->
@@ -109,7 +109,7 @@
         <button class="btn" ng-click="joinPublicChannel()">همین الان عضو شو!</button>
       </div>
       <div ng-show="!channel.active" class="input-holder">
-        <label>@{{channel.name}} دیگر در این تیم عضو نیست.</label>
+        <label>@{{::channel.name}} دیگر در این تیم عضو نیست.</label>
         <button class="btn" ng-click="archiveDirect(channel)">حذف و بستن مکالمه</button>
       </div>
       <div ui-view="filemanager"></div>
