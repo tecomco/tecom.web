@@ -401,8 +401,7 @@ app.controller('messagesController', [
       var deferred = $q.defer();
       messagesService.getMessagesByChannelId($scope.channel.id,
           $scope.channel.teamId, $scope.channel.memberLastSeenId,
-          $scope.channel.lastMessageId
-        )
+          $scope.channel.lastMessageId)
         .then(function (messages) {
           $scope.messages = messages;
           scrollToUnseenMessage();
