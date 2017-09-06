@@ -76,7 +76,7 @@ app.factory('textUtil', function () {
           englishTempText);
         englishTempText = '';
         directionifiedText += ' ';
-      } else if (!word.match(/[a-zA-Z]/i)) {
+      } else if (!isEnglish(word)) {
         directionifiedText += generateEnglishTempTextIfExists(
           englishTempText);
         englishTempText = '';
@@ -95,7 +95,7 @@ app.factory('textUtil', function () {
   }
 
   function generateDirectionifyText(word) {
-    if (!word.match(/[a-zA-Z]/i))
+    if (word.match(/[آ-ی]/i) || !word.match(/[a-zA-Z]/i))
       return word;
     else
       return '<span style="direction:ltr" dir="ltr">' + word + '</span> ';

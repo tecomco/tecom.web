@@ -29,7 +29,7 @@ app.controller('messagesController', [
       if (data === 'init') {
         setCurrentChannel().then(function () {
           if ($scope.channel) {
-            $scope.channel.initialMessagesPromise
+            $scope.channel.channelInitialPromise
               .then(function () {
                 return initialize();
               })
