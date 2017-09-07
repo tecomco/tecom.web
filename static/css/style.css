@@ -1046,7 +1046,7 @@ ul.dropdown-menu {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.21);
 }
 
-.chat-section.no-padding{
+.chat-section.no-padding {
   padding-left: 60px;
 }
 
@@ -1182,10 +1182,10 @@ ul.dropdown-menu {
 }
 
 .doc-section-header {
-  background: #f7f7f7;
-  color: #555;
+  background: #24A772;
+  color: #fff;
   height: 58px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(238, 238, 238, 0.05);
   border-right: 1px solid #eee;
   transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
@@ -1224,6 +1224,7 @@ ul.dropdown-menu {
   direction: ltr;
   display: block;
   float: left;
+  padding-left: 44px;
   height: 100%;
   width: 100%;
 }
@@ -1231,8 +1232,9 @@ ul.dropdown-menu {
 .doc-tab {
   width: 45%;
   list-style: none;
+  color: #fff;
   float: left;
-  border-right: 1px #eee solid;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   cursor: default;
   height: 100%;
   position: relative;
@@ -1243,6 +1245,9 @@ ul.dropdown-menu {
   -o-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -webkit-transition: all 0.3s ease;
+}
+.doc-tab:hover{
+  color: #fff;
 }
 
 .doc-tab:after {
@@ -1256,7 +1261,7 @@ ul.dropdown-menu {
   visibility: visible;
   border-style: solid;
   border-width: 0 0 8px 8px;
-  border-color: transparent transparent #aaa transparent;
+  border-color: transparent transparent #fff transparent;
   transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
@@ -1269,6 +1274,7 @@ ul.dropdown-menu {
 
 .doc-tab-title {
   white-space: nowrap;
+  color: #fff;
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1299,7 +1305,7 @@ ul.dropdown-menu {
   visibility: hidden;
   z-index: 3;
   background: #f7f7f7;
-  right: 0;
+  right: -1px;
   text-align: center;
   transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
@@ -1321,6 +1327,8 @@ ul.dropdown-menu {
 .doc-tab-options>a {
   display: inline-block;
   float: right;
+  position: relative;
+  right: -1px;
   padding: 2px 10px 0px;
   margin: 0;
   text-align: center;
@@ -1328,10 +1336,11 @@ ul.dropdown-menu {
 
 .doc-tab-options>a .zmdi-download {
   font-size: 20px;
+  color: #fff;
 }
 
 .doc-tab-active .doc-tab-options {
-  background: #fff;
+  background: rgb(18, 184, 109)
 }
 
 .doc-tab .doc-tab-options .live-btn {
@@ -1346,6 +1355,7 @@ ul.dropdown-menu {
   position: absolute;
   top: 20px;
   right: 15px;
+  color: #fff;
 }
 
 .doc-tab-icon {
@@ -1365,7 +1375,8 @@ ul.dropdown-menu {
 }
 
 .doc-tab-active {
-  background: #fff;
+  background: rgb(18, 184, 109);
+  color: #fff;
 }
 
 .doc-tab-active:hover {
@@ -2217,13 +2228,16 @@ ol.linenums, ol.linenums-view {
   padding-top: 4px;
   color: #888;
 }
+
 .sidebar ul li a.selected .sidebar-icon {
-  background:rgb(18, 184, 109);
+  background: rgb(18, 184, 109);
 }
-.sidebar ul li a.selected i{
+
+.sidebar ul li a.selected i {
   color: #f1f1f1;
 }
-.sidebar ul li a.selected span{
+
+.sidebar ul li a.selected span {
   color: rgb(18, 184, 109);
 }
 
@@ -2241,6 +2255,20 @@ ol.linenums, ol.linenums-view {
   background: rgba(0, 0, 0, 0);
 }
 
+.close-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 16px 16px 5px;
+  font-size: 24px;
+  z-index: 4;
+  color: #fff;
+}
+
+.close-btn:hover {
+  color: #eee;
+}
+
 .sidebar ul li a i {
   color: #888;
   font-size: 20px;
@@ -2251,27 +2279,29 @@ ol.linenums, ol.linenums-view {
 }
 
 .mime-holder {
-  position: fixed;
-  width: 350px;
-  background: #fff;
-  top: 0px;
-  bottom: 0;
-  box-shadow: 0 4px 18px -3px rgba(0, 0, 0, 0.3);
-  left: -345px;
+  /*position: fixed;*/
+  width: 100%;
+  background: #444;
+  /*top: 0px;
+  bottom: 0;*/
+  /*box-shadow: 0 4px 18px -3px rgba(0, 0, 0, 0.3);*/
+  /*left: -345px;*/
   transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -webkit-transition: all 0.3s ease;
   z-index: 2;
+  height: 100vh;
 }
 
 .mime-holder.opened {
-  left: 0;
+  left: 60px;
 }
 
 .mime-toggle-fix {
   position: absolute;
   top: 62px;
+  display: none;
   background: #fff;
   height: 40px;
   width: 7px;
@@ -2281,6 +2311,7 @@ ol.linenums, ol.linenums-view {
 
 .mime-menu-toggle-holder {
   position: absolute;
+  /*display: none;*/
   top: 25px;
   right: -50px;
   width: 80px;
@@ -2421,6 +2452,7 @@ ol.linenums, ol.linenums-view {
 .mime-more {
   display: inline-block;
   float: left;
+  margin-left: 36px;
   position: absolute;
   left: 0;
   z-index: 5;
@@ -2436,13 +2468,13 @@ ol.linenums, ol.linenums-view {
 .mime-more ul {
   position: absolute;
   width: 140px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.5);
   list-style: none;
   border-radius: 4px;
   z-index: 4;
   top: 100%;
-  background: #fff;
+  background: #333;
   left: 8px;
   visibility: hidden;
   opacity: 0;
@@ -2457,6 +2489,7 @@ ol.linenums, ol.linenums-view {
   width: 100%;
   padding: 16px 8px;
   font-size: 16px;
+  color: #aaa;
 }
 
 .mime-more ul li input {
@@ -2468,7 +2501,7 @@ ol.linenums, ol.linenums-view {
 }
 
 .mime-more ul li:hover {
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .mime-more>i:hover+ul, .mime-more ul:hover {
@@ -2494,6 +2527,7 @@ ol.linenums, ol.linenums-view {
 .mime-item-one {
   position: relative;
   padding: 8px;
+  color: #ddd;
   width: 100%;
   padding-right: 60px;
   height: 60px;
@@ -2505,7 +2539,7 @@ ol.linenums, ol.linenums-view {
 }
 
 .mime-item-one:hover:not(.no-files) {
-  background: rgba(0, 0, 0, .02);
+  background: rgba(255, 255, 255, .02);
 }
 
 .mime-item-one svg {
@@ -2517,6 +2551,7 @@ ol.linenums, ol.linenums-view {
 .mime-name {
   font-size: 16px;
   display: block;
+  color: #eee;
   width: 170px;
   white-space: nowrap;
   overflow: hidden;
@@ -2531,8 +2566,9 @@ ol.linenums, ol.linenums-view {
 }
 
 .mime-btns {
-  position: relative;
-  top: -20px;
+  position: absolute;
+  bottom: 0px;
+  left: 8px;
 }
 
 .mime-btns .dl-btn {
@@ -2548,9 +2584,8 @@ ol.linenums, ol.linenums-view {
 
 .mime-date {
   font-size: 12px;
-  position: absolute;
-  top: 8px;
-  left: 8px;
+  position: relative;
+  top: -8px;
   color: #aaa;
   font-weight: 100;
 }
