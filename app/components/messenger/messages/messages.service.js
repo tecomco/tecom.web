@@ -270,7 +270,7 @@ app.service('messagesService', [
         if (message.replyTo) {
           var replyMessage = ArrayUtil.getElementByKeyValue(
             channelMessages, 'id', message.replyTo);
-          if (replyMessage)
+          if (replyMessage && !replyMessage.isLoading())
             message.reply = replyMessage;
           else {
             var promise = setMessageReplyPropertyFromServer(message);
@@ -692,18 +692,37 @@ app.service('messagesService', [
     function findClosestLoadingMessage(loadingMessages, messageId) {
       if (!loadingMessages.length)
         return null;
-      var idDifference = Math.abs(loadingMessages[0].id - messageId);
-      var loadingMessageId = loadingMessages[0].id;
-      loadingMessages.forEach(function (loadingMessage) {
-        if (Math.abs(loadingMessage.id - messageId) < idDifference) {
-          loadingMessageId = loadingMessage.id;
-          idDifference = Math.abs(loadingMessage.id - messageId);
-        }
-      });
-      if (idDifference < MESSAGE_MAX_PACKET_LENGTH / 2)
-        return ArrayUtil.getElementByKeyValue(loadingMessages, 'id',
-          loadingMessageId);
+      var closestUpperLoadingMessage = getClosestUpperLoadingMessage(
+        loadingMessages, messageId);
+      var closestLowerLoadingMessage = getClosestLowerLoadingMessage(
+        loadingMessages, messageId);
+      if (closestUpperLoadingMessage && closestUpperLoadingMessage.id +
+        1.5 * MESSAGE_MAX_PACKET_LENGTH > messageId)
+        return closestUpperLoadingMessage;
+      if (closestLowerLoadingMessage && messageId >
+        closestLowerLoadingMessage.id - 0.5 * MESSAGE_MAX_PACKET_LENGTH)
+        return closestUpperLoadingMessage;
       return null;
+    }
+
+    function getClosestUpperLoadingMessage(loadingMessages, messageId) {
+      var closestUpperLoadingMessage = null;
+      ArrayUtil.sortByKeyAsc(loadingMessages, 'id');
+      loadingMessages.forEach(function (loadingMessage) {
+        if (messageId - loadingMessage.id > 0)
+          closestUpperLoadingMessage = loadingMessage;
+      });
+      return closestUpperLoadingMessage;
+    }
+
+    function getClosestLowerLoadingMessage(loadingMessages, messageId) {
+      var closestLowerLoadingMessage = null;
+      ArrayUtil.sortByKeyDesc(loadingMessages, 'id');
+      loadingMessages.forEach(function (loadingMessage) {
+        if (loadingMessage.id - messageId > 0)
+          closestLowerLoadingMessage = loadingMessage;
+      });
+      return closestLowerLoadingMessage;
     }
 
     function findLoadingMessageContainsReplyMessage(loadingMessages, id) {

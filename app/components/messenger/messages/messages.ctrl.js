@@ -232,7 +232,7 @@ app.controller('messagesController', [
     };
 
     $scope.jumpDown = function () {
-      scrollToMessageElementById($scope.channel.lastMessageId);
+      scrollBottom();
       $timeout(function () {
         $scope.$apply();
       }, 100, false);
