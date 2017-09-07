@@ -26,7 +26,8 @@
         <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadSizeLimitNotif" ng-cloak>
           <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
         </div>
-        <div ng-show="!messages.length" class="no-msg"><span>پیامی نیست!</span></div>
+        <div ng-show="isMessageLoadingDone && !messages.length" class="no-msg"><span>پیامی نیست!</span></div>
+        <div ng-show="!isMessageLoadingDone" class="no-msg"><span>درحال بارگزاری</span></div>
         <div class="main">
           <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{::message.id}}" ng-class="message.getMessageHighlightClass()" class="msg-one">
             <div class="date-holder unread-msgs" ng-if="::isMessageFirstUnread(message)">

@@ -15,6 +15,7 @@ app.controller('messagesController', [
     $scope.hasUnreadNewMessages = false;
     $scope.replyMessage = null;
     $scope.isFullscreenVisible = false;
+    $scope.isMessageLoadingDone = false;
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var isDirectionUp;
@@ -212,9 +213,18 @@ app.controller('messagesController', [
         })
         .then(function () {
           var message = getMessageById(replyTo);
-          message.highlight();
           scrollToMessageElementById(replyTo);
-          hasUnreadInitializeMessages = true;
+          $timeout(function () {
+            message.highlight();
+            if (!isBottomOfMessagesHolder()) {
+              $timeout(function () {
+                isJumpDownScrollingDown = true;
+                $timeout(function () {
+                  $scope.$apply();
+                });
+              });
+            }
+          });
         });
     };
 
@@ -403,6 +413,7 @@ app.controller('messagesController', [
           $scope.channel.lastMessageId)
         .then(function (messages) {
           $scope.messages = messages;
+          $scope.isMessageLoadingDone = true;
           scrollToUnseenMessage();
           if ($scope.channel.hasUnread()) {
             var lastMessage = getMessageById($scope.channel.lastMessageId);
