@@ -40,21 +40,22 @@ app.controller('channelDetailsController', [
         type: type,
         id: $scope.channel.id
       };
-      channelsService.sendEditedChannel(editedData).then(function () {
-        clearCustomErrorMessages();
-        $scope.editMode = false;
-        $log.info('Done Editing Channel');
-      }).catch(function (message) {
-        if (message.indexOf('Duplicate slug in team.') != -1) {
-          $scope.forms.detailsForm.name.$error.duplicate = true;
-          $log.error('Error : Dublicate Slug');
-        }
-        else {
-          $scope.serverError = true;
-          $log.error('Error sending new channel form to server :',
-            message);
-        }
-      });
+      channelsService.sendEditedChannel(editedData)
+        .then(function () {
+          clearCustomErrorMessages();
+          $scope.editMode = false;
+          $log.info('Done Editing Channel');
+        })
+        .catch(function (message) {
+          if (message.indexOf('Duplicate slug in team.') != -1) {
+            $scope.forms.detailsForm.name.$error.duplicate = true;
+            $log.error('Error : Dublicate Slug');
+          } else {
+            $scope.serverError = true;
+            $log.error('Error sending new channel form to server :',
+              message);
+          }
+        });
     };
 
     angular.element(document).ready(function () {
@@ -112,7 +113,8 @@ app.controller('channelDetailsController', [
         .then(function () {
           channelMember.removeChannelMemberId();
           $log.info('Member Removed from Channel');
-        }).catch(function (message) {
+        })
+        .catch(function (message) {
           $log.error('Error Removing member from channel:', message);
         });
     };

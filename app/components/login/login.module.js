@@ -56,7 +56,8 @@ var app = angular.module('LoginApp', [
           AuthService.login($scope.email, $scope.password)
             .then(function () {
               $window.location.assign('/messenger');
-            }).catch(function (err) {
+            })
+            .catch(function (err) {
               $scope.isLoading = false;
               $log.error('Login Error:', err);
               $scope.hasloginError = false;
@@ -96,12 +97,12 @@ var app = angular.module('LoginApp', [
       function getRedirectError() {
         var error = $location.search().err;
         switch (error) {
-        case 'InvalidToken':
-          return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
-        case 'UserRemoved':
-          return 'شما توسط یکی از ادمین‌ها از تیم حذف شدید!';
-        default:
-          return null;
+          case 'InvalidToken':
+            return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
+          case 'UserRemoved':
+            return 'شما توسط یکی از ادمین‌ها از تیم حذف شدید!';
+          default:
+            return null;
         }
       }
 

@@ -51,30 +51,33 @@ app.service('filesService', [
         var type;
         var channelId;
         $http({
-          method: 'GET',
-          url: '/api/v1/files/' + fileId + '/'
-        }).then(function (res) {
-          url = res.data.file;
-          name = res.data.name;
-          type = res.data.type;
-          channelId = res.data.channel;
-          return getFileDataByUrl(url);
-        }).then(function (res) {
-          if (fileUtil.isTextFormat(type)) {
-            var file = new File(fileId, url, res.data, name, channelId);
-            self.files.push(file);
-            $rootScope.$broadcast('file:ready');
-            defer.resolve(file);
-          } else {
-            $log.error('Lived File Format Not Supported Yet !');
+            method: 'GET',
+            url: '/api/v1/files/' + fileId + '/'
+          })
+          .then(function (res) {
+            url = res.data.file;
+            name = res.data.name;
+            type = res.data.type;
+            channelId = res.data.channel;
+            return getFileDataByUrl(url);
+          })
+          .then(function (res) {
+            if (fileUtil.isTextFormat(type)) {
+              var file = new File(fileId, url, res.data, name, channelId);
+              self.files.push(file);
+              $rootScope.$broadcast('file:ready');
+              defer.resolve(file);
+            } else {
+              $log.error('Lived File Format Not Supported Yet !');
+              $rootScope.$broadcast('file:ready');
+              defer.reject();
+            }
+          })
+          .catch(function (err) {
+            $log.error('Error Getting File name and URL From Server.', err);
             $rootScope.$broadcast('file:ready');
             defer.reject();
-          }
-        }).catch(function (err) {
-          $log.error('Error Getting File name and URL From Server.', err);
-          $rootScope.$broadcast('file:ready');
-          defer.reject();
-        });
+          });
       }
       return defer.promise;
     }
@@ -131,18 +134,20 @@ app.service('filesService', [
     function getFileManagerFiles(channelId) {
       var deferred = $q.defer();
       $http({
-        method: 'GET',
-        url: '/api/v1/files/channels/' + channelId + '/'
-      }).then(function (filesData) {
-        var files = filesData.data.map(function (file) {
-          return new FileManagerFile(file.id, file.file, file.name,
-            file.date_uploaded, file.type);
+          method: 'GET',
+          url: '/api/v1/files/channels/' + channelId + '/'
+        })
+        .then(function (filesData) {
+          var files = filesData.data.map(function (file) {
+            return new FileManagerFile(file.id, file.file, file.name,
+              file.date_uploaded, file.type);
+          });
+          deferred.resolve(files);
+        })
+        .catch(function (err) {
+          $log.info('Error Getting FileManager Files.', err);
+          deferred.reject(err);
         });
-        deferred.resolve(files);
-      }).catch(function (err) {
-        $log.info('Error Getting FileManager Files.', err);
-        deferred.reject(err);
-      });
       return deferred.promise;
     }
 
@@ -150,9 +155,10 @@ app.service('filesService', [
       if (self.livedFile && self.livedFile.id === fileId) {
         updateLiveFile();
       } else {
-        getFileById(fileId).then(function (file) {
-          $rootScope.$broadcast('file:view', file);
-        });
+        getFileById(fileId)
+          .then(function (file) {
+            $rootScope.$broadcast('file:view', file);
+          });
       }
     }
 
@@ -188,9 +194,10 @@ app.service('filesService', [
     }
 
     function showFileLine(fileId, startLine, endLine) {
-      getFileById(fileId).then(function (file) {
-        $rootScope.$broadcast('file:show:line', file, startLine, endLine);
-      });
+      getFileById(fileId)
+        .then(function (file) {
+          $rootScope.$broadcast('file:show:line', file, startLine, endLine);
+        });
     }
 
     return {

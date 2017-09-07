@@ -25,7 +25,8 @@ app.controller('teamProfileController', [
             setInfoOrErrorMessage('info',
               'ایمیل دعوت به تیم با موفقیت ارسال شد.');
             $scope.inviteMode = false;
-          }).catch(function (err) {
+          })
+          .catch(function (err) {
             $log.error('Invitation Error:', err);
             if (err.data && err.data[0] === 'Email already a member.')
               setInfoOrErrorMessage('error',
@@ -55,17 +56,21 @@ app.controller('teamProfileController', [
 
     $scope.changeMemberAdminState = function (member) {
       if (member.isAdmin === false) {
-        profileService.makeAdmin(member).then(function () {
-          member.isAdmin = true;
-        }).catch(function (err) {
-          $log.error('Error Making Member Admin:', err);
-        });
+        profileService.makeAdmin(member)
+          .then(function () {
+            member.isAdmin = true;
+          })
+          .catch(function (err) {
+            $log.error('Error Making Member Admin:', err);
+          });
       } else {
-        profileService.disAdmin(member).then(function () {
-          member.isAdmin = false;
-        }).catch(function (err) {
-          $log.error('Error DisAdmining Member:', err);
-        });
+        profileService.disAdmin(member)
+          .then(function () {
+            member.isAdmin = false;
+          })
+          .catch(function (err) {
+            $log.error('Error DisAdmining Member:', err);
+          });
       }
     };
 

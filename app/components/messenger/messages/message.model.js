@@ -250,12 +250,13 @@ app.factory('Message', [
 
     Message.prototype.save = function () {
       var that = this;
-      Db.getDb().then(function (database) {
-        database.put(that.getDbWellFormed())
-          .catch(function (err) {
-            $log.error('Saving message failed.', err);
-          });
-      });
+      Db.getDb()
+        .then(function (database) {
+          database.put(that.getDbWellFormed())
+            .catch(function (err) {
+              $log.error('Saving message failed.', err);
+            });
+        });
     };
 
     Message.generateMessageWellFormedText = function (text) {

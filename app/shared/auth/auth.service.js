@@ -46,21 +46,23 @@ app.factory('AuthService', [
         data.username = usernameOrEmail;
 
       $http({
-        method: 'POST',
-        url: '/api/v1/auth/login/',
-        data: data,
-        skipAuthorization: true
-      }).then(function (response) {
-        var token = response.data.token;
-        if (token) {
-          persistToken(token);
-          defer.resolve();
-        } else {
-          defer.reject();
-        }
-      }).catch(function (err) {
-        defer.reject(err);
-      });
+          method: 'POST',
+          url: '/api/v1/auth/login/',
+          data: data,
+          skipAuthorization: true
+        })
+        .then(function (response) {
+          var token = response.data.token;
+          if (token) {
+            persistToken(token);
+            defer.resolve();
+          } else {
+            defer.reject();
+          }
+        })
+        .catch(function (err) {
+          defer.reject(err);
+        });
       return defer.promise;
     }
 

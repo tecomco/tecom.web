@@ -30,13 +30,14 @@ app.controller('fileManagerController', [
     $scope.toggleFileManagerStatus = function () {
       if (isFileManagerInitialized) {
         isLoading = true;
-        filesService.getFileManagerFiles($scope.channel.id).then(function (
-          files) {
-          $scope.files = files;
-          isFileManagerInitialized = false;
-          isLoading = false;
-          isFileManagerClosed = false;
-        });
+        filesService.getFileManagerFiles($scope.channel.id)
+          .then(function (
+            files) {
+            $scope.files = files;
+            isFileManagerInitialized = false;
+            isLoading = false;
+            isFileManagerClosed = false;
+          });
       } else {
         if (isFileManagerClosed)
           isFileManagerClosed = false;

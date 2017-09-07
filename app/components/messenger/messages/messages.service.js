@@ -125,16 +125,17 @@ app.service('messagesService', [
 
     function bulkSaveMessage(messages) {
       var deferred = $q.defer();
-      Db.getDb().then(function (database) {
-        database.bulkDocs(messages)
-          .then(function () {
-            deferred.resolve();
-          })
-          .catch(function (err) {
-            deferred.reject();
-            $log.error('Bulk saving messages failed.', err);
-          });
-      });
+      Db.getDb()
+        .then(function (database) {
+          return database.bulkDocs(messages);
+        })
+        .then(function () {
+          deferred.resolve();
+        })
+        .catch(function (err) {
+          deferred.reject();
+          $log.error('Bulk saving messages failed.', err);
+        });
       return deferred.promise;
     }
 
@@ -198,10 +199,11 @@ app.service('messagesService', [
       else
         messagesPromise = getInitialMessagesByChannelIdFromDb(channelId,
           teamId, memberLastSeenId, lastMessageId);
-      return messagesPromise.then(function (messages) {
-        return makeMessagesReadyForView(messages, channelId,
-          lastMessageId);
-      });
+      return messagesPromise
+        .then(function (messages) {
+          return makeMessagesReadyForView(messages, channelId,
+            lastMessageId);
+        });
     }
 
     function getInitialMessagesByChannelIdFromDb(channelId, teamId,
@@ -364,17 +366,19 @@ app.service('messagesService', [
 
     function getLoadingMessagesByChannelId(channelId, teamId, from, to) {
       var deferred = $q.defer();
+      var loadingMessages;
       getCacheAndDbAndServerLoadingMessages(channelId, teamId, from, to)
         .then(function (messages) {
+          loadingMessages = messages;
           var messagesForDb = messages.map(function (message) {
             return message.getDbWellFormed();
           });
-          updateCacheMessagesByChannelId(channelId, messagesForDb);
-          updateActiveChannelMessages(messages);
-          setRepliedMessagesReplyProperty(messages, self.currentChannelMessages)
-            .then(function () {
-              deferred.resolve(messages);
-            });
+          updateCacheMessagesByChannelId(channelId, loadingMessages);
+          updateActiveChannelMessages(loadingMessages);
+          return setRepliedMessagesReplyProperty(loadingMessages, self.currentChannelMessages);
+        })
+        .then(function () {
+          deferred.resolve(loadingMessages);
         });
       return deferred.promise;
     }
@@ -517,25 +521,27 @@ app.service('messagesService', [
       var queryField = ['id'];
       if (shouldSendAllMessageData)
         queryField = null;
-      Db.getDb().then(function (database) {
-        database.find({
-          selector: {
-            id: {
-              $gt: from - 1,
-              $lt: to + 1
+      Db.getDb()
+        .then(function (database) {
+          return database.find({
+            selector: {
+              id: {
+                $gt: from - 1,
+                $lt: to + 1
+              },
+              channelId: {
+                $eq: channelId
+              }
             },
-            channelId: {
-              $eq: channelId
-            }
-          },
-          fields: queryField,
-          sort: [{
-            id: 'asc'
-          }],
-        }).then(function (data) {
+            fields: queryField,
+            sort: [{
+              id: 'asc'
+            }],
+          });
+        })
+        .then(function (data) {
           deferred.resolve(data.docs);
         });
-      });
       return deferred.promise;
     }
 
@@ -655,7 +661,8 @@ app.service('messagesService', [
           CurrentMember.member.id, fileData, message)
         .then(function (res) {
           setUploadedFileMessageDetails(message, res.data);
-        }).catch(function (err) {
+        })
+        .catch(function (err) {
           updateFailedUploadedFiles(message, fileData);
         });
     }

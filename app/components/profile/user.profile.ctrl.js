@@ -1,8 +1,10 @@
 'use strict';
 
 app.controller('userProfileController', [
-  '$scope', '$window', 'CurrentMember', 'AuthService', 'profileService', '$uibModalInstance', '$timeout',
-  function ($scope, $window, CurrentMember, AuthService, profileService, $uibModalInstance, $timeout) {
+  '$scope', '$window', 'CurrentMember', 'AuthService', 'profileService',
+  '$uibModalInstance', '$timeout',
+  function ($scope, $window, CurrentMember, AuthService, profileService,
+    $uibModalInstance, $timeout) {
 
     initialize();
 
@@ -17,15 +19,18 @@ app.controller('userProfileController', [
 
     $scope.savePassword = function () {
       if ($scope.newPasswordInput !== $scope.confirmPasswordInput)
-        setInfoOrErrorMessage('error', 'رمز عبور با تکرار آن مطابقت ندارد.');
+        setInfoOrErrorMessage('error',
+          'رمز عبور با تکرار آن مطابقت ندارد.');
       else {
         $scope.changePasswordActive = false;
         profileService.changePassword($scope.oldPasswordInput,
-          $scope.newPasswordInput, $scope.confirmPasswordInput).then(function (infoMsg) {
-          setInfoOrErrorMessage('info', infoMsg);
-        }).catch(function (errorMsg) {
-          setInfoOrErrorMessage('error', errorMsg);
-        });
+            $scope.newPasswordInput, $scope.confirmPasswordInput)
+          .then(function (infoMsg) {
+            setInfoOrErrorMessage('info', infoMsg);
+          })
+          .catch(function (errorMsg) {
+            setInfoOrErrorMessage('error', errorMsg);
+          });
       }
     };
 
@@ -33,26 +38,31 @@ app.controller('userProfileController', [
       if ($scope.usernameInput === '')
         setInfoOrErrorMessage('error', 'نام کاربری نباید خالی باشد.');
       else if ($scope.usernameInput.length > 16)
-        setInfoOrErrorMessage('error', 'نام کاربری حداکثر می تواند ۱۶ کاراکتر باشد.');
+        setInfoOrErrorMessage('error',
+          'نام کاربری حداکثر می تواند ۱۶ کاراکتر باشد.');
       else {
-        profileService.changeUsername($scope.usernameInput).then(function (infoMsg) {
-          $scope.user.username = $scope.usernameInput;
-          setInfoOrErrorMessage('info', infoMsg);
-          $scope.editUsernameActive = false;
-        }).catch(function (errorMsg) {
-          setInfoOrErrorMessage('error', errorMsg);
-          $scope.usernameInput = '';
-        });
+        profileService.changeUsername($scope.usernameInput)
+          .then(function (infoMsg) {
+            $scope.user.username = $scope.usernameInput;
+            setInfoOrErrorMessage('info', infoMsg);
+            $scope.editUsernameActive = false;
+          })
+          .catch(function (errorMsg) {
+            setInfoOrErrorMessage('error', errorMsg);
+            $scope.usernameInput = '';
+          });
       }
     };
 
     $scope.uploadProfileImage = function (file, errorFiles) {
       if (file) {
-        profileService.changeProfileImage(file).then(function (infoMsg) {
-          setInfoOrErrorMessage('info', infoMsg);
-        }).catch(function (errorMsg) {
-          setInfoOrErrorMessage('error', errorMsg);
-        });
+        profileService.changeProfileImage(file)
+          .then(function (infoMsg) {
+            setInfoOrErrorMessage('info', infoMsg);
+          })
+          .catch(function (errorMsg) {
+            setInfoOrErrorMessage('error', errorMsg);
+          });
       }
     };
 
@@ -101,4 +111,5 @@ app.controller('userProfileController', [
       $scope.showErrorMessage = false;
       $scope.showInfoMessage = false;
     }
-  }]);
+  }
+]);

@@ -89,7 +89,8 @@ app.controller('channelsController', [
         templateUrl: 'app/components/messenger/channels/channel-create.view.html?v=1.0.1',
         controller: 'createChannelController'
       });
-      modalInstance.result.then(function () {}, function () {});
+      modalInstance.result
+        .then(function () {}, function () {});
     };
 
     $scope.navigateToAndWaitFor = function (stepId) {
