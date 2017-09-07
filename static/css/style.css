@@ -149,7 +149,7 @@ a * {
   opacity: 1;
   visibility: visible;
   position: relative;
-  z-index: 3;
+  z-index: 5;
   width: 100%;
   height: 100%;
   transition: all 0.4s ease;
@@ -1044,6 +1044,10 @@ ul.dropdown-menu {
   margin: 0 0 16px 16px;
   float: right;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.21);
+}
+
+.chat-section.no-padding{
+  padding-left: 60px;
 }
 
 
@@ -2168,6 +2172,82 @@ ol.linenums, ol.linenums-view {
 
 .input-holder a:last-of-type {
   left: 20px;
+}
+
+.sidebar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  background: #f1f1f1;
+  z-index: 4;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sidebar ul {
+  display: block;
+  list-style: none;
+  width: 100%;
+}
+
+.sidebar ul li {
+  width: 100%;
+}
+
+.sidebar ul li a {
+  padding: 8px;
+  width: 100%;
+  color: #888;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.sidebar ul li a:hover .sidebar-icon {
+  background: #888;
+}
+
+.sidebar ul li a:hover i {
+  color: #f1f1f1;
+}
+
+.sidebar ul li a span {
+  display: block;
+  font-size: 10px;
+  padding-top: 4px;
+  color: #888;
+}
+.sidebar ul li a.selected .sidebar-icon {
+  background:rgb(18, 184, 109);
+}
+.sidebar ul li a.selected i{
+  color: #f1f1f1;
+}
+.sidebar ul li a.selected span{
+  color: rgb(18, 184, 109);
+}
+
+.sidebar-icon {
+  margin: 0 auto;
+  display: inline-block;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  padding-top: 9px;
+  background: rgba(0, 0, 0, 0);
+}
+
+.sidebar ul li a i {
+  color: #888;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
 }
 
 .mime-holder {
