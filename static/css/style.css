@@ -237,6 +237,10 @@ a * {
   margin-bottom: 8px;
   word-wrap: break-word;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.05), 0 4px 4px -2px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
+  -o-transition: background 0.3s ease;
+  -moz-transition: background 0.3s ease;
+  -webkit-transition: background 0.3s ease;
 }
 
 .notif .time {
@@ -1497,10 +1501,10 @@ ol.linenums, ol.linenums-view {
   font-size: 15px;
   word-wrap: break-word;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
-  /*transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease;*/
+  transition: background 0.3s ease;
+  -o-transition: background 0.3s ease;
+  -moz-transition: background 0.3s ease;
+  -webkit-transition: background 0.3s ease;
 }
 
 .msg a[href]:not([download]):not(.msg-attachment) {
@@ -1648,6 +1652,31 @@ ol.linenums, ol.linenums-view {
 .msg .msg-img {
   height: 200px;
   overflow: hidden;
+}
+
+.msg-img img{
+  width: auto;
+  height: 200px;
+  max-width: none;
+}
+
+.msg-img + .dl-btn{
+  position: absolute;
+  right: 20px;
+  font-size: 20px;
+  bottom: 30px;
+  color: #fff;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  margin: 0;
+  padding: 2px;
+  float: none;
+}
+.msg-img + .dl-btn i{
+  color: #fff;
 }
 
 .img-overlay-holder {
@@ -2021,7 +2050,7 @@ ol.linenums, ol.linenums-view {
   color: rgba(36, 167, 114, 1);
 }
 
-.msg-highlight .msg {
+.msg-highlight .msg, .msg-highlight .notif {
   background: rgba(225, 245, 237, 1);
 }
 
