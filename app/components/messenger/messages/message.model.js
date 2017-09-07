@@ -167,9 +167,9 @@ app.factory('Message', [
         case Message.TYPE.FILE:
           return this.additionalData.name;
         case Message.TYPE.NOTIF.USER_ADDED:
-          return this.addUserNotifBody();
+          return this.generateUserNotifBody();
         case Message.TYPE.NOTIF.USER_REMOVED:
-          return this.addUserNotifBody();
+          return this.generateUserNotifBody();
         case Message.TYPE.NOTIF.FILE_LIVED:
           return 'فایل "' + this.additionalData.fileName + '"، LIVE شد.';
         case Message.TYPE.NOTIF.FILE_DIED:
