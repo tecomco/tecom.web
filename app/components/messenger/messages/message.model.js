@@ -1,19 +1,20 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'Db', 'textUtil', 'channelsService', 'fileUtil', 'dateUtil',
-  'CurrentMember', 'Team',
-  function ($log, Db, textUtil, channelsService, fileUtil, dateUtil,
-    CurrentMember, Team) {
+  '$log', 'Db', '$timeout', 'textUtil', 'channelsService', 'fileUtil',
+  'dateUtil', 'CurrentMember', 'Team',
+  function ($log, Db, $timeout, textUtil, channelsService, fileUtil,
+    dateUtil, CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-      additionalData, about, isPending, fileTimestamp) {
+      additionalData, about, replyTo, isPending, fileTimestamp) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
-        additionalData, about, isPending, fileTimestamp);
+        additionalData, about, replyTo, isPending, fileTimestamp);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
-      _id, datetime, additionalData, about, isPending, fileTimestamp) {
+      _id, datetime, additionalData, about, replyTo, isPending,
+      fileTimestamp) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -31,36 +32,25 @@ app.factory('Message', [
       if (this.currentChannel) {
         this.teamId = this.currentChannel.teamId;
       }
-      this.fileTimestamp = fileTimestamp;
+      this.fileTimestamp = fileTimestamp || null;
       this.uploadProgressBar = null;
+      this.replyTo = replyTo;
     };
 
     Message.prototype.getUsername = function () {
-      if (CurrentMember.member.isTecomBot() || this.isLoading()) {
-        return '';
-      }
-      var username = Team.getUsernameByMemberId(this.senderId);
-      if (!this.isNotif() && username === '') {
-
-        /**
-         * @todo Please fix this shit boi.
-         */
-        $log.error('Empty username problem. Team members:');
-      }
-      return username;
+      if (this.isLoading() || this.isNotif()) return '';
+      return Team.getUsernameByMemberId(this.senderId);
     };
 
     Message.prototype.getUsernameColor = function () {
-      if (CurrentMember.member.isTecomBot() || !this.senderId || this.senderId ===
-        CurrentMember.member.id) {
+      if (CurrentMember.member.isTecomBot() || !this.senderId ||
+        this.senderId === CurrentMember.member.id) {
         return {};
       }
       var member = Team.getMemberByMemberId(this.senderId);
-      if (member)
-        return {
-          'color': Team.getMemberByMemberId(this.senderId).user.usernameColor
-        };
-      return {};
+      return {
+        color: member.user.usernameColor
+      };
     };
 
     Message.prototype.getViewWellFormed = function () {
@@ -137,7 +127,20 @@ app.factory('Message', [
     Message.prototype.getCssClass = function () {
       switch (this.type) {
         case Message.TYPE.TEXT:
-          return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
+          if (this.isFromMe()) {
+            if (this.about) {
+              return 'msg msg-send msg-has-attachment';
+            } else {
+              return 'msg msg-send';
+            }
+          } else {
+            if (this.about) {
+              return 'msg msg-recieve msg-has-attachment';
+            } else {
+              return 'msg msg-recieve';
+            }
+          }
+          break;
         case Message.TYPE.FILE:
           return this.isFromMe() ? 'msg msg-send' : 'msg msg-recieve';
         case Message.TYPE.NOTIF.USER_ADDED:
@@ -155,6 +158,42 @@ app.factory('Message', [
         case Message.TYPE.LOADING:
           return 'msg-loading';
       }
+    };
+
+    Message.prototype.getReplyMessageBody = function () {
+      switch (this.type) {
+        case Message.TYPE.TEXT:
+          return this.body;
+        case Message.TYPE.FILE:
+          return this.additionalData.name;
+        case Message.TYPE.NOTIF.USER_ADDED:
+          return this.generateUserNotifBody();
+        case Message.TYPE.NOTIF.USER_REMOVED:
+          return this.generateUserNotifBody();
+        case Message.TYPE.NOTIF.FILE_LIVED:
+          return 'فایل "' + this.additionalData.fileName + '"، LIVE شد.';
+        case Message.TYPE.NOTIF.FILE_DIED:
+          return 'فایل "' + this.additionalData.fileName +
+            '"، از حالت LIVE خارج شد.';
+        case Message.TYPE.NOTIF.CHANNEL_CREATED:
+          return 'گروه ساخته شد.';
+        case Message.TYPE.NOTIF.CHANNEL_EDITED:
+          return 'اطلاعات گروه تغییر کرد.';
+      }
+    };
+
+    Message.prototype.getMessageHighlightClass = function () {
+      if (this.isHighlighted)
+        return 'msg-highlight';
+      return '';
+    };
+
+    Message.prototype.highlight = function () {
+      this.isHighlighted = true;
+      var that = this;
+      $timeout(function () {
+        that.isHighlighted = false;
+      }, 1500);
     };
 
     Message.prototype.setIdAndDatetime = function (_id, datetime) {
@@ -177,7 +216,8 @@ app.factory('Message', [
         channelId: this.channelId,
         teamId: this.teamId,
         messageBody: this.body,
-        type: this.type
+        type: this.type,
+        replyTo: this.replyTo
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
@@ -196,7 +236,8 @@ app.factory('Message', [
         senderId: this.senderId,
         channelId: this.channelId,
         datetime: this.datetime,
-        type: this.type
+        type: this.type,
+        replyTo: this.replyTo
       };
       if (this.additionalData) {
         data.additionalData = this.additionalData;
@@ -249,6 +290,10 @@ app.factory('Message', [
       return dateUtil.getPersianTime(this.datetime);
     };
 
+    Message.prototype.isImage = function () {
+      return fileUtil.isPictureFormat(this.additionalData.type);
+    };
+
     Message.prototype.generateTextBody = function () {
       var body = '';
       if (this.about) {
@@ -267,7 +312,7 @@ app.factory('Message', [
       this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
       body = '<div id="' + this.getFileTimestampId() +
         '" class="ng-scope" dir="rtl">';
-      if (fileUtil.isPictureFormat(this.additionalData.type))
+      if (this.isImage())
         body += this.generateImageViewerBody();
       else
         body += this.generateFileMessageBody();

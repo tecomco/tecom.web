@@ -1497,6 +1497,10 @@ ol.linenums, ol.linenums-view {
   font-size: 15px;
   word-wrap: break-word;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+  /*transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;*/
 }
 
 .msg a[href]:not([download]):not(.msg-attachment) {
@@ -1642,7 +1646,7 @@ ol.linenums, ol.linenums-view {
 }
 
 .msg .msg-img {
-  max-height: 400px;
+  height: 200px;
   overflow: hidden;
 }
 
@@ -1652,7 +1656,7 @@ ol.linenums, ol.linenums-view {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 4;
+  z-index: 11;
   opacity: 1;
   visibility: visible;
   text-align: center;
@@ -1764,6 +1768,7 @@ ol.linenums, ol.linenums-view {
 .jump-btn {
   position: absolute;
   bottom: 0;
+  z-index: 4;
   left: 30px;
   width: 40px;
   height: 40px;
@@ -3142,7 +3147,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 }
 
 .modal-global-err:not(.ng-hide) {
-  animation: err-anim 3s ease;
+  tion: err-anim 3s ease;
   animation-fill-mode: forwards;
   -webkit-animation: err-anim 3s ease;
 }

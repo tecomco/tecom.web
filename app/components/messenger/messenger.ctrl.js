@@ -9,12 +9,6 @@
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
-     $scope.isFullscreenVisible = false;
-     var socket;
-
-     $rootScope.$on('socket:connected', function (event, soc) {
-       socket = soc;
-     });
 
      $scope.openUserProfileModal = function () {
        var modalInstance = $uibModal.open({
@@ -27,7 +21,7 @@
      $scope.openTeamProfileModal = function () {
        var modalInstance = $uibModal.open({
          animation: true,
-         templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.1',
+         templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.2',
          controller: 'teamProfileController',
          resolve: {
            tourClicked: function () {
@@ -46,16 +40,6 @@
      $scope.$on('loading:finished', function () {
        checkIfUserSeenTour();
      });
-
-     $scope.$on('image:fullscreen', function (event, url, name) {
-       $scope.fullscreenImageSrc = url;
-       $scope.fullscreenImageName = name;
-       $scope.isFullscreenVisible = true;
-     });
-
-     $scope.closeFullscreenImage = function () {
-       $scope.isFullscreenVisible = false;
-     };
 
      $scope.getPannelsCSS = function (pannel) {
        if (pannel === 'messages') {
@@ -94,12 +78,10 @@
      };
 
      $scope.activateDontDisturbMode = function () {
-       socket.disconnect();
        CurrentMember.activateDontDisturbMode();
      };
 
      $scope.deactivateDontDisturbMode = function () {
-       socket.connect();
        CurrentMember.deactivateDontDisturbMode();
      };
 
@@ -140,7 +122,7 @@
 
      function cacheMessagesTemplates() {
        $http.get(
-         'app/components/messenger/messages/messages.view.html?v=1.0.9', {
+         'app/components/messenger/messages/messages.view.html?v=1.1.0', {
            cache: $templateCache
          });
        $http.get('app/components/messenger/header/header.view.html?v=1.0.5', {
@@ -149,7 +131,7 @@
        $http.get('app/components/files/files.view.html?v=1.0.6', {
          cache: $templateCache
        });
-       $http.get('app/components/files/filemanager-files.view.html?v=1.0.1', {
+       $http.get('app/components/files/filemanager-files.view.html?v=1.0.2', {
          cache: $templateCache
        });
      }

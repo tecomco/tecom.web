@@ -38,7 +38,7 @@ app.factory('teamService', [
 
     socket.on('member:status:change', function (data) {
       var member = Team.getMemberByMemberId(data.memberId);
-        member.status = data.status;
+      member.status = data.status;
     });
 
     function deactiveTeamMember(memberId) {

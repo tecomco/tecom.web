@@ -1,8 +1,10 @@
 'use strict';
 
-app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
-  'ArrayUtil', 'Member',
-  function ($http, socket, $q, $log, $localStorage, ArrayUtil, Member) {
+app.factory('Team', [
+  '$http', 'socket', '$q', '$log', '$localStorage', 'ArrayUtil', 'Member',
+  'CurrentMember',
+  function ($http, socket, $q, $log, $localStorage, ArrayUtil, Member,
+    CurrentMember) {
 
     function Team() {}
 
@@ -40,38 +42,22 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
     };
 
     Team.getUsernameByMemberId = function (memberId) {
-      if (memberId === Member.TECOM_BOT.id) {
-        return Member.TECOM_BOT.username;
-      }
-      var member = ArrayUtil.getElementByKeyValue(Team.members, 'id',
-        memberId);
-      return member ? member.user.username : '';
+      if (CurrentMember.member.isTecomBot()) return '';
+      if (memberId === Member.TECOM_BOT.id) return Member.TECOM_BOT.username;
+      return Team.getMemberByMemberId(memberId).user.username;
     };
 
     Team.getMemberByUsername = function (username) {
-      if (username === Member.TECOM_BOT.username) {
-        return Member.TECOM_BOT;
-      }
-      var member = ArrayUtil.getElementByKeyValue(Team.members,
-        'user.username',
+      if (CurrentMember.member.isTecomBot()) return null;
+      if (username === Member.TECOM_BOT.username) return Member.TECOM_BOT;
+      return ArrayUtil.getElementByKeyValue(Team.members, 'user.username',
         username);
-      if (member)
-        return member;
-      else {
-        $log.error('Member Not Found !');
-        return null;
-      }
     };
 
     Team.getMemberByMemberId = function (memberId) {
-      if (memberId === Member.TECOM_BOT.id) {
-        return Member.TECOM_BOT;
-      }
-      var member = ArrayUtil.getElementByKeyValue(Team.members, 'id',
-        memberId);
-      if (!member)
-        $log.error('Member Not Found !');
-      return member;
+      if (CurrentMember.member.isTecomBot()) return null;
+      if (memberId === Member.TECOM_BOT.id) return Member.TECOM_BOT;
+      return ArrayUtil.getElementByKeyValue(Team.members, 'id', memberId);
     };
 
     Team.getActiveMembers = function () {
@@ -81,18 +67,15 @@ app.factory('Team', ['$http', 'socket', '$q', '$log', '$localStorage',
     };
 
     Team.isMemberActiveByUsername = function (username) {
-      var member = Team.getMemberByUsername(username);
-      if (member) {
-        if (member.id === Member.TECOM_BOT.id)
-          return true;
-        return member.isActive();
-      }
-      return false;
+      if (CurrentMember.member.isTecomBot()) return true;
+      if (username === Member.TECOM_BOT.username) return true;
+      return Team.getMemberByUsername(username).isActive();
     };
 
     Team.getImageByMemberId = function (memberId) {
-      var member = Team.getMemberByMemberId(memberId);
-      return member.user.image;
+      if (CurrentMember.member.isTecomBot()) return '/static/img/user-def.png';
+      if (memberId === Member.TECOM_BOT.id) return Member.TECOM_BOT.image;
+      return Team.getMemberByMemberId(memberId).user.image;
     };
 
     return Team;

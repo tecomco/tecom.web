@@ -64,21 +64,48 @@ app.factory('textUtil', function () {
   }
 
   function directionify(text) {
-    var EnglishRegex = /\b((?!=|\,|\.).)+(.)\b/;
-    if (!EnglishRegex.test(text))
+    if (!text.match(/[a-zA-Z]/i))
       return text;
-    var directionRegex = /([^\u0600-\u065F\u066E-\u06D5]+)/g;
-    return text.replace(directionRegex, function (englishPart) {
-      if (englishPart === ' ')
-        return englishPart;
-      if (!EnglishRegex.test(englishPart))
-        return englishPart
-      var hasFirstSpace = englishPart[0] === ' ';
-      var hasLastSpace = englishPart[englishPart.length - 1] === ' ';
-      return (hasFirstSpace ? ' ' : '') +
-        '<span style="direction:ltr" dir="ltr">' + englishPart.trim() +
-        '</span> ' + (hasLastSpace ? ' ' : '');
+    if (isEnglish(text))
+      return generateDirectionifyText(text);
+    var directionifiedText = '';
+    var englishTempText = '';
+    text.trim().split(' ').forEach(function (word, index, array) {
+      if (word === '') {
+        directionifiedText += generateEnglishTempTextIfExists(
+          englishTempText);
+        englishTempText = '';
+        directionifiedText += ' ';
+      } else if (!isEnglish(word)) {
+        directionifiedText += generateEnglishTempTextIfExists(
+          englishTempText);
+        englishTempText = '';
+        directionifiedText += generateDirectionifyText(word);
+        if (index !== array.length - 1)
+          directionifiedText += ' ';
+      } else {
+        englishTempText += word;
+        if (index !== array.length - 1)
+          englishTempText += ' ';
+      }
     });
+    directionifiedText += generateEnglishTempTextIfExists(
+      englishTempText);
+    return directionifiedText;
+  }
+
+  function generateDirectionifyText(word) {
+    if (word.match(/[آ-ی]/i) || !word.match(/[a-zA-Z]/i))
+      return word;
+    else
+      return '<span style="direction:ltr" dir="ltr">' + word + '</span> ';
+  }
+
+  function generateEnglishTempTextIfExists(englishTempText) {
+    if (englishTempText.length)
+      return generateDirectionifyText(englishTempText.trim()) + ' ';
+    else
+      return '';
   }
 
   /**

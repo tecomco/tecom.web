@@ -56,20 +56,30 @@ app.factory('ArrayUtil', function () {
     return (getIndexByKeyValue(array, key, value) > -1);
   }
 
-  function sortByKeyDesc(array, key){
-    array.sort(function(a, b){
-      if(a[key] < b[key]) return 1;
-      if(a[key] > b[key]) return -1;
+  function sortByKeyDesc(array, key) {
+    array.sort(function (a, b) {
+      if (a[key] < b[key]) return 1;
+      if (a[key] > b[key]) return -1;
       return 0;
     });
   }
 
-  function sortByKeyAsc(array, key){
-    array.sort(function(a, b){
-      if(a[key] < b[key]) return -1;
-      if(a[key] > b[key]) return 1;
+  function sortByKeyAsc(array, key) {
+    array.sort(function (a, b) {
+      if (a[key] < b[key]) return -1;
+      if (a[key] > b[key]) return 1;
       return 0;
     });
+  }
+
+  function getElementsRangeByKeyValue(array, key, from, to) {
+    var rangeElements = [];
+    for (var i = 0; i < array.length; i++) {
+      if (array[i][key] >= from && array[i][key] <= to)
+        rangeElements.push(array[i]);
+    }
+    sortByKeyAsc(rangeElements, key);
+    return rangeElements;
   }
 
 
@@ -83,6 +93,7 @@ app.factory('ArrayUtil', function () {
     containsKeyValue: containsKeyValue,
     removeElementByValue: removeElementByValue,
     sortByKeyDesc: sortByKeyDesc,
-    sortByKeyAsc: sortByKeyAsc
+    sortByKeyAsc: sortByKeyAsc,
+    getElementsRangeByKeyValue: getElementsRangeByKeyValue
   };
 });
