@@ -159,7 +159,7 @@ a * {
   -o-transition: all 0.4s ease;
 }
 
-.loading.ng-hide{
+.loading.ng-hide {
   opacity: 0;
   visibility: hidden;
   display: block !important;
@@ -471,6 +471,11 @@ a * {
   font-size: 20px;
   font-weight: 400;
   padding: 5px 16px 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .header .name .det {
@@ -505,7 +510,7 @@ a * {
   margin-bottom: -7px;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
+  width: 70%;
 }
 
 .right-section {
@@ -1484,6 +1489,7 @@ ol.linenums, ol.linenums-view {
   position: relative;
   max-width: 80%;
   padding: 8px 12px;
+  padding-bottom: 22px;
   background: #fff;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -1497,6 +1503,7 @@ ol.linenums, ol.linenums-view {
   color: rgb(19, 141, 180);
   text-decoration: underline;
   position: relative;
+  display: inline;
 }
 
 .msg a[href]:not([download]):not(.msg-attachment):after {
@@ -1529,15 +1536,16 @@ ol.linenums, ol.linenums-view {
 }
 
 .msg .details {
-  float: left;
-  height: 1px;
+  position: absolute;
+  bottom: -4px;
+  left: 8px;
   padding-right: 10px;
   display: inline-block;
 }
 
 .msg .time {
-  float: left;
-  color: #bbb;
+  font-size: 13px;
+  color: #999;
   font-weight: 100;
 }
 
@@ -1879,6 +1887,141 @@ ol.linenums, ol.linenums-view {
 
 .dl-btn i {
   color: #aaa;
+}
+
+.reply-btn {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 14px;
+  text-align: center;
+  bottom: 4px;
+  padding: 2px;
+  border-radius: 50%;
+  background: rgba(36, 167, 114, 0.1);
+  color: rgba(36, 167, 114, 0.8);
+  transition: all 0.3s ease 1s;
+  -o-transition: all 0.3s ease 1s;
+  -moz-transition: all 0.3s ease 1s;
+  -webkit-transition: all 0.3s ease 1s;
+}
+
+.reply-btn:hover {
+  background: rgba(36, 167, 114, 0.2);
+  color: rgba(36, 167, 114, 1);
+}
+
+.msg:hover .reply-btn, .notif:hover .reply-btn {
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+
+.msg.msg-send .reply-btn {
+  left: -30px;
+}
+
+.msg.msg-recieve .reply-btn, .notif .reply-btn {
+  right: -30px;
+}
+
+.msg.msg-recieve.msg-has-attachment .reply-btn {
+  right: -53px;
+}
+
+.msg.msg-send.msg-has-attachment .reply-btn {
+  left: -53px;
+}
+
+.current-reply-holder {
+  background: #eee;
+  position: absolute;
+  bottom: 57px;
+  left: 0;
+  right: 0;
+  padding: 8px 33px 0;
+  animation: reply-anim 0.3s ease;
+  animation-fill-mode: forwards;
+  -webkit-animation: reply-anim 0.3s ease;
+  z-index: 3;
+}
+
+@keyframes reply-anim {
+  0% {
+    height: 0;
+    bottom: 40px;
+    opacity: 0
+  }
+  90% {
+    height: auto;
+    bottom: 57px;
+    opacity: 1;
+  }
+  100% {
+    height: auto;
+    bottom: 57px;
+    opacity: 1;
+  }
+}
+
+.current-reply {
+  border-right: 4px solid rgba(36, 167, 114, 0.8);
+  background: rgba(36, 167, 114, 0.1);
+  padding: 4px 8px 4px 32px;
+  position: relative;
+}
+
+.current-reply label {
+  color: #444;
+  position: static;
+  margin-bottom: 0
+}
+
+.current-reply.msg-reply {
+  width: 100%;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.current-reply label.reply-name {
+  font-size: 12px;
+  width: 100%;
+  color: rgba(36, 167, 114, 0.8);
+}
+
+.current-reply span.reply-one-line {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cancel-reply {
+  color: rgba(36, 167, 114, 0.8);
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  font-size: 20px;
+}
+
+.cancel-reply:hover {
+  color: rgba(36, 167, 114, 1);
+}
+
+.msg-highlight .msg {
+  background: rgba(225, 245, 237, 1);
+}
+
+.fake-height {
+  height: 30px;
 }
 
 .input-holder {
