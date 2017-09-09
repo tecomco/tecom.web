@@ -21,7 +21,7 @@
      $scope.openTeamProfileModal = function () {
        var modalInstance = $uibModal.open({
          animation: true,
-         templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.2',
+         templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.3',
          controller: 'teamProfileController',
          resolve: {
            tourClicked: function () {
@@ -131,7 +131,7 @@
        $http.get('app/components/files/files.view.html?v=1.0.6', {
          cache: $templateCache
        });
-       $http.get('app/components/files/filemanager-files.view.html?v=1.0.2', {
+       $http.get('app/components/files/filemanager-files.view.html?v=1.0.3', {
          cache: $templateCache
        });
      }

@@ -652,10 +652,6 @@ ul.dropdown-menu {
   border-bottom-color: #f1f1f1;
 }
 
-.popover .popover-title {
-  display: none;
-}
-
 .popover .btn {
   font-weight: 200;
   transition: all 0.3s ease;
@@ -681,7 +677,7 @@ ul.dropdown-menu {
 }
 
 .popover-content {
-  padding: 12px 15px;
+  padding: 5px 15px;
 }
 
 .danger-btn:hover, .danger-btn:active, .danger-btn:focus {
