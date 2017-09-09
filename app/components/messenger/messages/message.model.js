@@ -292,7 +292,9 @@ app.factory('Message', [
     };
 
     Message.prototype.isImage = function () {
-      return fileUtil.isPictureFormat(this.additionalData.type);
+      var type = this.additionalData.type ||
+        this.additionalData.name.split('.').pop();
+      return fileUtil.isPictureFormat(type);
     };
 
     Message.prototype.generateTextBody = function () {
@@ -326,11 +328,12 @@ app.factory('Message', [
     };
 
     Message.prototype.generateImageViewerBody = function () {
-      return '<div class="msg-img" ng-click="fullscreenImage(\'' +
-        this.additionalData.url + '\', \'' + this.additionalData.name +
+      return '<div class="msg-img" ng-if="' + !this.isPending +
+        '" ng-click="fullscreenImage(\'' + this.additionalData.url +
+        '\', \'' + this.additionalData.name +
         '\')"><img class="img-responsive " id="img-' + this.additionalData
-        .fileId + '" ng-src="' + this.additionalData
-        .url + '" style="cursor:pointer" /></div>';
+        .fileId + '" ng-src="' + this.additionalData.url +
+        '" style="cursor:pointer" /></div>';
     };
 
     Message.prototype.generateFileMessageBody = function () {
@@ -357,8 +360,8 @@ app.factory('Message', [
     };
 
     Message.prototype.generateFileDownloadBody = function () {
-      return '<a class="dl-btn" href="' + this.additionalData.url +
-        '" download="' + this.additionalData.name +
+      return '<a class="dl-btn" ng-if="' + !this.isPending + '" href="' +
+        this.additionalData.url + '" download="' + this.additionalData.name +
         '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">' +
         '<i class="zmdi zmdi-download"></i></a>';
     };

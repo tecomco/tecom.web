@@ -94,6 +94,8 @@ app.controller('messagesController', [
       $scope.uploadSizeLimitNotif = false;
       var message = messagesService.sendFileAndGetMessage(
         $scope.channel.id, file, $scope.replyMessage);
+      if (message.isImage())
+        message.imageFile = file;
       $scope.replyMessage = null;
       $scope.messages.push(message);
       scrollBottom();
