@@ -28,7 +28,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/:slug',
       views: {
         '': {
-          templateUrl: 'app/components/messenger/messages/messages.view.html?v=1.1.0'
+          templateUrl: 'app/components/messenger/messages/messages.view.html?v=1.1.1'
         },
         'header@messenger.messages': {
           templateUrl: 'app/components/messenger/header/header.view.html?v=1.0.5'
