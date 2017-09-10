@@ -10,6 +10,7 @@ app.service('messagesService', [
 
     var self = this;
     self.failedUploadedFiles = [];
+    self.uploadingFiles = [];
     self.currentChannelMessages = [];
     var MESSAGE_MAX_PACKET_LENGTH = 20;
 
@@ -244,6 +245,14 @@ app.service('messagesService', [
       });
     }
 
+    function pushUploadingFilesIntoMessagesByCahnnelId(messages,
+      channelId) {
+      var channelUploadingFiles = getUploadingFilesByChannelId(channelId);
+      channelUploadingFiles.forEach(function (message) {
+        messages.push(message);
+      });
+    }
+
     function getInitialMessagesByChannelIdFromCache(channelId,
       memberLastSeenId, lastMessageId) {
       var deferred = $q.defer();
@@ -260,6 +269,7 @@ app.service('messagesService', [
           generateLoadingMessages(messages, channelId, lastMessageId);
           pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
             channelId);
+          pushUploadingFilesIntoMessagesByCahnnelId(messages, channelId);
           setActiveChannelMessages(messages);
           deferred.resolve(messages);
         });
@@ -620,6 +630,7 @@ app.service('messagesService', [
       if (replyMessage)
         message.reply = replyMessage;
       uploadFile(message, fileData);
+      updateUploadingFiles(message);
       return message;
     }
 
@@ -643,9 +654,16 @@ app.service('messagesService', [
           updateChannelMessagesIfActive(message.channelId, [message]);
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
+          var channel = channelsService.findChannelById(message.channelId);
+          channel.seenLastMessage();
+          removeUploadingFileByFileTimestamp(message.fileTimestamp);
         });
       filesService.createFileManagerFile(result.id, result.file, result.name,
         result.date_uploaded, result.type);
+    }
+
+    function updateUploadingFiles(message) {
+      self.uploadingFiles.push(message);
     }
 
     function updateFailedUploadedFiles(message, fileData) {
@@ -679,6 +697,11 @@ app.service('messagesService', [
         'message.fileTimestamp', fileTimestamp);
     }
 
+    function removeUploadingFileByFileTimestamp(fileTimestamp) {
+      ArrayUtil.removeElementByKeyValue(self.uploadingFiles,
+        'fileTimestamp', fileTimestamp);
+    }
+
     function seenMessage(channelId, messageId, senderId) {
       var data = {
         channelId: channelId,
@@ -693,6 +716,12 @@ app.service('messagesService', [
     function getFailedUploadedFilesByChannelId(channelId) {
       return self.failedUploadedFiles.filter(function (data) {
         return data.message.channelId === channelId;
+      });
+    }
+
+    function getUploadingFilesByChannelId(channelId) {
+      return self.uploadingFiles.filter(function (message) {
+        return message.channelId === channelId;
       });
     }
 

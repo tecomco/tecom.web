@@ -53,8 +53,8 @@
               <span class="reply-one-line">{{::message.reply.getReplyMessageBody()}}</span>
             </a>
               </div>
-              <div ng-if="message.isFile() && message.isImage()" compile template="{{message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
-              <div ng-if="!message.isFile() || !message.isImage()" compile template="{{::message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
+              <div ng-if="message.isFile()" compile template="{{message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
+              <div ng-if="!message.isFile()" compile template="{{::message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
               <img class="msg-img" ng-if="message.isFile() && message.isImage() && message.isPending" ngf-src="message.imageFile">
               <a ng-click="setReplyMessage(message)" ng-if="::!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
               <div class="file-failed-btns">
