@@ -35,7 +35,7 @@ module.exports = function (grunt) {
         name: 'config',
       },
       // Environment targets
-      dev: {
+      local: {
         options: {
           dest: 'app/app.config.js'
         },
@@ -43,6 +43,17 @@ module.exports = function (grunt) {
           ENV: {
             name: 'dev',
             socketUri: 'ws.localhost:4000/'
+          }
+        }
+      },
+      dev: {
+        options: {
+          dest: 'app/app.config.js'
+        },
+        constants: {
+          ENV: {
+            name: 'dev',
+            socketUri: 'ws.tecomdev.ir/'
           }
         }
       },
@@ -65,17 +76,6 @@ module.exports = function (grunt) {
           ENV: {
             name: 'prod',
             socketUri: 'ws.tecom.me/'
-          }
-        }
-      },
-      ui: {
-        options: {
-          dest: 'app/app.config.js'
-        },
-        constants: {
-          ENV: {
-            name: 'ui',
-            socketUri: ''
           }
         }
       }
