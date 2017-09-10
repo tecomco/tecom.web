@@ -122,7 +122,7 @@
 
      function cacheMessagesTemplates() {
        $http.get(
-         'app/components/messenger/messages/messages.view.html?v=1.1.1', {
+         'app/components/messenger/messages/messages.view.html?v=1.1.2', {
            cache: $templateCache
          });
        $http.get('app/components/messenger/header/header.view.html?v=1.0.5', {

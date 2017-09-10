@@ -10,7 +10,7 @@ app.service('messagesService', [
 
     var self = this;
     self.failedUploadedFiles = [];
-    self.uploadingFiles = [];
+    self.uploadingFileMessages = [];
     self.currentChannelMessages = [];
     var MESSAGE_MAX_PACKET_LENGTH = 20;
 
@@ -236,7 +236,7 @@ app.service('messagesService', [
       });
     }
 
-    function pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+    function pushFailedUploadedFilesIntoMessagesByChannelId(messages,
       channelId) {
       var channelFailedUploadedFiles =
         getFailedUploadedFilesByChannelId(channelId);
@@ -245,11 +245,12 @@ app.service('messagesService', [
       });
     }
 
-    function pushUploadingFilesIntoMessagesByCahnnelId(messages,
+    function pushUploadingFileMessagesIntoMessagesByChannelId(messages,
       channelId) {
-      var channelUploadingFiles = getUploadingFilesByChannelId(channelId);
-      channelUploadingFiles.forEach(function (message) {
-        messages.push(message);
+      var channelUploadingFileMessages = getUploadingFileMessagesByChannelId(
+        channelId);
+      channelUploadingFileMessages.forEach(function (uploadingFileMessage) {
+        messages.push(uploadingFileMessage);
       });
     }
 
@@ -267,9 +268,9 @@ app.service('messagesService', [
       setRepliedMessagesReplyProperty(messages, messages)
         .then(function () {
           generateLoadingMessages(messages, channelId, lastMessageId);
-          pushFailedUploadedFilesIntoMessagesByCahnnelId(messages,
+          pushFailedUploadedFilesIntoMessagesByChannelId(messages,
             channelId);
-          pushUploadingFilesIntoMessagesByCahnnelId(messages, channelId);
+          pushUploadingFileMessagesIntoMessagesByChannelId(messages, channelId);
           setActiveChannelMessages(messages);
           deferred.resolve(messages);
         });
@@ -630,7 +631,7 @@ app.service('messagesService', [
       if (replyMessage)
         message.reply = replyMessage;
       uploadFile(message, fileData);
-      updateUploadingFiles(message);
+      addUploadingFile(message);
       return message;
     }
 
@@ -662,8 +663,8 @@ app.service('messagesService', [
         result.date_uploaded, result.type);
     }
 
-    function updateUploadingFiles(message) {
-      self.uploadingFiles.push(message);
+    function addUploadingFile(message) {
+      self.uploadingFileMessages.push(message);
     }
 
     function updateFailedUploadedFiles(message, fileData) {
@@ -698,7 +699,7 @@ app.service('messagesService', [
     }
 
     function removeUploadingFileByFileTimestamp(fileTimestamp) {
-      ArrayUtil.removeElementByKeyValue(self.uploadingFiles,
+      ArrayUtil.removeElementByKeyValue(self.uploadingFileMessages,
         'fileTimestamp', fileTimestamp);
     }
 
@@ -719,8 +720,8 @@ app.service('messagesService', [
       });
     }
 
-    function getUploadingFilesByChannelId(channelId) {
-      return self.uploadingFiles.filter(function (message) {
+    function getUploadingFileMessagesByChannelId(channelId) {
+      return self.uploadingFileMessages.filter(function (message) {
         return message.channelId === channelId;
       });
     }
