@@ -8,10 +8,13 @@ app.controller('teamProfileController', [
     CurrentMember, Team, $timeout, validationUtil, ArrayUtil, teamService,
     channelsService, tourClicked) {
 
+    $scope.teamActiveMembers = [];
+    $scope.teamActiveEmails = [];
+
     initialize();
 
     $scope.$on('members:updated', function () {
-      $scope.teamMembers = Team.getActiveMembers();
+      $scope.teamActiveMembers = Team.getActiveMembers();
     });
 
     $scope.sendInvitation = function (form) {
@@ -112,11 +115,25 @@ app.controller('teamProfileController', [
     };
 
     function initialize() {
-      $scope.teamMembers = Team.getActiveMembers();
+      $scope.teamActiveMembers = Team.getActiveMembers();
+      getTeamActiveEmails();
       $scope.team = Team;
       $scope.editTeamNameActive = false;
       $scope.inviteMode = false;
       $scope.forms = {};
+    }
+
+    function getTeamActiveEmails() {
+      $http({
+          method: 'GET',
+          url: '/api/v1/teams/' + Team.id + '/invitations/'
+        })
+        .then(function (data) {
+          $scope.teamActiveEmails = data;
+        })
+        .catch(function (err) {
+          $log.info('Error Getting Team Invitation Emails.', err);
+        });
     }
 
     function isMe(member) {
