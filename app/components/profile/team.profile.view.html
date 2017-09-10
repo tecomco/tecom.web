@@ -16,13 +16,13 @@
               <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{activeMember.user.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[activeMember]" confirm-func="removeTeamMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
             </div>
           </div>
-          <div ng-repeat="activeEmail in teamactiveEmails | orderBy : 'create_datetime'" class="g-m-one">
+          <div ng-repeat="activeEmail in teamActiveEmails | orderBy : 'create_datetime'" class="g-m-one">
             <img src='/static/img/user-def.png' />
-            <label>{{activeEmail.email}}</label>
+            <label>{{activeEmail.email}} (در انتظار)</label>
             <div style="float: left">
-              <confirm-dialog class="t-m-btn" message='{{activeEmail.isAdmin ? "مطمئنی میخوای \"@" + activeEmail.user.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + activeEmail.user.username + "\"  ادمین بشه؟"}}'
-                cancel="نه، حواسم نبود" ok="آره" args="[activeEmail]" confirm-func="changeMemberAdminState" confirm-button='{{activeEmail.isAdmin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
-              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{activeEmail.user.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[activeEmail]" confirm-func="removeTeamMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای به ایمیل {{activeEmail.email}} دوباره دعوت‌نامه بفرستی ؟' cancel="نه، حواسم نبود" ok="آره" args="[activeEmail]" confirm-func="removeTeamMember" confirm-button="success" icon="zmdi zmdi-mail-send"></confirm-dialog>
+              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای ایمیل {{activeEmail.email}} رو از تیم حذف کنی؟'
+                cancel="نه، حواسم نبود" ok="آره" args="[activeEmail]" confirm-func="changeMemberAdminState" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
             </div>
           </div>
         </div>

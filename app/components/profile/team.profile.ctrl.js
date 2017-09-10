@@ -116,7 +116,12 @@ app.controller('teamProfileController', [
 
     function initialize() {
       $scope.teamActiveMembers = Team.getActiveMembers();
-      getTeamActiveEmails();
+      // getTeamActiveEmails();
+      $scope.teamActiveEmails = [{
+        id: 22,
+        email: 'amirhossein@gmal.com',
+        create_datetime: new Date()
+      }]
       $scope.team = Team;
       $scope.editTeamNameActive = false;
       $scope.inviteMode = false;
