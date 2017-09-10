@@ -1,5 +1,5 @@
-<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن. (۴/۸)" tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left"
-  tour-step-on-prev="navigateToHome()">
+<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-title="پیام‌ها" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن." tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left"
+tour-step-on-prev="navigateToHome()">
   <!-- TODO col-sm-9 col-lg-9 -->
   <div class="header clearfix">
     <div ui-view="header"></div>
@@ -27,7 +27,9 @@
           <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
         </div>
         <div ng-show="isMessageLoadingDone && !messages.length" class="no-msg"><span>پیامی نیست!</span></div>
-        <div ng-show="!isMessageLoadingDone" class="no-msg"><span>درحال بارگزاری</span></div>
+        <div ng-show="!isMessageLoadingDone" class="no-msg">
+          <span class="fa fa-spinner fa-spin"></span>
+        </div>
         <div class="main">
           <div ng-repeat="message in messages | orderBy : 'id'" id="message_{{::message.id}}" ng-class="message.getMessageHighlightClass()" class="msg-one">
             <div class="date-holder unread-msgs" ng-if="::isMessageFirstUnread(message)">
@@ -119,7 +121,7 @@
     </div>
   </div>
 </div>
-<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-content="این‌جا محتوایی که راجع بهش صحبت می‌شه، نشون داده می‌شه. در حال حاضر تیکام فقط از فایل‌های کد برای این قابلیت پشتیبانی می‌کنه. (۵/۸)" tour-step-order="4" tour-step-backdrop="true"
+<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step-title="مکالمه و محتوا، کنار هم!" tour-step-content="وقتی دارید راجع به موضوعی با هم صحبت می‌کنید، در کنار بخش پیام‌ها همزمان می‌تونید از این قسمت فایل‌ به اشتراک گذاشته شده رو به‌صورت زنده ببینید. اینجوری لازم نیست برنامه‌ی‌ دیگه‌ای باز کنید و تمرکزتون بهم بخوره. (فعلاً فقط از فایل‌های سورس‌کد پشتیبانی می‌شه.)" tour-step-order="4" tour-step-backdrop="true"
   tour-step-placement="right">
   <!-- TODO col-sm-3 col-lg-3 -->
   <div ui-view="files"></div>

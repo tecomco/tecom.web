@@ -356,8 +356,8 @@ app.controller('messagesController', [
         loadingMessages, messageId);
       if (closestLoadingMessage) {
         getLoadingMessages(closestLoadingMessage.additionalData.channelId,
-            closestLoadingMessage.additionalData.from, closestLoadingMessage
-            .additionalData.to)
+            closestLoadingMessage.additionalData.from,
+            closestLoadingMessage.additionalData.to)
           .then(function () {
             deferred.resolve();
           });

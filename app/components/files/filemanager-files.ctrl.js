@@ -31,8 +31,7 @@ app.controller('fileManagerController', [
       if (isFileManagerInitialized) {
         isLoading = true;
         filesService.getFileManagerFiles($scope.channel.id)
-          .then(function (
-            files) {
+          .then(function (files) {
             $scope.files = files;
             isFileManagerInitialized = false;
             isLoading = false;
