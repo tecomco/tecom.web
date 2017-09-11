@@ -87,7 +87,12 @@ app.controller('channelsController', [
       var modalInstance = $uibModal.open({
         animation: true,
         templateUrl: 'app/components/messenger/channels/channel-create.view.html?v=1.0.1',
-        controller: 'createChannelController'
+        controller: 'createChannelController',
+        resolve: {
+          channelsNumber: function () {
+            return $scope.channels.publicsAndPrivates.length;
+          }
+        }
       });
       modalInstance.result
         .then(function () {}, function () {});

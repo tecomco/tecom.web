@@ -24,7 +24,7 @@ app.controller('teamProfileController', [
       else if (validationUtil.validateEmail(email)) {
         profileService.sendInvitationEmail(email)
           .then(function (activeEmail) {
-            $scope.teamActiveEmails.push(activeEmail);
+            $scope.teamActiveEmails.push(activeEmail.data);
             document.getElementById('invitedEmail').value = '';
             setInfoOrErrorMessage('info',
               'ایمیل دعوت به تیم با موفقیت ارسال شد.');
@@ -88,20 +88,25 @@ app.controller('teamProfileController', [
 
     $scope.resendInvitationEmail = function (emailId) {
       profileService.resendInvitationEmail(emailId)
+        .then(function (activeEmail) {
+          ArrayUtil.removeElementByKeyValue($scope.teamActiveEmails,
+            'id', emailId);
+          $scope.teamActiveEmails.push(activeEmail.data);
+        });
     };
 
     $scope.deactivateEmailInvititaion = function (emailId) {
       profileService.deactivateEmailInvititaion(emailId)
         .then(function () {
           ArrayUtil.removeElementByKeyValue($scope.teamActiveEmails,
-            'id', emailId)
-        })
+            'id', emailId);
+        });
     };
 
     $scope.getNumbeOfTeamMembers = function () {
-      var teamMembersNumber = $scope.teamActiveEmails.length + $scope.teamActiveMembers
-        .length;
-      return '(' + teamMembersNumber + '/10)'
+      var teamMembersNumber = $scope.teamActiveEmails.length +
+        $scope.teamActiveMembers.length;
+      return '(' + teamMembersNumber + '/10)';
     };
 
     $scope.onTourReady = function (tour) {
@@ -139,12 +144,7 @@ app.controller('teamProfileController', [
 
     function initialize() {
       $scope.teamActiveMembers = Team.getActiveMembers();
-      // getTeamActiveEmails();
-      $scope.teamActiveEmails = [{
-        id: 22,
-        email: 'amirhossein@gmal.com',
-        create_datetime: new Date()
-      }]
+      getTeamActiveEmails();
       $scope.team = Team;
       $scope.editTeamNameActive = false;
       $scope.inviteMode = false;
@@ -154,9 +154,8 @@ app.controller('teamProfileController', [
     function getTeamActiveEmails() {
       profileService.getTeamActiveEmails()
         .then(function (data) {
-          $scope.teamActiveEmails = data;
-        })
-
+          $scope.teamActiveEmails = data.data;
+        });
     }
 
     function isMe(member) {

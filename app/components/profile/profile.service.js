@@ -144,27 +144,14 @@ app.service('profileService', [
     function getTeamActiveEmails() {
       return $http({
           method: 'GET',
-          url: '/api/v1/teams/' + Team.id + '/invitations/'
+          url: '/api/v1/teams/' + Team.id + '/invitations'
         })
         .catch(function (err) {
           $log.info('Error Getting Team Invitation Emails.', err);
         });
-    };
+    }
 
     function sendInvitationEmail(email) {
-      var deferred = $q.defer();
-      var text = "";
-      var possible =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (var i = 0; i < 8; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      var data = {
-        id: Math.floor(Math.random() * 10000),
-        email: text,
-        create_datetime: new Date()
-      }
-      deferred.resolve(data)
-      return deferred.promise;
       return $http({
         method: 'POST',
         url: '/api/v1/teams/' + Team.id + '/invite/send/',
@@ -175,10 +162,7 @@ app.service('profileService', [
     }
 
     function resendInvitationEmail(emailId) {
-      var deferred = $q.defer();
-      deferred.resolve()
-      return deferred.promise;
-      $http({
+      return $http({
           method: 'POST',
           url: '/api/v1/teams/' + Team.id + '/invitations/' + emailId +
             '/resend'
@@ -189,9 +173,6 @@ app.service('profileService', [
     }
 
     function deactivateEmailInvititaion(emailId) {
-      var deferred = $q.defer();
-      deferred.resolve()
-      return deferred.promise;
       return $http({
           method: 'POST',
           url: '/api/v1/teams/' + Team.id + '/invitations/' + emailId +
@@ -200,7 +181,7 @@ app.service('profileService', [
         .catch(function (err) {
           $log.info('Error Deactivating Invitation Email.', err);
         });
-    };
+    }
 
     return {
       changeUsername: changeUsername,
