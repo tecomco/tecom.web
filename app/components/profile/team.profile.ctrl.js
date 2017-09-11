@@ -23,7 +23,8 @@ app.controller('teamProfileController', [
         setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن.');
       else if (validationUtil.validateEmail(email)) {
         profileService.sendInvitationEmail(email)
-          .then(function () {
+          .then(function (activeEmail) {
+            $scope.teamActiveEmails.push(activeEmail);
             document.getElementById('invitedEmail').value = '';
             setInfoOrErrorMessage('info',
               'ایمیل دعوت به تیم با موفقیت ارسال شد.');
@@ -38,6 +39,10 @@ app.controller('teamProfileController', [
               'Email already has an active invitaion.')
               setInfoOrErrorMessage('error',
                 'ایمیل فعال سازی ارسال شده است.');
+            else if (err.data && err.data[0] ===
+              'Team reached members limit.')
+              setInfoOrErrorMessage('error',
+                'ظرفیت اعضای تیم در پلن فعلی پر شده است.');
             else
               setInfoOrErrorMessage('error', 'خطا در دعوت به تیم');
           });
@@ -79,6 +84,24 @@ app.controller('teamProfileController', [
 
     $scope.getAdminButtonCSS = function (member) {
       return member.isAdmin ? 'is-admin' : '';
+    };
+
+    $scope.resendInvitationEmail = function (emailId) {
+      profileService.resendInvitationEmail(emailId)
+    };
+
+    $scope.deactivateEmailInvititaion = function (emailId) {
+      profileService.deactivateEmailInvititaion(emailId)
+        .then(function () {
+          ArrayUtil.removeElementByKeyValue($scope.teamActiveEmails,
+            'id', emailId)
+        })
+    };
+
+    $scope.getNumbeOfTeamMembers = function () {
+      var teamMembersNumber = $scope.teamActiveEmails.length + $scope.teamActiveMembers
+        .length;
+      return '(' + teamMembersNumber + '/10)'
     };
 
     $scope.onTourReady = function (tour) {
@@ -129,16 +152,11 @@ app.controller('teamProfileController', [
     }
 
     function getTeamActiveEmails() {
-      $http({
-          method: 'GET',
-          url: '/api/v1/teams/' + Team.id + '/invitations/'
-        })
+      profileService.getTeamActiveEmails()
         .then(function (data) {
           $scope.teamActiveEmails = data;
         })
-        .catch(function (err) {
-          $log.info('Error Getting Team Invitation Emails.', err);
-        });
+
     }
 
     function isMe(member) {

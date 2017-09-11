@@ -7,7 +7,7 @@ app.service('profileService', [
     $localStorage, CurrentMember, Team) {
 
     function changeUsername(username) {
-      var defered = $q.defer();
+      var deferred = $q.defer();
       $http({
           method: 'PATCH',
           url: '/api/v1/auth/users/' + CurrentMember.member.user.id +
@@ -23,33 +23,33 @@ app.service('profileService', [
             Team.getActiveMembers(), 'id', CurrentMember.member.id);
           userInTeam.username = username;
           AuthService.initialize();
-          defered.resolve('نام کاربری با موفقیت تغییر کرد.');
+          deferred.resolve('نام کاربری با موفقیت تغییر کرد.');
         })
         .catch(function (err) {
           $log.error('Error Changing Username', err);
           if (err.username) {
             if (ArrayUtil.contains(err.username,
                 'This field may not be blank.'))
-              defered.reject('نام کاربری نباید خالی باشد.');
+              deferred.reject('نام کاربری نباید خالی باشد.');
             else if (ArrayUtil.contains(err.username,
                 'A user with that username already exists.'))
-              defered.reject('این نام کاربری قبلا انتخاب شده است.');
+              deferred.reject('این نام کاربری قبلا انتخاب شده است.');
             else if (ArrayUtil.contains(err.username,
                 'Enter a valid username. This value may contain only letters, numbers, and @/./+/-/_ characters.'
               ))
-              defered.reject(
+              deferred.reject(
                 'نام کاربری معتبر نیست، این نام تنها می تواند شامل حروف، اعداد و بعضی از علامت ها باشد.'
               );
             else
-              defered.reject('خطا در تغییر نام کاربری');
+              deferred.reject('خطا در تغییر نام کاربری');
           } else
-            defered.reject('خطا در تغییر نام کاربری');
+            deferred.reject('خطا در تغییر نام کاربری');
         });
-      return defered.promise;
+      return deferred.promise;
     }
 
     function changePassword(oldPass, newPass, confirm) {
-      var defered = $q.defer();
+      var deferred = $q.defer();
       $http({
           method: 'POST',
           url: '/api/v1/auth/password/change/',
@@ -60,17 +60,17 @@ app.service('profileService', [
           }
         })
         .then(function (data) {
-          defered.resolve('رمز عبور با موفقیت تغییر کرد.');
+          deferred.resolve('رمز عبور با موفقیت تغییر کرد.');
         })
         .catch(function (err) {
           $log.error('Error Changing Password', err);
-          defered.reject('خطا در تغییر رمز عبور');
+          deferred.reject('خطا در تغییر رمز عبور');
         });
-      return defered.promise;
+      return deferred.promise;
     }
 
     function changeProfileImage(file) {
-      var defered = $q.defer();
+      var deferred = $q.defer();
       Upload.upload({
           url: '/api/v1/auth/users/' + CurrentMember.member.user.id +
             '/image/change/',
@@ -81,67 +81,90 @@ app.service('profileService', [
         })
         .then(function (res) {
           CurrentMember.member.image = res.data.image;
-          defered.resolve('عکس پروفایل با موفقیت تغییر کرد.');
+          deferred.resolve('عکس پروفایل با موفقیت تغییر کرد.');
         })
         .catch(function (err) {
           $log.error('Error Changing Profile Image', err);
-          defered.reject('خطا در تغییر عکس پروفایل');
+          deferred.reject('خطا در تغییر عکس پروفایل');
         });
-      return defered.promise;
+      return deferred.promise;
     }
 
     function removeTeamMember(member) {
-      var defered = $q.defer();
+      var deferred = $q.defer();
       var data = {
         memberId: member ? member.id : CurrentMember.member.id
       };
       socket.emit('member:remove', data, function (res) {
         if (res.status) {
-          defered.resolve();
+          deferred.resolve();
         } else {
           $log.error('Error :', res.message);
-          defered.reject();
+          deferred.reject();
         }
       });
-      return defered.promise;
+      return deferred.promise;
     }
 
     function makeAdmin(member) {
-      var defered = $q.defer();
+      var deferred = $q.defer();
       $http({
           method: 'POST',
           url: '/api/v1/teams/' + Team.id + '/member/' +
             member.id + '/admin/'
         })
         .then(function () {
-          defered.resolve();
+          deferred.resolve();
         })
         .catch(function (err) {
           $log.error('Error Making Admin', err);
-          defered.reject();
+          deferred.reject();
         });
-      return defered.promise;
+      return deferred.promise;
     }
 
     function disAdmin(member) {
-      var defered = $q.defer();
+      var deferred = $q.defer();
       $http({
           method: 'POST',
           url: '/api/v1/teams/' + Team.id + '/member/' +
             member.id + '/disadmin/'
         })
         .then(function () {
-          defered.resolve();
+          deferred.resolve();
         })
         .catch(function (err) {
           $log.error('Error deAdmining', err);
-          defered.reject();
+          deferred.reject();
         });
-      return defered.promise;
+      return deferred.promise;
     }
 
 
+    function getTeamActiveEmails() {
+      return $http({
+          method: 'GET',
+          url: '/api/v1/teams/' + Team.id + '/invitations/'
+        })
+        .catch(function (err) {
+          $log.info('Error Getting Team Invitation Emails.', err);
+        });
+    };
+
     function sendInvitationEmail(email) {
+      var deferred = $q.defer();
+      var text = "";
+      var possible =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (var i = 0; i < 8; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      var data = {
+        id: Math.floor(Math.random() * 10000),
+        email: text,
+        create_datetime: new Date()
+      }
+      deferred.resolve(data)
+      return deferred.promise;
       return $http({
         method: 'POST',
         url: '/api/v1/teams/' + Team.id + '/invite/send/',
@@ -151,6 +174,34 @@ app.service('profileService', [
       });
     }
 
+    function resendInvitationEmail(emailId) {
+      var deferred = $q.defer();
+      deferred.resolve()
+      return deferred.promise;
+      $http({
+          method: 'POST',
+          url: '/api/v1/teams/' + Team.id + '/invitations/' + emailId +
+            '/resend'
+        })
+        .catch(function (err) {
+          $log.info('Error Resending Invitation Email.', err);
+        });
+    }
+
+    function deactivateEmailInvititaion(emailId) {
+      var deferred = $q.defer();
+      deferred.resolve()
+      return deferred.promise;
+      return $http({
+          method: 'POST',
+          url: '/api/v1/teams/' + Team.id + '/invitations/' + emailId +
+            '/deactivate'
+        })
+        .catch(function (err) {
+          $log.info('Error Deactivating Invitation Email.', err);
+        });
+    };
+
     return {
       changeUsername: changeUsername,
       changePassword: changePassword,
@@ -158,7 +209,10 @@ app.service('profileService', [
       removeTeamMember: removeTeamMember,
       makeAdmin: makeAdmin,
       disAdmin: disAdmin,
-      sendInvitationEmail: sendInvitationEmail
+      getTeamActiveEmails: getTeamActiveEmails,
+      sendInvitationEmail: sendInvitationEmail,
+      resendInvitationEmail: resendInvitationEmail,
+      deactivateEmailInvititaion: deactivateEmailInvititaion
     };
   }
 ]);
