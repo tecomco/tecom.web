@@ -1,6 +1,6 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" ng-click="$close()">&times;</button>
-  <h4 class="modal-title">مدیریت {{team.teamName}}</h4>
+  <h4 class="modal-title">مدیریت {{team._name}}</h4>
   <h5>پلن {{teamPlanName}}</h5>
 </div>
 <div class="modal-body two-part-modal profile-modal">
@@ -29,8 +29,8 @@
         </div>
         <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation(forms.inviteMember)" novalidate>
           <div class="col-md-2">
-            {{getNumbeOfTeamMembers()}}
-            <span ng-show="reachedTeamMembersLimit()"><i class="zmdi zmdi-warning"></i>ظرفیت اعضای تیم در پلن فعلی پر شده است.</span>
+            <label ng-if="membersLimit">{{getNumbeOfTeamMembers()}}</label>
+            <span ng-if="membersLimit" ng-show="reachedTeamMembersLimit()"><i class="zmdi zmdi-warning"></i>ظرفیت اعضای تیم در پلن فعلی پر شده است.</span>
           </div>
           <div class="col-sm-7 col-md-5 no-padding">
             <div tour-step tour-step-content="ایمیل هم‌کارات رو وارد کن تا ما براشون یه دعوت‌نامه بفرستیم. چون تیکام با هم‌تیمی هاست که معنی پیدا می‌کنه. موفق باشین!" tour-step-placement="top" tour-step-backdrop="true">

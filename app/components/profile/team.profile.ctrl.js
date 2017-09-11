@@ -11,6 +11,7 @@ app.controller('teamProfileController', [
     $scope.teamActiveMembers = [];
     $scope.teamActiveEmails = [];
     $scope.teamPlanName = Team.plan.name;
+    $scope.membersLimit = Team.plan.membersLimit;
     initialize();
 
     $scope.$on('members:updated', function () {

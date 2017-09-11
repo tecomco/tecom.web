@@ -13,19 +13,19 @@ app.factory('Team', [
       Team.members = [];
       Team.membersPromise = Team.getTeamMembers();
       Team.plan = {};
-      Team.teamName = 'Tecom';
-      Team.plan.name = 'رایگان';
-      Team.plan.membersLimit = 10;
-      Team.plan.channelsLimit = 5;
-      Team.plan.uploadLimit = '1MB';
-      // Team.getTeamData()
-      //   .then(function (data) {
-      //     Team.teamName = data.name;
-      //     Team.plan.name = data.name
-      //     Team.plan.membersLimit = data.team_members_limit;
-      //     Team.plan.channelsLimit = data.team_channels_limit;
-      //     Team.plan.uploadLimit = data.each_upload_storage_limit;
-      //   });
+      Team.getTeamData()
+        .then(function (data) {
+          Team._name = data.data.name;
+          Team.plan.name = Team.getTeamPlanName(data.data.current_plan.name);
+          Team.plan.membersLimit = data.data.current_plan.team_members_limit;
+          Team.plan.channelsLimit = data.data.current_plan.team_channels_limit;
+          Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
+            data.data.current_plan.each_upload_storage_limit + 'MB' :
+            data.data.current_plan.each_upload_storage_limit;
+        })
+        .catch(function (err) {
+          $log.error('Error initializing Team');
+        });
     };
 
     Team.getTeamMembers = function () {
@@ -49,6 +49,15 @@ app.factory('Team', [
           'Authorization': 'JWT ' + $localStorage.token
         }
       });
+    };
+
+    Team.getTeamPlanName = function (planName) {
+      switch (planName) {
+        case 'free':
+          return 'رایگان';
+        case 'enterprise':
+          return 'شرکتی';
+      }
     };
 
     Team.getUsernameByMemberId = function (memberId) {
