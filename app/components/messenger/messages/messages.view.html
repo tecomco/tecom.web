@@ -24,7 +24,10 @@
           <span>مشکل در آپلود فایل</span>
         </div>
         <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadSizeLimitNotif" ng-cloak>
-          <span>حداکثر حجم هر آپلود شما در پلن فعلی 1MB است.</span>
+          <span>حداکثر حجم هر آپلود شما در پلن فعلی {{uploadLimit}} است.</span>
+        </div>
+        <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadStorageErrorNotif" ng-cloak>
+          <span>فضای آپلود تیم شما پر شده است.</span>
         </div>
         <div ng-show="isMessageLoadingDone && !messages.length" class="no-msg"><span>پیامی نیست!</span></div>
         <div ng-show="!isMessageLoadingDone" class="no-msg"><span>درحال بارگزاری</span></div>
@@ -91,7 +94,7 @@
         </div>
       </div>
       <div ng-show="channel.canMemberSendMessage()" class="input-holder" id="inputHolder">
-        <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
+        <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size=uploadLimit>
         <i class="fa fa-paperclip"></i>
       </a>
         <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-style="getInputStyle()" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>

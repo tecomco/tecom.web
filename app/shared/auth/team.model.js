@@ -12,10 +12,20 @@ app.factory('Team', [
       Team.id = id;
       Team.members = [];
       Team.membersPromise = Team.getTeamMembers();
-      Team.getName()
-        .then(function (res) {
-          Team._name = res.name;
-        });
+      Team.plan = {};
+      Team.teamName = 'Tecom';
+      Team.plan.name = 'رایگان';
+      Team.plan.membersLimit = 10;
+      Team.plan.channelsLimit = 5;
+      Team.plan.uploadLimit = '1MB';
+      // Team.getTeamData()
+      //   .then(function (data) {
+      //     Team.teamName = data.name;
+      //     Team.plan.name = data.name
+      //     Team.plan.membersLimit = data.team_members_limit;
+      //     Team.plan.channelsLimit = data.team_channels_limit;
+      //     Team.plan.uploadLimit = data.each_upload_storage_limit;
+      //   });
     };
 
     Team.getTeamMembers = function () {
@@ -31,10 +41,10 @@ app.factory('Team', [
       return deferred.promise;
     };
 
-    Team.getName = function () {
+    Team.getTeamData = function () {
       return $http({
         method: 'GET',
-        url: '/api/v1/teams/' + Team.id + '/name/',
+        url: '/api/v1/teams/' + Team.id,
         headers: {
           'Authorization': 'JWT ' + $localStorage.token
         }

@@ -112,9 +112,13 @@ app.service('filesService', [
         })
         .then(function (res) {
           fileData.deferred.resolve(res);
-        }, function (resp) {
-          $log.error('Error status: ' + resp.status);
-          $rootScope.$broadcast('file:uploadError', 'uploadError');
+        }, function (err) {
+          $log.error('Error status: ' + err.status);
+          if (err.data && err.data[0] ===
+            'Team reached total storage limit.')
+            $rootScope.$broadcast('file: uploadError', 'storageError');
+          else
+            $rootScope.$broadcast('file:uploadError', 'uploadError');
           fileData.deferred.reject();
         }, function (evt) {
           var percent = parseInt(100.0 * evt.loaded / evt.total);

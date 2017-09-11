@@ -7,7 +7,7 @@
     <div class="col-sm-10  col-sm-offset-1">
       <div class="col-sm-3">
         <div class="profile-modal-img">
-          <a type="file" ngf-select="uploadProfileImage($file, $invalidFiles)" ngf-max-size="1MB">
+          <a type="file" ngf-select="uploadProfileImage($file, $invalidFiles)" ngf-max-size=uploadLimit>
             <img ng-src="{{user.image}}">
             <i class="zmdi zmdi-camera"></i>
           </a>
@@ -29,7 +29,7 @@
             <div class="relative-parent profile-info">
               <form ng-submit="saveUsername()">
                 <label class="label">@</label>
-                <input type="text" ng-value="user.username" ng-disabled="!editUsernameActive" class="input-text title p-input" ng-model="usernameInput"/>
+                <input type="text" ng-value="user.username" ng-disabled="!editUsernameActive" class="input-text title p-input" ng-model="usernameInput" />
                 <button ng-hide="editUsernameActive" class="btn-modal" ng-click="editUsername()">
                   <span class="zmdi zmdi-edit"></span>
                   <span>ویرایش نام کاربری</span>
@@ -58,7 +58,7 @@
               </div>
               <div class="col-sm-7">
                 <div class="modal-input">
-                  <input type="password" ng-model="oldPasswordInput" class="no-margin"/>
+                  <input type="password" ng-model="oldPasswordInput" class="no-margin" />
                 </div>
               </div>
               <div class="clearfix"></div>
@@ -66,17 +66,17 @@
                 <label>رمز عبور جدید</label>
               </div>
               <div class="col-sm-7">
-                <input type="password" ng-model="newPasswordInput" class="no-margin"/>
+                <input type="password" ng-model="newPasswordInput" class="no-margin" />
               </div>
               <div class="clearfix"></div>
               <div class="col-sm-5">
                 <label>تکرار رمز عبور جدید</label>
               </div>
               <div class="col-sm-7">
-                <input type="password" ng-model="confirmPasswordInput" class="no-margin"/>
+                <input type="password" ng-model="confirmPasswordInput" class="no-margin" />
               </div>
               <div class="clearfix"></div>
-              <input type="submit" value="ذخیره رمز عبور"/>
+              <input type="submit" value="ذخیره رمز عبور" />
             </form>
           </div>
           <span class="modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
