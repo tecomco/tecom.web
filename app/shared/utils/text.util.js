@@ -20,12 +20,12 @@ app.factory('textUtil', function () {
     var textParts = text.split('`');
     for (var i = 0; i < textParts.length - 1; i++) {
       if (isUrlifyTurn)
-        wellFormedText += urlify(directionify(textParts[i]));
+        wellFormedText += urlify(textParts[i]);
       else
         wellFormedText += codify(textParts[i]);
       isUrlifyTurn = !isUrlifyTurn;
     }
-    wellFormedText += urlify(directionify(textParts[textParts.length - 1]));
+    wellFormedText += urlify(textParts[textParts.length - 1]);
     return wellFormedText;
   }
 
@@ -62,51 +62,51 @@ app.factory('textUtil', function () {
     return '<code class="msg-inline-code" dir="ltr">' + text +
       '</code>';
   }
-
-  function directionify(text) {
-    if (!text.match(/[a-zA-Z]/i))
-      return text;
-    if (isEnglish(text))
-      return generateDirectionifyText(text);
-    var directionifiedText = '';
-    var englishTempText = '';
-    text.trim().split(' ').forEach(function (word, index, array) {
-      if (word === '') {
-        directionifiedText += generateEnglishTempTextIfExists(
-          englishTempText);
-        englishTempText = '';
-        directionifiedText += ' ';
-      } else if (!isEnglish(word)) {
-        directionifiedText += generateEnglishTempTextIfExists(
-          englishTempText);
-        englishTempText = '';
-        directionifiedText += generateDirectionifyText(word);
-        if (index !== array.length - 1)
-          directionifiedText += ' ';
-      } else {
-        englishTempText += word;
-        if (index !== array.length - 1)
-          englishTempText += ' ';
-      }
-    });
-    directionifiedText += generateEnglishTempTextIfExists(
-      englishTempText);
-    return directionifiedText;
-  }
-
-  function generateDirectionifyText(word) {
-    if (word.match(/[آ-ی]/i) || !word.match(/[a-zA-Z]/i))
-      return word;
-    else
-      return '<span style="direction:ltr" dir="ltr">' + word + '</span> ';
-  }
-
-  function generateEnglishTempTextIfExists(englishTempText) {
-    if (englishTempText.length)
-      return generateDirectionifyText(englishTempText.trim()) + ' ';
-    else
-      return '';
-  }
+  //
+  // function directionify(text) {
+  //   if (!text.match(/[a-zA-Z]/i))
+  //     return text;
+  //   if (isEnglish(text))
+  //     return generateDirectionifyText(text);
+  //   var directionifiedText = '';
+  //   var englishTempText = '';
+  //   text.trim().split(' ').forEach(function (word, index, array) {
+  //     if (word === '') {
+  //       directionifiedText += generateEnglishTempTextIfExists(
+  //         englishTempText);
+  //       englishTempText = '';
+  //       directionifiedText += ' ';
+  //     } else if (!isEnglish(word)) {
+  //       directionifiedText += generateEnglishTempTextIfExists(
+  //         englishTempText);
+  //       englishTempText = '';
+  //       directionifiedText += generateDirectionifyText(word);
+  //       if (index !== array.length - 1)
+  //         directionifiedText += ' ';
+  //     } else {
+  //       englishTempText += word;
+  //       if (index !== array.length - 1)
+  //         englishTempText += ' ';
+  //     }
+  //   });
+  //   directionifiedText += generateEnglishTempTextIfExists(
+  //     englishTempText);
+  //   return directionifiedText;
+  // }
+  //
+  // function generateDirectionifyText(word) {
+  //   if (word.match(/[آ-ی]/i) || !word.match(/[a-zA-Z]/i))
+  //     return word;
+  //   else
+  //     return '<span style="direction:ltr" dir="ltr">' + word + '</span> ';
+  // }
+  //
+  // function generateEnglishTempTextIfExists(englishTempText) {
+  //   if (englishTempText.length)
+  //     return generateDirectionifyText(englishTempText.trim()) + ' ';
+  //   else
+  //     return '';
+  // }
 
   /**
    * @todo Fix this function.

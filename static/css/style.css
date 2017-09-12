@@ -1650,13 +1650,13 @@ ol.linenums, ol.linenums-view {
   overflow: hidden;
 }
 
-.msg-img img{
+.msg-img img {
   width: auto;
   height: 200px;
   max-width: none;
 }
 
-.msg-img + .dl-btn{
+.msg-img+.dl-btn {
   position: absolute;
   right: 20px;
   font-size: 20px;
@@ -1671,7 +1671,8 @@ ol.linenums, ol.linenums-view {
   padding: 2px;
   float: none;
 }
-.msg-img + .dl-btn i{
+
+.msg-img+.dl-btn i {
   color: #fff;
 }
 
@@ -3578,4 +3579,8 @@ label {
   .header ul li {
     display: table-cell;
   }
+}
+
+.dragover {
+  border: 5px dashed blue;
 }

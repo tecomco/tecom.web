@@ -101,7 +101,10 @@ app.service('channelsService', [
     $rootScope.$on('socket:connected', function () {
       if (self.initialChannelsGottenForFirstTime) {
         CacheService.getCache().clear();
-        getInitialChannels();
+        Team.getTeamMembers()
+          .then(function () {
+            getInitialChannels();
+          })
       }
     });
 
@@ -346,10 +349,10 @@ app.service('channelsService', [
         self.messagesPromise.push(promise);
         if (self.messagesPromise.length == maxInitialChannels) {
           $q.all(self.messagesPromise)
-          .then(function () {
-            $rootScope.$broadcast('channels:updated', 'init');
-            self.messagesPromise = [];
-          });
+            .then(function () {
+              $rootScope.$broadcast('channels:updated', 'init');
+              self.messagesPromise = [];
+            });
         }
       }
     }
@@ -357,16 +360,16 @@ app.service('channelsService', [
     function getChannelMembers(channelId) {
       var deferred = $q.defer();
       $http({
-        method: 'GET',
-        url: '/api/v1/messenger/channels/' + channelId + '/members/'
-      })
-      .then(function (data) {
-        deferred.resolve(data);
-      })
-      .catch(function (err) {
-        $log.info('Error Getting channel members.', err);
-        deferred.reject(err);
-      });
+          method: 'GET',
+          url: '/api/v1/messenger/channels/' + channelId + '/members/'
+        })
+        .then(function (data) {
+          deferred.resolve(data);
+        })
+        .catch(function (err) {
+          $log.info('Error Getting channel members.', err);
+          deferred.reject(err);
+        });
       return deferred.promise;
     }
 
