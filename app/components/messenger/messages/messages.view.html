@@ -69,7 +69,7 @@
             </div>
           </div>
           <!-- TODO: Fix this -->
-          <div ng-show="channel.anyoneTyping()" class="msg-holder">
+          <div ng-if="isMessageLoadingDone" ng-show="channel.anyoneTyping()" class="msg-holder">
             <div class="is-typing">
               <label class="name">{{channel.getIsTypingString()}}</label>
               <span><i class="zmdi zmdi-circle"></i></span>
