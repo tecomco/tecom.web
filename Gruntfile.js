@@ -72,6 +72,11 @@ module.exports = function (grunt) {
             socketUri: 'ws.tecomstage.ir/'
           }
         }
+      }
+    },
+    ngAnnotate: {
+      options: {
+        singleQuotes: true
       },
       prod: {
         options: {
@@ -170,4 +175,5 @@ module.exports = function (grunt) {
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage', 'minify']);
   grunt.registerTask('prod', ['jshint', 'ngconstant:prod', 'minify']);
   grunt.registerTask('lint', ['jshint']);
+  grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);
 };
