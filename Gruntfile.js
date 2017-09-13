@@ -91,10 +91,13 @@ module.exports = function (grunt) {
       },
       app: {
         files: {
-          'dist/min-safe/app.js': ['app/app.module.js',
-            'app/app.routes.js', 'app/app.config.js'
+          'dist/min-safe/app.js': [
+            'app/app.module.js',
+            'app/app.routes.js',
+            'app/app.config.js'
           ],
-          'dist/min-safe/shared.js': ['app/shared/utils/array.util.js',
+          'dist/min-safe/shared.js': [
+            'app/shared/utils/array.util.js',
             'app/shared/utils/text.util.js',
             'app/shared/utils/domain.util.js',
             'app/shared/utils/validation.util.js',
@@ -109,7 +112,8 @@ module.exports = function (grunt) {
             'app/shared/auth/current-member.model.js',
             'app/shared/auth/member.model.js',
             'app/shared/auth/auth.service.js',
-            'app/shared/db/db.service.js', 'app/shared/cache/cache.js',
+            'app/shared/db/db.service.js',
+            'app/shared/cache/cache.js',
             'app/shared/cache/cache.service.js',
             'app/shared/exceptions/exception-handler.js',
             'app/shared/http/http.interceptors.js'
@@ -140,16 +144,18 @@ module.exports = function (grunt) {
     },
     concat: {
       js: {
-        src: ['dist/min-safe/app.js', 'dist/min-safe/shared.js',
+        src: [
+          'dist/min-safe/app.js',
+          'dist/min-safe/shared.js',
           'dist/min-safe/components.js'
         ],
-        dest: 'dist/tecom.min.js'
+        dest: 'dist/tecom.js'
       }
     },
     uglify: {
       js: {
-        src: ['dist/tecom.min.js'],
-        dest: 'app/tecom.min.js'
+        src: ['dist/tecom.js'],
+        dest: 'dist/tecom.min.js'
       }
     }
   });
@@ -159,9 +165,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
-  grunt.registerTask('stage', ['jshint', 'ngconstant:stage']);
-  grunt.registerTask('prod', ['jshint', 'ngconstant:prod']);
+  grunt.registerTask('stage', ['jshint', 'ngconstant:stage', 'minify']);
+  grunt.registerTask('prod', ['jshint', 'ngconstant:prod', 'minify']);
   grunt.registerTask('lint', ['jshint']);
-  grunt.registerTask('default', ['ngAnnotate', 'concat', 'uglify']);
 };
