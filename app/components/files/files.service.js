@@ -116,7 +116,7 @@ app.service('filesService', [
           $log.error('Error status: ' + err.status);
           if (err.data && err.data[0] ===
             'Team reached total storage limit.')
-            $rootScope.$broadcast('file: uploadError', 'storageError');
+            $rootScope.$broadcast('file:uploadError', 'storageError');
           else
             $rootScope.$broadcast('file:uploadError', 'uploadError');
           fileData.deferred.reject();
