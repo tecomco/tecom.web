@@ -62,52 +62,7 @@ app.factory('textUtil', function () {
     return '<code class="msg-inline-code" dir="ltr">' + text +
       '</code>';
   }
-  //
-  // function directionify(text) {
-  //   if (!text.match(/[a-zA-Z]/i))
-  //     return text;
-  //   if (isEnglish(text))
-  //     return generateDirectionifyText(text);
-  //   var directionifiedText = '';
-  //   var englishTempText = '';
-  //   text.trim().split(' ').forEach(function (word, index, array) {
-  //     if (word === '') {
-  //       directionifiedText += generateEnglishTempTextIfExists(
-  //         englishTempText);
-  //       englishTempText = '';
-  //       directionifiedText += ' ';
-  //     } else if (!isEnglish(word)) {
-  //       directionifiedText += generateEnglishTempTextIfExists(
-  //         englishTempText);
-  //       englishTempText = '';
-  //       directionifiedText += generateDirectionifyText(word);
-  //       if (index !== array.length - 1)
-  //         directionifiedText += ' ';
-  //     } else {
-  //       englishTempText += word;
-  //       if (index !== array.length - 1)
-  //         englishTempText += ' ';
-  //     }
-  //   });
-  //   directionifiedText += generateEnglishTempTextIfExists(
-  //     englishTempText);
-  //   return directionifiedText;
-  // }
-  //
-  // function generateDirectionifyText(word) {
-  //   if (word.match(/[آ-ی]/i) || !word.match(/[a-zA-Z]/i))
-  //     return word;
-  //   else
-  //     return '<span style="direction:ltr" dir="ltr">' + word + '</span> ';
-  // }
-  //
-  // function generateEnglishTempTextIfExists(englishTempText) {
-  //   if (englishTempText.length)
-  //     return generateDirectionifyText(englishTempText.trim()) + ' ';
-  //   else
-  //     return '';
-  // }
-
+  
   /**
    * @todo Fix this function.
    */

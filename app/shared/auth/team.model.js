@@ -11,10 +11,20 @@ app.factory('Team', [
     Team.initialize = function (id) {
       Team.id = id;
       Team.members = [];
-      Team.membersPromise = Team.getTeamMembers();
-      Team.getName()
-        .then(function (res) {
-          Team._name = res.name;
+      Team.plan = {};
+      Team.getTeamData()
+        .then(function (data) {
+          Team._name = data.data.name;
+          Team.plan.name = Team.getTeamPlanName(data.data.current_plan.name);
+          Team.plan.membersLimit = data.data.current_plan.team_members_limit;
+          Team.plan.channelsLimit = data.data.current_plan.team_channels_limit;
+          Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
+            data.data.current_plan.each_upload_storage_limit + 'MB' :
+            data.data.current_plan.each_upload_storage_limit;
+          Team.membersPromise = Team.getTeamMembers();
+        })
+        .catch(function (err) {
+          $log.error('Error initializing Team');
         });
     };
 
@@ -31,14 +41,23 @@ app.factory('Team', [
       return deferred.promise;
     };
 
-    Team.getName = function () {
+    Team.getTeamData = function () {
       return $http({
         method: 'GET',
-        url: '/api/v1/teams/' + Team.id + '/name/',
+        url: '/api/v1/teams/' + Team.id,
         headers: {
           'Authorization': 'JWT ' + $localStorage.token
         }
       });
+    };
+
+    Team.getTeamPlanName = function (planName) {
+      switch (planName) {
+        case 'free':
+          return 'رایگان';
+        case 'enterprise':
+          return 'شرکتی';
+      }
     };
 
     Team.getUsernameByMemberId = function (memberId) {

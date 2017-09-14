@@ -1,26 +1,37 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" ng-click="$close()">&times;</button>
-  <h4 class="modal-title">مدیریت {{team.name}}</h4>
+  <h4 class="modal-title">مدیریت {{team._name}}</h4>
+  <h5>پلن {{plan.teamPlanName}}</h5>
 </div>
 <div class="modal-body two-part-modal profile-modal">
   <div class="container-fluid u-profile" ui-tour ui-tour-on-ready="onTourReady(tour)">
     <div class="col-sm-10 col-sm-offset-1">
       <div class="t-info">
         <div class="g-members">
-          <div ng-repeat="member in teamMembers | orderBy : 'user.username'" class="g-m-one">
-            <img ng-src="{{member.user.image}}"/>
-            <label>@{{member.user.username}}</label>
-            <div ng-show="isAdminOrAnotherMember(member)" style="float: left">
-              <confirm-dialog ng-class="getAdminButtonCSS(member)" class="t-m-btn" message='{{member.isAdmin ? "مطمئنی میخوای \"@" + member.user.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + member.user.username + "\"  ادمین بشه؟"}}'
-                              cancel="نه، حواسم نبود" ok="آره"
-                              args="[member]" confirm-func="changeMemberAdminState" confirm-button='{{member.isAdmin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
-              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{member.user.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[member]" confirm-func="removeTeamMember" confirm-button="danger"
-                              icon="zmdi zmdi-close"></confirm-dialog>
+          <div ng-repeat="activeMember in teamActiveMembers | orderBy : 'user.username'" class="g-m-one">
+            <img ng-src="{{activeMember.user.image}}" />
+            <label>@{{activeMember.user.username}}</label>
+            <div ng-show="isAdminOrAnotherMember(activeMember)" style="float: left">
+              <confirm-dialog ng-class="getAdminButtonCSS(activeMember)" class="t-m-btn" message='{{activeMember.isAdmin ? "مطمئنی میخوای \"@" + activeMember.user.username + "\" دیگه ادمین نباشه؟" : "مطمئنی میخوای \"@" + activeMember.user.username + "\"  ادمین بشه؟"}}'
+                cancel="نه، حواسم نبود" ok="آره" args="[activeMember]" confirm-func="changeMemberAdminState" confirm-button='{{activeMember.isAdmin ? "danger" : "success"}}' icon="fa fa-diamond"></confirm-dialog>
+              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای "@{{activeMember.user.username}}" رو حذف  کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[activeMember]" confirm-func="removeTeamMember" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+            </div>
+          </div>
+          <div ng-repeat="activeEmail in teamActiveEmails | orderBy : 'create_datetime'" class="g-m-one">
+            <img src='/static/img/user-def.png' />
+            <label>{{activeEmail.email}} (در انتظار)</label>
+            <div style="float: left">
+              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای به ایمیل {{activeEmail.email}} دوباره دعوت‌نامه بفرستی ؟' cancel="نه، حواسم نبود" ok="آره" args="[activeEmail.id]" confirm-func="resendInvitationEmail" confirm-button="success" icon="zmdi zmdi-mail-send"></confirm-dialog>
+              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای ایمیل {{activeEmail.email}} رو از تیم حذف کنی؟'
+                cancel="نه، حواسم نبود" ok="آره" args="[activeEmail.id]" confirm-func="deactivateEmailInvititaion" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
             </div>
           </div>
         </div>
         <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation(forms.inviteMember)" novalidate>
-          <div class="col-md-2"></div>
+          <div class="col-md-2">
+            <label ng-if="plan.membersLimit">{{getTeamMembersCount()}}</label>
+            <span ng-if="plan.membersLimit" ng-show="hasTeamReachedMembersLimit()"><i class="zmdi zmdi-warning"></i>ظرفیت اعضای تیم در پلن فعلی پر شده است.</span>
+          </div>
           <div class="col-sm-7 col-md-5 no-padding">
             <div tour-step tour-step-title="دعوت از هم‌تیمی‌ها" tour-step-content="ایمیل هم‌تیمی‌های خودتون رو اینجا وارد کنید تا براشون دعوت‌نامه فرستاده بشه.  چون تیکام با هم‌تیمی‌هاست که معنی پیدا می‌کنه. موفق باشید." tour-step-placement="top" tour-step-backdrop="true">
               <input id="invitedEmail" type="text" name="email" ng-model="invitedEmail" placeholder="ایمیل هم‌تیمی جدیدت رو وارد کن..." required/>
@@ -32,7 +43,7 @@
           </div>
           <div class="col-sm-5 col-md-3 no-padding">
             <div class="input-modal">
-              <input type="submit" value="دعوت به تیم"/>
+              <input type="submit" value="دعوت به تیم" />
             </div>
           </div>
           <div class="col-md-2"></div>

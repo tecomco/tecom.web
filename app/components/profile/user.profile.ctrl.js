@@ -2,9 +2,11 @@
 
 app.controller('userProfileController', [
   '$scope', '$window', 'CurrentMember', 'AuthService', 'profileService',
-  '$uibModalInstance', '$timeout',
+  '$uibModalInstance', '$timeout', 'Team',
   function ($scope, $window, CurrentMember, AuthService, profileService,
-    $uibModalInstance, $timeout) {
+    $uibModalInstance, $timeout, Team) {
+
+    $scope.uploadLimit = Team.plan.uploadLimit;
 
     initialize();
 
