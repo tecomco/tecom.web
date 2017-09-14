@@ -44,7 +44,7 @@ app.factory('Team', [
     Team.getTeamData = function () {
       return $http({
         method: 'GET',
-        url: '/api/v1/teams/' + Team.id,
+        url: '/api/v1/teams/' + Team.id + '/',
         headers: {
           'Authorization': 'JWT ' + $localStorage.token
         }
