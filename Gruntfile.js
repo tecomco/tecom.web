@@ -78,22 +78,6 @@ module.exports = function (grunt) {
       options: {
         singleQuotes: true
       },
-      prod: {
-        options: {
-          dest: 'app/app.config.js'
-        },
-        constants: {
-          ENV: {
-            name: 'prod',
-            socketUri: 'ws.tecom.me/'
-          }
-        }
-      }
-    },
-    ngAnnotate: {
-      options: {
-        singleQuotes: true
-      },
       app: {
         files: {
           'dist/min-safe/app.js': [
