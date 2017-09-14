@@ -16,7 +16,6 @@ app.controller('messagesController', [
     $scope.replyMessage = null;
     $scope.isFullscreenVisible = false;
     $scope.isMessageLoadingDone = false;
-    $scope.uploadLimit = Team.plan.uploadLimit;
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var isDirectionUp;
@@ -313,6 +312,7 @@ app.controller('messagesController', [
     };
 
     function initialize() {
+      $scope.uploadLimit = Team.plan.uploadLimit;
       initialLastMessageId = $scope.channel.lastMessageId;
       if (!$scope.channel.areAllMessagesHaveBeenSeen())
         initialMemberLastSeenId = $scope.channel.memberLastSeenId;

@@ -10,8 +10,9 @@ app.controller('teamProfileController', [
 
     $scope.teamActiveMembers = [];
     $scope.teamActiveEmails = [];
-    $scope.teamPlanName = Team.plan.name;
-    $scope.membersLimit = Team.plan.membersLimit;
+    $scope.plan = {};
+    $scope.plan.teamPlanName = Team.plan.name;
+    $scope.plan.membersLimit = Team.plan.membersLimit;
     initialize();
 
     $scope.$on('members:updated', function () {
@@ -20,9 +21,6 @@ app.controller('teamProfileController', [
 
     $scope.sendInvitation = function (form) {
       var email = form.email.$modelValue;
-      // if ($scope.reachedTeamMembersLimit())
-      //   setInfoOrErrorMessage('error', 'ظرفیت اعضای تیم در پلن فعلی پر شده است.');
-      // else {
       if (!email)
         setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن.');
       else if (validationUtil.validateEmail(email)) {
@@ -52,7 +50,6 @@ app.controller('teamProfileController', [
           });
       } else
         setInfoOrErrorMessage('error', 'ایمیل وارد شده معتبر نیست');
-      // }
     };
 
     $scope.editTeamName = function () {
@@ -108,14 +105,14 @@ app.controller('teamProfileController', [
         });
     };
 
-    $scope.getNumbeOfTeamMembers = function () {
-      var teamMembersNumber = $scope.teamActiveEmails.length +
+    $scope.getTeamMembersCount = function () {
+      var teamMembersCount = $scope.teamActiveEmails.length +
         $scope.teamActiveMembers.length;
-      return textUtil.persianify('(' + teamMembersNumber + '/' +
+      return textUtil.persianify('(' + teamMembersCount + '/' +
         Team.plan.membersLimit + ')');
     };
 
-    $scope.reachedTeamMembersLimit = function () {
+    $scope.hasTeamReachedMembersLimit = function () {
       return ($scope.teamActiveMembers.length +
         $scope.teamActiveEmails.length) === Team.plan.membersLimit;
     };

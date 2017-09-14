@@ -3,14 +3,11 @@
 app.controller('createChannelController', ['$scope', '$uibModalInstance',
   '$log',
   'channelsService', 'Channel', 'ArrayUtil', 'CurrentMember', 'Team',
-  'channelsNumber',
   function ($scope, $uibModalInstance, $log, channelsService, Channel,
-    ArrayUtil, CurrentMember, Team, channelsNumber) {
+    ArrayUtil, CurrentMember, Team) {
     $scope.forms = {};
     $scope.newChannel = {};
-    $scope.channelsNumber = channelsNumber;
     $scope.teamMembers = [];
-    // $scope.channelCreateLimitError = channelsNumber === Team.plan.channelsLimit;
     var selectedMembers = [];
 
     var makeSelectedMembersArray = function () {
@@ -51,10 +48,6 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
       else
         return 'selectable';
     };
-    //
-    // $scope.getNumbeOfChannels = function () {
-    //   return '(' + channelsNumber + '/' + Team.plan.channelsLimit + ')';
-    // };
 
     var sendNewChannelData = function () {
       makeSelectedMembersArray();

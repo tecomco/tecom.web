@@ -12,7 +12,6 @@ app.controller('filesController', [
     var flagLineIsTemp = false;
     $scope.fileLoading = false;
     $scope.isViewedFileClicked = false;
-    $scope.uploadLimit = Team.plan.uploadLimit;
 
     var selectedFileType = 'none';
     filesService.updateLiveFile();
@@ -34,6 +33,7 @@ app.controller('filesController', [
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
         filesService.updateLiveFile();
+        $scope.uploadLimit = Team.plan.uploadLimit;
       }
     });
 
