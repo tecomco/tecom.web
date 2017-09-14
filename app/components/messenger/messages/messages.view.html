@@ -1,5 +1,4 @@
-<div ng-class="getPannelsCSS('messages')" class="window-transition" tour-step="messages" tour-step-title="پیام‌ها" tour-step-content="پیام‌ها و فایل‌هایی که ردوبدل می‌کنید، این‌جا نشون داده ‌می‌شن." tour-step-order="3" tour-step-backdrop="true" tour-step-placement="left"
-  tour-step-on-prev="navigateToHome()">
+<div ng-class="getPannelsCSS('messages')" class="window-transition">
   <!-- TODO col-sm-9 col-lg-9 -->
   <div class="header clearfix">
     <div ui-view="header"></div>
@@ -94,12 +93,12 @@
       </div>
       <div ng-show="channel.canMemberSendMessage()" class="input-holder" id="inputHolder">
         <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
-        <i class="fa fa-paperclip"></i>
-      </a>
+          <i class="fa fa-paperclip"></i>
+        </a>
         <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-style="getInputStyle()" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
         <a class="send-btn" href="#" ng-click="sendMessage($event)">
-        <i class="zmdi zmdi-mail-send"></i>
-      </a>
+          <i class="zmdi zmdi-mail-send"></i>
+        </a>
       </div>
       <div ng-show="channel.getIsRemoved() && !channel.isPublic()" class="input-holder bottom-msg">
         <label>شما از این گروه حذف شدین.</label>
@@ -121,7 +120,7 @@
     </div>
   </div>
 </div>
-<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step-title="مکالمه و محتوا، کنار هم!" tour-step-content="وقتی دارید راجع به موضوعی با هم صحبت می‌کنید، در کنار بخش پیام‌ها همزمان می‌تونید از این قسمت فایل‌ به اشتراک گذاشته شده رو به‌صورت زنده ببینید. اینجوری لازم نیست برنامه‌ی‌ دیگه‌ای باز کنید و تمرکزتون بهم بخوره. (فعلاً فقط از فایل‌های سورس‌کد پشتیبانی می‌شه.)"
+<div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-title="مکالمه و محتوا، کنار هم!" tour-step-content="وقتی دارید راجع به موضوعی با هم صحبت می‌کنید، در کنار بخش پیام‌ها همزمان می‌تونید از این قسمت فایل‌ به اشتراک گذاشته شده رو به‌صورت زنده ببینید. اینجوری لازم نیست برنامه‌ی‌ دیگه‌ای باز کنید و تمرکزتون بهم بخوره. (فعلاً فقط از فایل‌های سورس‌کد پشتیبانی می‌شه.)"
   tour-step-order="4" tour-step-backdrop="true" tour-step-placement="right">
   <!-- TODO col-sm-3 col-lg-3 -->
   <div ui-view="files"></div>
