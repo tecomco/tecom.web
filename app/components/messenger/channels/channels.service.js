@@ -104,7 +104,7 @@ app.service('channelsService', [
         Team.getTeamMembers()
           .then(function () {
             getInitialChannels();
-          })
+          });
       }
     });
 
