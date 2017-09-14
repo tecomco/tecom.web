@@ -5,10 +5,8 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
   'channelsService', 'Channel', 'ArrayUtil', 'CurrentMember', 'Team',
   function ($scope, $uibModalInstance, $log, channelsService, Channel,
     ArrayUtil, CurrentMember, Team) {
-
     $scope.forms = {};
     $scope.newChannel = {};
-
     $scope.teamMembers = [];
     var selectedMembers = [];
 
@@ -36,9 +34,8 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
 
     $scope.createChannelSubmit = function () {
       $scope.newChannel.serverError = false;
-      if ($scope.forms.newChannelForm.$valid === true) {
+      if ($scope.forms.newChannelForm.$valid === true)
         sendNewChannelData();
-      }
     };
 
     $scope.teamMemberClick = function (teamMember) {
@@ -69,7 +66,10 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
           $scope.closeCreateChannel();
         })
         .catch(function (err) {
-          if (err.indexOf('Duplicate slug in team.') != -1) {
+          if (err.indexOf('Team reached channels limit.') != -1) {
+            $log.error('Error Creating new Channel:', err);
+            $scope.newChannel.limitError = true;
+          } else if (err.indexOf('Duplicate slug in team.') != -1) {
             $log.error('Error Creating new Channel:', err);
             $scope.newChannel.dublicateError = true;
           } else {
@@ -95,6 +95,7 @@ app.controller('createChannelController', ['$scope', '$uibModalInstance',
       $scope.newChannel.name = '';
       $scope.newChannel.description = '';
       $scope.newChannel.isPrivate = false;
+      $scope.newChannel.limitError = false;
       $scope.newChannel.dublicateError = false;
       $scope.newChannel.serverError = false;
       $scope.forms.newChannelForm.$setPristine();

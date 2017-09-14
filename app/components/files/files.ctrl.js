@@ -2,7 +2,9 @@
 
 app.controller('filesController', [
   '$window', 'filesService', 'Upload', '$scope', '$timeout', '$rootScope',
-  function ($window, filesService, Upload, $scope, $timeout, $rootScope) {
+  'Team',
+  function ($window, filesService, Upload, $scope, $timeout, $rootScope,
+    Team) {
 
     $scope.vm = {};
     var selectTextMode = false;
@@ -31,6 +33,7 @@ app.controller('filesController', [
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
         filesService.updateLiveFile();
+        $scope.uploadLimit = Team.plan.uploadLimit;
       }
     });
 
@@ -60,13 +63,11 @@ app.controller('filesController', [
         selectedFileType = 'live';
         file.selectPermLines(startLine, endLine);
         scrollToLine(file, startLine, endLine);
-      }
-      else if (file === $scope.vm.viewFile) {
+      } else if (file === $scope.vm.viewFile) {
         selectedFileType = 'view';
         file.selectPermLines(startLine, endLine);
         scrollToLine(file, startLine, endLine);
-      }
-      else {
+      } else {
         selectedFileType = 'view';
         openFile(file);
         file.selectPermLines(startLine, endLine);
@@ -77,9 +78,9 @@ app.controller('filesController', [
 
     $scope.$on('file:upload', function (event, file, errFiles) {
       if (file)
-      $rootScope.$broadcast('file:uploading', file);
+        $rootScope.$broadcast('file:uploading', file);
       if (!file && errFiles[0])
-      $rootScope.$broadcast('file:uploadError','sizeLimit');
+        $rootScope.$broadcast('file:uploadError', 'sizeLimit');
     });
 
     $scope.showViewedFileClickedWarning = function () {

@@ -19,7 +19,7 @@
           <span>رو بزن.</span>
         </div>
         <div ng-show="channel.canMemberSendMessage()">
-          <a type="file" class="upload-btn" ngf-select="upload($file, $invalidFiles)" ngf-max-size="1MB">
+          <a type="file" class="upload-btn" ngf-select="upload($file, $invalidFiles)" ngf-max-size=uploadLimit>
             <i class="fa fa-paperclip"></i>
             <span>آپلود فایل</span>
           </a>
@@ -101,8 +101,7 @@
             <span class="live-btn">
               <i class="fa fa-circle"></i>
               <label dir="ltr">LIVE</label>
-            </span>
-            کن.
+            </span> کن.
           </span>
         </div>
         <pre class="prettyprint linenums-view code-view">

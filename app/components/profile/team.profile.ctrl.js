@@ -3,15 +3,20 @@
 app.controller('teamProfileController', [
   '$scope', '$log', 'profileService', '$uibModalInstance', 'CurrentMember',
   'Team', '$timeout', 'validationUtil', 'ArrayUtil', 'teamService',
-  'channelsService', 'tourClicked',
+  'channelsService', 'tourClicked', 'textUtil',
   function ($scope, $log, profileService, $uibModalInstance,
     CurrentMember, Team, $timeout, validationUtil, ArrayUtil, teamService,
-    channelsService, tourClicked) {
+    channelsService, tourClicked, textUtil) {
 
+    $scope.teamActiveMembers = [];
+    $scope.teamActiveEmails = [];
+    $scope.plan = {};
+    $scope.plan.teamPlanName = Team.plan.name;
+    $scope.plan.membersLimit = Team.plan.membersLimit;
     initialize();
 
     $scope.$on('members:updated', function () {
-      $scope.teamMembers = Team.getActiveMembers();
+      $scope.teamActiveMembers = Team.getActiveMembers();
     });
 
     $scope.sendInvitation = function (form) {
@@ -20,7 +25,8 @@ app.controller('teamProfileController', [
         setInfoOrErrorMessage('error', 'لطفا ایمیل رو وارد کن.');
       else if (validationUtil.validateEmail(email)) {
         profileService.sendInvitationEmail(email)
-          .then(function () {
+          .then(function (activeEmail) {
+            $scope.teamActiveEmails.push(activeEmail.data);
             document.getElementById('invitedEmail').value = '';
             setInfoOrErrorMessage('info',
               'ایمیل دعوت به تیم با موفقیت ارسال شد.');
@@ -35,6 +41,10 @@ app.controller('teamProfileController', [
               'Email already has an active invitaion.')
               setInfoOrErrorMessage('error',
                 'ایمیل فعال سازی ارسال شده است.');
+            else if (err.data && err.data[0] ===
+              'Team reached members limit.')
+              setInfoOrErrorMessage('error',
+                'ظرفیت اعضای تیم در پلن فعلی پر شده است.');
             else
               setInfoOrErrorMessage('error', 'خطا در دعوت به تیم');
           });
@@ -78,6 +88,35 @@ app.controller('teamProfileController', [
       return member.isAdmin ? 'is-admin' : '';
     };
 
+    $scope.resendInvitationEmail = function (emailId) {
+      profileService.resendInvitationEmail(emailId)
+        .then(function (activeEmail) {
+          ArrayUtil.removeElementByKeyValue($scope.teamActiveEmails,
+            'id', emailId);
+          $scope.teamActiveEmails.push(activeEmail.data);
+        });
+    };
+
+    $scope.deactivateEmailInvititaion = function (emailId) {
+      profileService.deactivateEmailInvititaion(emailId)
+        .then(function () {
+          ArrayUtil.removeElementByKeyValue($scope.teamActiveEmails,
+            'id', emailId);
+        });
+    };
+
+    $scope.getTeamMembersCount = function () {
+      var teamMembersCount = $scope.teamActiveEmails.length +
+        $scope.teamActiveMembers.length;
+      return textUtil.persianify('(' + teamMembersCount + '/' +
+        Team.plan.membersLimit + ')');
+    };
+
+    $scope.hasTeamReachedMembersLimit = function () {
+      return ($scope.teamActiveMembers.length +
+        $scope.teamActiveEmails.length) === Team.plan.membersLimit;
+    };
+
     $scope.onTourReady = function (tour) {
       if (tourClicked) {
         $timeout(function () {
@@ -112,11 +151,19 @@ app.controller('teamProfileController', [
     };
 
     function initialize() {
-      $scope.teamMembers = Team.getActiveMembers();
+      $scope.teamActiveMembers = Team.getActiveMembers();
+      getTeamActiveEmails();
       $scope.team = Team;
       $scope.editTeamNameActive = false;
       $scope.inviteMode = false;
       $scope.forms = {};
+    }
+
+    function getTeamActiveEmails() {
+      profileService.getTeamActiveEmails()
+        .then(function (data) {
+          $scope.teamActiveEmails = data.data;
+        });
     }
 
     function isMe(member) {

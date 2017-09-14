@@ -11,6 +11,7 @@
           <input type="text" name="name" ng-model="newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
           <span class="modal-err" ng-show="formNameCheckEmpty(forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
           <span class="modal-err" ng-show="formNameCheckMax(forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
+          <span class="modal-err" ng-show="newChannel.limitError">ظرفیت تعداد گروه‌ها در پلن فعلی پر شده است.</span>
           <span class="modal-err" ng-show="newChannel.dublicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
         </div>
         <div class="modal-input">
@@ -26,6 +27,7 @@
         <div class="public-private-dsc">
           <span><i class="zmdi zmdi-globe"></i>گروه عمومی (تمام اعضای تیم می‌توانند ببینند.)</span>
           <span><i class="zmdi zmdi-lock"></i>گروه خصوصی (فقط اعضای گروه)</span>
+          <br>
         </div>
       </div>
       <div class="col-sm-6 modal-left-part">

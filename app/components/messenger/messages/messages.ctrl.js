@@ -92,6 +92,7 @@ app.controller('messagesController', [
     $scope.$on('file:uploading', function (event, file) {
       $scope.uploadErrorNotif = false;
       $scope.uploadSizeLimitNotif = false;
+      $scope.uploadStorageErrorNotif = false;
       var message = messagesService.sendFileAndGetMessage(
         $scope.channel.id, file, $scope.replyMessage);
       if (message.isImage())
@@ -110,6 +111,8 @@ app.controller('messagesController', [
         setUploadErrorNotif();
       else if (err === 'sizeLimit')
         setUploadSizeLimitNotif();
+      else if (err === 'storageError')
+        setUploadStorageErrorNotif();
     });
 
     $scope.$on('image:fullscreen', function (event, url, name) {
@@ -309,6 +312,7 @@ app.controller('messagesController', [
     };
 
     function initialize() {
+      $scope.uploadLimit = Team.plan.uploadLimit;
       initialLastMessageId = $scope.channel.lastMessageId;
       if (!$scope.channel.areAllMessagesHaveBeenSeen())
         initialMemberLastSeenId = $scope.channel.memberLastSeenId;
@@ -474,6 +478,15 @@ app.controller('messagesController', [
       }
       self.uploadErrNotifTimeout = $timeout(function () {
         $scope.uploadSizeLimitNotif = false;
+      }, 3000);
+    }
+
+    function setUploadStorageErrorNotif() {
+      if (!$scope.uploadStorageErrorNotif) {
+        $scope.uploadStorageErrorNotif = true;
+      }
+      self.uploadErrNotifTimeout = $timeout(function () {
+        $scope.uploadStorageErrorNotif = false;
       }, 3000);
     }
 
