@@ -27,8 +27,8 @@
     </a>
     -->
   </div>
-  <div class="direct-holder group-holder" tour-step tour-step-title="پیام‌های خصوصی" tour-step-content="با یک نفر کاری دارید که باید حتماً با خودش صحبت کنید؟ پیام خصوصی می‌تونه راه‌حل خوبی باشه. راستی اگه با تیکام به مشکلی برخوردید یا می‌خواستید بازخوردی بهمون بدید، به تیک-بات بگید تا ما رسیدگی کنیم." tour-step-order="2" tour-step-placement="left" tour-step-on-show="scrollToDirects()" tour-step-on-next="navigateToAndWaitFor('messages')" tour-step-backdrop="true">
-    <ul>
+  <div class="direct-holder group-holder">
+    <ul tour-step tour-step-title="پیام‌های خصوصی" tour-step-content="با یک نفر کاری دارید که باید حتماً با خودش صحبت کنید؟ پیام خصوصی می‌تونه راه‌حل خوبی باشه. راستی اگه با تیکام به مشکلی برخوردید یا می‌خواستید بازخوردی بهمون بدید، به تیک-بات بگید تا ما رسیدگی کنیم." tour-step-order="2" tour-step-placement="left" tour-step-on-show="scrollToDirects()" tour-step-on-next="navigateToAndWaitFor('messages')" tour-step-backdrop="true">
       <li ng-repeat="direct in channels.directs | orderBy : ['!lastDatetime', '-lastDatetime']" ng-class="direct.getCssClass()">
         <a ui-sref="messenger.messages({slug: direct.getUrlifiedSlug()})">
           <i ng-class="direct.getIconClass()"></i>

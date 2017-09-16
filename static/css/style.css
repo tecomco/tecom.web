@@ -3352,12 +3352,11 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 
 .popover-content [ng-click="tour.prev()"]:after {
   content: 'قبلی';
-  color: rgb(233, 189, 90);
 }
 
 .popover-content [ng-click="tour.next()"]:after {
   content: 'بعدی';
-  color: rgb(97, 233, 90);
+  color: #fff;
 }
 
 .popover-content [ng-click="tour.end()"]:after {
@@ -3371,6 +3370,42 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   border-radius: 0 !important;
 }
 
+.tour-step-title {
+  background-color: rgb(21, 209, 124);
+  color: #fff;
+}
+
+.popover-content [ng-click="tour.next()"] {
+  background-color: rgb(21, 209, 124);
+}
+
+.popover-content [ng-click="tour.prev()"] {
+  background: none;
+  border: none;
+  margin-left: -20px;
+}
+
+.tour-step-navigation .btn.btn-default[ng-click="tour.next()"] {
+  border: unset;
+}
+
+.tour-step-navigation .btn.btn-default[ng-click="tour.next()"]:hover {
+  background: rgb(30, 235, 139);
+}
+
+.tour-step-navigation .btn.btn-default[ng-click="tour.prev()"]:hover {
+  background: unset;
+}
+
+.tour-step-navigation .btn.btn-default[ng-click="tour.end()"] {
+  background: none;
+  border: none;
+  margin-left: -20px;
+}
+
+.tour-step-content {
+  font-weight: 300;
+}
 
 /* TOUR END */
 
