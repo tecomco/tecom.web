@@ -62,8 +62,8 @@
               <img class="msg-img" ng-if="message.isFile() && message.isImage() && message.isPending" ngf-src="message.imageFile">
               <a ng-click="setReplyMessage(message)" ng-if="::!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
               <div class="file-failed-btns">
-                <a ng-show="message.isFailed" ng-click="reuploadFile(message.fileTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
-                <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.fileTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
+                <a ng-show="message.isFailed" ng-click="reuploadFile(message.messageTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
+                <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.messageTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
               </div>
             </div>
             <div class="g-m-one" ng-if="message.senderId !== null" ng-show="isMessageMemberLastMessage(message)">

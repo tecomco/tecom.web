@@ -7,14 +7,14 @@ app.factory('Message', [
     dateUtil, CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
-      additionalData, about, replyTo, isPending, fileTimestamp) {
+      additionalData, about, replyTo, isPending, messageTimestamp) {
       this.setValues(body, type, senderId, channelId, _id, datetime,
-        additionalData, about, replyTo, isPending, fileTimestamp);
+        additionalData, about, replyTo, isPending, messageTimestamp);
     }
 
     Message.prototype.setValues = function (body, type, senderId, channelId,
       _id, datetime, additionalData, about, replyTo, isPending,
-      fileTimestamp) {
+      messageTimestamp) {
       this.body = body;
       this.type = type;
       this.senderId = senderId;
@@ -32,7 +32,7 @@ app.factory('Message', [
       if (this.currentChannel) {
         this.teamId = this.currentChannel.teamId;
       }
-      this.fileTimestamp = fileTimestamp || null;
+      this.messageTimestamp = messageTimestamp || null;
       this.uploadProgressBar = null;
       this.replyTo = replyTo;
     };
@@ -107,7 +107,7 @@ app.factory('Message', [
     };
 
     Message.prototype.getFileTimestampId = function () {
-      return 'file-' + this.fileTimestamp;
+      return 'file-' + this.messageTimestamp;
     };
 
     Message.prototype.getStatusIcon = function () {

@@ -126,15 +126,15 @@ app.controller('messagesController', [
       $rootScope.$broadcast('file:upload', file, errFiles);
     };
 
-    $scope.reuploadFile = function (fileTimestamp) {
-      messagesService.reuploadFile(fileTimestamp);
+    $scope.reuploadFile = function (messageTimestamp) {
+      messagesService.reuploadFile(messageTimestamp);
     };
 
     $scope.removeUploadFailedMessageByFileTimestamp = function (
-      fileTimestamp) {
-      ArrayUtil.removeElementByKeyValue($scope.messages, 'fileTimestamp',
-        fileTimestamp);
-      messagesService.removeUploadFailedFileByFileTimestamp(fileTimestamp);
+      messageTimestamp) {
+      ArrayUtil.removeElementByKeyValue($scope.messages, 'messageTimestamp',
+        messageTimestamp);
+      messagesService.removeUploadFailedFileByFileTimestamp(messageTimestamp);
     };
 
     $scope.getInputStyle = function () {
@@ -152,7 +152,6 @@ app.controller('messagesController', [
       $event.preventDefault();
       var messageBody = $scope.inputMessage.trim();
       if (!messageBody) return;
-      $scope.channel.seenLastMessage();
       var message = messagesService.sendAndGetMessage($scope.channel.id,
         messageBody, $scope.replyMessage);
       $scope.replyMessage = null;
