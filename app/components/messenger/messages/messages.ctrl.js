@@ -19,14 +19,13 @@ app.controller('messagesController', [
     var isAnyLoadingMessageGetting;
     var prevScrollTop;
     var isDirectionUp;
-    var prevIsDirectionUp;
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
     var inputPlaceHolder = document.getElementById('inputPlaceHolder');
     var initialMemberLastSeenId;
     var initialLastMessageId;
-    var isJumpDownScrollingDown = false;
-    var hasUnreadInitializeMessages = false;
+    var isBottomOfMessagesHolder = false;
+    var prevIsBottomOfMessagesHolder = true;
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -67,7 +66,7 @@ app.controller('messagesController', [
 
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
-        if (!isBottomOfMessagesHolder()) {
+        if (!checkWhetherItsAtBottomOfMessageHolder()) {
           $scope.hasUnreadNewMessages = true;
           $timeout(function () {
             $scope.$apply();
@@ -221,17 +220,7 @@ app.controller('messagesController', [
         .then(function () {
           var message = getMessageById(replyTo);
           scrollToMessageElementById(replyTo);
-          $timeout(function () {
             message.highlight();
-            if (!isBottomOfMessagesHolder()) {
-              $timeout(function () {
-                isJumpDownScrollingDown = true;
-                $timeout(function () {
-                  $scope.$apply();
-                });
-              });
-            }
-          });
         });
     };
 
@@ -244,8 +233,7 @@ app.controller('messagesController', [
     };
 
     $scope.shouldShowJumpDownButton = function () {
-      return isJumpDownScrollingDown || $scope.hasUnreadNewMessages ||
-        hasUnreadInitializeMessages;
+      return isBottomOfMessagesHolder || $scope.hasUnreadNewMessages;
     };
 
     $scope.jumpDown = function () {
@@ -427,8 +415,8 @@ app.controller('messagesController', [
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
             $timeout(function () {
-              if (!isBottomOfMessagesHolder())
-                hasUnreadInitializeMessages = true;
+              if (!checkWhetherItsAtBottomOfMessageHolder())
+                isBottomOfMessagesHolder = true;
               $scope.$apply();
             });
           }
@@ -579,12 +567,10 @@ app.controller('messagesController', [
 
     function updateUnreadFlagsToCheckIfSeenMessages() {
       $scope.hasUnreadNewMessages = $scope.hasUnreadNewMessages &&
-        !isBottomOfMessagesHolder();
-      hasUnreadInitializeMessages = hasUnreadInitializeMessages &&
-        !isBottomOfMessagesHolder();
+        !checkWhetherItsAtBottomOfMessageHolder();
     }
 
-    function isBottomOfMessagesHolder() {
+    function checkWhetherItsAtBottomOfMessageHolder() {
       return messagesHolder.scrollTop + messagesWindow.scrollHeight >
         messagesHolder.scrollHeight;
     }
@@ -593,7 +579,6 @@ app.controller('messagesController', [
 
     angular.element(messagesHolder)
       .bind('scroll', function () {
-        var prevIsDirectionUp = isDirectionUp;
         var scrollTop = messagesHolder.scrollTop;
         if (prevScrollTop) {
           if (prevScrollTop > scrollTop)
@@ -602,14 +587,13 @@ app.controller('messagesController', [
             isDirectionUp = false;
         }
         prevScrollTop = scrollTop;
-        if (!isBottomOfMessagesHolder() && isDirectionUp === false)
-          isJumpDownScrollingDown = true;
-        else
-          isJumpDownScrollingDown = false;
+        isBottomOfMessagesHolder = !checkWhetherItsAtBottomOfMessageHolder();
         getMessagePackagesIfLoadingsInView(isDirectionUp);
         updateUnreadFlagsToCheckIfSeenMessages();
-        if (isDirectionUp !== prevIsDirectionUp)
+        if (prevIsBottomOfMessagesHolder !== isBottomOfMessagesHolder)
           $scope.$apply();
+        prevIsBottomOfMessagesHolder = !
+          checkWhetherItsAtBottomOfMessageHolder();
       });
 
     document.onkeydown = function (evt) {
