@@ -132,9 +132,11 @@ app.controller('messagesController', [
 
     $scope.removeUploadFailedMessageByFileTimestamp = function (
       messageTimestamp) {
-      ArrayUtil.removeElementByKeyValue($scope.messages, 'messageTimestamp',
+      ArrayUtil.removeElementByKeyValue($scope.messages,
+        'messageTimestamp',
         messageTimestamp);
-      messagesService.removeUploadFailedFileByFileTimestamp(messageTimestamp);
+      messagesService.removeUploadFailedFileByFileTimestamp(
+        messageTimestamp);
     };
 
     $scope.getInputStyle = function () {
@@ -175,6 +177,7 @@ app.controller('messagesController', [
         self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
+      messagesService.updateChannelDraftMessage($scope.channel.id, $scope.inputMessage);
     };
 
     $scope.isMessageMemberFirstMessage = function (message) {
@@ -219,7 +222,7 @@ app.controller('messagesController', [
         .then(function () {
           var message = getMessageById(replyTo);
           scrollToMessageElementById(replyTo);
-            message.highlight();
+          message.highlight();
         });
     };
 
@@ -304,8 +307,17 @@ app.controller('messagesController', [
       if (!$scope.channel.areAllMessagesHaveBeenSeen())
         initialMemberLastSeenId = $scope.channel.memberLastSeenId;
       $rootScope.$broadcast('channel:ready', $scope.channel);
-      $scope.inputMessage = '';
+      setInputMessage();
       return bindMessages();
+    }
+
+    function setInputMessage() {
+      var draftMessage = messagesService.getChannelDraftMessage(
+        $scope.channel.id);
+      if (draftMessage)
+        $scope.inputMessage = draftMessage;
+      else
+        $scope.inputMessage = '';
     }
 
     function generateUploadProgressBar(message) {

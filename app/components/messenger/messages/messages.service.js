@@ -12,6 +12,7 @@ app.service('messagesService', [
     self.failedUploadedFiles = [];
     self.pendingMessages = [];
     self.currentChannelMessages = [];
+    self.channelsDraftMessages = [];
     var MESSAGE_MAX_PACKET_LENGTH = 20;
 
     /**
@@ -783,6 +784,28 @@ app.service('messagesService', [
         channel.membersCount--;
     }
 
+    function updateChannelDraftMessage(channelId, messageBody) {
+      var channelDraftMessage = ArrayUtil.getElementByKeyValue(self.channelsDraftMessages,
+        'channelId', channelId);
+      if (channelDraftMessage)
+        channelDraftMessage.messageBody = messageBody;
+      else {
+        var draftMessage = {
+          channelId: channelId,
+          messageBody: messageBody
+        };
+        self.channelsDraftMessages.push(draftMessage);
+      }
+    }
+
+    function getChannelDraftMessage(channelId) {
+      var draftMessage = ArrayUtil.getElementByKeyValue(self.channelsDraftMessages,
+        'channelId', channelId);
+      if (draftMessage)
+        return draftMessage.messageBody;
+      return null;
+    }
+
     function startTyping(channelId) {
       var data = {
         channelId: channelId
@@ -856,6 +879,8 @@ app.service('messagesService', [
       seenMessage: seenMessage,
       findClosestLoadingMessage: findClosestLoadingMessage,
       findLoadingMessageContainsReplyMessage: findLoadingMessageContainsReplyMessage,
+      updateChannelDraftMessage: updateChannelDraftMessage,
+      getChannelDraftMessage: getChannelDraftMessage,
       startTyping: startTyping,
       endTyping: endTyping,
     };
