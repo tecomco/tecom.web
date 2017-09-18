@@ -118,12 +118,23 @@ app.controller('messagesController', [
       setFullscreenImageProperty(url, name);
     });
 
+    $rootScope.$on('remove:scopeMessage', function (event, messageTimestamp) {
+      ArrayUtil.removeElementByKeyValue($scope.messages,
+        'messageTimestamp', messageTimestamp);
+    });
+
     $scope.closeFullscreenImage = function () {
       $scope.isFullscreenVisible = false;
     };
 
     $scope.upload = function (file, errFiles) {
       $rootScope.$broadcast('file:upload', file, errFiles);
+    };
+
+    $scope.abortUpload = function (message) {
+      message.isUploadAborted = true;
+      message.uploadPromise.abort();
+      message.uploadPromise = null;
     };
 
     $scope.reuploadFile = function (messageTimestamp) {
@@ -133,8 +144,7 @@ app.controller('messagesController', [
     $scope.removeUploadFailedMessageByFileTimestamp = function (
       messageTimestamp) {
       ArrayUtil.removeElementByKeyValue($scope.messages,
-        'messageTimestamp',
-        messageTimestamp);
+        'messageTimestamp', messageTimestamp);
       messagesService.removeUploadFailedFileByFileTimestamp(
         messageTimestamp);
     };

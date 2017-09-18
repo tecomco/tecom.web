@@ -100,19 +100,23 @@ app.service('filesService', [
 
     function upload() {
       var fileData = uploadQueue[0];
-      Upload.upload({
-          url: 'api/v1/files/upload/' + fileData.fileName,
-          data: {
-            name: fileData.fileName,
-            channel: fileData.channelId,
-            sender: fileData.memberId,
-            file: fileData.fileData
-          },
-          method: 'PUT'
-        })
-        .then(function (res) {
-          fileData.deferred.resolve(res);
-        }, function (err) {
+      var uploadPromise = Upload.upload({
+        url: 'api/v1/files/upload/' + fileData.fileName,
+        data: {
+          name: fileData.fileName,
+          channel: fileData.channelId,
+          sender: fileData.memberId,
+          file: fileData.fileData
+        },
+        method: 'PUT'
+      });
+      uploadPromise.then(function (res) {
+        fileData.message.uploadPromise = null;
+        fileData.deferred.resolve(res);
+      }, function (err) {
+        if (fileData.message.isUploadAborted) {
+          $rootScope.$broadcast('remove:scopeMessage', fileData.message.messageTimestamp);
+        } else {
           $log.error('Error status: ' + err.status);
           if (err.data && err.data[0] ===
             'Team reached total storage limit.')
@@ -122,19 +126,21 @@ app.service('filesService', [
           else
             $rootScope.$broadcast('file:uploadError', 'uploadError');
           fileData.deferred.reject();
-        }, function (evt) {
-          var percent = parseInt(100.0 * evt.loaded / evt.total);
-          if (percent === 100)
-            fileData.message.uploadProgressBar.complete();
-          else
-            fileData.message.uploadProgressBar.set(percent);
-        })
-        .finally(function () {
-          uploadQueue.shift();
-          if (uploadQueue.length > 0) {
-            upload();
-          }
-        });
+        }
+      }, function (evt) {
+        var percent = parseInt(100.0 * evt.loaded / evt.total);
+        if (percent === 100)
+          fileData.message.uploadProgressBar.complete();
+        else
+          fileData.message.uploadProgressBar.set(percent);
+      });
+      uploadPromise.finally(function () {
+        uploadQueue.shift();
+        if (uploadQueue.length > 0) {
+          upload();
+        }
+      });
+      fileData.message.uploadPromise = uploadPromise;
     }
 
     function getFileManagerFiles(channelId) {

@@ -43,6 +43,7 @@
             <div ng-class="::message.getCssClass()" class="msg-holder">
               <label class="name" ng-style="::message.getUsernameColor()" ng-if="isMessageMemberFirstMessage(message)">{{::message.getUsername()}}</label>
               <div class="details">
+                <a ng-if="message.uploadPromise" ng-click="abortUpload(message)"><i class="zmdi zmdi-close"></i></a>
                 <label class="status" ng-show="::message.isFromMe()">
                 <i ng-class="message.getStatusIcon()"></i>
               </label>
@@ -61,9 +62,9 @@
               <div ng-if="!message.isFile()" compile template="{{::message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
               <img class="msg-img" ng-if="message.isFile() && message.isImage() && message.isPending" ngf-src="message.imageFile">
               <a ng-click="setReplyMessage(message)" ng-if="::!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
-              <div class="file-failed-btns">
-                <a ng-show="message.isFailed" ng-click="reuploadFile(message.messageTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
-                <a ng-show="message.isFailed" ng-click="removeUploadFailedMessageByFileTimestamp(message.messageTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
+              <div ng-if="message.isFailed" class="file-failed-btns">
+                <a ng-click="reuploadFile(message.messageTimestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
+                <a ng-click="removeUploadFailedMessageByFileTimestamp(message.messageTimestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
               </div>
             </div>
             <div class="g-m-one" ng-if="message.senderId !== null" ng-show="isMessageMemberLastMessage(message)">
