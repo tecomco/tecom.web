@@ -10,15 +10,14 @@ app.factory('Channel', [
       memberId, isFakeDirect, liveFileId, teamId,
       isCurrentMemberChannelMember, isMuted, lastSeenId, lastDatetime,
       lastMessageId, memberLastSeenId) {
-      var deferred = $q.defer();
       this.setValues(name, slug, description, type, id, membersCount,
         memberId, isFakeDirect, liveFileId, teamId,
         isCurrentMemberChannelMember, isMuted, lastSeenId, lastDatetime,
         lastMessageId, memberLastSeenId);
       this.isTypingMemberIds = [];
       this.hideNotifFunction = null;
-      this.channelInitialDefer = deferred;
-      this.channelInitialPromise = deferred.promise;
+      this.initialDeferred = $q.defer();
+      this.initialPromise = this.initialDeferred.promise;
     }
 
     Channel.prototype.setValues = function (name, slug, description, type,

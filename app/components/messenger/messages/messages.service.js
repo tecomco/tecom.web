@@ -87,7 +87,7 @@ app.service('messagesService', [
       });
       return $q.all(promises)
         .then(function () {
-          channel.channelInitialDefer.resolve();
+          channel.initialDeferred.resolve();
         });
     }
 
@@ -619,7 +619,7 @@ app.service('messagesService', [
             message.datetime);
           var channel = channelsService.findChannelById(message.channelId);
           channel.seenLastMessage();
-          removePendingMessageByFileTimestamp(message.messageTimestamp);
+          removePendingMessageByFileTimestamp(message.timestamp);
         });
       return message;
     }
@@ -641,8 +641,8 @@ app.service('messagesService', [
       return message;
     }
 
-    function reuploadFile(messageTimestamp) {
-      var data = getFailedUploadedFileByTimestamp(messageTimestamp);
+    function reuploadFile(timestamp) {
+      var data = getFailedUploadedFileByTimestamp(timestamp);
       data.message.isFailed = false;
       uploadFile(data.message, data.fileData);
     }
@@ -663,7 +663,7 @@ app.service('messagesService', [
             message.datetime);
           var channel = channelsService.findChannelById(message.channelId);
           channel.seenLastMessage();
-          removePendingMessageByFileTimestamp(message.messageTimestamp);
+          removePendingMessageByFileTimestamp(message.timestamp);
         });
       filesService.createFileManagerFile(result.id, result.file, result.name,
         result.date_uploaded, result.type);
@@ -692,21 +692,21 @@ app.service('messagesService', [
         });
     }
 
-    function getFailedUploadedFileByTimestamp(messageTimestamp) {
+    function getFailedUploadedFileByTimestamp(timestamp) {
       var data = ArrayUtil.getElementByKeyValue(self.failedUploadedFiles,
-        'message.messageTimestamp', messageTimestamp);
-      removeUploadFailedFileByFileTimestamp(messageTimestamp);
+        'message.timestamp', timestamp);
+      removeUploadFailedFileByFileTimestamp(timestamp);
       return data;
     }
 
-    function removeUploadFailedFileByFileTimestamp(messageTimestamp) {
+    function removeUploadFailedFileByFileTimestamp(timestamp) {
       ArrayUtil.removeElementByKeyValue(self.failedUploadedFiles,
-        'message.messageTimestamp', messageTimestamp);
+        'message.timestamp', timestamp);
     }
 
-    function removePendingMessageByFileTimestamp(messageTimestamp) {
+    function removePendingMessageByFileTimestamp(timestamp) {
       ArrayUtil.removeElementByKeyValue(self.pendingMessages,
-        'messageTimestamp', messageTimestamp);
+        'timestamp', timestamp);
     }
 
     function seenMessage(channelId, messageId, senderId) {

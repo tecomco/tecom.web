@@ -24,15 +24,15 @@ app.controller('messagesController', [
     var inputPlaceHolder = document.getElementById('inputPlaceHolder');
     var initialMemberLastSeenId;
     var initialLastMessageId;
-    var isBottomOfMessagesHolder = false;
-    var prevIsBottomOfMessagesHolder = true;
+    var isBottomOfMessagesHolder = true;
+    var prevIsBottomOfMessagesHolder = false;
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
         setCurrentChannel()
           .then(function () {
             if ($scope.channel) {
-              $scope.channel.channelInitialPromise
+              $scope.channel.initialPromise
                 .then(function () {
                   return initialize();
                 })
@@ -52,7 +52,7 @@ app.controller('messagesController', [
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel()
         .then(function () {
-          return $scope.channel.channelInitialPromise;
+          return $scope.channel.initialPromise;
         })
         .then(function () {
           initialize();
@@ -66,7 +66,7 @@ app.controller('messagesController', [
 
     $scope.$on('message', function (event, message) {
       if ($scope.channel.id == message.channelId) {
-        if (!checkWhetherItsAtBottomOfMessageHolder()) {
+        if (!checkIsBottomOfMessagesHolder()) {
           $scope.hasUnreadNewMessages = true;
           $timeout(function () {
             $scope.$apply();
@@ -118,9 +118,9 @@ app.controller('messagesController', [
       setFullscreenImageProperty(url, name);
     });
 
-    $rootScope.$on('remove:scopeMessage', function (event, messageTimestamp) {
+    $rootScope.$on('remove:scopeMessage', function (event, timestamp) {
       ArrayUtil.removeElementByKeyValue($scope.messages,
-        'messageTimestamp', messageTimestamp);
+        'timestamp', timestamp);
     });
 
     $scope.closeFullscreenImage = function () {
@@ -137,16 +137,16 @@ app.controller('messagesController', [
       message.uploadPromise = null;
     };
 
-    $scope.reuploadFile = function (messageTimestamp) {
-      messagesService.reuploadFile(messageTimestamp);
+    $scope.reuploadFile = function (timestamp) {
+      messagesService.reuploadFile(timestamp);
     };
 
     $scope.removeUploadFailedMessageByFileTimestamp = function (
-      messageTimestamp) {
+      timestamp) {
       ArrayUtil.removeElementByKeyValue($scope.messages,
-        'messageTimestamp', messageTimestamp);
+        'timestamp', timestamp);
       messagesService.removeUploadFailedFileByFileTimestamp(
-        messageTimestamp);
+        timestamp);
     };
 
     $scope.getInputStyle = function () {
@@ -244,7 +244,7 @@ app.controller('messagesController', [
     };
 
     $scope.shouldShowJumpDownButton = function () {
-      return isBottomOfMessagesHolder || $scope.hasUnreadNewMessages;
+      return !isBottomOfMessagesHolder || $scope.hasUnreadNewMessages;
     };
 
     $scope.jumpDown = function () {
@@ -445,7 +445,7 @@ app.controller('messagesController', [
             messagesService.seenMessage($scope.channel.id, lastMessage.id,
               lastMessage.senderId);
             $timeout(function () {
-              if (!checkWhetherItsAtBottomOfMessageHolder())
+              if (checkIsBottomOfMessagesHolder())
                 isBottomOfMessagesHolder = true;
               $scope.$apply();
             });
@@ -598,10 +598,10 @@ app.controller('messagesController', [
 
     function updateUnreadFlagsToCheckIfSeenMessages() {
       $scope.hasUnreadNewMessages = $scope.hasUnreadNewMessages &&
-        !checkWhetherItsAtBottomOfMessageHolder();
+        !checkIsBottomOfMessagesHolder();
     }
 
-    function checkWhetherItsAtBottomOfMessageHolder() {
+    function checkIsBottomOfMessagesHolder() {
       return messagesHolder.scrollTop + messagesWindow.scrollHeight >
         messagesHolder.scrollHeight;
     }
@@ -618,13 +618,12 @@ app.controller('messagesController', [
             isDirectionUp = false;
         }
         prevScrollTop = scrollTop;
-        isBottomOfMessagesHolder = !checkWhetherItsAtBottomOfMessageHolder();
+        isBottomOfMessagesHolder = checkIsBottomOfMessagesHolder();
         getMessagePackagesIfLoadingsInView(isDirectionUp);
         updateUnreadFlagsToCheckIfSeenMessages();
         if (prevIsBottomOfMessagesHolder !== isBottomOfMessagesHolder)
           $scope.$apply();
-        prevIsBottomOfMessagesHolder = !
-          checkWhetherItsAtBottomOfMessageHolder();
+        prevIsBottomOfMessagesHolder = checkIsBottomOfMessagesHolder();
       });
 
     document.onkeydown = function (evt) {

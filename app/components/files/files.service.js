@@ -115,7 +115,7 @@ app.service('filesService', [
         fileData.deferred.resolve(res);
       }, function (err) {
         if (fileData.message.isUploadAborted) {
-          $rootScope.$broadcast('remove:scopeMessage', fileData.message.messageTimestamp);
+          $rootScope.$broadcast('remove:scopeMessage', fileData.message.timestamp);
         } else {
           $log.error('Error status: ' + err.status);
           if (err.data && err.data[0] ===
