@@ -123,6 +123,7 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
     function setDontDisturbTimeout(duration) {
       CurrentMember.dontDisturbTimeout = $timeout(function () {
         removeDontDisturbModeTimeProperties();
+        CurrentMember.dontDisturb.remainingTime = null;
         setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE
           .DEACTIVE);
         $interval.cancel(CurrentMember.dontDisturbInterval);
@@ -130,6 +131,8 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
     }
 
     function updateDontDisturbRemainingTime() {
+      if (CurrentMember.dontDisturb.remainingTime < 0)
+        setDontDisturbTimeout(0);
       CurrentMember.dontDisturb.remainingTime =
         getLocaleDontDisturbRemainingTime();
     }

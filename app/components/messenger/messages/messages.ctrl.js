@@ -183,8 +183,7 @@ app.controller('messagesController', [
     $scope.isMessageMemberFirstMessage = function (message) {
       if (message.senderId === null) return false;
       if (!message.id) {
-        var oneBeforeTheLastMessage = getMessageById(
-          $scope.channel.lastMessageId - 1);
+        var oneBeforeTheLastMessage = getMessageById($scope.channel.lastMessageId);
         if (oneBeforeTheLastMessage)
           return message.senderId !== oneBeforeTheLastMessage.senderId;
       }
@@ -633,6 +632,7 @@ app.controller('messagesController', [
     $scope.$on('tab:focus:changed', function () {
       if ($rootScope.isTabFocused) {
         seenLastUnSeenMessage();
+        $scope.$apply();
         inputPlaceHolder.focus();
       }
     });
