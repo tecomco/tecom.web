@@ -31,7 +31,7 @@ app.factory('textUtil', function () {
 
   function urlify(text) {
     var urlRegex =
-      /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#\?&//=]*)?/gi;
+      /\(?(?:(http|https|ftp):\/\/)?(?:((?:[^\W\s]|\.|-|[:]{1})+)@{1})?((?:www.)?(?:[^\W\s]|\.|-)+[\.][^\W\s]{2,4}|localhost(?=\/)|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?::(\d*))?([\/]?[^\s\?]*[\/]{1})*(?:\/?([^\s\n\?\[\]\{\}\#]*(?:(?=\.)){1}|[^\s\n\?\[\]\{\}\.\#]*)?([\.]{1}[^\s\?\#]*)?)?(?:\?{1}([^\s\n\#\[\]]*))?([\#][^\s\n]*)?\)?/gi;
     return text.replace(urlRegex, function (url) {
       if (validUrl(url)) {
         var href = url;
@@ -45,14 +45,21 @@ app.factory('textUtil', function () {
   }
 
   function validUrl(url) {
+    var domainNameIndex;
     var tld = ['com', 'ir', 'net', 'org', 'biz', 'info', 'name', 'me', 'ws',
       'us', 'tv', 'gov', 'co', 'edu', 'asia', 'int', 'tel', 'mil', 'coop',
       'io', 'jobs', 'mobi', 'pro'
     ];
-    url = url.split('.');
-    url = url[url.length - 1];
+    if (url.indexOf('//') > -1)
+      domainNameIndex = 2;
+    else {
+      domainNameIndex = 0;
+    }
+    var domainName = url.split('/')[domainNameIndex];
+    var urlParts = domainName.split('.');
+    var domain = urlParts[urlParts.length - 1];
     for (var i = 0; i < tld.length; i++) {
-      if (url.substring(0, tld[i].length) === tld[i])
+      if (domain.substring(0, tld[i].length).toLowerCase() === tld[i])
         return true;
     }
     return false;
@@ -62,7 +69,7 @@ app.factory('textUtil', function () {
     return '<code class="msg-inline-code" dir="ltr">' + text +
       '</code>';
   }
-  
+
   /**
    * @todo Fix this function.
    */
