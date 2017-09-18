@@ -619,6 +619,7 @@ app.service('messagesService', [
             message.datetime);
           var channel = channelsService.findChannelById(message.channelId);
           channel.seenLastMessage();
+          removePendingMessageByFileTimestamp(message.messageTimestamp);
         });
       return message;
     }
@@ -806,6 +807,11 @@ app.service('messagesService', [
       return null;
     }
 
+    function removeChannelDraftMessage(channelId) {
+      ArrayUtil.removeElementByKeyValue(self.channelsDraftMessages,
+        'channelId', channelId);
+    }
+
     function startTyping(channelId) {
       var data = {
         channelId: channelId
@@ -881,6 +887,7 @@ app.service('messagesService', [
       findLoadingMessageContainsReplyMessage: findLoadingMessageContainsReplyMessage,
       updateChannelDraftMessage: updateChannelDraftMessage,
       getChannelDraftMessage: getChannelDraftMessage,
+      removeChannelDraftMessage: removeChannelDraftMessage,
       startTyping: startTyping,
       endTyping: endTyping,
     };

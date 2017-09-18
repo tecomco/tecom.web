@@ -287,22 +287,32 @@ app.controller('messagesController', [
     };
 
     $scope.isMessageDateInAnotherDay = function (message) {
-      if (message.id === 1)
+      var previousMessageId;
+      if (message.id)
+        previousMessageId = message.id - 1;
+      else
+        previousMessageId = $scope.channel.lastMessageId;
+      if (previousMessageId === 0)
         return true;
       else {
-        var previousMessage = getMessageById(message.id - 1);
+        var previousMessage = getMessageById(previousMessageId);
         if (previousMessage) {
-          var timeDiff =
-            Math.abs(message.datetime.getTime() - previousMessage.datetime
-              .getTime());
-          var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
-          return (diffDays === 0) ? false : true;
+          var isYearDifferent = message.datetime.getFullYear() !==
+            previousMessage.datetime.getFullYear();
+          var isMonthDifferent = message.datetime.getMonth() !==
+            previousMessage.datetime.getMonth();
+          var isDayDifferent = message.datetime.getDate() !==
+            previousMessage.datetime.getDate();
+          return isYearDifferent || isMonthDifferent || isDayDifferent;
         }
       }
     };
 
     function initialize() {
       $scope.uploadLimit = Team.plan.uploadLimit;
+      // TODO: tofmali
+      $scope.channel.lastMessageId = $scope.channel.lastMessageId || 0;
+      $scope.channel.memberLastSeenId = $scope.channel.memberLastSeenId || 0;
       initialLastMessageId = $scope.channel.lastMessageId;
       if (!$scope.channel.areAllMessagesHaveBeenSeen())
         initialMemberLastSeenId = $scope.channel.memberLastSeenId;
@@ -446,6 +456,7 @@ app.controller('messagesController', [
 
     function clearMessageInput() {
       $scope.inputMessage = '';
+      messagesService.removeChannelDraftMessage($scope.channel.id);
     }
 
     function getMessageById(messageId) {

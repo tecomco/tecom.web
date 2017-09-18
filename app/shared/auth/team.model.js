@@ -12,6 +12,7 @@ app.factory('Team', [
       Team.id = id;
       Team.members = [];
       Team.plan = {};
+      Team.membersPromise = Team.getTeamMembers();
       Team.getTeamData()
         .then(function (data) {
           Team._name = data.data.name;
@@ -21,7 +22,6 @@ app.factory('Team', [
           Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
             data.data.current_plan.each_upload_storage_limit + 'MB' :
             data.data.current_plan.each_upload_storage_limit;
-          Team.membersPromise = Team.getTeamMembers();
         })
         .catch(function (err) {
           $log.error('Error initializing Team');

@@ -37,8 +37,8 @@
             <div class="date-holder unread-msgs" ng-if="::isMessageFirstUnread(message)">
               <label>پیام‌های جدید</label>
             </div>
-            <div class="date-holder" ng-if="::isMessageDateInAnotherDay(message)">
-              <label>{{::message.getLocaleDate()}}</label>
+            <div class="date-holder" ng-if="isMessageDateInAnotherDay(message)">
+              <label>{{message.getLocaleDate()}}</label>
             </div>
             <div ng-class="::message.getCssClass()" class="msg-holder">
               <label class="name" ng-style="::message.getUsernameColor()" ng-if="isMessageMemberFirstMessage(message)">{{::message.getUsername()}}</label>
