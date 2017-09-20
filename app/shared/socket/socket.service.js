@@ -7,6 +7,7 @@ app.factory('socket', [
     var self = this;
 
     var teamSlug = domainUtil.getSubdomain();
+    $localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbWFnZSI6Ii9tZWRpYS8yMDE3LzA4L1U1NS81NS5wbmciLCJ1c2VyX2lkIjo1NSwiZXhwIjoxNTA4NDc5NjgyLCJ1c2VybmFtZSI6ImFtaXJob3NzZWluIiwib3JpZ19pYXQiOjE1MDU4ODc2ODIsImVtYWlsIjoiYW1pcmhvc3NlaW5AdGVjb21zLm1lIiwibWVtYmVyc2hpcHMiOlt7ImlzX2FkbWluIjp0cnVlLCJpZCI6ODksInRlYW1fc2x1ZyI6InRlY29tLWJvaSIsInRlYW1faWQiOjY5fV19.rai-AslvB-ZJvJOx9h8ULMUIvnpKDrPbQjDPrZCkx8A";    
 
     self.socket = io.connect(ENV.socketUri, {
       path: '/',

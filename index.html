@@ -5,7 +5,7 @@
     <title>تیکام</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width">
-    <base href="/">
+    <base href="./">
     <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://lib.arvancloud.com/ar/bootstrap-rtl/3.3.4/css/bootstrap-rtl.min.css" />
     <link rel="stylesheet" href="https://lib.arvancloud.com/ar/font-awesome/4.6.3/css/font-awesome.min.css" />
@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="static/lib/ngprogress/ngProgress.css" />
     <link rel="stylesheet" href="static/css/code-style.css?v=1.0.2" />
     <link rel="stylesheet" href="static/css/style.css?v=1.1.3" />
-    {% verbatim %}
+    <!-- {% verbatim %} -->
     <link rel="shortcut icon" ng-href="{{hasUnread ? 'favicon-notif.png' : 'favicon.png'}}" type="image/png" />
-    {% endverbatim %}
+    <!-- {% endverbatim %} -->
 
     <script src="https://lib.arvancloud.com/ar/angular.js/1.6.4/angular.min.js"></script>
 </head>
@@ -49,9 +49,9 @@
     <script src="https://lib.arvancloud.com/ar/angular-scroll/1.0.2/angular-scroll.min.js"></script>
     <script src="static/lib/angular-ui-tour/dist/angular-ui-tour.js"></script>
     <script src="app/shared/cache/lru.js?v=1.0.0"></script>
-    {% if minification %}
+    <!-- {% if minification %}
     <script src="dist/tecom.min.js"></script>
-    {% else %}
+    {% else %} -->
     <script src="app/app.module.js?v=1.0.8"></script>
     <script src="app/app.routes.js?v=1.1.0"></script>
     <script src="app/app.config.js"></script>
@@ -93,7 +93,7 @@
     <script src="app/components/profile/user.profile.ctrl.js?v=1.0.2"></script>
     <script src="app/components/profile/team.profile.ctrl.js?v=1.0.5"></script>
     <script src="app/components/profile/profile.service.js?v=1.0.2"></script>
-    {% endif %}
+    <!-- {% endif %} -->
 
     <!-- Hotjar Tracking Code for tecom.me -->
     <script>

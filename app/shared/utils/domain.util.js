@@ -3,6 +3,7 @@
 app.factory('domainUtil', ['$location', function ($location) {
 
   function getSubdomain() {
+    return 'tecom-boi';
     var host = $location.host();
     if (host.indexOf('.') < 0) {
       return '';
