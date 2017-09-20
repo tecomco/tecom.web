@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('fileManagerController', [
-  '$scope', '$rootScope', 'filesService', 'channelsService',
+  '$scope', '$rootScope', 'ENV', 'filesService', 'channelsService',
   'FileManagerFile', '$state',
-  function ($scope, $rootScope, filesService, channelsService,
+  function ($scope, $rootScope, ENV, filesService, channelsService,
     FileManagerFile, $state) {
 
     $scope.files = [];
@@ -25,6 +25,10 @@ app.controller('fileManagerController', [
         return 'mime-holder closed';
       else
         return 'mime-holder opened';
+    };
+
+    $scope.getGenericFileFormats = function () {
+      return ENV.apiUri + '/static/img/file-formats.svg#generic';
     };
 
     $scope.toggleFileManagerStatus = function () {

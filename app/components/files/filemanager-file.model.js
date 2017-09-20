@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
-  function (dateUtil, fileUtil) {
+app.factory('FileManagerFile', ['ENV', 'dateUtil', 'fileUtil',
+  function (ENV, dateUtil, fileUtil) {
 
     function FileManagerFile(id, url, name, date, type) {
       this.id = id;
@@ -14,7 +14,7 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
     }
 
     FileManagerFile.prototype.getSvgUrl = function () {
-      return '/static/img/file-formats.svg#' + this.extension;
+      return 'static/img/file-formats.svg#' + this.extension;
     };
 
     FileManagerFile.prototype.getFileName = function () {
@@ -44,13 +44,13 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       link.click();
     };
 
-  FileManagerFile.TYPE = {
-    CODE: 1,
-    PICTURE: 2,
-    DOCUMENT: 3,
-    OTHER: 4
-  };
+    FileManagerFile.TYPE = {
+      CODE: 1,
+      PICTURE: 2,
+      DOCUMENT: 3,
+      OTHER: 4
+    };
 
-  return FileManagerFile;
-}
+    return FileManagerFile;
+  }
 ]);

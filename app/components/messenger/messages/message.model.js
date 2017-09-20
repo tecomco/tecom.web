@@ -1,9 +1,9 @@
 'use strict';
 
 app.factory('Message', [
-  '$log', 'Db', '$timeout', 'textUtil', 'channelsService', 'fileUtil',
+  '$log', 'ENV', 'Db', '$timeout', 'textUtil', 'channelsService', 'fileUtil',
   'dateUtil', 'CurrentMember', 'Team',
-  function ($log, Db, $timeout, textUtil, channelsService, fileUtil,
+  function ($log, ENV, Db, $timeout, textUtil, channelsService, fileUtil,
     dateUtil, CurrentMember, Team) {
 
     function Message(body, type, senderId, channelId, _id, datetime,
@@ -332,7 +332,7 @@ app.factory('Message', [
         '" ng-click="fullscreenImage(\'' + this.additionalData.url +
         '\', \'' + this.additionalData.name +
         '\')"><img class="img-responsive " id="img-' + this.additionalData
-        .fileId + '" ng-src="' + this.additionalData.url +
+        .fileId + '" ng-src="' + ENV.apiUri + this.additionalData.url +
         '" style="cursor:pointer" /></div>';
     };
 

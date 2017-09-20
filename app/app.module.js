@@ -16,6 +16,8 @@ app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
       whiteListedDomains: ['http://localhost:8000']
     });
 
+    $httpProvider.interceptors.push('jwtInterceptor');
+
     $httpProvider.interceptors.push(function ($q, ENV) {
       return {
         request: function (config) {
@@ -23,10 +25,8 @@ app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
             config.url = ENV.apiUri + config.url;
           return config || $q.when(config);
         }
-      }
+      };
     });
-
-    $httpProvider.interceptors.push('jwtInterceptor');
   }
 ]);
 

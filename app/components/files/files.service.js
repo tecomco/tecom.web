@@ -101,7 +101,7 @@ app.service('filesService', [
     function upload() {
       var fileData = uploadQueue[0];
       var uploadPromise = Upload.upload({
-        url: 'api/v1/files/upload/' + fileData.fileName,
+        url: '/api/v1/files/upload/' + fileData.fileName,
         data: {
           name: fileData.fileName,
           channel: fileData.channelId,

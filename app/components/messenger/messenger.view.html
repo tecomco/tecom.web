@@ -34,7 +34,7 @@
               <i ng-class="getDontDisturbModeClass()"></i>
             </a>
             <ul class="dropdown-menu user-options" uib-dropdown-menu aria-labelledby="simple-dropdown">
-              <li ng-show="getDontDisturbModeRemainingTime()">
+              <li ng-if="getDontDisturbModeRemainingTime()">
                 <span class="ddm-time">{{getDontDisturbModeRemainingTime()}}</span>
               </li>
               <li ng-click="deactivateDontDisturbMode()">

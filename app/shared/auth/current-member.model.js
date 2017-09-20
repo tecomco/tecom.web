@@ -31,6 +31,11 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
     };
 
     CurrentMember.activateTimeDontDisturbMode = function (miliseconds) {
+      if (CurrentMember.dontDisturb.mode === CurrentMember.DONT_DISTURB_MODE
+        .TIMEACTIVE) {
+        $timeout.cancel(CurrentMember.dontDisturbTimeout);
+        removeDontDisturbModeRemainingTime();
+      }
       setDontDisturbModeTimeProperties(miliseconds);
       setDontDisturbMode(CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE);
       setDontDisturbTimeout(miliseconds);
@@ -116,8 +121,10 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
     }
 
     function removeDontDisturbModeRemainingTime() {
-      $interval.cancel(CurrentMember.dontDisturbInterval);
       CurrentMember.dontDisturb.remainingTime = null;
+      // $timeout(function () {
+        $interval.cancel(CurrentMember.dontDisturbInterval);
+      // });
     }
 
     function setDontDisturbTimeout(duration) {

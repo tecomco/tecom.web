@@ -1,13 +1,14 @@
 'use strict';
 
-app.factory('User', function() {
+app.factory('User', ['ENV', function (ENV) {
 
   function User(id, username, email, image) {
     this.id = id;
     this.username = username;
     this.email = email;
-    this.image = image || '/static/img/user-def.png';
-    this.usernameColor = User.COLORS[Math.floor(Math.random() * User.COLORS.length)];
+    this.image = image ? ENV.apiUri + image : 'static/img/user-def.png';
+    this.usernameColor = User.COLORS[Math.floor(Math.random() * User.COLORS
+      .length)];
   }
 
   User.COLORS = [
@@ -33,4 +34,4 @@ app.factory('User', function() {
   ];
 
   return User;
-});
+}]);

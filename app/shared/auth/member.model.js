@@ -24,7 +24,7 @@ app.factory('Member', ['User', function (User) {
   Member.TECOM_BOT = {
     id: 0,
     username: 'تیک-بات',
-    image: '/static/img/user-def.png'
+    image: 'static/img/user-def.png'
   };
 
   Member.STATUS = {

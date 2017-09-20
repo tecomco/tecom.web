@@ -1,11 +1,11 @@
 'use strict';
 
 app.controller('messagesController', [
-  '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
-  'Message', 'messagesService', 'channelsService', 'filesService',
-  '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
+  '$scope', '$rootScope', '$state', 'ENV', '$stateParams', '$window',
+  '$timeout', 'Message', 'messagesService', 'channelsService',
+  'filesService', '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
   'ngProgressFactory',
-  function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
+  function ($scope, $rootScope, $state, ENV, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q, Team,
     ArrayUtil, textUtil, CurrentMember, ngProgressFactory
   ) {
@@ -124,6 +124,8 @@ app.controller('messagesController', [
     });
 
     $scope.closeFullscreenImage = function () {
+      $scope.fullscreenImageSrc = null;
+      $scope.fullscreenImageName = null;
       $scope.isFullscreenVisible = false;
     };
 
@@ -477,7 +479,7 @@ app.controller('messagesController', [
     }
 
     function setFullscreenImageProperty(url, name) {
-      $scope.fullscreenImageSrc = url;
+      $scope.fullscreenImageSrc = ENV.apiUri + url;
       $scope.fullscreenImageName = name;
       $scope.isFullscreenVisible = true;
     }
