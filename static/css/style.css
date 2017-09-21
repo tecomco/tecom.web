@@ -630,6 +630,20 @@ ul.dropdown-menu {
   text-align: center;
 }
 
+.team-plan {
+  text-align: center;
+  color: rgba(36, 167, 114, 1);
+}
+
+.team-plan h5 {
+  display: inline-block;
+  font-weight: 300
+}
+
+.smaller {
+  font-size: 12px;
+}
+
 .danger-btn {
   padding: 4px 16px;
   border: 0;
@@ -3407,6 +3421,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   font-weight: 300;
 }
 
+
 /* TOUR END */
 
 .clearfix:after {
@@ -3616,6 +3631,29 @@ label {
   }
 }
 
-.dragover {
-  border: 5px dashed blue;
+.chat {
+  position: relative;
+}
+
+.chat .dragover-overlay {
+  border: 10px dotted #aaa;
+  height: 100%;
+  visibility: hidden;
+  opacity: 0;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+
+.chat.dragover .dragover-overlay {
+  visibility: visible;
+  opacity: 1;
 }
