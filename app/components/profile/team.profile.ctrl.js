@@ -36,15 +36,14 @@ app.controller('teamProfileController', [
             $log.error('Invitation Error:', err);
             if (err.data && err.data[0] === 'Email already a member.')
               setInfoOrErrorMessage('error',
-                'فرد مورد نظرت در حال حاضر عضو تیمه');
+                'فرد مورد نظر در حال حاضر عضو تیمه.');
             else if (err.data && err.data[0] ===
               'Email already has an active invitaion.')
               setInfoOrErrorMessage('error',
-                'ایمیل فعال سازی ارسال شده است.');
+                'ایمیل فعال‌سازی قبلاً ارسال شده.');
             else if (err.data && err.data[0] ===
               'Team reached members limit.')
-              setInfoOrErrorMessage('error',
-                'ظرفیت اعضای تیم در پلن فعلی پر شده است.');
+              $scope.membersLimitError = true;
             else
               setInfoOrErrorMessage('error', 'خطا در دعوت به تیم');
           });
@@ -114,7 +113,7 @@ app.controller('teamProfileController', [
 
     $scope.hasTeamReachedMembersLimit = function () {
       return ($scope.teamActiveMembers.length +
-        $scope.teamActiveEmails.length) === Team.plan.membersLimit;
+        $scope.teamActiveEmails.length) >= Team.plan.membersLimit;
     };
 
     $scope.onTourReady = function (tour) {

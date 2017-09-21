@@ -3140,19 +3140,19 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 }
 
 .modal-err {
-  /*border-radius: 4px;
-  color: #fff;
-  font-weight: 100;
-  padding: 4px 10px;*/
-  font-size: 12px !important;
+  /* font-size: 12px !important; */
   color: rgb(226, 89, 89) !important;
-  /*background: rgb(226, 89, 89);*/
   transition: all 0.3s ease;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   font-weight: 300 !important;
   padding: 2px 0;
+}
+
+.modal-err .btn, .modal-err .fa {
+  color: #337ab7;
+  padding: 0;
 }
 
 .modal-global-err {
