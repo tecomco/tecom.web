@@ -1553,6 +1553,10 @@ ol.linenums, ol.linenums-view {
   display: none;
 }
 
+.upload-cancel-btn {
+  margin: 10px;
+}
+
 .msg .details {
   position: absolute;
   bottom: -4px;
@@ -3631,29 +3635,21 @@ label {
   }
 }
 
-.chat {
-  position: relative;
-}
-
-.chat .dragover-overlay {
-  border: 10px dotted #aaa;
-  height: 100%;
-  visibility: hidden;
-  opacity: 0;
+.drag-drop {
   width: 100%;
+  height: calc(100vh - 115px);
+  background: rgba(130, 130, 130, 0.5);
   position: absolute;
-  top: 0;
-  bottom: 0;
+  z-index: 2;
   right: 0;
-  left: 0;
-  background: rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease;
+  text-align: center;
+  line-height: calc(100vh - 115px);
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  display: none;
 }
 
-.chat.dragover .dragover-overlay {
-  visibility: visible;
-  opacity: 1;
+.dragover > .drag-drop {
+  display: unset;
 }

@@ -15,9 +15,8 @@
     </div>
     <div id="messagesWindow">
       <div id="messagesHolder" class="chat" ngf-drop="upload($file, $invalidFiles)" ngf-drag-over-class="dragover" ngf-max-size=uploadLimit>
-        <div class="dragover-overlay"></div>
-        <div class="dragover-text">
-          فایل‌ها رو اینجا ول کن.
+        <div class="drag-drop">
+          <p>فایل‌ها رو اینجا رها کن.</p>
         </div>
         <div class="server-msg ng-cloak ng-hide" ng-hide="socketConnected" ng-cloak>
           <i class="fa fa-spinner fa-spin fa-fw"></i>
@@ -47,7 +46,7 @@
             <div ng-class="::message.getCssClass()" class="msg-holder">
               <label class="name" ng-style="::message.getUsernameColor()" ng-if="isMessageMemberFirstMessage(message)">{{::message.getUsername()}}</label>
               <div class="details">
-                <a ng-if="message.uploadPromise" ng-click="abortUpload(message)"><i class="zmdi zmdi-close"></i></a>
+                <a ng-if="message.uploadPromise" ng-click="abortUpload(message)" class="upload-cancel-btn"><i class="zmdi zmdi-close"></i></a>
                 <label class="status" ng-if="::message.isFromMe()">
                 <i ng-class="message.getStatusIcon()"></i>
               </label>
