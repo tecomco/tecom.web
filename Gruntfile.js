@@ -72,6 +72,17 @@ module.exports = function (grunt) {
             socketUri: 'ws.tecomstage.ir/'
           }
         }
+      },
+      prod: {
+        options: {
+          dest: 'app/app.config.js'
+        },
+        constants: {
+          ENV: {
+            name: 'prod',
+            socketUri: 'ws.tecom.me/'
+          }
+        }
       }
     },
     ngAnnotate: {
