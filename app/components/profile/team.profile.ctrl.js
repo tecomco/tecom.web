@@ -107,8 +107,8 @@ app.controller('teamProfileController', [
     $scope.getTeamMembersCount = function () {
       var teamMembersCount = $scope.teamActiveEmails.length +
         $scope.teamActiveMembers.length;
-      return textUtil.persianify('(' + teamMembersCount + '/' +
-        Team.plan.membersLimit + ')');
+      return textUtil.persianify(teamMembersCount + ' نفر از ' +
+        Team.plan.membersLimit + ' نفر تعداد اعضای مجاز تیم.');
     };
 
     $scope.hasTeamReachedMembersLimit = function () {

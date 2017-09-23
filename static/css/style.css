@@ -127,7 +127,6 @@ a * {
 .u-profile .t-info {
   display: inline-block;
   width: 100%;
-  padding: 20px;
   position: relative;
   top: 15px;
 }
@@ -625,6 +624,10 @@ ul.dropdown-menu {
   display: inline-block;
 }
 
+.profile-modal.modal-body.two-part-modal {
+  padding: 0;
+}
+
 .profile-modal-img a {
   position: relative;
   text-align: center;
@@ -638,6 +641,15 @@ ul.dropdown-menu {
 .team-plan h5 {
   display: inline-block;
   font-weight: 300
+}
+
+.team-member-limit-reached {
+  color: #ff751a;
+}
+
+.team-member-limit-reached a, .team-member-limit-reached i {
+  color: #337ab7;
+  padding: 0;
 }
 
 .smaller {
@@ -998,6 +1010,11 @@ ul.dropdown-menu {
   margin-left: 0;
   position: relative;
   top: -2px;
+}
+
+.file-server-msg a, .file-server-msg i {
+  color: #337ab7;
+  padding: 0;
 }
 
 .is-typing-img {
@@ -2531,7 +2548,7 @@ ol.linenums, ol.linenums-view {
   display: block;
   font-weight: 200;
   width: 150px;
-  margin: 0 auto;
+  margin: 0 auto 10px;
   font-size: 20px;
   color: #fff;
   border: 0;

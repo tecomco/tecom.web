@@ -3,8 +3,13 @@
   <h4 class="modal-title">مدیریت {{team._name}}</h4>
   <div class="team-plan">
     <h5>پلن {{plan.teamPlanName}}</h5>
-    <label ng-if="plan.membersLimit">{{getTeamMembersCount()}}</label>
-    <span ng-if="plan.membersLimit" ng-show="hasTeamReachedMembersLimit()"><i class="zmdi zmdi-warning"></i>ظرفیت اعضای تیم در پلن فعلی پر شده است.</span>
+    <div>
+      <label ng-if="plan.membersLimit">{{getTeamMembersCount()}}</label>
+      <div class="team-member-limit-reached">
+        <span ng-if="plan.membersLimit" ng-show="hasTeamReachedMembersLimit()">(ظرفیت اعضای تیم در پلن فعلی پر شده است.)</span>
+        <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link" >توضیح بیشتر</a><i class="fa fa-external-link"></i>
+      </div>
+    </div>
   </div>
 </div>
 <div class="modal-body two-part-modal profile-modal">
