@@ -13,6 +13,17 @@ app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
     var config = {
       tokenGetter: function () {
         return $localStorageProvider.get('token');
+      },
+      whiteListedDomains: ['http://localhost:8000']
+    });
+
+    $httpProvider.interceptors.push(function ($q, ENV) {
+      return {
+        request: function (config) {
+          if (config.url.indexOf('.html') === -1)
+            config.url = ENV.apiUri + config.url;
+          return config || $q.when(config);
+        }
       }
     }
     if (!ENV.isWeb)
