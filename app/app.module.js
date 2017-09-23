@@ -7,26 +7,31 @@ var app = angular.module('tecomApp', [
 ]);
 
 app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
-  function ($httpProvider, jwtOptionsProvider, $localStorageProvider) {
+  'ENV',
+  function ($httpProvider, jwtOptionsProvider, $localStorageProvider, ENV) {
 
-    jwtOptionsProvider.config({
+    var config = {
       tokenGetter: function () {
         return $localStorageProvider.get('token');
-      },
-      whiteListedDomains: ['http://localhost:8000']
-    });
+      }
+    }
+    if (!ENV.isWeb)
+      config.whiteListedDomains = ['http://localhost:8000'];
+
+    jwtOptionsProvider.config(config);
 
     $httpProvider.interceptors.push('jwtInterceptor');
 
-    $httpProvider.interceptors.push(function ($q, ENV) {
-      return {
-        request: function (config) {
-          if (config.url.indexOf('.html') === -1)
-            config.url = ENV.apiUri + config.url;
-          return config || $q.when(config);
-        }
-      };
-    });
+    if (!ENV.isWeb)
+      $httpProvider.interceptors.push(function ($q, ENV) {
+        return {
+          request: function (config) {
+            if (config.url.indexOf('.html') === -1)
+              config.url = ENV.apiUri + config.url;
+            return config || $q.when(config);
+          }
+        };
+      });
   }
 ]);
 
