@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('FileManagerFile', ['ENV', 'dateUtil', 'fileUtil',
-  function (ENV, dateUtil, fileUtil) {
+app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
+  function (dateUtil, fileUtil) {
 
     function FileManagerFile(id, url, name, date, type) {
       this.id = id;

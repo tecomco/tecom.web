@@ -2,9 +2,9 @@
 
 app.controller('userProfileController', [
   '$scope', '$window', 'CurrentMember', 'AuthService', 'profileService',
-  '$uibModalInstance', '$timeout', 'Team',
+  '$uibModalInstance', '$timeout', 'Team', 'ENV',
   function ($scope, $window, CurrentMember, AuthService, profileService,
-    $uibModalInstance, $timeout, Team) {
+    $uibModalInstance, $timeout, Team, ENV) {
 
     $scope.uploadLimit = Team.plan.uploadLimit;
 
@@ -74,7 +74,14 @@ app.controller('userProfileController', [
           return AuthService.logout();
         })
         .then(function () {
-          $window.location.href = '/login';
+          if (ENV.isWeb)
+            $window.location.href = '/login';
+          else
+            $window.location.assign(
+              'app/components/login/login.electron.html');
+          // const foo = require('electron').remote
+          // foo.getCurrentWindow().loadURL(
+          //   `file://${__dirname}/app/components/login/login.html`)
         });
     };
 

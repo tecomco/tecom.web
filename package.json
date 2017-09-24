@@ -36,6 +36,7 @@
   "devDependencies": {
     "angular-jsdoc": "^1.4.2",
     "angular-mocks": "^1.5.8",
+    "devtron": "^1.4.0",
     "jasmine-core": "^2.4.1",
     "karma": "^1.2.0",
     "karma-chrome-launcher": "^1.0.1",

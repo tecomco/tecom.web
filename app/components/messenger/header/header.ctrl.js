@@ -24,15 +24,6 @@ app.controller('headerController', ['$scope', '$localStorage', '$uibModal',
       }
     };
 
-    $scope.clearCache = function () {
-      $localStorage.$reset();
-      Db.destroy();
-      AuthService.logout()
-        .then(function () {
-          $window.location.href = '/login';
-        });
-    };
-
     $scope.searchFocused = function () {
       $scope.searchFocus = true;
     };

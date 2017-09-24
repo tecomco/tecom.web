@@ -6,10 +6,6 @@ module.exports = function (grunt) {
     '*.js', 'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
   ];
 
-  var UGLIFY_SRC_FILES = [
-    'app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js'
-  ];
-
   var ENV_CONFIG_PATH = 'app/app.config.js';
 
   grunt.initConfig({
@@ -47,7 +43,22 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'local',
-            socketUri: 'ws.localhost:4000/'
+            socketUri: 'ws.localhost:4000/',
+            apiUri:'',
+            isWeb : true
+          }
+        }
+      },
+      prod: {
+        options: {
+          dest: 'app/app.config.js'
+        },
+        constants: {
+          ENV: {
+            name: 'prod',
+            socketUri: 'ws.tecom.me/',
+            apiUri:'',
+            isWeb :true
           }
         }
       },
@@ -58,7 +69,9 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'dev',
-            socketUri: 'ws.tecomdev.ir:4000/'
+            socketUri: 'ws.tecomdev.ir:4000/',
+            apiUri:'',
+            isWeb : true
           }
         }
       },
@@ -69,7 +82,22 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'stage',
-            socketUri: 'ws.tecomstage.ir/'
+            socketUri: 'ws.tecomstage.ir/',
+            apiUri:'',
+            isWeb :true
+          }
+        }
+      },
+      desktop: {
+        options: {
+          dest: 'app/app.config.js'
+        },
+        constants: {
+          ENV: {
+            name: 'desktop',
+            socketUri: 'ws://ws.localhost:8000',
+            apiUri:'http://tecom2.localhost:8000',
+            isWeb :false
           }
         }
       }
@@ -157,6 +185,7 @@ module.exports = function (grunt) {
   grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage', 'minify']);
+  grunt.registerTask('desktop', ['jshint', 'ngconstant:desktop', 'minify']);
   grunt.registerTask('prod', ['jshint', 'ngconstant:prod', 'minify']);
   grunt.registerTask('lint', ['jshint']);
   grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);

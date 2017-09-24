@@ -1,9 +1,9 @@
  'use strict';
 
  app.controller('MessengerCtrl', [
-   '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
+   '$rootScope', '$scope', '$window', '$uibModal', 'AuthService', 'ENV',
    'CurrentMember', '$localStorage', '$state', '$http', '$templateCache',
-   function ($rootScope, $scope, $window, $uibModal, AuthService,
+   function ($rootScope, $scope, $window, $uibModal, AuthService, ENV,
      CurrentMember, $localStorage, $state, $http, $templateCache) {
 
      $scope.isAdmin = CurrentMember.member.isAdmin;
@@ -58,7 +58,14 @@
      $scope.logout = function () {
        AuthService.logout()
          .then(function () {
-           $window.location.href = '/login';
+           if (ENV.isWeb)
+             $window.location.href = '/login';
+           else
+             $window.location.assign(
+               'app/components/login/login.electron.html');
+           //  const foo = require('electron').remote
+           //  foo.getCurrentWindow().loadURL(
+           //    `file://${__dirname}/app/components/login/login.html`)
          });
      };
 

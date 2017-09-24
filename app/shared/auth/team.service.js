@@ -1,10 +1,10 @@
 'use strict';
 
 app.factory('teamService', [
-  '$rootScope', '$window', 'socket', 'Team', 'ArrayUtil',
+  '$rootScope', '$window', 'socket', 'Team', 'ArrayUtil', 'ENV',
   'channelsService', 'AuthService', 'Channel', 'Member', 'CurrentMember',
-  function ($rootScope, $window, socket, Team, ArrayUtil, channelsService,
-    AuthService, Channel, Member, CurrentMember) {
+  function ($rootScope, $window, socket, Team, ArrayUtil, ENV,
+    channelsService, AuthService, Channel, Member, CurrentMember) {
 
     socket.on('member:new', function (memberData) {
       var member = new Member(memberData.id, memberData.isAdmin,
@@ -25,7 +25,16 @@ app.factory('teamService', [
       if (memberId === CurrentMember.member.id) {
         AuthService.logout()
           .then(function () {
-            $window.location.assign('/login?err=UserRemoved');
+            if (ENV.isWeb)
+              $window.location.assign('/login?err=UserRemoved');
+            else
+              $window.location.assign(
+                'app/components/login/login.electron.html?err=UserRemoved'
+              );
+            // const foo = require('electron').remote
+            // foo.getCurrentWindow().loadURL(
+            //   `file://${__dirname}/app/components/login/login.html?err=UserRemoved`
+            // )
           });
       } else {
         deactiveTeamMember(memberId);

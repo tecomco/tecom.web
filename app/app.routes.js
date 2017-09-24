@@ -1,8 +1,9 @@
 'use strict';
 
 
-app.config(['$locationProvider', function ($locationProvider) {
-  $locationProvider.html5Mode(true);
+app.config(['$locationProvider', 'ENV', function ($locationProvider, ENV) {
+  if (ENV.isWeb)
+    $locationProvider.html5Mode(true);
 }]);
 
 app.config(function ($stateProvider, $urlRouterProvider) {

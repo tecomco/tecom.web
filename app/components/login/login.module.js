@@ -1,20 +1,36 @@
 'use strict';
 
 var app = angular.module('LoginApp', [
-    'ui.router', 'ngStorage', 'angular-jwt', 'ismobile',
+    'ui.router', 'ngStorage', 'angular-jwt', 'ismobile', 'config'
   ])
-  .config(['$locationProvider', function ($locationProvider) {
-    $locationProvider.html5Mode(true);
+  .config(['$httpProvider', 'ENV',
+    function ($httpProvider, ENV) {
+      if (!ENV.isWeb)
+        $httpProvider.interceptors.push(function ($q, ENV) {
+          return {
+            request: function (config) {
+              if (config.url.indexOf('.html') === -1)
+                config.url = ENV.apiUri + config.url;
+              return config || $q.when(config);
+            }
+          };
+        });
+    }
+  ])
+  .config(['$locationProvider', 'ENV', function ($locationProvider, ENV) {
+    if (ENV.isWeb)
+      $locationProvider.html5Mode(true);
   }])
-  .config(['$stateProvider', '$urlRouterProvider', 'isMobileProvider',
-    function ($stateProvider, $urlRouterProvider, isMobile) {
+  .config(['$stateProvider', '$urlRouterProvider', 'isMobileProvider', 'ENV',
+    function ($stateProvider, $urlRouterProvider, isMobile, ENV) {
       $urlRouterProvider.otherwise('/login');
       $stateProvider
         .state('login', {
           url: '/login',
           views: {
             '': {
-              templateUrl: 'app/components/login/login-form.html?v=1.0.3'
+              templateUrl: ENV.isWeb ?
+                'app/components/login/login-form.html?v=1.0.3' : 'login-form.html?v=1.0.3'
             }
           },
           onEnter: function ($window) {
@@ -35,10 +51,9 @@ var app = angular.module('LoginApp', [
   ])
   .controller('loginController', [
     '$scope', '$log', '$window', '$location', '$http', '$localStorage',
-    'AuthService',
+    'AuthService', 'ENV',
     function ($scope, $log, $window, $location, $http, $localStorage,
-      AuthService) {
-
+      AuthService, ENV) {
       $scope.hasLoginError = false;
       $scope.submitClicked = false;
       $scope.isLoading = false;
@@ -55,7 +70,10 @@ var app = angular.module('LoginApp', [
           $scope.isLoading = true;
           AuthService.login($scope.email, $scope.password)
             .then(function () {
-              $window.location.assign('/messenger');
+              if (ENV.isWeb)
+                $window.location.assign('/messenger');
+              else
+                $window.location.assign('../../../index.electron.html');
             })
             .catch(function (err) {
               $scope.isLoading = false;
@@ -77,6 +95,13 @@ var app = angular.module('LoginApp', [
               initializeLoginForm();
             });
         }
+      };
+
+      $scope.getTecomBigLogoUrl = function () {
+        if (ENV.isWeb)
+          return 'static/img/tecom-logo-big.png';
+        else
+          return '../../../static/img/tecom-logo-big.png';
       };
 
       function loginIfTokenAvailable() {
@@ -113,6 +138,7 @@ var app = angular.module('LoginApp', [
       var initializeLoginForm = function () {
         $scope.forms.login.$setPristine();
         $scope.password = '';
+        document.getElementById('email').focus();
       };
     }
   ]);

@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div ng-controller="loginController" class="login-form">
       <div class="login-img-holder">
-        <img src="static/img/tecom-logo-big.png" class="login-img" />
+        <img ng-src="{{getTecomBigLogoUrl()}}" class="login-img" />
       </div>
       <div class="login-redirect-error" ng-if="redirectError">
         <label>{{redirectError}}</label>
@@ -11,7 +11,7 @@
       <div class="login-form-body">
         <form name="forms.login" ng-submit="login()" novalidate>
           <div class="form-group form-input">
-            <input ng-model="email" placeholder="نام کاربری یا ایمیل" name="email" type="text" required autofocus>
+            <input id="email" ng-model="email" placeholder="نام کاربری یا ایمیل" name="email" type="text" required autofocus>
           </div>
           <div class="form-err">
             <label class="login-err" ng-show="forms.login.email.$invalid && (!forms.login.email.$pristine || forms.login.$submitted)">وارد کردن نام کاربری یا ایمیل ضروری می باشد.</label>

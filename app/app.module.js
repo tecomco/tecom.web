@@ -2,8 +2,8 @@
 
 var app = angular.module('tecomApp', [
   'ui.router', 'ngStorage', 'angular-jwt', 'ui.bootstrap', 'config',
-  'ngFileUpload', 'ngSanitize', 'mwl.confirm', 'ngMessages',
-  'angular-web-notification', 'ngProgress', 'bm.uiTour'
+  'ngFileUpload', 'ngSanitize', 'mwl.confirm', 'ngMessages', 'ngProgress',
+  'bm.uiTour', 'angular-web-notification'
 ]);
 
 app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
@@ -13,19 +13,9 @@ app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
     var config = {
       tokenGetter: function () {
         return $localStorageProvider.get('token');
-      },
-      whiteListedDomains: ['http://localhost:8000']
-    });
-
-    $httpProvider.interceptors.push(function ($q, ENV) {
-      return {
-        request: function (config) {
-          if (config.url.indexOf('.html') === -1)
-            config.url = ENV.apiUri + config.url;
-          return config || $q.when(config);
-        }
       }
-    }
+    };
+
     if (!ENV.isWeb)
       config.whiteListedDomains = ['http://localhost:8000'];
 
