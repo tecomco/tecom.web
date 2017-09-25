@@ -1,7 +1,16 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" ng-click="$close()">&times;</button>
   <h4 class="modal-title">مدیریت {{team._name}}</h4>
-  <h5>پلن {{plan.teamPlanName}}</h5>
+  <div class="team-plan">
+    <h5>پلن {{plan.teamPlanName}}</h5>
+    <div ng-if="plan.membersLimit">
+      <label>{{getTeamMembersCount()}}</label>
+      <div ng-show="hasTeamReachedMembersLimit()" class="team-member-limit-reached">
+        <span>(ظرفیت اعضای تیم در پلن فعلی پر شده است.)</span>
+        <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link" >توضیح بیشتر</a><i class="fa fa-external-link"></i>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal-body two-part-modal profile-modal">
   <div class="container-fluid u-profile" ui-tour ui-tour-on-ready="onTourReady(tour)">
@@ -19,25 +28,22 @@
           </div>
           <div ng-repeat="activeEmail in teamActiveEmails | orderBy : 'create_datetime'" class="g-m-one">
             <img src='/static/img/user-def.png' />
-            <label>{{activeEmail.email}} (در انتظار)</label>
+            <label>{{activeEmail.email}} <span class="smaller">(در انتظار)</span></label>
             <div style="float: left">
-              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای به ایمیل {{activeEmail.email}} دوباره دعوت‌نامه بفرستی ؟' cancel="نه، حواسم نبود" ok="آره" args="[activeEmail.id]" confirm-func="resendInvitationEmail" confirm-button="success" icon="zmdi zmdi-mail-send"></confirm-dialog>
-              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای ایمیل {{activeEmail.email}} رو از تیم حذف کنی؟'
-                cancel="نه، حواسم نبود" ok="آره" args="[activeEmail.id]" confirm-func="deactivateEmailInvititaion" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
+              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای به ایمیل {{activeEmail.email}} دوباره دعوت‌نامه بفرستی ؟' cancel="نه، حواسم نبود" ok="آره" args="[activeEmail.id]" confirm-func="resendInvitationEmail" confirm-button="success" icon="zmdi zmdi-mail-reply"></confirm-dialog>
+              <confirm-dialog class="t-m-btn" message='مطمئنی میخوای ایمیل {{activeEmail.email}} رو از تیم حذف کنی؟' cancel="نه، حواسم نبود" ok="آره" args="[activeEmail.id]" confirm-func="deactivateEmailInvititaion" confirm-button="danger" icon="zmdi zmdi-close"></confirm-dialog>
             </div>
           </div>
         </div>
         <form name="forms.inviteMember" class="t-ms" ng-submit="sendInvitation(forms.inviteMember)" novalidate>
-          <div class="col-md-2">
-            <label ng-if="plan.membersLimit">{{getTeamMembersCount()}}</label>
-            <span ng-if="plan.membersLimit" ng-show="hasTeamReachedMembersLimit()"><i class="zmdi zmdi-warning"></i>ظرفیت اعضای تیم در پلن فعلی پر شده است.</span>
-          </div>
+          <div class="col-md-2"></div>
           <div class="col-sm-7 col-md-5 no-padding">
             <div tour-step tour-step-title="دعوت از هم‌تیمی‌ها" tour-step-content="ایمیل هم‌تیمی‌های خودتون رو اینجا وارد کنید تا براشون دعوت‌نامه فرستاده بشه.  چون تیکام با هم‌تیمی‌هاست که معنی پیدا می‌کنه. موفق باشید." tour-step-placement="top" tour-step-backdrop="true">
               <input id="invitedEmail" type="text" name="email" ng-model="invitedEmail" placeholder="ایمیل هم‌تیمی جدیدت رو وارد کن..." required/>
             </div>
             <div class="modal-msg-part">
               <span class="modal-msg modal-err" ng-show="showErrorMessage">{{errorMessage}}</span>
+              <span class="modal-msg modal-err" ng-show="membersLimitError">به نظر می‌رسه تعداد اعضای تیم شما، از سقف پلن فعلی بیشتر شده. <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link" >توضیح بیشتر</a><i class="fa fa-external-link"></i></span>
               <span class="modal-msg" ng-show="showInfoMessage">{{infoMessage}}</span>
             </div>
           </div>

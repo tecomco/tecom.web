@@ -127,7 +127,6 @@ a * {
 .u-profile .t-info {
   display: inline-block;
   width: 100%;
-  padding: 20px;
   position: relative;
   top: 15px;
 }
@@ -625,9 +624,36 @@ ul.dropdown-menu {
   display: inline-block;
 }
 
+.profile-modal.modal-body.two-part-modal {
+  padding: 0;
+}
+
 .profile-modal-img a {
   position: relative;
   text-align: center;
+}
+
+.team-plan {
+  text-align: center;
+  color: rgba(36, 167, 114, 1);
+}
+
+.team-plan h5 {
+  display: inline-block;
+  font-weight: 300
+}
+
+.team-member-limit-reached {
+  color: #ff751a;
+}
+
+.team-member-limit-reached a, .team-member-limit-reached i {
+  color: #337ab7;
+  padding: 0;
+}
+
+.smaller {
+  font-size: 12px;
 }
 
 .danger-btn {
@@ -984,6 +1010,11 @@ ul.dropdown-menu {
   margin-left: 0;
   position: relative;
   top: -2px;
+}
+
+.file-server-msg a, .file-server-msg i {
+  color: #337ab7;
+  padding: 0;
 }
 
 .is-typing-img {
@@ -1537,6 +1568,10 @@ ol.linenums, ol.linenums-view {
 
 .msg.msg-recieve .status {
   display: none;
+}
+
+.upload-cancel-btn {
+  margin: 10px;
 }
 
 .msg .details {
@@ -2513,7 +2548,7 @@ ol.linenums, ol.linenums-view {
   display: block;
   font-weight: 200;
   width: 150px;
-  margin: 0 auto;
+  margin: 0 auto 10px;
   font-size: 20px;
   color: #fff;
   border: 0;
@@ -3140,19 +3175,19 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 }
 
 .modal-err {
-  /*border-radius: 4px;
-  color: #fff;
-  font-weight: 100;
-  padding: 4px 10px;*/
-  font-size: 12px !important;
+  /* font-size: 12px !important; */
   color: rgb(226, 89, 89) !important;
-  /*background: rgb(226, 89, 89);*/
   transition: all 0.3s ease;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   font-weight: 300 !important;
   padding: 2px 0;
+}
+
+.modal-err .btn, .modal-err .fa {
+  color: #337ab7;
+  padding: 0;
 }
 
 .modal-global-err {
@@ -3407,6 +3442,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   font-weight: 300;
 }
 
+
 /* TOUR END */
 
 .clearfix:after {
@@ -3616,6 +3652,21 @@ label {
   }
 }
 
-.dragover {
-  border: 5px dashed blue;
+.drag-drop {
+  width: 100%;
+  height: calc(100vh - 115px);
+  background: rgba(130, 130, 130, 0.5);
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  text-align: center;
+  line-height: calc(100vh - 115px);
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  display: none;
+}
+
+.dragover > .drag-drop {
+  display: unset;
 }

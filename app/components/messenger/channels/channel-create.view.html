@@ -11,7 +11,6 @@
           <input type="text" name="name" ng-model="newChannel.name" ng-maxlength="32" placeholder="نام گروه" required>
           <span class="modal-err" ng-show="formNameCheckEmpty(forms.newChannelForm)">وارد کردن نام گروه الزامی است!</span>
           <span class="modal-err" ng-show="formNameCheckMax(forms.newChannelForm)">نام گروه حداکثر باید شامل ۳۲ حرف باشد.</span>
-          <span class="modal-err" ng-show="newChannel.limitError">ظرفیت تعداد گروه‌ها در پلن فعلی پر شده است.</span>
           <span class="modal-err" ng-show="newChannel.dublicateError">نام گروه نباید مشابه نام دیگر گروه ها باشد.</span>
         </div>
         <div class="modal-input">
@@ -50,6 +49,7 @@
       <div class="modal-input">
         <input type="submit" value="ایجاد گروه" class="btn btn-default">
         <span class="modal-err" ng-show="newChannel.serverError">خطا در اتصال به سرور</span>
+        <span class="modal-err" ng-show="newChannel.limitError">ظرفیت تعداد گروه‌ها در پلن فعلی پر شده است. <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link" >توضیح بیشتر</a><i class="fa fa-external-link"></i></span>
       </div>
     </div>
   </form>

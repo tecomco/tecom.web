@@ -481,7 +481,7 @@ app.controller('messagesController', [
       }
       self.uploadErrNotifTimeout = $timeout(function () {
         $scope.uploadSizeLimitNotif = false;
-      }, 3000);
+      }, 10000);
     }
 
     function setUploadStorageErrorNotif() {
@@ -490,7 +490,7 @@ app.controller('messagesController', [
       }
       self.uploadErrNotifTimeout = $timeout(function () {
         $scope.uploadStorageErrorNotif = false;
-      }, 3000);
+      }, 10000);
     }
 
     function scrollBottom() {
