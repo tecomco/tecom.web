@@ -44,7 +44,8 @@ app.factory('Channel', [
       if (lastDatetime) {
         this.lastDatetime = new Date(lastDatetime);
       }
-      this.lastMessageId = lastMessageId;
+      // TODO: tofmali
+      this.lastMessageId = lastMessageId || 0;
       this.memberLastSeenId = memberLastSeenId || 0;
     };
 

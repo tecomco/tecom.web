@@ -4,10 +4,10 @@ app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
-  'ngProgressFactory',
+  'ngProgressFactory', 'dateUtil',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q, Team,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, dateUtil
   ) {
 
     var self = this;
@@ -118,11 +118,6 @@ app.controller('messagesController', [
       setFullscreenImageProperty(url, name);
     });
 
-    $rootScope.$on('remove:scopeMessage', function (event, timestamp) {
-      ArrayUtil.removeElementByKeyValue($scope.messages,
-        'timestamp', timestamp);
-    });
-
     $scope.closeFullscreenImage = function () {
       $scope.isFullscreenVisible = false;
     };
@@ -134,6 +129,8 @@ app.controller('messagesController', [
     $scope.abortUpload = function (message) {
       message.isUploadAborted = true;
       message.uploadPromise.abort();
+      ArrayUtil.removeElementByKeyValue($scope.messages,
+        'timestamp', message.timestamp);
       message.uploadPromise = null;
     };
 
@@ -145,8 +142,7 @@ app.controller('messagesController', [
       timestamp) {
       ArrayUtil.removeElementByKeyValue($scope.messages,
         'timestamp', timestamp);
-      messagesService.removeUploadFailedFileByFileTimestamp(
-        timestamp);
+      messagesService.removeUploadFailedFileByFileTimestamp(timestamp);
     };
 
     $scope.getInputStyle = function () {
@@ -187,7 +183,7 @@ app.controller('messagesController', [
         self.isTyping = false;
         messagesService.endTyping($scope.channel.id);
       }, 2000);
-      messagesService.updateChannelDraftMessage($scope.channel.id, $scope.inputMessage);
+      messagesService.updateDraftMessage($scope.channel.id, $scope.inputMessage);
     };
 
     $scope.isMessageMemberFirstMessage = function (message) {
@@ -306,22 +302,14 @@ app.controller('messagesController', [
       else {
         var previousMessage = getMessageById(previousMessageId);
         if (previousMessage) {
-          var isYearDifferent = message.datetime.getFullYear() !==
-            previousMessage.datetime.getFullYear();
-          var isMonthDifferent = message.datetime.getMonth() !==
-            previousMessage.datetime.getMonth();
-          var isDayDifferent = message.datetime.getDate() !==
-            previousMessage.datetime.getDate();
-          return isYearDifferent || isMonthDifferent || isDayDifferent;
+          return dateUtil.isMessageDateInAnotherDay(previousMessage.datetime,
+            message.datetime);
         }
       }
     };
 
     function initialize() {
       $scope.uploadLimit = Team.plan.uploadLimit;
-      // TODO: tofmali
-      $scope.channel.lastMessageId = $scope.channel.lastMessageId || 0;
-      $scope.channel.memberLastSeenId = $scope.channel.memberLastSeenId || 0;
       initialLastMessageId = $scope.channel.lastMessageId;
       if (!$scope.channel.areAllMessagesHaveBeenSeen())
         initialMemberLastSeenId = $scope.channel.memberLastSeenId;
@@ -331,12 +319,8 @@ app.controller('messagesController', [
     }
 
     function setInputMessage() {
-      var draftMessage = messagesService.getChannelDraftMessage(
-        $scope.channel.id);
-      if (draftMessage)
-        $scope.inputMessage = draftMessage;
-      else
-        $scope.inputMessage = '';
+      var draftMessage = messagesService.getDraftMessage($scope.channel.id);
+      $scope.inputMessage = draftMessage || '';
     }
 
     function generateUploadProgressBar(message) {
@@ -465,7 +449,7 @@ app.controller('messagesController', [
 
     function clearMessageInput() {
       $scope.inputMessage = '';
-      messagesService.removeChannelDraftMessage($scope.channel.id);
+      messagesService.removeDraftMessage($scope.channel.id);
     }
 
     function getMessageById(messageId) {
@@ -635,6 +619,10 @@ app.controller('messagesController', [
           });
         } else
           $state.go('messenger.home');
+      } else {
+        var focusedElement = document.activeElement;
+        if (!focusedElement || focusedElement === document.body)
+          inputPlaceHolder.focus();
       }
     };
 

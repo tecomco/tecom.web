@@ -33,7 +33,7 @@ app.factory('textUtil', function () {
     var urlRegex =
       /\(?(?:(http|https|ftp):\/\/)?(?:((?:[^\W\s]|\.|-|[:]{1})+)@{1})?((?:www.)?(?:[^\W\s]|\.|-)+[\.][^\W\s]{2,4}|localhost(?=\/)|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?::(\d*))?([\/]?[^\s\?]*[\/]{1})*(?:\/?([^\s\n\?\[\]\{\}\#]*(?:(?=\.)){1}|[^\s\n\?\[\]\{\}\.\#]*)?([\.]{1}[^\s\?\#]*)?)?(?:\?{1}([^\s\n\#\[\]]*))?([\#][^\s\n]*)?\)?/gi;
     return text.replace(urlRegex, function (url) {
-      if (validUrl(url)) {
+      if (isUrlValid(url)) {
         var href = url;
         if (url.indexOf('//') === -1)
           href = '//' + url;
@@ -44,7 +44,7 @@ app.factory('textUtil', function () {
     });
   }
 
-  function validUrl(url) {
+  function isUrlValid(url) {
     var domainNameIndex;
     var tld = ['com', 'ir', 'net', 'org', 'biz', 'info', 'name', 'me', 'ws',
       'us', 'tv', 'gov', 'co', 'edu', 'asia', 'int', 'tel', 'mil', 'coop',

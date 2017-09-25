@@ -12,7 +12,7 @@ app.service('messagesService', [
     self.failedUploadedFiles = [];
     self.pendingMessages = [];
     self.currentChannelMessages = [];
-    self.channelsDraftMessages = [];
+    self.draftMessages = [];
     var MESSAGE_MAX_PACKET_LENGTH = 20;
 
     /**
@@ -619,7 +619,7 @@ app.service('messagesService', [
             message.datetime);
           var channel = channelsService.findChannelById(message.channelId);
           channel.seenLastMessage();
-          removePendingMessageByFileTimestamp(message.timestamp);
+          removePendingMessageByTimestamp(message.timestamp);
         });
       return message;
     }
@@ -663,7 +663,7 @@ app.service('messagesService', [
             message.datetime);
           var channel = channelsService.findChannelById(message.channelId);
           channel.seenLastMessage();
-          removePendingMessageByFileTimestamp(message.timestamp);
+          removePendingMessageByTimestamp(message.timestamp);
         });
       filesService.createFileManagerFile(result.id, result.file, result.name,
         result.date_uploaded, result.type);
@@ -704,7 +704,7 @@ app.service('messagesService', [
         'message.timestamp', timestamp);
     }
 
-    function removePendingMessageByFileTimestamp(timestamp) {
+    function removePendingMessageByTimestamp(timestamp) {
       ArrayUtil.removeElementByKeyValue(self.pendingMessages,
         'timestamp', timestamp);
     }
@@ -785,30 +785,30 @@ app.service('messagesService', [
         channel.membersCount--;
     }
 
-    function updateChannelDraftMessage(channelId, messageBody) {
-      var channelDraftMessage = ArrayUtil.getElementByKeyValue(self.channelsDraftMessages,
+    function updateDraftMessage(channelId, messageBody) {
+      var draftMessage = ArrayUtil.getElementByKeyValue(self.draftMessages,
         'channelId', channelId);
-      if (channelDraftMessage)
-        channelDraftMessage.messageBody = messageBody;
+      if (draftMessage)
+        draftMessage.messageBody = messageBody;
       else {
-        var draftMessage = {
+        draftMessage = {
           channelId: channelId,
           messageBody: messageBody
         };
-        self.channelsDraftMessages.push(draftMessage);
+        self.draftMessages.push(draftMessage);
       }
     }
 
-    function getChannelDraftMessage(channelId) {
-      var draftMessage = ArrayUtil.getElementByKeyValue(self.channelsDraftMessages,
+    function getDraftMessage(channelId) {
+      var draftMessage = ArrayUtil.getElementByKeyValue(self.draftMessages,
         'channelId', channelId);
       if (draftMessage)
         return draftMessage.messageBody;
       return null;
     }
 
-    function removeChannelDraftMessage(channelId) {
-      ArrayUtil.removeElementByKeyValue(self.channelsDraftMessages,
+    function removeDraftMessage(channelId) {
+      ArrayUtil.removeElementByKeyValue(self.draftMessages,
         'channelId', channelId);
     }
 
@@ -885,9 +885,9 @@ app.service('messagesService', [
       seenMessage: seenMessage,
       findClosestLoadingMessage: findClosestLoadingMessage,
       findLoadingMessageContainsReplyMessage: findLoadingMessageContainsReplyMessage,
-      updateChannelDraftMessage: updateChannelDraftMessage,
-      getChannelDraftMessage: getChannelDraftMessage,
-      removeChannelDraftMessage: removeChannelDraftMessage,
+      updateDraftMessage: updateDraftMessage,
+      getDraftMessage: getDraftMessage,
+      removeDraftMessage: removeDraftMessage,
       startTyping: startTyping,
       endTyping: endTyping,
     };

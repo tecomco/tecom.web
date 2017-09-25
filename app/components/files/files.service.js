@@ -114,9 +114,8 @@ app.service('filesService', [
         fileData.message.uploadPromise = null;
         fileData.deferred.resolve(res);
       }, function (err) {
-        if (fileData.message.isUploadAborted) {
-          $rootScope.$broadcast('remove:scopeMessage', fileData.message.timestamp);
-        } else {
+        if (!fileData.message.isUploadAborted) {
+          fileData.message.uploadPromise = null;
           $log.error('Error status: ' + err.status);
           if (err.data && err.data[0] ===
             'Team reached total storage limit.')
