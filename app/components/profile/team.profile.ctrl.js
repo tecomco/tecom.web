@@ -149,6 +149,10 @@ app.controller('teamProfileController', [
       return !isMe(member) && CurrentMember.member.isAdmin;
     };
 
+    $scope.isCurrentMemberAdmin = function () {
+      return CurrentMember.member.isAdmin;
+    };
+
     function initialize() {
       $scope.teamActiveMembers = Team.getActiveMembers();
       getTeamActiveEmails();
