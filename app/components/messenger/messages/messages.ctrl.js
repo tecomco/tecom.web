@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 'use strict';
 
 app.controller('messagesController', [
@@ -254,6 +256,11 @@ app.controller('messagesController', [
       $timeout(function () {
         $scope.$apply();
       }, 100, false);
+    };
+
+    $scope.openExternalUrl = function (url) {
+      const shell = require('electron').shell;
+      shell.openExternal(url);
     };
 
     $scope.goLive = function (fileId, fileName) {

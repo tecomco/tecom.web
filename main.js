@@ -4,6 +4,7 @@
 
 const electron = require('electron');
 const app = electron.app;
+const path = require('path');
 const BrowserWindow = electron.BrowserWindow;
 
 let mainWindow;
@@ -12,6 +13,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 1200,
+    icon: path.join(__dirname,'favicon.png')
   });
 
   mainWindow.loadURL(

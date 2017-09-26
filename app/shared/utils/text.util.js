@@ -1,6 +1,5 @@
 'use strict';
-
-app.factory('textUtil', function () {
+app.factory('textUtil', ['ENV', function (ENV) {
 
   function isEnglish(text) {
     if (!text)
@@ -36,9 +35,13 @@ app.factory('textUtil', function () {
       if (validUrl(url)) {
         var href = url;
         if (url.indexOf('//') === -1)
-          href = '//' + url;
-        return '<a href="' + href + '" target="_blank">' + url +
-          '</a>';
+          href = 'https://' + url;
+        if (ENV.isWeb)
+          return '<a href="' + href + '" target="_blank">' + url +
+            '</a>';
+        else
+          return '<a href="" ng-click="openExternalUrl(\'' + href +
+            '\')">' + url + '</a>';
       } else
         return url;
     });
@@ -46,9 +49,9 @@ app.factory('textUtil', function () {
 
   function validUrl(url) {
     var domainNameIndex;
-    var tld = ['com', 'ir', 'net', 'org', 'biz', 'info', 'name', 'me', 'ws',
-      'us', 'tv', 'gov', 'co', 'edu', 'asia', 'int', 'tel', 'mil', 'coop',
-      'io', 'jobs', 'mobi', 'pro'
+    var tld = ['com', 'ir', 'net', 'org', 'biz', 'info', 'name', 'me',
+      'ws', 'us', 'tv', 'gov', 'co', 'edu', 'asia', 'int', 'tel', 'mil',
+      'coop', 'io', 'jobs', 'mobi', 'pro'
     ];
     if (url.indexOf('//') > -1)
       domainNameIndex = 2;
@@ -115,4 +118,4 @@ app.factory('textUtil', function () {
     persianify: persianify,
     htmlToPlaintext: htmlToPlaintext
   };
-});
+}]);
