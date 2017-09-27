@@ -2,18 +2,21 @@
 
 'use strict';
 
-const electron = require('electron');
-const app = electron.app;
+const {
+  app,
+  Menu,
+  Tray,
+  BrowserWindow
+} = require('electron');
 const path = require('path');
-const BrowserWindow = electron.BrowserWindow;
-
+let appIcon = null;
 let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 1200,
-    icon: path.join(__dirname,'favicon.png')
+    icon: path.join(__dirname, 'favicon.png')
   });
 
   mainWindow.loadURL(
@@ -26,6 +29,17 @@ function createWindow() {
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
+
+  appIcon = new Tray(path.join(__dirname, 'favicon.png'));
+  const contextMenu = Menu.buildFromTemplate([{
+    label: 'close',
+    click: function () {
+      app.quit();
+    }
+  }]);
+  appIcon.setToolTip('Tecom');
+  appIcon.setContextMenu(contextMenu);
+
 }
 
 app.on('ready', createWindow);
@@ -34,6 +48,8 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+  if (appIcon)
+    appIcon.destroy();
 });
 
 app.on('activate', function () {
