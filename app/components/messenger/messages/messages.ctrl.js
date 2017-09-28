@@ -486,7 +486,7 @@ app.controller('messagesController', [
     }
 
     function setFullscreenImageProperty(url, name) {
-      $scope.fullscreenImageSrc = ENV.apiUri + url;
+      $scope.fullscreenImageSrc = ENV.staticUri + url;
       $scope.fullscreenImageName = name;
       $scope.isFullscreenVisible = true;
     }

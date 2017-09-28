@@ -332,7 +332,7 @@ app.factory('Message', [
         '" ng-click="fullscreenImage(\'' + this.additionalData.url +
         '\', \'' + this.additionalData.name +
         '\')"><img class="img-responsive " id="img-' + this.additionalData
-        .fileId + '" ng-src="' + ENV.apiUri + this.additionalData.url +
+        .fileId + '" ng-src="' + ENV.staticUri + this.additionalData.url +
         '" style="cursor:pointer" /></div>';
     };
 

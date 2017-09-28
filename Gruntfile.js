@@ -45,6 +45,7 @@ module.exports = function (grunt) {
             name: 'local',
             socketUri: 'ws.localhost:4000/',
             apiUri: 'http://api.localhost:8080',
+            staticUri: 'http://static.localhost:8080',
             isWeb: true
           }
         }
@@ -58,6 +59,7 @@ module.exports = function (grunt) {
             name: 'prod',
             socketUri: 'ws.tecom.me/',
             apiUri: 'http://api.tecom.me',
+            staticUri: 'http://static.tecom.me',
             isWeb: true
           }
         }
@@ -71,6 +73,7 @@ module.exports = function (grunt) {
             name: 'dev',
             socketUri: 'ws.tecomdev.ir:4000/',
             apiUri: 'http://api.tecomdev.ir',
+            staticUri: 'http://static.tecomdev.ir',
             isWeb: true
           }
         }
@@ -84,6 +87,7 @@ module.exports = function (grunt) {
             name: 'stage',
             socketUri: 'ws.tecomstage.ir/',
             apiUri: 'http://api.tecomdev.ir',
+            staticUri: 'http://static.tecomdev.ir',
             isWeb: true
           }
         }
@@ -96,7 +100,8 @@ module.exports = function (grunt) {
           ENV: {
             name: 'desktop',
             socketUri: 'ws://ws.localhost:8000',
-            apiUri: 'http://api.tecom.me',
+            apiUri: 'http://api.tecomdev.ir',
+            staticUri: 'http://static.tecomdev.ir',
             isWeb: false
           }
         }

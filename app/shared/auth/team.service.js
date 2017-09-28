@@ -2,8 +2,9 @@
 
 app.factory('teamService', [
   '$rootScope', '$window', 'socket', 'Team', 'ArrayUtil', 'ENV',
-  'channelsService', 'AuthService', 'Channel', 'Member', 'CurrentMember',
-  function ($rootScope, $window, socket, Team, ArrayUtil, ENV,
+  '$localStorage', 'channelsService', 'AuthService', 'Channel', 'Member',
+  'CurrentMember',
+  function ($rootScope, $window, socket, Team, ArrayUtil, ENV, $localStorage,
     channelsService, AuthService, Channel, Member, CurrentMember) {
 
     socket.on('member:new', function (memberData) {
@@ -25,6 +26,7 @@ app.factory('teamService', [
       if (memberId === CurrentMember.member.id) {
         AuthService.logout()
           .then(function () {
+            delete $localStorage.token;
             if (ENV.isWeb)
               $window.location.assign('/login?err=UserRemoved');
             else

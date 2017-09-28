@@ -6,7 +6,7 @@ app.factory('User', ['ENV', function (ENV) {
     this.id = id;
     this.username = username;
     this.email = email;
-    this.image = image ? ENV.apiUri + image : 'static/img/user-def.png';
+    this.image = image ? ENV.staticUri + image : 'static/img/user-def.png';
     this.usernameColor = User.COLORS[Math.floor(Math.random() * User.COLORS
       .length)];
   }

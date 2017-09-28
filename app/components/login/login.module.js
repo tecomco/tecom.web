@@ -51,16 +51,17 @@ var app = angular.module('LoginApp', [
           url: '/login',
           views: {
             '': {
-              templateUrl: 'app/components/login/find-team.electron.html'
+              templateUrl: ENV.isWeb ?
+                'app/components/login/find-team.electron.html' : 'find-team.electron.html'
             }
           }
         });
     }
   ])
   .controller('loginController', [
-    '$scope', '$log', '$window', '$location', '$http', '$localStorage',
-    'AuthService', 'ENV',
-    function ($scope, $log, $window, $location, $http, $localStorage,
+    '$scope', '$log', '$window', '$state', '$location', '$http',
+    '$localStorage', 'AuthService', 'ENV',
+    function ($scope, $log, $window, $state, $location, $http, $localStorage,
       AuthService, ENV) {
       $scope.hasLoginError = false;
       $scope.submitClicked = false;
@@ -107,6 +108,11 @@ var app = angular.module('LoginApp', [
         }
       };
 
+      $scope.gotoFindTeam = function () {
+        delete $localStorage.teamSlug;
+        $state.go('findTeam');
+      };
+
       $scope.getTecomBigLogoUrl = function () {
         if (ENV.isWeb)
           return 'static/img/tecom-logo-big.png';
@@ -123,76 +129,81 @@ var app = angular.module('LoginApp', [
       }
 
       function checkStorageForTeamSlug() {
-        console.log('1');
         var teamSlug = $localStorage.teamSlug;
         if (teamSlug) {
           AuthService.teamExists(teamSlug)
             .then(function () {
-              console.log('2');
-              checkStorageForToken()
+              checkStorageForToken();
             })
             .catch(function () {
-              $window.location.assign('find-team.electron.html');
+              $state.go('findTeam');
             });
         } else
-          $window.location.assign('find-team.electron.html');
+          $state.go('findTeam');
+        // $window.location.assign('find-team.electron.html');
       }
-    }
 
-    function checkStorageForToken() {
-      console.log('3');
-      var token = $localStorage.token;
-      if (token) {
-        console.log('4');
-        AuthService.isAuthenticated(token)
-          .then(function () {
-            $window.location.assign('../../../index.electron.html');
-          })
+      function checkStorageForToken() {
+        var token = $localStorage.token;
+        if (token) {
+          AuthService.isAuthenticated(token)
+            .then(function () {
+              $window.location.assign('../../../index.electron.html');
+            })
+            .catch(function () {
+              initializeLoginForm();
+            });
+        } else
+          initializeLoginForm();
       }
-    }
 
-    function getPasswordRecoveryUrl() {
-      var splitHost = $window.location.host.split('.');
-      var domain = splitHost[1];
-      domain += splitHost[2] ? '.' + splitHost[2] : '';
-      return 'http://' + domain + '/password/recovery/';
-    }
-
-    function getRedirectError() {
-      var error = $location.search().err;
-      switch (error) {
-        case 'InvalidToken':
-          return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
-        case 'UserRemoved':
-          return 'شما توسط یکی از ادمین‌ها از تیم حذف شدید!';
-        default:
-          return null;
-      }
-    }
-
-    angular.element(document).ready(function () {
-      initializeLoginForm();
-    });
-
-    var initializeLoginForm = function () {
-      $scope.forms.login.$setPristine();
-      $scope.password = '';
-      document.getElementById('email').focus();
-    };
-  }])
-.controller('FindTeamCtrl', [
-  '$scope', 'AuthService',
-  function ($scope, AuthService) {
-
-    $scope.findTeam = function () {
-      AuthService.teamExists($scope.teamSlug)
-        .then(function () {
-          // Go to login form.
-        })
-        .catch(function () {
-          // Show team not found error.
+      if (ENV.isWeb)
+        angular.element(document).ready(function () {
+          initializeLoginForm();
         });
-    }
 
-  }
-]);
+      function getPasswordRecoveryUrl() {
+        var splitHost = $window.location.host.split('.');
+        var domain = splitHost[1];
+        domain += splitHost[2] ? '.' + splitHost[2] : '';
+        return 'http://' + domain + '/password/recovery/';
+      }
+
+      function getRedirectError() {
+        var error = $location.search().err;
+        switch (error) {
+          case 'InvalidToken':
+            return 'متاسفانه محتوای Token شما نامعتبر است، لطفا دوباره وارد شوید.';
+          case 'UserRemoved':
+            return 'شما توسط یکی از ادمین‌ها از تیم حذف شدید!';
+          default:
+            return null;
+        }
+      }
+
+      var initializeLoginForm = function () {
+        $scope.forms.login.$setPristine();
+        $scope.password = '';
+        document.getElementById('email').focus();
+      };
+    }
+  ])
+  .controller('findTeamCtrl', [
+    '$scope', '$localStorage', '$window', '$timeout', 'AuthService',
+    function ($scope, $localStorage, $window, $timeout, AuthService) {
+      $scope.findTeam = function () {
+        AuthService.teamExists($scope.teamSlug)
+          .then(function () {
+            $localStorage.teamSlug = $scope.teamSlug;
+            $window.location.assign('login.electron.html');
+          })
+          .catch(function () {
+            $scope.teamNotFound = true;
+            $timeout(function () {
+              $scope.teamNotFound = false;
+            }, 3000);
+          });
+      };
+
+    }
+  ]);

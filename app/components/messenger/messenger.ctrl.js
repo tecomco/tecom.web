@@ -58,6 +58,7 @@
      $scope.logout = function () {
        AuthService.logout()
          .then(function () {
+           delete $localStorage.token;
            if (ENV.isWeb)
              $window.location.href = '/login';
            else
