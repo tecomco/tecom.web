@@ -183,6 +183,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);
+  grunt.registerTask('local', ['ngconstant:local']);
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage', 'minify']);
   grunt.registerTask('desktop', ['jshint', 'ngconstant:desktop', 'minify']);

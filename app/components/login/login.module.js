@@ -46,6 +46,14 @@ var app = angular.module('LoginApp', [
               $window.location.assign('/mobile?os=' + mobileType);
             }
           }
+        })
+        .state('findTeam', {
+          url: '/login',
+          views: {
+            '': {
+              templateUrl: 'app/components/login/find-team.electron.html'
+            }
+          }
         });
     }
   ])
@@ -140,5 +148,21 @@ var app = angular.module('LoginApp', [
         $scope.password = '';
         document.getElementById('email').focus();
       };
+    }
+  ])
+  .controller('FindTeamCtrl', [
+    '$scope', 'AuthService',
+    function ($scope, AuthService) {
+
+      $scope.findTeam = function () {
+        AuthService.teamExists($scope.teamSlug)
+          .then(function () {
+            // Go to login form.
+          })
+          .catch(function () {
+            // Show team not found error.
+          });
+      }
+
     }
   ]);

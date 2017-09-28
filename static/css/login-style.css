@@ -73,6 +73,61 @@ a, a:hover, a:visited, a:focus {
     margin-bottom: 20px;
 }
 
+.find-team-form {
+  width: 100%;
+  background: #fff;
+  border-radius: 7px;
+  margin-top: 120px;
+  padding: 15px;
+}
+
+.form-title {
+  font-size: 20px;
+  font-weight: 200;
+  color: #017446;
+  text-align: center;
+  line-height: 30px;
+}
+
+.tecom-form-body {
+  padding: 0px 20px 20px;
+}
+
+.slug-choose {
+  direction: ltr;
+  text-align: center;
+  font-size: 22px;
+  font-family: monospace;
+}
+
+.slug-choose label {
+  direction: ltr;
+}
+
+.slug-choose input {
+  padding-left: 8px;
+  margin: 16px 0;
+  color: #666;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  outline: none;
+  border: 1px solid #DDDDDD;
+  direction: ltr;
+  width: 40%;
+}
+
+.slug-choose input:focus {
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(36, 167, 114, 0.6);
+  border: 1px solid rgba(36, 167, 114, 0.6);
+}
+
 .login-img-holder {
     background: rgb(39, 169, 114);
     border-radius: 7px 7px 0 0;
@@ -235,6 +290,11 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
 .submit-btn:focus, .submit-btn:active {
     background: rgba(9, 148, 92, 0.8);
     color: #f3f3f3;
+}
+
+.find-team-btn {
+  width: 20%;
+  margin-top: 10px;
 }
 
 .tecom-form {

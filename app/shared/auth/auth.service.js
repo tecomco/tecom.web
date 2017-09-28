@@ -80,11 +80,29 @@ app.factory('AuthService', [
       return defer.promise;
     }
 
+    function teamExists(slug) {
+      var defer = $q.defer();
+      $http.get('http://api.localhost:8080/api/v1/teams/' + slug + '/exists')
+        .then(function (res) {
+          if (res.team_exists) {
+            defer.resolve();
+          } else {
+            defer.reject();
+          }
+        })
+        .catch(function (err) {
+          $log.info('Checking team exists failed.', err);
+          defer.reject();
+        });
+      return defer.promise;
+    }
+
     return {
       initialize: initialize,
       createUser: createUser,
       login: login,
       logout: logout,
+      teamExists: teamExists
     };
   }
 ]);
