@@ -44,8 +44,8 @@ module.exports = function (grunt) {
           ENV: {
             name: 'local',
             socketUri: 'ws.localhost:4000/',
-            apiUri:'',
-            isWeb : true
+            apiUri: 'http://api.localhost:8080',
+            isWeb: true
           }
         }
       },
@@ -57,8 +57,8 @@ module.exports = function (grunt) {
           ENV: {
             name: 'prod',
             socketUri: 'ws.tecom.me/',
-            apiUri:'',
-            isWeb :true
+            apiUri: 'http://api.tecom.me',
+            isWeb: true
           }
         }
       },
@@ -70,8 +70,8 @@ module.exports = function (grunt) {
           ENV: {
             name: 'dev',
             socketUri: 'ws.tecomdev.ir:4000/',
-            apiUri:'',
-            isWeb : true
+            apiUri: 'http://api.tecomdev.ir',
+            isWeb: true
           }
         }
       },
@@ -83,8 +83,8 @@ module.exports = function (grunt) {
           ENV: {
             name: 'stage',
             socketUri: 'ws.tecomstage.ir/',
-            apiUri:'',
-            isWeb :true
+            apiUri: 'http://api.tecomdev.ir',
+            isWeb: true
           }
         }
       },
@@ -96,8 +96,8 @@ module.exports = function (grunt) {
           ENV: {
             name: 'desktop',
             socketUri: 'ws://ws.localhost:8000',
-            apiUri:'http://tecom2.localhost:8000',
-            isWeb :false
+            apiUri: 'http://api.tecom.me',
+            isWeb: false
           }
         }
       }
@@ -186,7 +186,7 @@ module.exports = function (grunt) {
   grunt.registerTask('local', ['ngconstant:local']);
   grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
   grunt.registerTask('stage', ['jshint', 'ngconstant:stage', 'minify']);
-  grunt.registerTask('desktop', ['jshint', 'ngconstant:desktop', 'minify']);
+  grunt.registerTask('desktop', ['ngconstant:desktop']);
   grunt.registerTask('prod', ['jshint', 'ngconstant:prod', 'minify']);
   grunt.registerTask('lint', ['jshint']);
   grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);

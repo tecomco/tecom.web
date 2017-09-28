@@ -82,9 +82,32 @@ app.factory('AuthService', [
 
     function teamExists(slug) {
       var defer = $q.defer();
-      $http.get('http://api.localhost:8080/api/v1/teams/' + slug + '/exists')
+      $http.get('/api/v1/teams/' + slug + '/exists')
         .then(function (res) {
           if (res.team_exists) {
+            defer.resolve();
+          } else {
+            defer.reject();
+          }
+        })
+        .catch(function (err) {
+          $log.info('Checking team exists failed.', err);
+          defer.reject();
+        });
+      return defer.promise;
+    }
+
+    function isAuthenticated(token) {
+      var defer = $q.defer();
+      $http({
+          method: 'GET',
+          url: '/api/v1/auth/is_authenticated',
+          headers: {
+            'Authorization': 'JWT ' + token
+          }
+        })
+        .then(function (res) {
+          if (res) {
             defer.resolve();
           } else {
             defer.reject();
@@ -102,7 +125,8 @@ app.factory('AuthService', [
       createUser: createUser,
       login: login,
       logout: logout,
-      teamExists: teamExists
+      teamExists: teamExists,
+      isAuthenticated: isAuthenticated
     };
   }
 ]);
