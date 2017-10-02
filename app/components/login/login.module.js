@@ -110,7 +110,10 @@ var app = angular.module('LoginApp', [
 
       $scope.gotoFindTeam = function () {
         delete $localStorage.teamSlug;
-        $state.go('findTeam');
+        if (ENV.isWeb)
+          $window.location.href = 'http://tecom.me/teams/find';
+        else
+          $state.go('findTeam');
       };
 
       $scope.getTecomBigLogoUrl = function () {
