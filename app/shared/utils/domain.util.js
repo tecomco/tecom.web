@@ -1,15 +1,20 @@
 'use strict';
 
-app.factory('domainUtil', ['$location', function ($location) {
+app.factory('domainUtil', ['$location', '$localStorage', 'ENV', function (
+  $location, $localStorage, ENV) {
 
   function getSubdomain() {
-    return 'tecom2';
-    // var host = $location.host();
-    // if (host.indexOf('.') < 0) {
-    //   return '';
-    // } else {
-    //   return host.split('.')[0];
-    // }
+    if (ENV.isWeb) {
+      var host = $location.host();
+      if (host.indexOf('.') < 0) {
+        return '';
+      } else {
+        return host.split('.')[0];
+      }
+    } else {
+      console.log($localStorage.teamSlug);
+      return $localStorage.teamSlug;
+    }
   }
 
   return {

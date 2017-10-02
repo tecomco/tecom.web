@@ -32,11 +32,18 @@ function createWindow() {
 
   appIcon = new Tray(path.join(__dirname, 'favicon.png'));
   const contextMenu = Menu.buildFromTemplate([{
-    label: 'close',
-    click: function () {
-      app.quit();
+      label: 'Show',
+      click: function () {
+        app.focus();
+      }
+    },
+    {
+      label: 'Close',
+      click: function () {
+        app.quit();
+      }
     }
-  }]);
+  ]);
   appIcon.setToolTip('Tecom');
   appIcon.setContextMenu(contextMenu);
 
