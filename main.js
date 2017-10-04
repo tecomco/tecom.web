@@ -6,7 +6,8 @@ const {
   app,
   Menu,
   Tray,
-  BrowserWindow
+  BrowserWindow,
+  ipcMain
 } = require('electron');
 const path = require('path');
 let appIcon = null;
@@ -34,7 +35,7 @@ function createWindow() {
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Show',
       click: function () {
-        mainWindow.focus();
+        mainWindow.show();
       }
     },
     {
@@ -47,7 +48,20 @@ function createWindow() {
   appIcon.setToolTip('Tecom');
   appIcon.setContextMenu(contextMenu);
 
+  appIcon.on('double-click', () => {
+    mainWindow.show();
+  })
 }
+
+ipcMain.on('message:unread', () => {
+    mainWindow.setOverlayIcon(path.join(__dirname, 'favicon-notif.png'), 'پیام خوانده نشده')
+    appIcon.setImage(path.join(__dirname, 'favicon-notif.png'))
+})
+
+ipcMain.on('message:read', () => {
+  appIcon.setImage(path.join(__dirname, 'favicon.png'))
+    mainWindow.setOverlayIcon(null,'')
+})
 
 app.on('ready', createWindow);
 

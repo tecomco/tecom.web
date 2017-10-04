@@ -148,6 +148,13 @@ app.controller('channelsController', [
 
     function updateFavicon() {
       $rootScope.hasUnread = channelsService.anyChannelHasUnread();
+      if (!ENV.isWeb) {
+        const {ipcRenderer} = require('electron')
+        if ($rootScope.hasUnread)
+        ipcRenderer.send('message:unread')
+        else
+        ipcRenderer.send('message:read')
+      }
     }
 
     function incrementChannelNotification(channelId) {
