@@ -82,10 +82,8 @@ app.factory('AuthService', [
 
     function teamExists(slug) {
       var defer = $q.defer();
-      console.log(slug);
       $http.get('/api/v1/teams/' + slug + '/exists')
         .then(function (res) {
-          console.log('res', res.data);
           if (res.data.team_exists) {
             defer.resolve();
           } else {
@@ -93,7 +91,6 @@ app.factory('AuthService', [
           }
         })
         .catch(function (err) {
-          console.log('errs', err);
           $log.info('Checking team exists failed.', err);
           defer.reject();
         });
@@ -110,7 +107,7 @@ app.factory('AuthService', [
           }
         })
         .then(function (res) {
-          if (res) {
+          if (res.data.is_authenticated) {
             defer.resolve();
           } else {
             defer.reject();

@@ -34,7 +34,7 @@ function createWindow() {
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Show',
       click: function () {
-        app.focus();
+        mainWindow.focus();
       }
     },
     {
