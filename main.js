@@ -10,13 +10,37 @@ const {
   ipcMain
 } = require('electron');
 const path = require('path');
+
+// var electronInstaller = require('electron-winstaller');
+//
+// var resultPromise = electronInstaller.createWindowsInstaller({
+//     appDirectory: "C:/Users/AmirHossein Ameli/Desktop/dev/dev/tecom.web/Tecom-win32-x64",
+//     outputDirectory: 'C:/Users/AmirHossein Ameli/Desktop/dev/dev/tecom.web/Tecom-win32-x64/release',
+//     exe: 'Tecom.exe'
+//   });
+//   resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+
 let appIcon = null;
 let mainWindow;
+
+var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
+if (mainWindow) {
+  if (!mainWindow.isFocused()) mainWindow.show();
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.focus();
+}
+});
+
+if (shouldQuit) {
+app.quit();
+return;
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 1200,
+    minWidth : 784,
     icon: path.join(__dirname, 'favicon.png')
   });
 
@@ -31,6 +55,14 @@ function createWindow() {
     mainWindow = null;
   });
 
+  mainWindow.on('close', function (event) {
+          if( !app.isQuiting){
+              event.preventDefault()
+              mainWindow.hide();
+          }
+          return false;
+      });
+
   appIcon = new Tray(path.join(__dirname, 'favicon.png'));
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Show',
@@ -41,7 +73,9 @@ function createWindow() {
     {
       label: 'Close',
       click: function () {
-        app.quit();
+        mainWindow = null;
+        app.isQuiting = true;
+            app.quit();
       }
     }
   ]);

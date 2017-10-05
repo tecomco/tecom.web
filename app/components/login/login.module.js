@@ -143,7 +143,6 @@ var app = angular.module('LoginApp', [
             });
         } else
           $state.go('findTeam');
-        // $window.location.assign('find-team.electron.html');
       }
 
       function checkStorageForToken() {
