@@ -115,7 +115,9 @@ app.controller('messagesController', [
     });
 
     $scope.$on('image:fullscreen', function (event, url, name) {
-      setFullscreenImageProperty(url, name);
+      $timeout(function () {
+        setFullscreenImageProperty(url, name);
+      });
     });
 
     $scope.closeFullscreenImage = function () {
