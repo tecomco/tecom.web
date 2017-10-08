@@ -20,12 +20,13 @@ app.factory('textUtil', function () {
     var textParts = text.split('`');
     for (var i = 0; i < textParts.length - 1; i++) {
       if (isUrlifyTurn)
-        wellFormedText += urlify(textParts[i]);
+        wellFormedText += urlify(ltrifyIfIsEnglish(textParts[i]));
       else
         wellFormedText += codify(textParts[i]);
       isUrlifyTurn = !isUrlifyTurn;
     }
-    wellFormedText += urlify(textParts[textParts.length - 1]);
+    wellFormedText += urlify(ltrifyIfIsEnglish(textParts[textParts.length -
+      1]));
     return wellFormedText;
   }
 
@@ -97,6 +98,13 @@ app.factory('textUtil', function () {
         text = text.replace(list[i], persian[list[i]]);
       }
     }
+    return text;
+  }
+
+  function ltrifyIfIsEnglish(text) {
+    if (isEnglish(text))
+      return '<span style="direction:ltr" dir="ltr">' + text.trim() +
+        '</span> ';
     return text;
   }
 
