@@ -312,17 +312,12 @@ app.factory('Message', [
 
     Message.prototype.generateFileBody = function () {
       var body = '';
-      this.canBeLived = fileUtil.isTextFormat(this.additionalData.type);
       body = '<div id="' + this.getFileTimestampId() +
         '" class="ng-scope" dir="rtl">';
       if (this.isImage())
         body += this.generateImageViewerBody();
       else
         body += this.generateFileMessageBody();
-      if (this.canBeLived)
-        body += this.generateFileLiveAndViewBody();
-      if (!this.isFailed)
-        body += this.generateFileDownloadBody();
       body += '</div>';
       return body;
     };
@@ -340,30 +335,6 @@ app.factory('Message', [
       return '<label class="file-name">' + this.additionalData.name +
         '</label>' +
         '<div class="file-icon-holder"><i class="fa fa-file"></i></div><br>';
-    };
-
-    Message.prototype.generateFileLiveAndViewBody = function () {
-      var body = '';
-      if (this.currentChannel.canMemberSendMessage()) {
-        body += '<a class="live-btn" dir="ltr" ng-click="goLive(' +
-          this.additionalData.fileId + ', \'' + this.additionalData.name +
-          '\')">';
-        body += '<label dir="ltr">LIVE</label>';
-        body += '<i class="fa fa-circle"></i>';
-        body += '</a>';
-      }
-      body += '<a class="dl-btn" ng-click="viewFile(' + this.additionalData
-        .fileId +
-        ')" tooltip-placement="top" uib-tooltip="مشاهده">';
-      body += '<i class="fa fa-eye"></i>';
-      return body;
-    };
-
-    Message.prototype.generateFileDownloadBody = function () {
-      return '<a class="dl-btn" ng-if="' + !this.isPending + '" href="' +
-        this.additionalData.url + '" download="' + this.additionalData.name +
-        '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">' +
-        '<i class="zmdi zmdi-download"></i></a>';
     };
 
     Message.prototype.generateMessageNotifTypeBody = function () {

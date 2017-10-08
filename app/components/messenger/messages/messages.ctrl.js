@@ -4,10 +4,11 @@ app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
-  'ngProgressFactory', 'dateUtil',
+  'ngProgressFactory', 'dateUtil', 'fileUtil',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q, Team,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, dateUtil
+    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, dateUtil,
+    fileUtil
   ) {
 
     var self = this;
@@ -256,8 +257,24 @@ app.controller('messagesController', [
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
     };
 
+    $scope.canBeLived = function (message) {
+      return message.isFile() && message.currentChannel.canMemberSendMessage() &&
+        fileUtil.isTextFormat(message.additionalData.type);
+    };
+
     $scope.viewFile = function (fileId) {
       filesService.viewFile(fileId);
+    };
+
+    $scope.canBeViewed = function (message) {
+      return message.isFile() && fileUtil.isTextFormat(
+        message.additionalData.type);
+    };
+
+    $scope.getDownloadClass = function (message) {
+      if (!message.isPending)
+        return 'dl-btn';
+      return 'dl-btn-invisible';
     };
 
     $scope.fullscreenImage = function (url, name) {

@@ -65,6 +65,9 @@
               </div>
               <div ng-if="message.isFile()" compile template="{{message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
               <div ng-if="!message.isFile()" compile template="{{::message.getViewWellFormed()}}" ng-style="::message.getStyle()"></div>
+              <a ng-if="canBeLived(message)" class="live-btn" dir="ltr" ng-click="goLive(message.additionalData.fileId,message.additionalData.name)"><label dir="ltr">LIVE</label><i class="fa fa-circle"></i></a>
+              <a ng-if="canBeViewed(message)" class="dl-btn" ng-click="viewFile(message.additionalData.fileId)" tooltip-placement="top" uib-tooltip="مشاهده"><i class="fa fa-eye"></i>
+              <a ng-class="getDownloadClass(message)" ng-if="message.isFile() && !message.isFailed" href={{message.additionalData.url}} download={{message.additionalData.name}} target="_blank" tooltip-placement="top" uib-tooltip="دانلود"><i class="zmdi zmdi-download"></i></a>
               <img class="msg-img" ng-if="message.isFile() && message.isImage() && message.isPending" ngf-src="message.imageFile">
               <a ng-click="setReplyMessage(message)" ng-if="::!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
               <div ng-if="message.isFailed" class="file-failed-btns">

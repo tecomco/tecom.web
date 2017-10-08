@@ -1951,6 +1951,17 @@ ol.linenums, ol.linenums-view {
   margin-left: 5px;
 }
 
+.dl-btn-invisible {
+  font-weight: bold;
+  padding: 5px 0px;
+  text-align: center;
+  border-radius: 6px;
+  float: right;
+  margin-top: 10px;
+  margin-left: 5px;
+  visibility: hidden;
+}
+
 .dl-btn i {
   color: #aaa;
 }
