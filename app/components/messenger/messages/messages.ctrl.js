@@ -27,6 +27,8 @@ app.controller('messagesController', [
     var initialLastMessageId;
     var isBottomOfMessagesHolder = true;
     var prevIsBottomOfMessagesHolder = false;
+    var heightPx;
+    inputPlaceHolder.style.height = '38px';
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -149,14 +151,16 @@ app.controller('messagesController', [
     };
 
     $scope.getInputStyle = function () {
-      if (textUtil.isEnglish($scope.inputMessage)) {
+      if (textUtil.isEnglish($scope.inputMessage))
         return {
           'text-align': 'left',
-          'direction': 'ltr'
+          direction: 'ltr',
+          height: inputPlaceHolder.scrollHeight + 'px'
         };
-      } else {
-        return {};
-      }
+      else
+        return {
+          height: inputPlaceHolder.scrollHeight + 'px'
+        };
     };
 
     $scope.sendMessage = function ($event) {
@@ -275,6 +279,21 @@ app.controller('messagesController', [
       if (!message.isPending)
         return 'dl-btn';
       return 'dl-btn-invisible';
+    };
+
+    $scope.getMessagesHolderHeight = function () {
+      heightPx = 77 + inputPlaceHolder.scrollHeight;
+      return 'calc(100vh - ' + heightPx.toString() + 'px)';
+    };
+
+    $scope.getMessagesHolderMozHeight = function () {
+      heightPx = 77 + inputPlaceHolder.scrollHeight;
+      return '-moz-calc(100vh - ' + heightPx.toString() + 'px)';
+    };
+
+    $scope.getMessagesHolderWebkitHeight = function () {
+      heightPx = 77 + inputPlaceHolder.scrollHeight;
+      return '-webkit-calc(100vh - ' + heightPx.toString() + 'px)';
     };
 
     $scope.fullscreenImage = function (url, name) {

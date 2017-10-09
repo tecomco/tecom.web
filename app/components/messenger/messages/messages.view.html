@@ -14,7 +14,7 @@
         </a>
     </div>
     <div id="messagesWindow">
-      <div id="messagesHolder" class="chat" ngf-drop="upload($file, $invalidFiles)" ngf-drag-over-class="dragover" ngf-max-size=uploadLimit>
+      <div id="messagesHolder" class="chat" ng-style="{height : getMessagesHolderHeight() ,height : getMessagesHolderMozHeight() ,height : getMessagesHolderWebkitHeight()}" ngf-drop="upload($file, $invalidFiles)" ngf-drag-over-class="dragover" ngf-max-size=uploadLimit>
         <div class="drag-drop">
           <p>فایل‌ها رو اینجا رها کن.</p>
         </div>
@@ -27,11 +27,11 @@
         </div>
         <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadSizeLimitNotif" ng-cloak>
           <span>حداکثر حجم هر آپلود شما در پلن فعلی {{uploadLimit}} است.</span>
-          <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link" >توضیح بیشتر</a><i class="fa fa-external-link"></i>
+          <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link">توضیح بیشتر</a><i class="fa fa-external-link"></i>
         </div>
         <div class="server-msg file-server-msg err ng-cloak ng-hide" ng-show="uploadStorageErrorNotif" ng-cloak>
           <span>فضای آپلود تیم شما پر شده است.</span>
-          <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link" >توضیح بیشتر</a><i class="fa fa-external-link"></i>
+          <a href="http://tecom.me/pricing" target="_blank" class="btn btn-link">توضیح بیشتر</a><i class="fa fa-external-link"></i>
         </div>
         <div ng-show="isMessageLoadingDone && !messages.length" class="no-msg"><span>پیامی نیست!</span></div>
         <div ng-show="!isMessageLoadingDone" class="no-msg">
