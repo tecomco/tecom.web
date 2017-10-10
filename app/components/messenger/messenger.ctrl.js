@@ -158,8 +158,8 @@
        $http.get('http://updates.tecomdev.ir/update/' + os + '/' +
            appVersion)
          .then(function (updateData) {
-           if (updateData) {
-             if (updateData.name.split('.').join('') >
+           if (updateData.data.name) {
+             if (updateData.data.name.split('.').join('') >
                appVersion.split('.').join(''))
                $scope.updateAvailable = true;
            }

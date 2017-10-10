@@ -27,7 +27,8 @@ app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
       $httpProvider.interceptors.push(function ($q, ENV) {
         return {
           request: function (config) {
-            if (config.url.indexOf('.html') === -1)
+            if (config.url.indexOf('.html') === -1 &&
+              config.url.indexOf('//') === -1)
               config.url = ENV.apiUri + config.url;
             return config || $q.when(config);
           }
