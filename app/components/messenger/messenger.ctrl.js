@@ -1,14 +1,20 @@
+ /*jshint esversion: 6 */
+
  'use strict';
 
  app.controller('MessengerCtrl', [
-   '$rootScope', '$scope', '$window', '$uibModal', 'AuthService', 'ENV',
-   'CurrentMember', '$localStorage', '$state', '$http', '$templateCache',
-   function ($rootScope, $scope, $window, $uibModal, AuthService, ENV,
+   '$rootScope', '$scope', '$log', '$window', '$uibModal', 'AuthService',
+   'ENV', 'CurrentMember', '$localStorage', '$state', '$http',
+   '$templateCache',
+   function ($rootScope, $scope, $log, $window, $uibModal, AuthService, ENV,
      CurrentMember, $localStorage, $state, $http, $templateCache) {
 
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
      $scope.activeFile = false;
+     $scope.updateAvailable = false;
+     $scope.isWeb = ENV.isWeb;
+     $scope.updateStatus = 'آپدیت جدید';
 
      $scope.openUserProfileModal = function () {
        var modalInstance = $uibModal.open({
@@ -72,12 +78,12 @@
 
      $scope.getDontDisturbModeClass = function () {
        switch (CurrentMember.dontDisturb.mode) {
-         case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
-           return 'zmdi zmdi-notifications-active';
-         case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
-           return 'zmdi zmdi-notifications-off';
-         case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
-           return 'zmdi zmdi-notifications-paused';
+       case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
+         return 'zmdi zmdi-notifications-active';
+       case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
+         return 'zmdi zmdi-notifications-off';
+       case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
+         return 'zmdi zmdi-notifications-paused';
        }
      };
 
@@ -126,6 +132,8 @@
        $window.Notification.requestPermission();
        CurrentMember.initializeDontDisturbMode();
        cacheMessagesTemplates();
+       if (!ENV.isWeb)
+         checkForAppUpdate();
      }
 
      function cacheMessagesTemplates() {
@@ -142,6 +150,36 @@
        $http.get('app/components/files/filemanager-files.view.html?v=1.0.3', {
          cache: $templateCache
        });
+     }
+
+     function checkForAppUpdate() {
+       var appVersion = require('./package.json').version;
+       var os = require('os').platform();
+       $http.get('http://updates.tecomdev.ir/update/' + os + '/' +
+           appVersion)
+         .then(function (updateData) {
+           if (updateData) {
+             if (updateData.name.split('.').join('') >
+               appVersion.split('.').join(''))
+               $scope.updateAvailable = true;
+           }
+         })
+         .catch(function (err) {
+           $log.info('Checing new updates failed.', err);
+         });
+       const {
+         ipcRenderer
+       } = require('electron');
+       ipcRenderer.on('update:started', () => {
+         $scope.updateStatus = 'درحال دانلود';
+       });
+     }
+
+     function updateApplication() {
+       const {
+         ipcRenderer
+       } = require('electron');
+       ipcRenderer.send('start:update');
      }
 
      function checkIfUserSeenTour() {

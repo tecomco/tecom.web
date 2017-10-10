@@ -48,6 +48,7 @@
     "build": "npm run build:server && npm run build:client",
     "build:server": "npm install",
     "build:client": "bower install",
-    "start": "npm run build"
+    "start": "npm run build",
+    "installer": "node installer.js"
   }
 }

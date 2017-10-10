@@ -7,18 +7,23 @@ const {
   Menu,
   Tray,
   BrowserWindow,
-  ipcMain
+  ipcMain,
+  autoUpdater
 } = require('electron');
 const path = require('path');
 
-// var electronInstaller = require('electron-winstaller');
-//
-// var resultPromise = electronInstaller.createWindowsInstaller({
-//     appDirectory: "C:/Users/AmirHossein Ameli/Desktop/dev/dev/tecom.web/Tecom-win32-x64",
-//     outputDirectory: 'C:/Users/AmirHossein Ameli/Desktop/dev/dev/tecom.web/Tecom-win32-x64/release',
-//     exe: 'Tecom.exe'
-//   });
-//   resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+const appVersion = require('./package.json').version;
+const os = require('os').platform();
+
+autoUpdater.on('update-available', function () {
+  ipcMain.send('update:started');
+    });
+
+autoUpdater.on('update-downloaded', function () {
+  mainWindow = null;
+  app.isQuiting = true;
+      autoUpdater.quitAndInstall();
+    });
 
 let appIcon = null;
 let mainWindow;
@@ -57,7 +62,7 @@ function createWindow() {
 
   mainWindow.on('close', function (event) {
           if( !app.isQuiting){
-              event.preventDefault()
+              event.preventDefault();
               mainWindow.hide();
           }
           return false;
@@ -84,18 +89,23 @@ function createWindow() {
 
   appIcon.on('double-click', () => {
     mainWindow.show();
-  })
+  });
 }
 
+ipcMain.on('start:update', () => {
+  autoUpdater.setFeedURL('http://updates.tecomdev.ir/update/' + os + '/' + appVersion);
+  autoUpdater.checkForUpdates();
+});
+
 ipcMain.on('message:unread', () => {
-    mainWindow.setOverlayIcon(path.join(__dirname, 'favicon-notif.png'), 'پیام خوانده نشده')
-    appIcon.setImage(path.join(__dirname, 'favicon-notif.png'))
-})
+    mainWindow.setOverlayIcon(path.join(__dirname, 'favicon-notif.png'), 'پیام خوانده نشده');
+    appIcon.setImage(path.join(__dirname, 'favicon-notif.png'));
+});
 
 ipcMain.on('message:read', () => {
-  appIcon.setImage(path.join(__dirname, 'favicon.png'))
-    mainWindow.setOverlayIcon(null,'')
-})
+  appIcon.setImage(path.join(__dirname, 'favicon.png'));
+    mainWindow.setOverlayIcon(null,'');
+});
 
 app.on('ready', createWindow);
 

@@ -1,4 +1,5 @@
 /*jshint -W117 */
+/*jshint esversion: 6 */
 
 'use strict';
 
@@ -149,11 +150,11 @@ app.controller('channelsController', [
     function updateFavicon() {
       $rootScope.hasUnread = channelsService.anyChannelHasUnread();
       if (!ENV.isWeb) {
-        const {ipcRenderer} = require('electron')
+        const {ipcRenderer} = require('electron');
         if ($rootScope.hasUnread)
-        ipcRenderer.send('message:unread')
+        ipcRenderer.send('message:unread');
         else
-        ipcRenderer.send('message:read')
+        ipcRenderer.send('message:read');
       }
     }
 

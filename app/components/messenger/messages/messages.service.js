@@ -1,10 +1,10 @@
 'use strict';
 
 app.service('messagesService', [
-  '$rootScope', '$http', '$log', '$q', 'socket',
+  '$rootScope', '$log', '$q', 'socket',
   'channelsService', 'Message', 'Db', 'filesService', 'CurrentMember',
   'Team', 'ArrayUtil', 'FileManagerFile', 'CacheService',
-  function ($rootScope, $http, $log, $q, socket, channelsService,
+  function ($rootScope, $log, $q, socket, channelsService,
     Message, Db, filesService, CurrentMember, Team, ArrayUtil,
     FileManagerFile, CacheService) {
 
