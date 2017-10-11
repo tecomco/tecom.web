@@ -93,6 +93,7 @@ function createWindow() {
 }
 
 ipcMain.on('start:update', () => {
+
   autoUpdater.setFeedURL('http://updates.tecomdev.ir/update/' + os + '/' + appVersion);
   autoUpdater.checkForUpdates();
 });

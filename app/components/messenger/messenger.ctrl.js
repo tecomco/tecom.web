@@ -119,6 +119,13 @@
        $state.go('messenger.home');
      };
 
+     $scope.updateApplication = function () {
+       const {
+         ipcRenderer
+       } = require('electron');
+       ipcRenderer.send('start:update');
+     };
+
      angular.element($window)
        .bind('focus', function () {
          $rootScope.isTabFocused = true;
@@ -173,13 +180,6 @@
        ipcRenderer.on('update:started', () => {
          $scope.updateStatus = 'درحال دانلود';
        });
-     }
-
-     function updateApplication() {
-       const {
-         ipcRenderer
-       } = require('electron');
-       ipcRenderer.send('start:update');
      }
 
      function checkIfUserSeenTour() {
