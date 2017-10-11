@@ -99,7 +99,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'desktop',
-            socketUri: 'ws://ws.localhost:8000',
+            socketUri: 'ws://ws.tecomdev.ir:4000/',
             apiUri: 'http://api.tecomdev.ir',
             staticUri: 'http://static.tecomdev.ir',
             isWeb: false
