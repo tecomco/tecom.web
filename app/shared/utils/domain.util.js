@@ -11,10 +11,8 @@ app.factory('domainUtil', ['$location', '$localStorage', 'ENV', function (
       } else {
         return host.split('.')[0];
       }
-    } else {
-      console.log($localStorage.teamSlug);
+    } else
       return $localStorage.teamSlug;
-    }
   }
 
   return {

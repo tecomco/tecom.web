@@ -361,7 +361,7 @@ app.factory('Message', [
 
     Message.prototype.generateFileDownloadBody = function () {
       return '<a class="dl-btn" ng-if="' + !this.isPending + '" href="' +
-        this.additionalData.url + '" download="' + this.additionalData.name +
+        ENV.staticUri + this.additionalData.url + '" download="' + this.additionalData.name +
         '" target="_blank" tooltip-placement="top" uib-tooltip="دانلود">' +
         '<i class="zmdi zmdi-download"></i></a>';
     };

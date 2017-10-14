@@ -14,7 +14,9 @@
      $scope.activeFile = false;
      $scope.updateAvailable = false;
      $scope.isWeb = ENV.isWeb;
-     $scope.updateStatus = 'آپدیت جدید';
+     $scope.update = {};
+     $scope.update.status = 'آپدیت جدید';
+     $scope.update.class = 'fa fa-cloud-upload';
 
      $scope.openUserProfileModal = function () {
        var modalInstance = $uibModal.open({
@@ -70,9 +72,6 @@
            else
              $window.location.assign(
                'app/components/login/login.electron.html');
-           //  const foo = require('electron').remote
-           //  foo.getCurrentWindow().loadURL(
-           //    `file://${__dirname}/app/components/login/login.html`)
          });
      };
 
@@ -178,7 +177,8 @@
          ipcRenderer
        } = require('electron');
        ipcRenderer.on('update:started', () => {
-         $scope.updateStatus = 'درحال دانلود';
+         $scope.update.status = 'درحال دانلود';
+         $scope.update.class = 'fa fa-spinner fa-spin';
        });
      }
 

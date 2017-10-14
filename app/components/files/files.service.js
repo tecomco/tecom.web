@@ -2,9 +2,9 @@
 
 app.service('filesService', [
   '$rootScope', '$http', '$log', 'socket', 'ArrayUtil', '$q', 'Team',
-  'channelsService', 'File', 'FileManagerFile', 'fileUtil', 'Upload',
+  'channelsService', 'File', 'FileManagerFile', 'fileUtil', 'Upload', 'ENV',
   function ($rootScope, $http, $log, socket, ArrayUtil, $q, Team,
-    channelsService, File, FileManagerFile, fileUtil, Upload) {
+    channelsService, File, FileManagerFile, fileUtil, Upload, ENV) {
 
     var self = this;
     var uploadQueue = [];

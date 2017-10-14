@@ -80,9 +80,6 @@ app.controller('userProfileController', [
           else
             $window.location.assign(
               'app/components/login/login.electron.html');
-          // const foo = require('electron').remote
-          // foo.getCurrentWindow().loadURL(
-          //   `file://${__dirname}/app/components/login/login.html`)
         });
     };
 

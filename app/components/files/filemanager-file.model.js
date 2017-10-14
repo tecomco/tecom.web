@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
-  function (dateUtil, fileUtil) {
+app.factory('FileManagerFile', ['dateUtil', 'fileUtil', 'ENV',
+  function (dateUtil, fileUtil, ENV) {
 
     function FileManagerFile(id, url, name, date, type) {
       this.id = id;
@@ -40,7 +40,7 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
     FileManagerFile.prototype.downloadFile = function () {
       var link = document.createElement('a');
       link.download = this.name;
-      link.href = this.url;
+      link.href = ENV.staticUri + this.url;
       link.click();
     };
 

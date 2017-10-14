@@ -246,8 +246,7 @@ app.service('messagesService', [
       });
     }
 
-    function pushPendingMessagesIntoMessagesByChannelId(messages,
-      channelId) {
+    function pushPendingMessagesIntoMessagesByChannelId(messages, channelId) {
       var channelPendingMessages = getPendingMessagesByChannelId(
         channelId);
       channelPendingMessages.forEach(function (channelPendingMessage) {
@@ -271,8 +270,7 @@ app.service('messagesService', [
           generateLoadingMessages(messages, channelId, lastMessageId);
           pushFailedUploadedFilesIntoMessagesByChannelId(messages,
             channelId);
-          pushPendingMessagesIntoMessagesByChannelId(messages,
-            channelId);
+          pushPendingMessagesIntoMessagesByChannelId(messages, channelId);
           setActiveChannelMessages(messages);
           deferred.resolve(messages);
         });

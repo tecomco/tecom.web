@@ -122,9 +122,7 @@ app.factory('CurrentMember', ['Member', '$localStorage', '$timeout', 'textUtil',
 
     function removeDontDisturbModeRemainingTime() {
       CurrentMember.dontDisturb.remainingTime = null;
-      // $timeout(function () {
-        $interval.cancel(CurrentMember.dontDisturbInterval);
-      // });
+      $interval.cancel(CurrentMember.dontDisturbInterval);
     }
 
     function setDontDisturbTimeout(duration) {

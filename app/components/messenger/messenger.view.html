@@ -25,7 +25,7 @@
                 <a><i class="fa fa-bell"></i>درخواست دسترسی اعلان‌ها</a>
               </li>
               <li ng-if="!isWeb" ng-click="updateApplication()" ng-show="updateAvailable">
-                <a><i class="fa fa-cloud-upload"></i>{{updateStatus}}</a>
+                <a><i ng-class="update.class"></i>{{update.status}}</a>
               </li>
               <li ng-click="logout()">
                 <a><i class="fa fa-sign-out"></i>خروج</a>

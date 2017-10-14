@@ -5,11 +5,11 @@
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', 'ENV', '$stateParams', '$window',
   '$timeout', 'Message', 'messagesService', 'channelsService',
-  'filesService', '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
-  'ngProgressFactory',
+  'filesService', '$q', 'Team', 'ArrayUtil', 'textUtil', 'dateUtil',
+  'CurrentMember', 'ngProgressFactory',
   function ($scope, $rootScope, $state, ENV, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q, Team,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory
+    ArrayUtil, textUtil, dateUtil, CurrentMember, ngProgressFactory
   ) {
 
     var self = this;
@@ -149,8 +149,7 @@ app.controller('messagesController', [
       timestamp) {
       ArrayUtil.removeElementByKeyValue($scope.messages,
         'timestamp', timestamp);
-      messagesService.removeUploadFailedFileByFileTimestamp(
-        timestamp);
+      messagesService.removeUploadFailedFileByFileTimestamp(timestamp);
     };
 
     $scope.getInputStyle = function () {
@@ -314,15 +313,9 @@ app.controller('messagesController', [
         return true;
       else {
         var previousMessage = getMessageById(previousMessageId);
-        if (previousMessage) {
-          var isYearDifferent = message.datetime.getFullYear() !==
-            previousMessage.datetime.getFullYear();
-          var isMonthDifferent = message.datetime.getMonth() !==
-            previousMessage.datetime.getMonth();
-          var isDayDifferent = message.datetime.getDate() !==
-            previousMessage.datetime.getDate();
-          return isYearDifferent || isMonthDifferent || isDayDifferent;
-        }
+        if (previousMessage)
+          return dateUtil.isTwoDatesInAnotherDay(message.datetime,
+            previousMessage.datetime);
       }
     };
 

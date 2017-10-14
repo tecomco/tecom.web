@@ -13,9 +13,6 @@ app.factory('authInterceptor', ['$q', '$log', '$localStorage', '$window', 'ENV',
               else
                 $window.location.assign(
                   '/login.electron.html?err=InvalidToken');
-              // const foo = require('electron').remote
-              // foo.getCurrentWindow().loadURL(
-              //   `file://${__dirname}/app/components/login/login.html?err=InvalidToken`)
               break;
             default:
               break;
