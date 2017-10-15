@@ -23,12 +23,17 @@ app.controller('messagesController', [
     var messagesHolder = document.getElementById('messagesHolder');
     var messagesWindow = document.getElementById('messagesWindow');
     var inputPlaceHolder = document.getElementById('inputPlaceHolder');
+    var inputHolder = document.getElementById('inputHolder');
     var initialMemberLastSeenId;
     var initialLastMessageId;
     var isBottomOfMessagesHolder = true;
     var prevIsBottomOfMessagesHolder = false;
-    var heightPx;
-    inputPlaceHolder.style.height = '38px';
+    if (inputHolder)
+      inputHolder.style.height = '62px';
+    if (inputPlaceHolder) {
+      inputPlaceHolder.style.height = '38px';
+      inputPlaceHolder.addEventListener("keyup", setInputLineHeight);
+    }
 
     $scope.$on('channels:updated', function (event, data) {
       if (data === 'init') {
@@ -154,13 +159,10 @@ app.controller('messagesController', [
       if (textUtil.isEnglish($scope.inputMessage))
         return {
           'text-align': 'left',
-          direction: 'ltr',
-          height: inputPlaceHolder.scrollHeight + 'px'
+          direction: 'ltr'
         };
       else
-        return {
-          height: inputPlaceHolder.scrollHeight + 'px'
-        };
+        return {};
     };
 
     $scope.sendMessage = function ($event) {
@@ -281,21 +283,6 @@ app.controller('messagesController', [
       return 'dl-btn-invisible';
     };
 
-    $scope.getMessagesHolderHeight = function () {
-      heightPx = 77 + inputPlaceHolder.scrollHeight;
-      return 'calc(100vh - ' + heightPx.toString() + 'px)';
-    };
-
-    $scope.getMessagesHolderMozHeight = function () {
-      heightPx = 77 + inputPlaceHolder.scrollHeight;
-      return '-moz-calc(100vh - ' + heightPx.toString() + 'px)';
-    };
-
-    $scope.getMessagesHolderWebkitHeight = function () {
-      heightPx = 77 + inputPlaceHolder.scrollHeight;
-      return '-webkit-calc(100vh - ' + heightPx.toString() + 'px)';
-    };
-
     $scope.fullscreenImage = function (url, name) {
       setFullscreenImageProperty(url, name);
     };
@@ -359,6 +346,9 @@ app.controller('messagesController', [
     function setInputMessage() {
       var draftMessage = messagesService.getDraftMessage($scope.channel.id);
       $scope.inputMessage = draftMessage || '';
+      $timeout(function () {
+        setInputLineHeight();
+      });
     }
 
     function generateUploadProgressBar(message) {
@@ -618,6 +608,21 @@ app.controller('messagesController', [
       });
     }
 
+    function setInputLineHeight() {
+      inputPlaceHolder.style.height = '1px';
+      inputPlaceHolder.style.height =
+        inputPlaceHolder.scrollHeight.toString() + 'px';
+      inputHolder.style.height =
+        (inputPlaceHolder.scrollHeight + 24).toString() + 'px';
+      var heightPx = 77 + inputPlaceHolder.scrollHeight;
+      messagesHolder.style.height = 'calc(100vh - ' +
+        heightPx.toString() + 'px)';
+      messagesHolder.style.height = '-moz-calc(100vh - ' +
+        heightPx.toString() + 'px)';
+      messagesHolder.style.height = '-webkit-calc(100vh - ' +
+        heightPx.toString() + 'px)';
+    }
+
     function updateUnreadFlagsToCheckIfSeenMessages() {
       $scope.hasUnreadNewMessages = $scope.hasUnreadNewMessages &&
         !checkIsBottomOfMessagesHolder();
@@ -657,7 +662,10 @@ app.controller('messagesController', [
           });
         } else
           $state.go('messenger.home');
-      } else {
+      } else if (evt.keyCode == 13 && evt.shiftKey) {
+        if (document.activeElement.id !== 'inputPlaceHolder')
+          evt.preventDefault();
+      } else if (!evt.shiftKey) {
         var focusedElement = document.activeElement;
         if (!focusedElement || focusedElement === document.body)
           inputPlaceHolder.focus();

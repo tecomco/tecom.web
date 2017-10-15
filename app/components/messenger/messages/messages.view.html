@@ -14,7 +14,7 @@
         </a>
     </div>
     <div id="messagesWindow">
-      <div id="messagesHolder" class="chat" ng-style="{height : getMessagesHolderHeight() ,height : getMessagesHolderMozHeight() ,height : getMessagesHolderWebkitHeight()}" ngf-drop="upload($file, $invalidFiles)" ngf-drag-over-class="dragover" ngf-max-size=uploadLimit>
+      <div id="messagesHolder" class="chat" ngf-drop="upload($file, $invalidFiles)" ngf-drag-over-class="dragover" ngf-max-size=uploadLimit>
         <div class="drag-drop">
           <p>فایل‌ها رو اینجا رها کن.</p>
         </div>
@@ -107,7 +107,7 @@
         <a type="file" ngf-select="upload($file, $invalidFiles)" ngf-max-size=uploadLimit>
           <i class="fa fa-paperclip"></i>
         </a>
-        <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-style="getInputStyle()" ng-keydown="$event.which === 13 && sendMessage($event)" ng-change="typing()"></textarea>
+        <textarea class="message-input" type="text" id="inputPlaceHolder" placeholder="متن پیام" ng-model="inputMessage" ng-style="getInputStyle()" ng-keydown="$event.which === 13 && !$event.shiftKey && sendMessage($event)" ng-change="typing()"></textarea>
         <a class="send-btn" href="#" ng-click="sendMessage($event)">
           <i class="zmdi zmdi-mail-send"></i>
         </a>

@@ -5,7 +5,7 @@ app.factory('textUtil', function () {
   function isEnglish(text) {
     if (!text)
       return false;
-    var english = /^[a-zA-Z0-9.?></\\:;,{}()$[\]\-_+=!@#$%\^&*|'"` ]*$/;
+    var english = /^[a-zA-Z0-9.?></\\/\n:;,{}()$[\]\-_+=!@#$%\^&*|'"` ]*$/;
     var isEnglish = true;
     text.split(' ').forEach(function (word) {
       isEnglish = isEnglish && english.test(word);

@@ -930,6 +930,9 @@ ul.dropdown-menu {
 }
 
 .chat {
+  height: calc(100vh - 115px);
+  height: -moz-calc(100vh - 115px);
+  height: -webkit-calc(100vh - 115px);
   min-height: calc(100vh - 183px);
   min-height: -moz-calc(100vh - 183px);
   min-height: -webkit-calc(100vh - 183px);
@@ -2104,6 +2107,7 @@ ol.linenums, ol.linenums-view {
 .input-holder {
   background: #eee;
   position: relative;
+  max-height: 130px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -3677,6 +3681,6 @@ label {
   display: none;
 }
 
-.dragover > .drag-drop {
+.dragover>.drag-drop {
   display: unset;
 }
