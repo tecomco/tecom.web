@@ -662,13 +662,14 @@ app.controller('messagesController', [
           });
         } else
           $state.go('messenger.home');
-      } else if (evt.keyCode == 13 && evt.shiftKey) {
-        if (document.activeElement.id !== 'inputPlaceHolder')
+      } else if (document.activeElement.id !== 'inputPlaceHolder') {
+        if (evt.keyCode == 13 && evt.shiftKey)
           evt.preventDefault();
-      } else if (!evt.shiftKey) {
-        var focusedElement = document.activeElement;
-        if (!focusedElement || focusedElement === document.body)
-          inputPlaceHolder.focus();
+        else if ((evt.keyCode > 36 && evt.keyCode < 41) || (evt.keyCode >
+            47 && evt.keyCode < 91) || (evt.keyCode > 95 && evt.keyCode <
+            112) || (evt.keyCode > 185))
+          if (!evt.ctrlKey)
+            inputPlaceHolder.focus();
       }
     };
 

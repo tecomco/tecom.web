@@ -27,6 +27,7 @@ app.factory('textUtil', function () {
     }
     wellFormedText += urlify(ltrifyIfIsEnglish(textParts[textParts.length -
       1]));
+    wellFormedText = wellFormedText.replace(/\n/g, '<br>');
     return wellFormedText;
   }
 
@@ -113,6 +114,7 @@ app.factory('textUtil', function () {
     plainText = plainText.replace(/>/g, '&gt');
     plainText = plainText.replace(/{/g, '&#123;&zwnj;');
     plainText = plainText.replace(/}/g, '&zwnj;&#125;');
+    plainText = plainText.replace(/[ \t]/g, '&nbsp');
     return plainText;
   }
 
