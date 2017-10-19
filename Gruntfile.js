@@ -130,7 +130,7 @@ module.exports = function (grunt) {
             'app/components/messenger/messages/message.model.js',
             'app/components/messenger/messages/messages.ctrl.js',
             'app/components/messenger/messages/messages.service.js',
-            'app/components/files/files.ctrl.js',
+            'app/components/messenger/toolbar/files.ctrl.js',
             'app/components/files/filemanager-files.ctrl.js',
             'app/components/files/files.service.js',
             'app/components/files/file.model.js',
