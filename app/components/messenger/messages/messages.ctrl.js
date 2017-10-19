@@ -4,11 +4,11 @@ app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
-  'ngProgressFactory', 'dateUtil', 'fileUtil', 'Toolbar',
+  'ngProgressFactory', 'dateUtil', 'fileUtil',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q, Team,
     ArrayUtil, textUtil, CurrentMember, ngProgressFactory, dateUtil,
-    fileUtil, Toolbar
+    fileUtil
   ) {
 
     var self = this;

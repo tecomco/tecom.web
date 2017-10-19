@@ -19,8 +19,8 @@ app.controller('toolbarController', ['$rootScope', '$scope', 'Toolbar',
       $scope.doesChannelHaveAnyLivedFile = false;
     });
 
-    $scope.showSelectedTool = function (toolNum) {
-      if (toolNum === Toolbar.TOOL.FILE && !isFileManagerInitialized) {
+    $scope.toggleTool = function (toolNum) {
+      if (toolNum === Toolbar.TOOL.FILEMANAGER && !isFileManagerInitialized) {
         $rootScope.$broadcast('initialize:fileManager');
         isFileManagerInitialized = true;
       }
