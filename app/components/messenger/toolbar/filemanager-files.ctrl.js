@@ -9,12 +9,14 @@ app.controller('fileManagerController', [
     $scope.files = [];
     $scope.fileManagerFilterType = null;
     $scope.isFileManagerInitialized = false;
+    $scope.channel = channelsService.getCurrentChannel();
     var isLoading = false;
     var isFileManagerClosed = true;
+
     $scope.$on('channel:changed', function () {
       $scope.channel = channelsService.getCurrentChannel();
     });
-    console.log('filemanager');
+
     $scope.$on('file:newFileManagerFile', function (event, file) {
       $scope.files.push(file);
     });
@@ -65,6 +67,7 @@ app.controller('fileManagerController', [
     };
 
     $scope.viewFile = function (fileId) {
+      $rootScope.$broadcast('active:liveTool');
       filesService.viewFile(fileId);
     };
 

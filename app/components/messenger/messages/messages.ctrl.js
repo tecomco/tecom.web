@@ -241,6 +241,7 @@ app.controller('messagesController', [
     };
 
     $scope.showFileLine = function (fileId, startLine, endLine) {
+      $rootScope.$broadcast('active:liveTool');
       filesService.showFileLine(fileId, startLine, endLine);
     };
 

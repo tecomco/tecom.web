@@ -35,6 +35,7 @@ app.service('messagesService', [
           channelsService.updateChannelLastDatetime(message.channelId,
             message.datetime);
           if (message.about) {
+            $rootScope.$broadcast('active:liveTool');
             filesService.showFileLine(message.about.fileId,
               message.about.lineNumber, message.about.lineNumberTo);
           }

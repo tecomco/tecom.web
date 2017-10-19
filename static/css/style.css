@@ -2278,6 +2278,11 @@ ol.linenums, ol.linenums-view {
   -webkit-transition: all 0.3s ease;
 }
 
+.live-notif {
+  color: rgb(230, 77, 77);
+  font-size: 10px;
+}
+
 .fileManagerLoading {
   background: black;
   height: 100vh

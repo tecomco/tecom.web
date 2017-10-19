@@ -48,7 +48,7 @@
              return 'col-sm-6 col-lg- no-padding';
            return 'col-sm-8 col-lg- no-padding';
          } else
-           return 'col-sm-12 col-lg- no-padding'
+           return 'col-sm-12 col-lg- no-padding';
        } else if (pannel === 'files') {
          if ($rootScope.activeTool) {
            if ($scope.activeFile)
