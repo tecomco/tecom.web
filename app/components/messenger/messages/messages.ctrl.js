@@ -316,6 +316,12 @@ app.controller('messagesController', [
       return message.id === initialMemberLastSeenId + 1;
     };
 
+    $scope.isToolActive = function (toolNum) {
+      console.log(toolNum);
+      console.log($scope.activeTool);
+      return toolNum === $scope.activeTool;
+    };
+
     $scope.isMessageDateInAnotherDay = function (message) {
       var previousMessageId;
       if (message.id)

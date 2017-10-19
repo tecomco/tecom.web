@@ -128,10 +128,10 @@
        $http.get('app/components/messenger/header/header.view.html?v=1.0.5', {
          cache: $templateCache
        });
-       $http.get('app/components/files/files.view.html?v=1.0.6', {
+       $http.get('app/components/messenger/toolbar/files.view.html', {
          cache: $templateCache
        });
-       $http.get('app/components/files/filemanager-files.view.html?v=1.0.3', {
+       $http.get('app/components/messenger/toolbar/filemanager-files.view.html', {
          cache: $templateCache
        });
      }
