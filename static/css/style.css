@@ -2278,6 +2278,11 @@ ol.linenums, ol.linenums-view {
   -webkit-transition: all 0.3s ease;
 }
 
+.fileManagerLoading {
+  background: black;
+  height: 100vh
+}
+
 .mime-holder {
   /*position: fixed;*/
   width: 100%;
@@ -2292,10 +2297,6 @@ ol.linenums, ol.linenums-view {
   -webkit-transition: all 0.3s ease;
   z-index: 2;
   height: 100vh;
-}
-
-.mime-holder.opened {
-  left: 60px;
 }
 
 .mime-toggle-fix {

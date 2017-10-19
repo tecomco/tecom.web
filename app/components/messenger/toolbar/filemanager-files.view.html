@@ -1,16 +1,12 @@
 <div id=fileManager ng-controller="fileManagerController">
-  <div ng-class="getFileManagerClass()">
-    <div class="mime-toggle-fix"></div>
-    <div class="mime-menu-toggle-holder" ng-click="toggleFileManagerStatus()" tour-step-title="اشتراک‌گذاری فایل‌ها" tour-step="file-manager" tour-step-content="نگران گم شدن فایل‌هاتون نباشید! تو هر که گروهی هستید، از اینجا بصورت منظم می‌تونید به فایل‌ها دسترسی داشته باشید." tour-step-order="5" tour-step-backdrop="true" tour-step-placement="right" tour-step-on-next="navigateToHome()">
-      <div ng-class="getFileManagerToggleClass()">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+  <div class="fileManagerLoading" ng-if="!isFileManagerInitialized">
+    <br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br>
+    <div class="cssload-container">
+      <div class="cssload-speeding-wheel"></div>
     </div>
+  </div>
+  <div ng-show="isFileManagerInitialized" class="mime-holder">
     <div class="mime-menu-header">
       <h3>مدیریت فایل‌ها</h3>
       <div class="mime-more">
@@ -30,7 +26,9 @@
       </div>
     </div>
     <ul class="mime-main">
-      <div ng-if="!doesChannelHaveAnyFilteredFiles()"><div class="mime-item-one no-files">{{getMessageOfNoFilteredFile()}}</div></div>
+      <div ng-if="!doesChannelHaveAnyFilteredFiles()">
+        <div class="mime-item-one no-files">{{getMessageOfNoFilteredFile()}}</div>
+      </div>
       <li ng-repeat="file in files | orderBy : '-date' | filter : shouldShowInFileManager">
         <a class="mime-item-one">
       <svg viewBox="0 0 100 100">

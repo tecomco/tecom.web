@@ -8,49 +8,24 @@ app.controller('fileManagerController', [
 
     $scope.files = [];
     $scope.fileManagerFilterType = null;
+    $scope.isFileManagerInitialized = false;
     var isLoading = false;
     var isFileManagerClosed = true;
-    var isFileManagerInitialized = true;
-
     $scope.$on('channel:changed', function () {
       $scope.channel = channelsService.getCurrentChannel();
     });
-
+    console.log('filemanager');
     $scope.$on('file:newFileManagerFile', function (event, file) {
       $scope.files.push(file);
     });
 
-    $scope.getFileManagerClass = function () {
-      if (isFileManagerClosed)
-        return 'mime-holder closed';
-      else
-        return 'mime-holder opened';
-    };
-
-    $scope.toggleFileManagerStatus = function () {
-      if (isFileManagerInitialized) {
-        isLoading = true;
-        filesService.getFileManagerFiles($scope.channel.id)
-          .then(function (files) {
-            $scope.files = files;
-            isFileManagerInitialized = false;
-            isLoading = false;
-            isFileManagerClosed = false;
-          });
-      } else {
-        if (isFileManagerClosed)
-          isFileManagerClosed = false;
-        else
-          isFileManagerClosed = true;
-      }
-    };
-
-    $scope.getFileManagerToggleClass = function () {
-      if (isLoading)
-        return 'fa fa-spinner fa-spin';
-      else
-        return 'mime-menu-toggle';
-    };
+    $scope.$on('initialize:fileManager', function (event, file) {
+      filesService.getFileManagerFiles($scope.channel.id)
+        .then(function (files) {
+          $scope.files = files;
+          $scope.isFileManagerInitialized = true;
+        });
+    });
 
     $scope.doesChannelHaveAnyFilteredFiles = function () {
       if ($scope.fileManagerFilterType === null) {
@@ -86,6 +61,7 @@ app.controller('fileManagerController', [
 
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
+      $rootScope.$broadcast('active:liveTool');
     };
 
     $scope.viewFile = function (fileId) {

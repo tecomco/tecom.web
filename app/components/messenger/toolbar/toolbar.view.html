@@ -1,15 +1,11 @@
 <div class="sidebar window-transition" ng-controller="toolbarController">
   <ul>
     <li>
-      <a ng-click="showSelectedTool('1')" ng-class="getToolbarIconCss('1')" href="#">
+      <a ng-click="showSelectedTool(1)" ng-class="getToolbarIconCss(1)" href="#">
         <div class="sidebar-icon"><i class="zmdi zmdi-file"></i></div><span>مدیریت فایل‌ها</span></a>
     </li>
     <li>
-      <a ng-click="showSelectedTool('2')" ng-class="getToolbarIconCss('2')" href="#">
-        <div class="sidebar-icon"><i class="zmdi zmdi-file-text"></i></div><span>سورس کد</span></a>
-    </li>
-    <li>
-      <a href="#">
+      <a ng-click="showSelectedTool(2)" ng-class="getToolbarIconCss(2)" href="#">
         <div class="sidebar-icon"><i class="zmdi zmdi-file-text"></i></div><span>سورس کد</span></a>
     </li>
   </ul>

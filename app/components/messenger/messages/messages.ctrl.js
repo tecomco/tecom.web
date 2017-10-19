@@ -4,11 +4,11 @@ app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Message', 'messagesService', 'channelsService', 'filesService',
   '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
-  'ngProgressFactory', 'dateUtil', 'fileUtil',
+  'ngProgressFactory', 'dateUtil', 'fileUtil', 'Toolbar',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q, Team,
     ArrayUtil, textUtil, CurrentMember, ngProgressFactory, dateUtil,
-    fileUtil
+    fileUtil, Toolbar
   ) {
 
     var self = this;
@@ -261,6 +261,7 @@ app.controller('messagesController', [
 
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
+      $rootScope.$broadcast('active:liveTool');
     };
 
     $scope.canBeLived = function (message) {
@@ -269,6 +270,7 @@ app.controller('messagesController', [
     };
 
     $scope.viewFile = function (fileId) {
+      $rootScope.$broadcast('active:liveTool');
       filesService.viewFile(fileId);
     };
 
@@ -314,12 +316,6 @@ app.controller('messagesController', [
       if (!initialLastMessageId)
         return false;
       return message.id === initialMemberLastSeenId + 1;
-    };
-
-    $scope.isToolActive = function (toolNum) {
-      console.log(toolNum);
-      console.log($scope.activeTool);
-      return toolNum === $scope.activeTool;
     };
 
     $scope.isMessageDateInAnotherDay = function (message) {

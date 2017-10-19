@@ -191,7 +191,6 @@ app.service('filesService', [
         data.fileId = fileId;
       else if (type === 'kill')
         data.fileId = null;
-
       socket.emit('file:lived', data);
     }
 

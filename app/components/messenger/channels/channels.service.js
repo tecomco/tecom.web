@@ -206,6 +206,7 @@ app.service('channelsService', [
     function setCurrentChannel(channel) {
       self.currentChannel = channel;
       $rootScope.$broadcast('channel:changed');
+      console.log('set channel');
     }
 
     function getCurrentChannel() {

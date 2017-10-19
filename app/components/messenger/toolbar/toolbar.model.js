@@ -5,8 +5,8 @@ app.factory('Toolbar', [function () {
   function Toolbar() {}
 
   Toolbar.TOOL = {
-    FILE: 0,
-    LIVE: 1,
+    FILE: 1,
+    LIVE: 2,
   };
 
   return Toolbar;
