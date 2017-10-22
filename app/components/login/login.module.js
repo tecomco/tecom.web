@@ -3,20 +3,6 @@
 var app = angular.module('LoginApp', [
     'ui.router', 'ngStorage', 'angular-jwt', 'ismobile', 'config'
   ])
-  .config(['$httpProvider', 'ENV',
-    function ($httpProvider, ENV) {
-      if (!ENV.isWeb)
-        $httpProvider.interceptors.push(function ($q, ENV) {
-          return {
-            request: function (config) {
-              if (config.url.indexOf('.html') === -1)
-                config.url = ENV.apiUri + config.url;
-              return config || $q.when(config);
-            }
-          };
-        });
-    }
-  ])
   .config(['$locationProvider', 'ENV', function ($locationProvider, ENV) {
     if (ENV.isWeb)
       $locationProvider.html5Mode(true);
@@ -48,20 +34,19 @@ var app = angular.module('LoginApp', [
           }
         })
         .state('findTeam', {
-          url: '/login',
+          url: '/findTeam',
           views: {
             '': {
-              templateUrl: ENV.isWeb ?
-                'app/components/login/find-team.electron.html' : 'find-team.electron.html'
+              templateUrl: 'find-team.electron.html'
             }
           }
         });
     }
   ])
   .controller('loginController', [
-    '$scope', '$log', '$window', '$state', '$location', '$http',
-    '$localStorage', 'AuthService', 'ENV',
-    function ($scope, $log, $window, $state, $location, $http, $localStorage,
+    '$scope', '$log', '$window', '$state', '$location', '$localStorage',
+    'AuthService', 'ENV',
+    function ($scope, $log, $window, $state, $location, $localStorage,
       AuthService, ENV) {
       $scope.hasLoginError = false;
       $scope.submitClicked = false;
@@ -118,7 +103,7 @@ var app = angular.module('LoginApp', [
 
       $scope.getTecomBigLogoUrl = function () {
         if (ENV.isWeb)
-          return 'static/img/tecom-logo-big.png';
+          return ENV.staticUri + '/static/img/tecom-logo-big.png';
         else
           return '../../../static/img/tecom-logo-big.png';
       };
@@ -186,7 +171,6 @@ var app = angular.module('LoginApp', [
       var initializeLoginForm = function () {
         $scope.forms.login.$setPristine();
         $scope.password = '';
-        document.getElementById('email').focus();
       };
     }
   ])

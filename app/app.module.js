@@ -6,8 +6,8 @@ var app = angular.module('tecomApp', [
   'bm.uiTour', 'angular-web-notification'
 ]);
 
-app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
-  'ENV',
+app.config([
+  '$httpProvider', 'jwtOptionsProvider', '$localStorageProvider', 'ENV',
   function ($httpProvider, jwtOptionsProvider, $localStorageProvider, ENV) {
 
     var config = {
@@ -15,25 +15,9 @@ app.config(['$httpProvider', 'jwtOptionsProvider', '$localStorageProvider',
         return $localStorageProvider.get('token');
       }
     };
-
-    if (!ENV.isWeb)
-      config.whiteListedDomains = ['http://localhost:8000'];
-
+    config.whiteListedDomains = [''];
     jwtOptionsProvider.config(config);
-
     $httpProvider.interceptors.push('jwtInterceptor');
-
-    if (!ENV.isWeb)
-      $httpProvider.interceptors.push(function ($q, ENV) {
-        return {
-          request: function (config) {
-            if (config.url.indexOf('.html') === -1 &&
-              config.url.indexOf('//') === -1)
-              config.url = ENV.apiUri + config.url;
-            return config || $q.when(config);
-          }
-        };
-      });
   }
 ]);
 

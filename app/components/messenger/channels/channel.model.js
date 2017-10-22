@@ -2,9 +2,9 @@
 
 app.factory('Channel', [
   '$stateParams', 'textUtil', 'ArrayUtil', '$q', 'CurrentMember', 'Team',
-  'Member', '$http',
+  'Member', '$http', 'ENV',
   function ($stateParams, textUtil, ArrayUtil, $q, CurrentMember, Team,
-    Member, $http) {
+    Member, $http, ENV) {
 
     function Channel(name, slug, description, type, id, membersCount,
       memberId, isFakeDirect, liveFileId, teamId,
@@ -164,7 +164,7 @@ app.factory('Channel', [
      */
     Channel.prototype.handleIconClassError = function () {
       if (!this.hasSentIconError) {
-        $http.post('/api/v1/logs/create/', {
+        $http.post(ENV.apiUri + '/api/v1/logs/create/', {
           message: 'getIconClass error. Slug: ' + this.slug +
             ', Team member ids: [' +
             Team.members.map(function (member) {

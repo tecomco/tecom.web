@@ -3,16 +3,18 @@
 app.controller('teamProfileController', [
   '$scope', '$log', 'profileService', '$uibModalInstance', 'CurrentMember',
   'Team', '$timeout', 'validationUtil', 'ArrayUtil', 'teamService',
-  'channelsService', 'tourClicked', 'textUtil',
+  'channelsService', 'tourClicked', 'textUtil', 'ENV',
   function ($scope, $log, profileService, $uibModalInstance,
     CurrentMember, Team, $timeout, validationUtil, ArrayUtil, teamService,
-    channelsService, tourClicked, textUtil) {
+    channelsService, tourClicked, textUtil, ENV) {
 
     $scope.teamActiveMembers = [];
     $scope.teamActiveEmails = [];
     $scope.plan = {};
     $scope.plan.teamPlanName = Team.plan.name;
     $scope.plan.membersLimit = Team.plan.membersLimit;
+    $scope.userDefaultIcon = (ENV.isWeb ? ENV.staticUri : '') +
+      '/static/img/user-def.png';
     initialize();
 
     $scope.$on('members:updated', function () {

@@ -24,20 +24,7 @@ app.factory('teamService', [
 
     socket.on('member:remove', function (memberId) {
       if (memberId === CurrentMember.member.id) {
-        AuthService.logout()
-          .then(function () {
-            delete $localStorage.token;
-            if (ENV.isWeb)
-              $window.location.assign('/login?err=UserRemoved');
-            else
-              $window.location.assign(
-                'app/components/login/login.electron.html?err=UserRemoved'
-              );
-            // const foo = require('electron').remote
-            // foo.getCurrentWindow().loadURL(
-            //   `file://${__dirname}/app/components/login/login.html?err=UserRemoved`
-            // )
-          });
+        AuthService.logout('UserRemoved');
       } else {
         deactiveTeamMember(memberId);
         var username = Team.getUsernameByMemberId(memberId);
@@ -59,7 +46,7 @@ app.factory('teamService', [
     }
 
     return {
-      deactiveTeamMember: deactiveTeamMember,
+      deactiveTeamMember: deactiveTeamMember
     };
 
   }

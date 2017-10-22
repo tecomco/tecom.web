@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('Member', ['User', function (User) {
+app.factory('Member', ['User', 'ENV', function (User, ENV) {
 
   function Member(teamMemberId, isAdmin, userId, username, email,
     image, status) {
@@ -24,7 +24,7 @@ app.factory('Member', ['User', function (User) {
   Member.TECOM_BOT = {
     id: 0,
     username: 'تیک-بات',
-    image: 'static/img/user-def.png'
+    image: (ENV.isWeb ? ENV.staticUri : '') + '/static/img/user-def.png'
   };
 
   Member.STATUS = {

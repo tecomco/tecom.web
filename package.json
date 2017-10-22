@@ -48,6 +48,6 @@
     "build:server": "npm install",
     "build:client": "bower install",
     "start": "npm run build",
-    "installer": "node installer.js"
+    "makeInstaller": "node installer.js"
   }
 }

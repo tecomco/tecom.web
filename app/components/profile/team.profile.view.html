@@ -18,7 +18,7 @@
             </div>
           </div>
           <div ng-repeat="activeEmail in teamActiveEmails | orderBy : 'create_datetime'" class="g-m-one">
-            <img src='static/img/user-def.png' />
+            <img ng-src={{userDefaultIcon}} />
             <label>{{activeEmail.email}} (در انتظار)</label>
             <div style="float: left">
               <confirm-dialog class="t-m-btn" message='مطمئنی میخوای به ایمیل {{activeEmail.email}} دوباره دعوت‌نامه بفرستی ؟' cancel="نه، حواسم نبود" ok="آره" args="[activeEmail.id]" confirm-func="resendInvitationEmail" confirm-button="success" icon="zmdi zmdi-mail-send"></confirm-dialog>

@@ -71,15 +71,7 @@ app.controller('userProfileController', [
     $scope.leaveTeam = function () {
       profileService.removeTeamMember()
         .then(function () {
-          return AuthService.logout();
-        })
-        .then(function () {
-          delete $localStorage.token;
-          if (ENV.isWeb)
-            $window.location.href = '/login';
-          else
-            $window.location.assign(
-              'app/components/login/login.electron.html');
+          AuthService.logout();
         });
     };
 

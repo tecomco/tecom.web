@@ -2,9 +2,9 @@
 
 app.factory('Team', [
   '$http', 'socket', '$q', '$log', '$localStorage', 'ArrayUtil', 'Member',
-  'CurrentMember',
+  'CurrentMember', 'ENV',
   function ($http, socket, $q, $log, $localStorage, ArrayUtil, Member,
-    CurrentMember) {
+    CurrentMember, ENV) {
 
     function Team() {}
 
@@ -44,7 +44,7 @@ app.factory('Team', [
     Team.getTeamData = function () {
       return $http({
         method: 'GET',
-        url: '/api/v1/teams/' + Team.id + '/',
+        url: ENV.apiUri + '/api/v1/teams/' + Team.id + '/',
         headers: {
           'Authorization': 'JWT ' + $localStorage.token
         }
@@ -92,7 +92,9 @@ app.factory('Team', [
     };
 
     Team.getImageByMemberId = function (memberId) {
-      if (CurrentMember.member.isTecomBot()) return 'static/img/user-def.png';
+      if (CurrentMember.member.isTecomBot())
+        return (ENV.isWeb ? ENV.staticUri : '') +
+          '/static/img/user-def.png';
       if (memberId === Member.TECOM_BOT.id) return Member.TECOM_BOT.image;
       return Team.getMemberByMemberId(memberId).user.image;
     };

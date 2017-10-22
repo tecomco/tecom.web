@@ -2,7 +2,7 @@
 
 app.factory('domainUtil', ['$location', '$localStorage', 'ENV', function (
   $location, $localStorage, ENV) {
-
+    
   function getSubdomain() {
     if (ENV.isWeb) {
       var host = $location.host();

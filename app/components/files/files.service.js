@@ -35,7 +35,7 @@ app.service('filesService', [
     function getFileDataByUrl(fileUrl) {
       return $http({
         method: 'GET',
-        url: fileUrl
+        url: ENV.staticUri + fileUrl
       });
     }
 
@@ -52,7 +52,7 @@ app.service('filesService', [
         var channelId;
         $http({
             method: 'GET',
-            url: '/api/v1/files/' + fileId + '/'
+            url: ENV.apiUri + '/api/v1/files/' + fileId + '/'
           })
           .then(function (res) {
             url = res.data.file;
@@ -147,7 +147,7 @@ app.service('filesService', [
       var deferred = $q.defer();
       $http({
           method: 'GET',
-          url: '/api/v1/files/channels/' + channelId + '/'
+          url: ENV.apiUri + '/api/v1/files/channels/' + channelId + '/'
         })
         .then(function (filesData) {
           var files = filesData.data.map(function (file) {

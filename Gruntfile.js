@@ -36,72 +36,98 @@ module.exports = function (grunt) {
         dest: ENV_CONFIG_PATH
       },
       // Environment targets
-      local: {
-        options: {
-          dest: 'app/app.config.js'
-        },
+      webLocal: {
         constants: {
           ENV: {
-            name: 'local',
+            name: 'web-local',
             socketUri: 'ws.localhost:4000/',
             apiUri: 'http://api.localhost:8080',
             staticUri: 'http://static.localhost:8080',
+            updateUri: '',
             isWeb: true
           }
         }
       },
-      prod: {
-        options: {
-          dest: 'app/app.config.js'
-        },
+      webProd: {
         constants: {
           ENV: {
-            name: 'prod',
+            name: 'web-prod',
             socketUri: 'ws.tecom.me/',
             apiUri: 'http://api.tecom.me',
             staticUri: 'http://static.tecom.me',
+            updateUri: '',
             isWeb: true
           }
         }
       },
-      dev: {
-        options: {
-          dest: 'app/app.config.js'
-        },
+      webDev: {
         constants: {
           ENV: {
-            name: 'dev',
+            name: 'web-dev',
             socketUri: 'ws.tecomdev.ir:4000/',
             apiUri: 'http://api.tecomdev.ir',
             staticUri: 'http://static.tecomdev.ir',
+            updateUri: '',
             isWeb: true
           }
         }
       },
-      stage: {
-        options: {
-          dest: 'app/app.config.js'
-        },
+      webStage: {
         constants: {
           ENV: {
-            name: 'stage',
+            name: 'web-stage',
             socketUri: 'ws.tecomstage.ir/',
-            apiUri: 'http://api.tecomdev.ir',
-            staticUri: 'http://static.tecomdev.ir',
+            apiUri: 'http://api.tecomstage.ir',
+            staticUri: 'http://static.tecomstage.ir',
+            updateUri: '',
             isWeb: true
           }
         }
       },
-      desktop: {
-        options: {
-          dest: 'app/app.config.js'
-        },
+      desktopLocal: {
         constants: {
           ENV: {
-            name: 'desktop',
-            socketUri: 'ws://ws.tecomdev.ir:4000/',
+            name: 'desktop-local',
+            socketUri: 'ws.localhost:4000/',
+            apiUri: 'http://api.localhost:8080',
+            staticUri: 'http://static.localhost:8080',
+            updateUri: '',
+            isWeb: false
+          }
+        }
+      },
+      desktopProd: {
+        constants: {
+          ENV: {
+            name: 'desktop-prod',
+            socketUri: 'ws.tecom.me/',
+            apiUri: 'http://api.tecom.me',
+            staticUri: 'http://static.tecom.me',
+            updateUri: 'http://updates.tecom.me/update/',
+            isWeb: false
+          }
+        }
+      },
+      desktopDev: {
+        constants: {
+          ENV: {
+            name: 'desktop-dev',
+            socketUri: 'ws.tecomdev.ir:4000/',
             apiUri: 'http://api.tecomdev.ir',
             staticUri: 'http://static.tecomdev.ir',
+            updateUri: 'http://updates.tecomdev.ir/update/',
+            isWeb: false
+          }
+        }
+      },
+      desktopStage: {
+        constants: {
+          ENV: {
+            name: 'desktop-stage',
+            socketUri: 'ws.tecomstage.ir/',
+            apiUri: 'http://api.tecomstage.ir',
+            staticUri: 'http://static.tecomstage.ir',
+            updateUri: 'http://updates.tecomstage.ir/update/',
             isWeb: false
           }
         }
@@ -128,6 +154,7 @@ module.exports = function (grunt) {
             'app/shared/directives/compile.directive.js',
             'app/shared/directives/confirmDialog.directive.js',
             'app/shared/socket/socket.service.js',
+            'app/shared/notification/notification.js',
             'app/shared/auth/user.model.js',
             'app/shared/auth/team.model.js',
             'app/shared/auth/team.service.js',
@@ -142,6 +169,7 @@ module.exports = function (grunt) {
           ],
           'dist/min-safe/components.js': [
             'app/components/messenger/messenger.ctrl.js',
+            'app/components/messenger/messenger.service.js',
             'app/components/messenger/channels/channel.model.js',
             'app/components/messenger/channels/channels.ctrl.js',
             'app/components/messenger/channels/channel-create.ctrl.js',

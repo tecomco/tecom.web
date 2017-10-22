@@ -4,10 +4,10 @@
 
  app.controller('MessengerCtrl', [
    '$rootScope', '$scope', '$log', '$window', '$uibModal', 'AuthService',
-   'ENV', 'CurrentMember', '$localStorage', '$state', '$http',
-   '$templateCache',
+   'ENV', 'CurrentMember', '$localStorage', '$state', '$templateCache',
+   'messengerService',
    function ($rootScope, $scope, $log, $window, $uibModal, AuthService, ENV,
-     CurrentMember, $localStorage, $state, $http, $templateCache) {
+     CurrentMember, $localStorage, $state, $templateCache, messengerService) {
 
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
@@ -64,25 +64,17 @@
      };
 
      $scope.logout = function () {
-       AuthService.logout()
-         .then(function () {
-           delete $localStorage.token;
-           if (ENV.isWeb)
-             $window.location.href = '/login';
-           else
-             $window.location.assign(
-               'app/components/login/login.electron.html');
-         });
+       AuthService.logout();
      };
 
      $scope.getDontDisturbModeClass = function () {
        switch (CurrentMember.dontDisturb.mode) {
-       case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
-         return 'zmdi zmdi-notifications-active';
-       case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
-         return 'zmdi zmdi-notifications-off';
-       case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
-         return 'zmdi zmdi-notifications-paused';
+         case CurrentMember.DONT_DISTURB_MODE.DEACTIVE:
+           return 'zmdi zmdi-notifications-active';
+         case CurrentMember.DONT_DISTURB_MODE.ACTIVE:
+           return 'zmdi zmdi-notifications-off';
+         case CurrentMember.DONT_DISTURB_MODE.TIMEACTIVE:
+           return 'zmdi zmdi-notifications-paused';
        }
      };
 
@@ -119,10 +111,7 @@
      };
 
      $scope.updateApplication = function () {
-       const {
-         ipcRenderer
-       } = require('electron');
-       ipcRenderer.send('start:update');
+       messengerService.updateApplication();
      };
 
      angular.element($window)
@@ -137,49 +126,25 @@
      function initialize() {
        $window.Notification.requestPermission();
        CurrentMember.initializeDontDisturbMode();
-       cacheMessagesTemplates();
+       messengerService.cacheMessagesTemplates();
        if (!ENV.isWeb)
          checkForAppUpdate();
      }
 
-     function cacheMessagesTemplates() {
-       $http.get(
-         'app/components/messenger/messages/messages.view.html?v=1.1.2', {
-           cache: $templateCache
-         });
-       $http.get('app/components/messenger/header/header.view.html?v=1.0.5', {
-         cache: $templateCache
-       });
-       $http.get('app/components/files/files.view.html?v=1.0.6', {
-         cache: $templateCache
-       });
-       $http.get('app/components/files/filemanager-files.view.html?v=1.0.3', {
-         cache: $templateCache
-       });
-     }
-
      function checkForAppUpdate() {
-       var appVersion = require('./package.json').version;
-       var os = require('os').platform();
-       $http.get('http://updates.tecomdev.ir/update/' + os + '/' +
-           appVersion)
-         .then(function (updateData) {
-           if (updateData.data.name) {
-             if (updateData.data.name.split('.').join('') >
-               appVersion.split('.').join(''))
-               $scope.updateAvailable = true;
+       messengerService.checkForAppUpdate()
+         .then(function (updateAvailable) {
+           if (updateAvailable) {
+             $scope.updateAvailable = true;
+             const {
+               ipcRenderer
+             } = require('electron');
+             ipcRenderer.on('update:started', () => {
+               $scope.update.status = 'درحال دانلود';
+               $scope.update.class = 'fa fa-spinner fa-spin';
+             });
            }
-         })
-         .catch(function (err) {
-           $log.info('Checing new updates failed.', err);
          });
-       const {
-         ipcRenderer
-       } = require('electron');
-       ipcRenderer.on('update:started', () => {
-         $scope.update.status = 'درحال دانلود';
-         $scope.update.class = 'fa fa-spinner fa-spin';
-       });
      }
 
      function checkIfUserSeenTour() {

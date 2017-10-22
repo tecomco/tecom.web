@@ -1,20 +1,20 @@
 /*jshint esversion: 6 */
 
 'use strict';
-
 const electronInstaller = require('electron-winstaller');
+const path = require('path');
 
 const resultPromise = electronInstaller.createWindowsInstaller({
-  appDirectory: "C:/Users/AmirHossein Ameli/Desktop/Tecom-clone/tecom.web/Tecom-win32-x64",
-  outputDirectory: 'C:/Users/AmirHossein Ameli/Desktop/Tecom-clone/tecom.web/Tecom-win32-x64/release',
+  appDirectory: path.join(__dirname, 'Tecom-win32-x64'),
+  outputDirectory: path.join(__dirname, 'Tecom-win32-x64/release'),
   exe: 'Tecom.exe',
-  authors : 'Tecom Co',
-  description : 'Tecom.me',
-  version : '0.0.2',
-  title : 'Tecom',
-  loadingGif: 'C:/Users/AmirHossein Ameli/Desktop/Tecom-clone/tecom.web/static/img/loading.gif',
-  iconUrl: 'C:/Users/AmirHossein Ameli/Desktop/Tecom-clone/tecom.web/favicon.ico',
-  setupIcon: 'C:/Users/AmirHossein Ameli/Desktop/Tecom-clone/tecom.web/favicon.ico',
+  authors: 'Tecom Co',
+  description: 'Tecom.me',
+  version: '0.0.1',
+  title: 'Tecom',
+  loadingGif: path.join(__dirname, 'static/img/loading.gif'),
+  iconUrl: path.join(__dirname, 'favicon.ico'),
+  setupIcon: path.join(__dirname, 'favicon.ico'),
   setupExe: 'Tecom.exe',
   noMsi: 'No'
 });

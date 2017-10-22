@@ -18,6 +18,7 @@ app.config(['$provide', function ($provide) {
         $delegate(exception, cause);
         var $http = $injector.get('$http');
         var $log = $injector.get('$log');
+        var ENV = $injector.get('ENV');
         var CurrentMember = $injector.get('CurrentMember');
         var error = {
           message: exception.message,
@@ -27,7 +28,7 @@ app.config(['$provide', function ($provide) {
         if (CurrentMember.exists()) {
           error.member = CurrentMember.member.id;
         }
-        $http.post('/api/v1/logs/create/', error)
+        $http.post(ENV.apiUri + '/api/v1/logs/create/', error)
           .then(function () {
             $log.info('Error log sent to server successfully. We will fix it soon.');
           })

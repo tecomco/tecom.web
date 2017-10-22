@@ -3,10 +3,10 @@
 app.factory('AuthService', [
   '$log', '$http', '$q', '$window', '$timeout', '$localStorage', 'jwtHelper',
   'ArrayUtil', 'CurrentMember', '$injector', 'domainUtil', 'validationUtil',
-  '$rootElement',
+  '$rootElement', 'ENV',
   function ($log, $http, $q, $window, $timeout, $localStorage, jwtHelper,
     ArrayUtil, CurrentMember, $injector, domainUtil, validationUtil,
-    $rootElement) {
+    $rootElement, ENV) {
 
     var Team;
     if ($rootElement.attr('ng-app') === 'tecomApp') {
@@ -47,7 +47,7 @@ app.factory('AuthService', [
 
       $http({
           method: 'POST',
-          url: '/api/v1/auth/login/',
+          url: ENV.apiUri + '/api/v1/auth/login/',
           data: data,
           skipAuthorization: true
         })
@@ -66,23 +66,30 @@ app.factory('AuthService', [
       return defer.promise;
     }
 
-    function logout() {
-      var defer = $q.defer();
-      $http.post('/api/v1/auth/logout/')
+    function logout(errAddress) {
+      $http.post(ENV.apiUri + '/api/v1/auth/logout/')
         .then(function (res) {
           $log.info(res);
-          defer.resolve();
+          redirectToLogin(errAddress);
         })
         .catch(function (err) {
           $log.info('Logout error.', err);
-          defer.reject();
         });
-      return defer.promise;
+    }
+
+    function redirectToLogin(errAddress) {
+      delete $localStorage.token;
+      var errQuery = errAddress ? '?err=' + errAddress : '';
+      if (ENV.isWeb)
+        $window.location.assign('/login' + errQuery);
+      else
+        $window.location.assign(
+          'app/components/login/login.electron.html' + errQuery);
     }
 
     function teamExists(slug) {
       var defer = $q.defer();
-      $http.get('/api/v1/teams/' + slug + '/exists')
+      $http.get(ENV.apiUri + '/api/v1/teams/' + slug + '/exists')
         .then(function (res) {
           if (res.data.team_exists) {
             defer.resolve();
@@ -101,7 +108,7 @@ app.factory('AuthService', [
       var defer = $q.defer();
       $http({
           method: 'GET',
-          url: '/api/v1/auth/is_authenticated',
+          url: ENV.apiUri + '/api/v1/auth/is_authenticated',
           headers: {
             'Authorization': 'JWT ' + token
           }

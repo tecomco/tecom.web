@@ -2,9 +2,9 @@
 
 app.service('channelsService', [
   '$rootScope', '$http', '$q', '$log', 'socket', 'Channel', '$state',
-  'CurrentMember', 'Team', 'ArrayUtil', 'CacheService',
+  'CurrentMember', 'Team', 'ArrayUtil', 'CacheService', 'ENV',
   function ($rootScope, $http, $q, $log, socket, Channel, $state,
-    CurrentMember, Team, ArrayUtil, CacheService) {
+    CurrentMember, Team, ArrayUtil, CacheService, ENV) {
 
     var self = this;
     var MAX_INITIAL_CHANNELS = 5;
@@ -361,7 +361,8 @@ app.service('channelsService', [
       var deferred = $q.defer();
       $http({
           method: 'GET',
-          url: '/api/v1/messenger/channels/' + channelId + '/members/'
+          url: ENV.apiUri + '/api/v1/messenger/channels/' + channelId +
+            '/members/'
         })
         .then(function (data) {
           deferred.resolve(data);

@@ -5,7 +5,6 @@ app.factory('socket', [
   function ($rootScope, $log, ENV, $uibModal, domainUtil, $localStorage) {
 
     var self = this;
-
     var teamSlug = domainUtil.getSubdomain();
 
     self.socket = io.connect(ENV.socketUri, {

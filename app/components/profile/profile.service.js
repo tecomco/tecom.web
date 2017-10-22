@@ -2,16 +2,16 @@
 
 app.service('profileService', [
   '$log', 'Upload', '$http', '$q', 'socket', 'ArrayUtil', 'AuthService',
-  '$localStorage', 'CurrentMember', 'Team',
+  '$localStorage', 'CurrentMember', 'Team', 'ENV',
   function ($log, Upload, $http, $q, socket, ArrayUtil, AuthService,
-    $localStorage, CurrentMember, Team) {
+    $localStorage, CurrentMember, Team, ENV) {
 
     function changeUsername(username) {
       var deferred = $q.defer();
       $http({
           method: 'PATCH',
-          url: '/api/v1/auth/users/' + CurrentMember.member.user.id +
-            '/username/change/',
+          url: ENV.apiUri + '/api/v1/auth/users/' +
+            CurrentMember.member.user.id + '/username/change/',
           data: {
             username: username
           }
@@ -52,7 +52,7 @@ app.service('profileService', [
       var deferred = $q.defer();
       $http({
           method: 'POST',
-          url: '/api/v1/auth/password/change/',
+          url: ENV.apiUri + '/api/v1/auth/password/change/',
           data: {
             old_password: oldPass,
             new_password1: newPass,
@@ -110,7 +110,7 @@ app.service('profileService', [
       var deferred = $q.defer();
       $http({
           method: 'POST',
-          url: '/api/v1/teams/' + Team.id + '/member/' +
+          url: ENV.apiUri + '/api/v1/teams/' + Team.id + '/member/' +
             member.id + '/admin/'
         })
         .then(function () {
@@ -127,7 +127,7 @@ app.service('profileService', [
       var deferred = $q.defer();
       $http({
           method: 'POST',
-          url: '/api/v1/teams/' + Team.id + '/member/' +
+          url: ENV.apiUri + '/api/v1/teams/' + Team.id + '/member/' +
             member.id + '/disadmin/'
         })
         .then(function () {
@@ -144,7 +144,7 @@ app.service('profileService', [
     function getTeamActiveEmails() {
       return $http({
           method: 'GET',
-          url: '/api/v1/teams/' + Team.id + '/invitations'
+          url: ENV.apiUri + '/api/v1/teams/' + Team.id + '/invitations'
         })
         .catch(function (err) {
           $log.info('Error Getting Team Invitation Emails.', err);
@@ -154,7 +154,7 @@ app.service('profileService', [
     function sendInvitationEmail(email) {
       return $http({
         method: 'POST',
-        url: '/api/v1/teams/' + Team.id + '/invite/send/',
+        url: ENV.apiUri + '/api/v1/teams/' + Team.id + '/invite/send/',
         data: {
           email: email
         }
@@ -164,8 +164,8 @@ app.service('profileService', [
     function resendInvitationEmail(emailId) {
       return $http({
           method: 'POST',
-          url: '/api/v1/teams/' + Team.id + '/invitations/' + emailId +
-            '/resend'
+          url: ENV.apiUri + '/api/v1/teams/' + Team.id + '/invitations/' +
+            emailId + '/resend'
         })
         .catch(function (err) {
           $log.info('Error Resending Invitation Email.', err);
@@ -175,8 +175,8 @@ app.service('profileService', [
     function deactivateEmailInvititaion(emailId) {
       return $http({
           method: 'POST',
-          url: '/api/v1/teams/' + Team.id + '/invitations/' + emailId +
-            '/deactivate'
+          url: ENV.apiUri + '/api/v1/teams/' + Team.id + '/invitations/' +
+            emailId + '/deactivate'
         })
         .catch(function (err) {
           $log.info('Error Deactivating Invitation Email.', err);

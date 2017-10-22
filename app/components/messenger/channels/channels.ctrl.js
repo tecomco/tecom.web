@@ -5,14 +5,9 @@
 
 app.controller('channelsController', [
   '$rootScope', '$scope', '$window', '$state', '$uibModal',
-  'channelsService', '$log', 'ENV', '$injector',
+  'channelsService', '$log', 'ENV', 'notification',
   function ($rootScope, $scope, $window, $state, $uibModal, channelsService,
-    $log, ENV, $injector) {
-
-    var webNotification;
-    if (ENV.isWeb) {
-      webNotification = $injector.get('webNotification');
-    }
+    $log, ENV, notification) {
 
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
@@ -33,7 +28,7 @@ app.controller('channelsController', [
       if (!$rootScope.isTabFocused) {
         incrementChannelNotification(message.channelId);
         if (channel.shouldSendNotification())
-          sendNotification(channel);
+          notification.sendNotification(channel);
       } else {
         if (!$scope.channels.current) {
           incrementChannelNotification(message.channelId);
@@ -94,47 +89,6 @@ app.controller('channelsController', [
       document.getElementById('groups').scrollTop = 0;
     };
 
-    function sendNotification(channel) {
-      if (ENV.isWeb)
-        sendWebNotification(channel);
-      else
-        sendAppNotification(channel);
-    }
-
-    function sendWebNotification(channel) {
-      webNotification.showNotification(channel.name, {
-        body: 'شما ' + channel.getLocaleNotifCount() +
-          ' پیام خوانده نشده دارید.',
-        icon: 'favicon.png',
-        onClick: function onNotificationClicked() {
-          channel.hideNotifFunction();
-          channel.hideNotifFunction = null;
-          $window.focus();
-          $state.go('messenger.messages', {
-            slug: channel.getUrlifiedSlug()
-          });
-        },
-      }, function onShow(error, hide) {
-        if (error) {
-          $log.error('Unable to show notification: ' + error.message);
-        } else {
-          channel.hideNotifFunction = hide;
-          setTimeout(function hideNotifFunctionication() {
-            channel.hideNotifFunction = null;
-            hide();
-          }, 5000);
-        }
-      });
-    }
-
-    function sendAppNotification(channel) {
-      var myNotification = new Notification(channel.name, {
-        body: 'شما ' + channel.getLocaleNotifCount() +
-          ' پیام خوانده نشده دارید.',
-        icon: 'favicon.png'
-      });
-    }
-
     function validateUrlChannel() {
       if (!$scope.channels.current) {
         $state.go('messenger.home');
@@ -150,11 +104,13 @@ app.controller('channelsController', [
     function updateFavicon() {
       $rootScope.hasUnread = channelsService.anyChannelHasUnread();
       if (!ENV.isWeb) {
-        const {ipcRenderer} = require('electron');
+        const {
+          ipcRenderer
+        } = require('electron');
         if ($rootScope.hasUnread)
-        ipcRenderer.send('message:unread');
+          ipcRenderer.send('message:unread');
         else
-        ipcRenderer.send('message:read');
+          ipcRenderer.send('message:read');
       }
     }
 

@@ -14,7 +14,8 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil', 'ENV',
     }
 
     FileManagerFile.prototype.getSvgUrl = function () {
-      return 'static/img/file-formats.svg#' + this.extension;
+      return (!ENV.isWeb ? '' : ENV.staticUri) +
+        '/static/img/file-formats.svg#' + this.extension;
     };
 
     FileManagerFile.prototype.getFileName = function () {
