@@ -36,12 +36,8 @@ app.factory('textUtil', ['ENV', function (ENV) {
         var href = url;
         if (url.indexOf('//') === -1)
           href = 'https://' + url;
-        if (ENV.isWeb)
-          return '<a href="' + href + '" target="_blank">' + url +
-            '</a>';
-        else
-          return '<a href="" ng-click="openExternalUrl(\'' + href +
-            '\')">' + url + '</a>';
+        return '<a href="' + href + '" target="_blank">' + url +
+          '</a>';
       } else
         return url;
     });

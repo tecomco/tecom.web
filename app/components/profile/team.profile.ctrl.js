@@ -13,8 +13,8 @@ app.controller('teamProfileController', [
     $scope.plan = {};
     $scope.plan.teamPlanName = Team.plan.name;
     $scope.plan.membersLimit = Team.plan.membersLimit;
-    $scope.userDefaultIcon = (ENV.isWeb ? ENV.staticUri : '') +
-      '/static/img/user-def.png';
+    $scope.userDefaultIcon = (ENV.isWeb ? ENV.staticUri + '/' : '') +
+      'static/img/user-def.png';
     initialize();
 
     $scope.$on('members:updated', function () {
@@ -129,22 +129,22 @@ app.controller('teamProfileController', [
 
     function setInfoOrErrorMessage(type, message) {
       switch (type) {
-        case 'info':
-          $scope.infoMessage = message;
-          $scope.showInfoMessage = true;
-          $timeout(function () {
-            $scope.showInfoMessage = false;
-            $scope.infoMessage = null;
-          }, 4000);
-          break;
-        case 'error':
-          $scope.showErrorMessage = true;
-          $scope.errorMessage = message;
-          $timeout(function () {
-            $scope.showErrorMessage = false;
-            $scope.errorMessage = null;
-          }, 4000);
-          break;
+      case 'info':
+        $scope.infoMessage = message;
+        $scope.showInfoMessage = true;
+        $timeout(function () {
+          $scope.showInfoMessage = false;
+          $scope.infoMessage = null;
+        }, 4000);
+        break;
+      case 'error':
+        $scope.showErrorMessage = true;
+        $scope.errorMessage = message;
+        $timeout(function () {
+          $scope.showErrorMessage = false;
+          $scope.errorMessage = null;
+        }, 4000);
+        break;
       }
     }
 

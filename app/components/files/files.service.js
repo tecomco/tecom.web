@@ -101,7 +101,7 @@ app.service('filesService', [
     function upload() {
       var fileData = uploadQueue[0];
       var uploadPromise = Upload.upload({
-        url: '/api/v1/files/upload/' + fileData.fileName,
+        url: ENV.apiUri + '/api/v1/files/upload/' + fileData.fileName,
         data: {
           name: fileData.fileName,
           channel: fileData.channelId,
@@ -114,6 +114,7 @@ app.service('filesService', [
         fileData.message.uploadPromise = null;
         fileData.deferred.resolve(res);
       }, function (err) {
+        fileData.message.uploadPromise = null;
         if (fileData.message.isUploadAborted) {
           $rootScope.$broadcast('remove:scopeMessage', fileData.message.timestamp);
         } else {

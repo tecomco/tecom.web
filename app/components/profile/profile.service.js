@@ -72,8 +72,8 @@ app.service('profileService', [
     function changeProfileImage(file) {
       var deferred = $q.defer();
       Upload.upload({
-          url: '/api/v1/auth/users/' + CurrentMember.member.user.id +
-            '/image/change/',
+          url: ENV.apiUri + '/api/v1/auth/users/' +
+            CurrentMember.member.user.id + '/image/change/',
           data: {
             image: file
           },

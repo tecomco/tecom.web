@@ -138,7 +138,6 @@ app.controller('messagesController', [
     $scope.abortUpload = function (message) {
       message.isUploadAborted = true;
       message.uploadPromise.abort();
-      message.uploadPromise = null;
     };
 
     $scope.reuploadFile = function (timestamp) {

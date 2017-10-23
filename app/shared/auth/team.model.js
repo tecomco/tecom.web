@@ -93,8 +93,8 @@ app.factory('Team', [
 
     Team.getImageByMemberId = function (memberId) {
       if (CurrentMember.member.isTecomBot())
-        return (ENV.isWeb ? ENV.staticUri : '') +
-          '/static/img/user-def.png';
+        return (ENV.isWeb ? ENV.staticUri + '/' : '') +
+          'static/img/user-def.png';
       if (memberId === Member.TECOM_BOT.id) return Member.TECOM_BOT.image;
       return Team.getMemberByMemberId(memberId).user.image;
     };

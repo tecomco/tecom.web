@@ -24,7 +24,8 @@ app.factory('Member', ['User', 'ENV', function (User, ENV) {
   Member.TECOM_BOT = {
     id: 0,
     username: 'تیک-بات',
-    image: (ENV.isWeb ? ENV.staticUri : '') + '/static/img/user-def.png'
+    image: (ENV.isWeb ? ENV.staticUri + '/' : '') +
+      'static/img/user-def.png'
   };
 
   Member.STATUS = {

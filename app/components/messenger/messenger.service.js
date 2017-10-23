@@ -41,6 +41,7 @@ app.service('messengerService', ['$http', '$log', '$q', '$templateCache', 'ENV',
           deferred.reject();
           $log.info('Checing new updates failed.', err);
         });
+      return deferred.promise;
     }
 
     function updateApplication() {

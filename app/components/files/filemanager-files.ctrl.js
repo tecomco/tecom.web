@@ -8,8 +8,8 @@ app.controller('fileManagerController', [
 
     $scope.files = [];
     $scope.fileManagerFilterType = null;
-    $scope.genericSvg = (!ENV.isWeb ? '' : ENV.staticUri) +
-      '/static/img/file-formats.svg#generic';
+    $scope.genericSvg = (!ENV.isWeb ? '' : ENV.staticUri + '/') +
+      'static/img/file-formats.svg#generic';
     var isLoading = false;
     var isFileManagerClosed = true;
     var isFileManagerInitialized = true;

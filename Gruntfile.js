@@ -40,7 +40,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'web-local',
-            socketUri: 'ws.localhost:4000/',
+            socketUri: 'ws://ws.localhost:4000/',
             apiUri: 'http://api.localhost:8080',
             staticUri: 'http://static.localhost:8080',
             updateUri: '',
@@ -52,7 +52,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'web-prod',
-            socketUri: 'ws.tecom.me/',
+            socketUri: 'ws://ws.tecom.me/',
             apiUri: 'http://api.tecom.me',
             staticUri: 'http://static.tecom.me',
             updateUri: '',
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'web-dev',
-            socketUri: 'ws.tecomdev.ir:4000/',
+            socketUri: 'ws://ws.tecomdev.ir:4000/',
             apiUri: 'http://api.tecomdev.ir',
             staticUri: 'http://static.tecomdev.ir',
             updateUri: '',
@@ -76,7 +76,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'web-stage',
-            socketUri: 'ws.tecomstage.ir/',
+            socketUri: 'ws://ws.tecomstage.ir/',
             apiUri: 'http://api.tecomstage.ir',
             staticUri: 'http://static.tecomstage.ir',
             updateUri: '',
@@ -88,7 +88,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'desktop-local',
-            socketUri: 'ws.localhost:4000/',
+            socketUri: 'ws://ws.localhost:4000/',
             apiUri: 'http://api.localhost:8080',
             staticUri: 'http://static.localhost:8080',
             updateUri: '',
@@ -100,7 +100,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'desktop-prod',
-            socketUri: 'ws.tecom.me/',
+            socketUri: 'ws://ws.tecom.me/',
             apiUri: 'http://api.tecom.me',
             staticUri: 'http://static.tecom.me',
             updateUri: 'http://updates.tecom.me/update/',
@@ -112,7 +112,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'desktop-dev',
-            socketUri: 'ws.tecomdev.ir:4000/',
+            socketUri: 'ws://ws.tecomdev.ir:4000/',
             apiUri: 'http://api.tecomdev.ir',
             staticUri: 'http://static.tecomdev.ir',
             updateUri: 'http://updates.tecomdev.ir/update/',
@@ -124,7 +124,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'desktop-stage',
-            socketUri: 'ws.tecomstage.ir/',
+            socketUri: 'ws://ws.tecomstage.ir/',
             apiUri: 'http://api.tecomstage.ir',
             staticUri: 'http://static.tecomstage.ir',
             updateUri: 'http://updates.tecomstage.ir/update/',
@@ -216,11 +216,14 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);
-  grunt.registerTask('local', ['ngconstant:local']);
-  grunt.registerTask('dev', ['jshint', 'ngconstant:dev']);
-  grunt.registerTask('stage', ['jshint', 'ngconstant:stage', 'minify']);
-  grunt.registerTask('desktop', ['ngconstant:desktop']);
-  grunt.registerTask('prod', ['jshint', 'ngconstant:prod', 'minify']);
+  grunt.registerTask('web-local', ['ngconstant:webLocal']);
+  grunt.registerTask('web-dev', ['jshint', 'ngconstant:webDev']);
+  grunt.registerTask('web-stage', ['jshint', 'ngconstant:webStage', 'minify']);
+  grunt.registerTask('web-prod', ['jshint', 'ngconstant:webProd', 'minify']);
+  grunt.registerTask('desktop-local', ['ngconstant:desktopLocal']);
+  grunt.registerTask('desktop-dev', ['jshint', 'ngconstant:desktopDev']);
+  grunt.registerTask('desktop-stage', ['jshint', 'ngconstant:desktopStage', 'minify']);
+  grunt.registerTask('desktop-prod', ['jshint', 'ngconstant:desktopProd', 'minify']);
   grunt.registerTask('lint', ['jshint']);
   grunt.registerTask('minify', ['ngAnnotate', 'concat', 'uglify']);
 };

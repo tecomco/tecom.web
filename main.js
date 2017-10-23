@@ -13,7 +13,8 @@ const {
   Tray,
   BrowserWindow,
   ipcMain,
-  autoUpdater
+  autoUpdater,
+  shell
 } = require('electron');
 const path = require('path');
 const appVersion = require('./package.json').version;
@@ -132,6 +133,10 @@ function createWindow() {
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
+  mainWindow.webContents.on('new-window', function (event, url) {
+    event.preventDefault();
+    shell.openExternal(url);
+  });
   mainWindow.on('close', function (event) {
     if (!app.isQuiting) {
       event.preventDefault();
@@ -153,9 +158,8 @@ function createWindow() {
         mainWindow = null;
         app.isQuiting = true;
         app.quit();
-      }
     }
-  ]);
+  }]);
   appIcon.setToolTip('Tecom');
   appIcon.setContextMenu(contextMenu);
 

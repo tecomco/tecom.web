@@ -15,7 +15,7 @@ app.factory('notification', ['$log', '$injector', '$window', '$state', 'ENV',
         webNotification.showNotification(channel.name, {
           body: 'شما ' + channel.getLocaleNotifCount() +
             ' پیام خوانده نشده دارید.',
-          icon: ENV.staticUri + '/favicon.png',
+          icon: (ENV.isWeb ? ENV.staticUri + '/' : '') + 'favicon.png',
           onClick: function onNotificationClicked() {
             channel.hideNotifFunction();
             channel.hideNotifFunction = null;
@@ -39,7 +39,7 @@ app.factory('notification', ['$log', '$injector', '$window', '$state', 'ENV',
         var myNotification = new Notification(channel.name, {
           body: 'شما ' + channel.getLocaleNotifCount() +
             ' پیام خوانده نشده دارید.',
-          icon: ENV.staticUri + '/favicon.png'
+          icon: (ENV.isWeb ? ENV.staticUri + '/' : '') + 'favicon.png'
         });
       }
     }
