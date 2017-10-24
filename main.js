@@ -19,27 +19,27 @@ const {
 const path = require('path');
 const appVersion = require('./package.json').version;
 const os = require('os').platform();
-let appIcon = null;
-let mainWindow;
-var shouldQuit = app.makeSingleInstance(function (commandLine, workingDirectory) {
-  if (mainWindow) {
-    if (!mainWindow.isFocused()) mainWindow.show();
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
+let trayIcon = null;
+let tecomWindow;
+var didAppRunBefore = app.makeSingleInstance(function () {
+  if (tecomWindow) {
+    if (!tecomWindow.isFocused()) tecomWindow.show();
+    if (tecomWindow.isMinimized()) tecomWindow.restore();
+    tecomWindow.focus();
   }
 });
-if (shouldQuit) {
+if (didAppRunBefore) {
   app.quit();
   return;
 }
 
 autoUpdater.on('update-available', function () {
-  mainWindow.webContents.send('update:started');
+  tecomWindow.webContents.send('update:started');
 });
 
 autoUpdater.on('update-downloaded', function () {
-  mainWindow = null;
-  app.isQuiting = true;
+  tecomWindow = null;
+  app.shouldQuit = true;
   autoUpdater.quitAndInstall();
 });
 
@@ -50,29 +50,29 @@ ipcMain.on('start:update', () => {
 });
 
 ipcMain.on('message:unread', () => {
-  mainWindow.setOverlayIcon(path.join(__dirname, 'favicon-notif.png'),
+  tecomWindow.setOverlayIcon(path.join(__dirname, 'favicon-notif.png'),
     'پیام خوانده نشده');
-  appIcon.setImage(path.join(__dirname, 'favicon-notif.png'));
+  trayIcon.setImage(path.join(__dirname, 'favicon-notif.png'));
 });
 
 ipcMain.on('message:read', () => {
-  appIcon.setImage(path.join(__dirname, 'favicon.png'));
-  mainWindow.setOverlayIcon(null, '');
+  trayIcon.setImage(path.join(__dirname, 'favicon.png'));
+  tecomWindow.setOverlayIcon(null, '');
 });
 
-app.on('ready', createWindow);
+app.on('ready', createTecomWindow);
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-  if (appIcon)
-    appIcon.destroy();
+  if (trayIcon)
+    trayIcon.destroy();
 });
 
 app.on('activate', function () {
-  if (mainWindow === null) {
-    createWindow();
+  if (tecomWindow === null) {
+    createTecomWindow();
   }
 });
 
@@ -116,54 +116,57 @@ function handleSquirrelEvent() {
   }
 }
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
+function createTecomWindow() {
+  tecomWindow = new BrowserWindow({
     width: 1400,
     height: 1200,
     minWidth: 784,
     icon: path.join(__dirname, 'favicon.png')
   });
 
-  mainWindow.loadURL(
+  tecomWindow.loadURL(
     `file://${__dirname}/app/components/login/login.electron.html`);
-  mainWindow.webContents.openDevTools();
-  mainWindow.webContents.on('crashed', function () {});
-  mainWindow.on('unresponsive', function () {});
+  tecomWindow.webContents.openDevTools();
+  tecomWindow.webContents.on('crashed', function () {});
+  tecomWindow.on('unresponsive', function () {});
   process.on('uncaughtException', function () {});
-  mainWindow.on('closed', function () {
-    mainWindow = null;
+  tecomWindow.on('closed', function () {
+    tecomWindow = null;
   });
-  mainWindow.webContents.on('new-window', function (event, url) {
+  tecomWindow.webContents.on('new-window', function (event, url) {
     event.preventDefault();
     shell.openExternal(url);
   });
-  mainWindow.on('close', function (event) {
-    if (!app.isQuiting) {
+  tecomWindow.on('close', function (event) {
+    if (!app.shouldQuit) {
       event.preventDefault();
-      mainWindow.hide();
+      tecomWindow.hide();
     }
     return false;
   });
 
-  appIcon = new Tray(path.join(__dirname, 'favicon.png'));
+  trayIcon = new Tray(path.join(__dirname, 'favicon.png'));
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Show',
       click: function () {
-        mainWindow.show();
+        tecomWindow.show();
       }
     },
     {
       label: 'Close',
       click: function () {
-        mainWindow = null;
-        app.isQuiting = true;
+        tecomWindow = null;
+        app.shouldQuit = true;
         app.quit();
     }
   }]);
-  appIcon.setToolTip('Tecom');
-  appIcon.setContextMenu(contextMenu);
+  trayIcon.setToolTip('Tecom');
+  trayIcon.setContextMenu(contextMenu);
 
-  appIcon.on('double-click', () => {
-    mainWindow.show();
+  trayIcon.on('double-click', () => {
+    tecomWindow.show();
   });
+  trayIcon.on('click', function() {
+   trayIcon.popUpContextMenu();
+});
 }
