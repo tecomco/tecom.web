@@ -241,7 +241,7 @@ app.controller('messagesController', [
     };
 
     $scope.showFileLine = function (fileId, startLine, endLine) {
-      $rootScope.$broadcast('active:liveTool');
+      $rootScope.$broadcast('toolbar:activate:live');
       filesService.showFileLine(fileId, startLine, endLine);
     };
 
@@ -262,7 +262,7 @@ app.controller('messagesController', [
 
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
-      $rootScope.$broadcast('active:liveTool');
+      $rootScope.$broadcast('toolbar:activate:live');
     };
 
     $scope.canBeLived = function (message) {
@@ -271,7 +271,7 @@ app.controller('messagesController', [
     };
 
     $scope.viewFile = function (fileId) {
-      $rootScope.$broadcast('active:liveTool');
+      $rootScope.$broadcast('toolbar:activate:live');
       filesService.viewFile(fileId);
     };
 

@@ -43,14 +43,14 @@
 
      $scope.getPannelsCSS = function (pannel) {
        if (pannel === 'messages') {
-         if ($rootScope.activeTool) {
+         if ($rootScope.toolbarActiveTool) {
            if ($scope.activeFile)
              return 'col-sm-6 col-lg- no-padding';
            return 'col-sm-8 col-lg- no-padding';
          } else
            return 'col-sm-12 col-lg- no-padding';
        } else if (pannel === 'files') {
-         if ($rootScope.activeTool) {
+         if ($rootScope.toolbarActiveTool) {
            if ($scope.activeFile)
              return 'col-sm-6 col-lg-6 no-padding doc-section';
            else
@@ -110,12 +110,12 @@
        $state.go('messenger.home');
      };
 
-     $scope.isToolActive = function (toolNum) {
-       return toolNum === $rootScope.activeTool;
+     $scope.isToolActive = function (toolName) {
+       return toolName === $rootScope.toolbarActiveTool;
      };
 
      $scope.closeToolbar = function () {
-       $rootScope.activeTool = null;
+       $rootScope.toolbarActiveTool = null;
      };
 
      angular.element($window)

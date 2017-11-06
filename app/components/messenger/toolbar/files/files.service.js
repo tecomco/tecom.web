@@ -149,6 +149,7 @@ app.service('filesService', [
           url: '/api/v1/files/channels/' + channelId + '/'
         })
         .then(function (filesData) {
+          $rootScope.$broadcast('toolbar:fileManager:initializeStatus',true);
           var files = filesData.data.map(function (file) {
             return new FileManagerFile(file.id, file.file, file.name,
               file.date_uploaded, file.type);
@@ -156,6 +157,7 @@ app.service('filesService', [
           deferred.resolve(files);
         })
         .catch(function (err) {
+          $rootScope.$broadcast('toolbar:fileManager:initializeStatus',false);
           $log.info('Error Getting FileManager Files.', err);
           deferred.reject(err);
         });

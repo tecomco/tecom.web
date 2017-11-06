@@ -3,13 +3,20 @@
 app.controller('toolbarController', ['$rootScope', '$scope', 'Toolbar',
   function ($rootScope, $scope, Toolbar) {
 
-    $rootScope.activeTool = null;
+    $rootScope.toolbarActiveTool = null;
     $scope.doesChannelHaveAnyLivedFile = false;
     var isFileManagerInitialized = false;
+    var isFileManagerInitializing = false;
 
-    $scope.$on('active:liveTool', function () {
-      $rootScope.activeTool = Toolbar.TOOL.LIVE;
+    $scope.$on('toolbar:activate:live', function () {
+      $rootScope.toolbarActiveTool = Toolbar.TOOLS.LIVE;
     });
+
+    $scope.$on('toolbar:fileManager:initializeStatus',
+      function (event, status) {
+        isFileManagerInitializing = false;
+        isFileManagerInitialized = status;
+      });
 
     $scope.$on('file:lived', function (event, file) {
       $scope.doesChannelHaveAnyLivedFile = true;
@@ -19,17 +26,19 @@ app.controller('toolbarController', ['$rootScope', '$scope', 'Toolbar',
       $scope.doesChannelHaveAnyLivedFile = false;
     });
 
-    $scope.toggleTool = function (toolNum) {
-      if (toolNum === Toolbar.TOOL.FILEMANAGER && !isFileManagerInitialized) {
-        $rootScope.$broadcast('initialize:fileManager');
+    $scope.toggleTool = function (toolName) {
+      if (toolName === Toolbar.TOOLS.FILEMANAGER && !
+        isFileManagerInitialized && !isFileManagerInitializing) {
+        isFileManagerInitializing = true;
+        $rootScope.$broadcast('toolbar:initialize:fileManager');
         isFileManagerInitialized = true;
       }
-      $rootScope.activeTool = $rootScope.activeTool === toolNum ? null :
-        toolNum;
+      $rootScope.toolbarActiveTool =
+        $rootScope.toolbarActiveTool === toolName ? null : toolName;
     };
 
-    $scope.getToolbarIconCss = function (toolNum) {
-      if ($rootScope.activeTool === toolNum)
+    $scope.getToolbarIconCss = function (toolName) {
+      if ($rootScope.toolbarActiveTool === toolName)
         return 'selected';
       return '';
     };

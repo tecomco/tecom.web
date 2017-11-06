@@ -21,7 +21,7 @@ app.controller('fileManagerController', [
       $scope.files.push(file);
     });
 
-    $scope.$on('initialize:fileManager', function (event, file) {
+    $scope.$on('toolbar:initialize:fileManager', function (event, file) {
       filesService.getFileManagerFiles($scope.channel.id)
         .then(function (files) {
           $scope.files = files;
@@ -63,11 +63,11 @@ app.controller('fileManagerController', [
 
     $scope.goLive = function (fileId, fileName) {
       filesService.makeFileLive($scope.channel.id, fileId, fileName);
-      $rootScope.$broadcast('active:liveTool');
+      $rootScope.$broadcast('toolbar:activate:live');
     };
 
     $scope.viewFile = function (fileId) {
-      $rootScope.$broadcast('active:liveTool');
+      $rootScope.$broadcast('toolbar:activate:live');
       filesService.viewFile(fileId);
     };
 
