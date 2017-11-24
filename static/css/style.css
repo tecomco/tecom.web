@@ -1050,7 +1050,6 @@ ul.dropdown-menu {
   padding-left: 60px;
 }
 
-
 /*.main a {
     direction: ltr;
     color: #3232ff;
@@ -1082,6 +1081,15 @@ ul.dropdown-menu {
   z-index: 0;
   right: 0;
   background: rgba(29, 29, 29, 0.7);
+}
+
+.file-empty-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  text-align: right;
 }
 
 .file-empty-card {
@@ -1246,7 +1254,8 @@ ul.dropdown-menu {
   -moz-transition: all 0.3s ease;
   -webkit-transition: all 0.3s ease;
 }
-.doc-tab:hover{
+
+.doc-tab:hover {
   color: #fff;
 }
 
@@ -1304,7 +1313,7 @@ ul.dropdown-menu {
   opacity: 0;
   visibility: hidden;
   z-index: 3;
-  background: #f7f7f7;
+  background: #24A772;
   right: -1px;
   text-align: center;
   transition: all 0.3s ease;
@@ -1957,6 +1966,15 @@ ol.linenums, ol.linenums-view {
   position: absolute;
   right: 28px;
   top: 18px;
+  border-color: #fff;
+}
+
+.doc-tab .live-btn * {
+  color: #fff;
+}
+
+.doc-tab .live-btn i {
+  color: rgb(255, 194, 194);
 }
 
 .dl-btn {
@@ -2204,40 +2222,51 @@ ol.linenums, ol.linenums-view {
 
 .sidebar ul li {
   width: 100%;
+  position: relative;
 }
 
-.sidebar ul li a {
+.sidebar ul li a, .sidebar ul li button {
   padding: 8px;
   width: 100%;
   color: #888;
   margin-bottom: 8px;
   text-align: center;
+  border: 0;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  background: rgba(255, 0, 0, 0);
 }
 
-.sidebar ul li a:hover .sidebar-icon {
+.sidebar ul li button i {
+  font-size: 18px;
+}
+
+.sidebar ul li a:hover .sidebar-icon, .sidebar ul li button:hover .sidebar-icon {
   background: #888;
 }
 
-.sidebar ul li a:hover i {
+.sidebar ul li a:hover i, .sidebar ul li button:hover i {
   color: #f1f1f1;
 }
 
-.sidebar ul li a span {
+.sidebar ul li a span, .sidebar ul li button span {
   display: block;
   font-size: 10px;
   padding-top: 4px;
   color: #888;
 }
 
-.sidebar ul li a.selected .sidebar-icon {
+.sidebar ul li a.selected .sidebar-icon, .sidebar ul li button.selected .sidebar-icon {
   background: rgb(18, 184, 109);
 }
 
-.sidebar ul li a.selected i {
+.sidebar ul li a.selected i, .sidebar ul li button.selected i {
   color: #f1f1f1;
 }
 
-.sidebar ul li a.selected span {
+.sidebar ul li a.selected span, .sidebar ul li button.selected span {
   color: rgb(18, 184, 109);
 }
 
@@ -2253,6 +2282,24 @@ ol.linenums, ol.linenums-view {
   -webkit-transition: all 0.3s ease;
   padding-top: 9px;
   background: rgba(0, 0, 0, 0);
+}
+
+.toolbar-circle {
+  position: absolute;
+  top: 14px;
+  right: 32px;
+}
+
+.sidebar ul li button i.toolbar-circle {
+  font-size: 10px;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+
+.sidebar ul li button.selected i.toolbar-circle {
+  color: rgb(255, 194, 194);
 }
 
 .close-btn {
@@ -2284,14 +2331,26 @@ ol.linenums, ol.linenums-view {
 }
 
 .fileManagerLoading {
-  background: black;
-  height: 100vh
+  background: #fff;
+  height: 100vh;
+}
+
+.fileManagerLoading .cssload-container {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.fileManagerLoading .cssload-speeding-wheel {
+  color: #24A772;
+  border-top-color: #24A772;
+  border-bottom-color: #24A772;
 }
 
 .mime-holder {
   /*position: fixed;*/
   width: 100%;
-  background: #444;
+  background: #fff;
   /*top: 0px;
   bottom: 0;*/
   /*box-shadow: 0 4px 18px -3px rgba(0, 0, 0, 0.3);*/
@@ -2474,13 +2533,13 @@ ol.linenums, ol.linenums-view {
 .mime-more ul {
   position: absolute;
   width: 140px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.2);
   list-style: none;
   border-radius: 4px;
   z-index: 4;
-  top: 100%;
-  background: #333;
+  top: 70%;
+  background: #fff;
   left: 8px;
   visibility: hidden;
   opacity: 0;
@@ -2493,21 +2552,28 @@ ol.linenums, ol.linenums-view {
 .mime-more ul li {
   display: block;
   width: 100%;
-  padding: 16px 8px;
   font-size: 16px;
-  color: #aaa;
+  color: #777;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
 }
 
 .mime-more ul li input {
   opacity: 0;
+  position: absolute;
 }
 
 .mime-more ul li label {
+  padding: 8px 16px;
   cursor: pointer;
+  display: block;
+  width: 100%;
 }
 
 .mime-more ul li:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .mime-more>i:hover+ul, .mime-more ul:hover {
@@ -2557,7 +2623,7 @@ ol.linenums, ol.linenums-view {
 .mime-name {
   font-size: 16px;
   display: block;
-  color: #eee;
+  color: #666;
   width: 170px;
   white-space: nowrap;
   overflow: hidden;
@@ -3144,7 +3210,6 @@ ol.linenums, ol.linenums-view {
   padding: 4px;
 }
 
-
 /*.tooltip:not(.fade.in){
   left: unset !important;
   right: unset !important;
@@ -3479,9 +3544,7 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   box-shadow: inset 0 0 0 20px #24A772, 0 0 0 2px #24A772;
 }
 
-
 /* SEXY MODAL END */
-
 
 /* TOUR */
 
@@ -3577,7 +3640,6 @@ label.ws-checkbox>input:checked+.checkbox-stat>i {
   font-weight: 300;
 }
 
-
 /* TOUR END */
 
 .clearfix:after {
@@ -3607,26 +3669,21 @@ label {
   font-weight: 200;
 }
 
-
 /* Large Devices, Wide Screens */
 
 @media only screen and (max-width: 1200px) {}
-
 
 /* Medium Devices, Desktops */
 
 @media only screen and (max-width: 992px) {}
 
-
 /* Small Devices, Tablets */
 
 @media only screen and (max-width: 768px) {}
 
-
 /* Extra Small Devices, Phones */
 
 @media only screen and (max-width: 480px) {}
-
 
 /* Custom, iPhone Retina */
 

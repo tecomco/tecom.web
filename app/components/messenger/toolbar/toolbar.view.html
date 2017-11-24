@@ -1,13 +1,13 @@
 <div class="sidebar window-transition" ng-controller="toolbarController">
   <ul>
     <li>
-      <a ng-click="toggleTool('fileManager')" ng-class="getToolbarIconCss('fileManager')" href="#">
-        <div class="sidebar-icon"><i class="zmdi zmdi-file"></i></div><span>مدیریت فایل‌ها</span></a>
+      <button ng-click="toggleTool('fileManager')" ng-class="getToolbarIconCss('fileManager')" href="#">
+        <div class="sidebar-icon"><i class="zmdi zmdi-folder"></i></div><!--span>مدیریت فایل‌ها</span--></button>
     </li>
     <li>
-      <i ng-show="doesChannelHaveAnyLivedFile" class="live-notif fa fa-circle"></i>
-      <a ng-click="toggleTool('live')" ng-class="getToolbarIconCss('live')" href="#">
-        <div class="sidebar-icon"><i class="zmdi zmdi-file-text"></i></div><span>سورس کد</span></a>
+      <button ng-click="toggleTool('live')" ng-class="getToolbarIconCss('live')" href="#">
+        <i ng-show="doesChannelHaveAnyLivedFile" class="live-notif fa fa-circle toolbar-circle"></i>
+        <div class="sidebar-icon"><i class="zmdi zmdi-file-text"></i></div><!--span>سورس کد</span--></button>
     </li>
   </ul>
 </div>
