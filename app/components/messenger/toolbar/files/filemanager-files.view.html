@@ -24,7 +24,7 @@
       </div>
     </div>
     <ul class="mime-main">
-      <div ng-if="!doesChannelHaveAnyFilteredFiles()">
+      <div ng-if="!doesChannelHaveAnyFilteredFiles()" class="no-files-holder">
         <div class="mime-item-one no-files">{{getMessageOfNoFilteredFile()}}</div>
       </div>
       <li ng-repeat="file in files | orderBy : '-date' | filter : shouldShowInFileManager">

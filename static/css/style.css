@@ -1973,10 +1973,6 @@ ol.linenums, ol.linenums-view {
   color: #fff;
 }
 
-.doc-tab .live-btn i {
-  color: rgb(255, 194, 194);
-}
-
 .dl-btn {
   font-weight: bold;
   padding: 5px 0px;
@@ -2606,8 +2602,15 @@ ol.linenums, ol.linenums-view {
   border-bottom: 1px solid rgba(0, 0, 0, .05);
 }
 
+.no-files-holder {
+  text-align: center;
+}
+
 .mime-item-one.no-files {
   border: 0;
+  margin-top: 100px;
+  padding: 0;
+  color: #666;
 }
 
 .mime-item-one:hover:not(.no-files) {
