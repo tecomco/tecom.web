@@ -141,6 +141,9 @@
        $http.get('app/components/messenger/header/header.view.html?v=1.0.5', {
          cache: $templateCache
        });
+       $http.get('app/components/messenger/toolbar/toolbar.view.html', {
+         cache: $templateCache
+       });
        $http.get('app/components/messenger/toolbar/files/files.view.html', {
          cache: $templateCache
        });
