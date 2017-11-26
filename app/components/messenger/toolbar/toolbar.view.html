@@ -1,10 +1,12 @@
 <div class="sidebar window-transition" ng-controller="toolbarController">
   <ul>
-    <li>
+    <li tour-step tour-step-title="مکالمه و محتوا، کنار هم!" tour-step-content="وقتی دارید راجع به موضوعی با هم صحبت می‌کنید، در کنار بخش پیام‌ها همزمان می‌تونید از این قسمت فایل‌ به اشتراک گذاشته شده رو به‌صورت زنده ببینید. اینجوری لازم نیست برنامه‌ی‌ دیگه‌ای باز کنید و تمرکزتون بهم بخوره. (فعلاً فقط از فایل‌های سورس‌کد پشتیبانی می‌شه.)"
+      tour-step-order="4" tour-step-backdrop="true" tour-step-placement="bottom-left">
       <button id="toggleTool" ng-click="toggleTool('fileManager')" ng-class="getToolbarIconCss('fileManager')" tooltip-placement="right" uib-tooltip="مدیریت فایل‌ها">
         <div class="sidebar-icon"><i class="zmdi zmdi-folder"></i></div><!--<span>مدیریت فایل‌ها</span>--></button>
     </li>
-    <li>
+    <li tour-step="live" tour-step-title="مکالمه و محتوا، کنار هم!" tour-step-content="وقتی دارید راجع به موضوعی با هم صحبت می‌کنید، در کنار بخش پیام‌ها همزمان می‌تونید از این قسمت فایل‌ به اشتراک گذاشته شده رو به‌صورت زنده ببینید. اینجوری لازم نیست برنامه‌ی‌ دیگه‌ای باز کنید و تمرکزتون بهم بخوره. (فعلاً فقط از فایل‌های سورس‌کد پشتیبانی می‌شه.)"
+      tour-step-order="5" tour-step-on-next="navigateToHome()" tour-step-backdrop="true" tour-step-placement="bottom-left">
       <button id="toggleTool" ng-click="toggleTool('live')" ng-class="getToolbarIconCss('live')" tooltip-placement="right" uib-tooltip="فایل‌نما">
         <i ng-show="doesChannelHaveAnyLivedFile" class="live-notif fa fa-circle toolbar-circle"></i>
         <div class="sidebar-icon"><i class="zmdi zmdi-file-text"></i></div><!--<span>سورس کد</span>--></button>

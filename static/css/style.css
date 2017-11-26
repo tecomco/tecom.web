@@ -3865,3 +3865,6 @@ label {
 .dragover>.drag-drop {
   display: unset;
 }
+.popover.bottom-left > .arrow {
+  right: auto;
+}

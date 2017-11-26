@@ -132,8 +132,7 @@
       </div>
     </div>
   </div>
-  <div ng-class="getPannelsCSS('files')" class="window-transition" tour-step tour-step-title="مکالمه و محتوا، کنار هم!" tour-step-content="وقتی دارید راجع به موضوعی با هم صحبت می‌کنید، در کنار بخش پیام‌ها همزمان می‌تونید از این قسمت فایل‌ به اشتراک گذاشته شده رو به‌صورت زنده ببینید. اینجوری لازم نیست برنامه‌ی‌ دیگه‌ای باز کنید و تمرکزتون بهم بخوره. (فعلاً فقط از فایل‌های سورس‌کد پشتیبانی می‌شه.)"
-    tour-step-order="4" tour-step-backdrop="true" tour-step-placement="right">
+  <div ng-class="getPannelsCSS('files')" class="window-transition">
     <!-- TODO col-sm-3 col-lg-3 -->
     <div ng-show="isToolActive('fileManager')" ui-view="filemanager"></div>
     <div ng-show="isToolActive('live')" ui-view="files"></div>
