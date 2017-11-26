@@ -563,6 +563,18 @@ app.controller('messagesController', [
       $rootScope.$broadcast('loading:finished');
     }
 
+    function isPressedKeyJustLetter(evt) {
+      return ((evt.keyCode > 36 && evt.keyCode < 40) ||
+        (evt.keyCode > 47 && evt.keyCode < 91) ||
+        (evt.keyCode > 95 && evt.keyCode < 112) ||
+        (evt.keyCode > 185)) && !evt.ctrlKey && evt.keyCode !== 38;
+    }
+
+    function isNoModalOpen() {
+      return document.activeElement.id === 'main' ||
+        document.activeElement.id === 'toggleTool';
+    }
+
     function scrollToMessageElementById(elementId) {
       $timeout(function () {
         isAnyLoadingMessageGetting = true;
@@ -659,20 +671,19 @@ app.controller('messagesController', [
     document.onkeydown = function (evt) {
       evt = evt || $window.event;
       if (evt.keyCode == 27) {
-        if ($scope.isFullscreenVisible) {
-          $timeout(function () {
-            $scope.closeFullscreenImage();
-          });
-        } else
-          $state.go('messenger.home');
-      } else if (document.activeElement.id !== 'inputPlaceHolder') {
+        if (isNoModalOpen()) {
+          if ($scope.isFullscreenVisible) {
+            $timeout(function () {
+              $scope.closeFullscreenImage();
+            });
+          } else
+            $state.go('messenger.home');
+        }
+      } else if (isNoModalOpen()) {
         if (evt.keyCode == 13 && evt.shiftKey)
           evt.preventDefault();
-        else if ((evt.keyCode > 36 && evt.keyCode < 41) || (evt.keyCode >
-            47 && evt.keyCode < 91) || (evt.keyCode > 95 && evt.keyCode <
-            112) || (evt.keyCode > 185))
-          if (!evt.ctrlKey)
-            inputPlaceHolder.focus();
+        else if (isPressedKeyJustLetter(evt))
+          inputPlaceHolder.focus();
       }
     };
 
@@ -680,7 +691,8 @@ app.controller('messagesController', [
       if ($rootScope.isTabFocused) {
         seenLastUnSeenMessage();
         $scope.$apply();
-        inputPlaceHolder.focus();
+        if (isNoModalOpen())
+          inputPlaceHolder.focus();
       }
     });
 
