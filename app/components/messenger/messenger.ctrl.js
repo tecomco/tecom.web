@@ -3,8 +3,9 @@
  app.controller('MessengerCtrl', [
    '$rootScope', '$scope', '$window', '$uibModal', 'AuthService',
    'CurrentMember', '$localStorage', '$state', '$http', '$templateCache',
+   'Toolbar',
    function ($rootScope, $scope, $window, $uibModal, AuthService,
-     CurrentMember, $localStorage, $state, $http, $templateCache) {
+     CurrentMember, $localStorage, $state, $http, $templateCache, Toolbar) {
 
      $scope.isAdmin = CurrentMember.member.isAdmin;
      $rootScope.isTabFocused = true;
@@ -44,17 +45,18 @@
      $scope.getPannelsCSS = function (pannel) {
        if (pannel === 'messages') {
          if ($rootScope.toolbarActiveTool) {
-           if ($scope.activeFile)
+           if ($scope.activeFile && $rootScope.toolbarActiveTool ===
+             Toolbar.TOOLS.LIVE)
              return 'col-sm-6 col-lg- no-padding';
            return 'col-sm-8 col-lg- no-padding';
          } else
            return 'col-sm-12 col-lg- no-padding';
        } else if (pannel === 'files') {
          if ($rootScope.toolbarActiveTool) {
-           if ($scope.activeFile)
+           if ($scope.activeFile && $rootScope.toolbarActiveTool ===
+             Toolbar.TOOLS.LIVE)
              return 'col-sm-6 col-lg-6 no-padding doc-section';
-           else
-             return 'col-sm-4 col-lg- no-padding';
+           return 'col-sm-4 col-lg- no-padding';
          }
          return '';
        }
