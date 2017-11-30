@@ -219,6 +219,9 @@ app.controller('messagesController', [
 
     $scope.setReplyMessage = function (message) {
       $scope.replyMessage = message;
+      $timeout(function () {
+        setInputLineHeight();
+      });
       shouldScrollToSeeRepliedMessage(message.id);
       inputPlaceHolder.focus();
     };
@@ -629,6 +632,11 @@ app.controller('messagesController', [
         inputPlaceHolder.scrollHeight.toString() + 'px';
       inputHolder.style.height =
         (inputPlaceHolder.scrollHeight + 24).toString() + 'px';
+      if ($scope.replyMessage && inputPlaceHolder.scrollHeight < 110) {
+        var replyHolder = document.getElementById('replyHolder');
+        replyHolder.style.bottom =
+          (inputPlaceHolder.scrollHeight + 19).toString() + 'px';
+      }
       var heightPx = 77 + inputPlaceHolder.scrollHeight;
       messagesHolder.style.height = 'calc(100vh - ' +
         heightPx.toString() + 'px)';
