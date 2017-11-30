@@ -25,15 +25,17 @@ app.factory('textUtil', function () {
         wellFormedText += codify(textParts[i]);
       isUrlifyTurn = !isUrlifyTurn;
     }
-    wellFormedText += urlify(ltrifyIfIsEnglish(textParts[textParts.length -
-      1]));
+    wellFormedText +=
+      urlify(ltrifyIfIsEnglish(textParts[textParts.length - 1]));
     wellFormedText = wellFormedText.replace(/\n/g, '<br>');
-    return wellFormedText;
+    return isEnglish(wellFormedText) ?
+      '<span style="direction:ltr" dir="ltr">' + wellFormedText + '</span>' :
+      wellFormedText;
   }
 
   function urlify(text) {
     var urlRegex =
-      /\(?(?:(http|https|ftp):\/\/)?(?:((?:[^\W\s]|\.|-|[:]{1})+)@{1})?((?:www.)?(?:[^\W\s]|\.|-)+[\.][^\W\s]{2,4}|localhost(?=\/)|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?::(\d*))?([\/]?[^\s\?]*[\/]{1})*(?:\/?([^\s\n\?\[\]\{\}\#]*(?:(?=\.)){1}|[^\s\n\?\[\]\{\}\.\#]*)?([\.]{1}[^\s\?\#]*)?)?(?:\?{1}([^\s\n\#\[\]]*))?([\#][^\s\n]*)?\)?/gi;
+      /(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/gi;
     return text.replace(urlRegex, function (url) {
       if (isUrlValid(url)) {
         var href = url;
