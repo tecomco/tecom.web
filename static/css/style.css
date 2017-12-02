@@ -913,6 +913,37 @@ ul.dropdown-menu {
   -webkit-transform: rotateZ(45deg);
 }
 
+@keyframes greenPulse {
+  from { background-color: rgb(18, 184, 109);}
+  50% { background-color: rgb(18, 224, 109);}
+  to { background-color: rgb(18, 184, 109);}
+}
+
+@-o-keyframes greenPulse {
+  from { background-color: rgb(18, 184, 109);}
+  50% { background-color: rgb(18, 224, 109);}
+  to { background-color: rgb(18, 184, 109);}
+}
+
+@-ms-keyframes greenPulse {
+  from { background-color: rgb(18, 184, 109);}
+  50% { background-color: rgb(18, 224, 109);}
+  to { background-color: rgb(18, 184, 109);}
+}
+
+@-webkit-keyframes greenPulse {
+  from { background-color: rgb(18, 184, 109);}
+  50% { background-color: rgb(18, 224, 109);}
+  to { background-color: rgb(18, 184, 109);}
+}
+
+@-moz-keyframes greenPulse {
+  from { background-color: rgb(18, 184, 109);}
+  50% { background-color: rgb(18, 224, 109);}
+  to { background-color: rgb(18, 184, 109);}
+}
+
+
 .add-mate a {
   position: absolute;
   bottom: 0;
@@ -927,6 +958,14 @@ ul.dropdown-menu {
 
 .add-mate a:hover {
   background: rgb(21, 209, 124);
+}
+
+.add-mate-a-animation {
+  animation: greenPulse 1.5s infinite;
+  -o-animation: greenPulse 1.5s infinite;
+  -ms-animation: greenPulse 1.5s infinite;
+  -webkit-animation: greenPulse 1.5s infinite;
+  -moz-animation: greenPulse 1.5s infinite;
 }
 
 .chat {

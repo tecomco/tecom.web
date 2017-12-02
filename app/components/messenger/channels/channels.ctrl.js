@@ -9,6 +9,7 @@ app.controller('channelsController', [
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
     $scope.channels.directs = [];
+    var isAddMateTourActive = false;
 
     $scope.$on('channels:updated', function () {
       updateChannels();
@@ -43,6 +44,7 @@ app.controller('channelsController', [
       var tourClicked = false;
       if ($scope.tour.getStatus() === $scope.tour.Status.ON) {
         tourClicked = true;
+        isAddMateTourActive = false;
         $scope.tour.end();
       }
       var modalInstance = $uibModal.open({
@@ -94,6 +96,7 @@ app.controller('channelsController', [
     };
 
     $scope.navigateToAndWaitFor = function (stepId) {
+      isAddMateTourActive = false;
       if ($scope.channels.publicsAndPrivates.length) {
         $state.go('messenger.messages', {
           slug: $scope.channels.publicsAndPrivates[0].slug
@@ -110,6 +113,15 @@ app.controller('channelsController', [
     $scope.navigateToHomeAndScrollToChannels = function () {
       $state.go('messenger.home');
       document.getElementById('groups').scrollTop = 0;
+    };
+
+    $scope.startAddMateAnimation = function () {
+      isAddMateTourActive = true;
+    };
+
+    $scope.getAddMateClass = function () {
+      return ($scope.tour.getStatus() === $scope.tour.Status.ON &&
+        isAddMateTourActive) ? 'add-mate-a-animation' : '';
     };
 
     function validateUrlChannel() {
