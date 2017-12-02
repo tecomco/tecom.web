@@ -3,12 +3,12 @@
 app.controller('messagesController', [
   '$scope', '$rootScope', '$state', '$stateParams', '$window', '$timeout',
   'Message', 'messagesService', 'channelsService', 'filesService',
-  '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember',
+  '$q', 'Team', 'ArrayUtil', 'textUtil', 'CurrentMember', 'inputUtil',
   'ngProgressFactory', 'dateUtil', 'fileUtil',
   function ($scope, $rootScope, $state, $stateParams, $window, $timeout,
     Message, messagesService, channelsService, filesService, $q, Team,
-    ArrayUtil, textUtil, CurrentMember, ngProgressFactory, dateUtil,
-    fileUtil
+    ArrayUtil, textUtil, CurrentMember, inputUtil, ngProgressFactory,
+    dateUtil, fileUtil
   ) {
 
     var self = this;
@@ -566,13 +566,6 @@ app.controller('messagesController', [
       $rootScope.$broadcast('loading:finished');
     }
 
-    function isPressedKeyJustLetter(evt) {
-      return ((evt.keyCode > 36 && evt.keyCode < 40) ||
-        (evt.keyCode > 47 && evt.keyCode < 91) ||
-        (evt.keyCode > 95 && evt.keyCode < 112) ||
-        (evt.keyCode > 185)) && !evt.ctrlKey && evt.keyCode !== 38;
-    }
-
     function isNoModalOpen() {
       return document.activeElement.id === 'main' ||
         document.activeElement.id === 'toggleTool';
@@ -690,7 +683,7 @@ app.controller('messagesController', [
       } else if (isNoModalOpen()) {
         if (evt.keyCode == 13 && evt.shiftKey)
           evt.preventDefault();
-        else if (isPressedKeyJustLetter(evt))
+        else if (inputUtil.isPressedKeyJustLetter(evt))
           inputPlaceHolder.focus();
       }
     };

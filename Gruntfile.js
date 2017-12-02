@@ -99,6 +99,7 @@ module.exports = function (grunt) {
           'dist/min-safe/shared.js': [
             'app/shared/utils/array.util.js',
             'app/shared/utils/text.util.js',
+            'app/shared/utils/input.util.js',
             'app/shared/utils/domain.util.js',
             'app/shared/utils/validation.util.js',
             'app/shared/utils/date.util.js',
