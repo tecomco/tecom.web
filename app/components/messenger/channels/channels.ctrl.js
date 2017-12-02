@@ -49,7 +49,7 @@ app.controller('channelsController', [
       }
       var modalInstance = $uibModal.open({
         animation: true,
-        templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.2',
+        templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.3',
         controller: 'teamProfileController',
         resolve: {
           tourClicked: function () {

@@ -703,7 +703,11 @@ ul.dropdown-menu {
 }
 
 .popover.right {
-  margin-left: -40px;
+  margin-left: -80px;
+}
+
+.popover.top {
+  margin-left: -50px;
 }
 
 .popover-content {

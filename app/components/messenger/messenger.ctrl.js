@@ -153,6 +153,22 @@
          'app/components/messenger/toolbar/files/filemanager-files.view.html', {
            cache: $templateCache
          });
+       $http.get(
+         'app/components/profile/team.profile.view.html?v=1.0.2', {
+           cache: $templateCache
+         });
+       $http.get(
+         'app/components/messenger/channels/channel-create.view.html?v=1.0.1', {
+           cache: $templateCache
+         });
+       $http.get(
+         'app/components/messenger/channels/channel-details.view.html?v=1.0.3', {
+           cache: $templateCache
+         });
+       $http.get(
+         'app/components/profile/user.profile.view.html', {
+           cache: $templateCache
+         });
      }
 
      function checkIfUserSeenTour() {
