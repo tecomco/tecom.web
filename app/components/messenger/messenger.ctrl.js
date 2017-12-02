@@ -137,13 +137,13 @@
 
      function cacheMessagesTemplates() {
        $http.get(
-         'app/components/messenger/messages/messages.view.html?v=1.1.2', {
+         'app/components/messenger/messages/messages.view.html?v=1.1.3', {
            cache: $templateCache
          });
-       $http.get('app/components/messenger/header/header.view.html?v=1.0.5', {
+       $http.get('app/components/messenger/header/header.view.html?v=1.0.6', {
          cache: $templateCache
        });
-       $http.get('app/components/messenger/toolbar/toolbar.view.html', {
+       $http.get('app/components/messenger/toolbar/toolbar.view.html?v=1.0.0', {
          cache: $templateCache
        });
        $http.get('app/components/messenger/toolbar/files/files.view.html', {
