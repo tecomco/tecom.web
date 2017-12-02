@@ -702,6 +702,10 @@ ul.dropdown-menu {
   background: rgba(230, 77, 77, 1);
 }
 
+.popover.right {
+  margin-left: -40px;
+}
+
 .popover-content {
   padding: 5px 15px;
 }
