@@ -12,15 +12,23 @@
      $scope.activeFile = false;
 
      $scope.openUserProfileModal = function () {
-       var modalInstance = $uibModal.open({
+       var userProfileModal = $uibModal.open({
          animation: true,
          templateUrl: 'app/components/profile/user.profile.view.html',
          controller: 'userProfileController',
        });
+       userProfileModal.opened
+         .then(function () {
+           $rootScope.isAnyModalOpened = true;
+         });
+       userProfileModal.closed
+         .then(function () {
+           $rootScope.isAnyModalOpened = false;
+         });
      };
 
      $scope.openTeamProfileModal = function () {
-       var modalInstance = $uibModal.open({
+       var teamProfileModal = $uibModal.open({
          animation: true,
          templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.3',
          controller: 'teamProfileController',
@@ -30,6 +38,14 @@
            }
          }
        });
+       teamProfileModal.opened
+         .then(function () {
+           $rootScope.isAnyModalOpened = true;
+         });
+       teamProfileModal.closed
+         .then(function () {
+           $rootScope.isAnyModalOpened = false;
+         });
      };
 
      initialize();

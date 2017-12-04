@@ -47,7 +47,7 @@ app.controller('channelsController', [
         isAddMateTourActive = false;
         $scope.tour.end();
       }
-      var modalInstance = $uibModal.open({
+      var teamProfileModal = $uibModal.open({
         animation: true,
         templateUrl: 'app/components/profile/team.profile.view.html?v=1.0.3',
         controller: 'teamProfileController',
@@ -57,6 +57,14 @@ app.controller('channelsController', [
           }
         }
       });
+      teamProfileModal.opened
+        .then(function () {
+          $rootScope.isAnyModalOpened = true;
+        });
+      teamProfileModal.closed
+        .then(function () {
+          $rootScope.isAnyModalOpened = false;
+        });
     };
 
     function sendBrowserNotification(channel) {
@@ -86,13 +94,19 @@ app.controller('channelsController', [
     }
 
     $scope.openCreateChannelModal = function (name) {
-      var modalInstance = $uibModal.open({
+      var createChannelModal = $uibModal.open({
         animation: true,
         templateUrl: 'app/components/messenger/channels/channel-create.view.html?v=1.0.1',
         controller: 'createChannelController'
       });
-      modalInstance.result
-        .then(function () {}, function () {});
+      createChannelModal.opened
+        .then(function () {
+          $rootScope.isAnyModalOpened = true;
+        });
+      createChannelModal.closed
+        .then(function () {
+          $rootScope.isAnyModalOpened = false;
+        });
     };
 
     $scope.navigateToAndWaitFor = function (stepId) {

@@ -566,11 +566,6 @@ app.controller('messagesController', [
       $rootScope.$broadcast('loading:finished');
     }
 
-    function isNoModalOpen() {
-      return document.activeElement.id === 'main' ||
-        document.activeElement.id === 'toggleTool';
-    }
-
     function scrollToMessageElementById(elementId) {
       $timeout(function () {
         isAnyLoadingMessageGetting = true;
@@ -671,20 +666,20 @@ app.controller('messagesController', [
 
     document.onkeydown = function (evt) {
       evt = evt || $window.event;
-      if (evt.keyCode == 27) {
-        if (isNoModalOpen()) {
+      if (!$rootScope.isAnyModalOpened) {
+        if (evt.keyCode == 27) {
           if ($scope.isFullscreenVisible) {
             $timeout(function () {
               $scope.closeFullscreenImage();
             });
           } else
             $state.go('messenger.home');
+        } else {
+          if (evt.keyCode == 13 && evt.shiftKey)
+            evt.preventDefault();
+          else if (inputUtil.isPressedKeyJustLetter(evt))
+            inputPlaceHolder.focus();
         }
-      } else if (isNoModalOpen()) {
-        if (evt.keyCode == 13 && evt.shiftKey)
-          evt.preventDefault();
-        else if (inputUtil.isPressedKeyJustLetter(evt))
-          inputPlaceHolder.focus();
       }
     };
 
@@ -692,7 +687,7 @@ app.controller('messagesController', [
       if ($rootScope.isTabFocused) {
         seenLastUnSeenMessage();
         $scope.$apply();
-        if (isNoModalOpen())
+        if ($rootScope.isAnyModalOpened)
           inputPlaceHolder.focus();
       }
     });
