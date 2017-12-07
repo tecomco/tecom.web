@@ -675,9 +675,7 @@ app.controller('messagesController', [
           } else
             $state.go('messenger.home');
         } else {
-          if (evt.keyCode == 13 && evt.shiftKey)
-            evt.preventDefault();
-          else if (inputUtil.isPressedKeyJustLetter(evt))
+          if (inputUtil.isPressedKeyJustLetter(evt))
             inputPlaceHolder.focus();
         }
       }
