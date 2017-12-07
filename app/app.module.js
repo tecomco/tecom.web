@@ -31,12 +31,15 @@ app.config(['TourConfigProvider', function (TourConfigProvider) {
   TourConfigProvider.set('useHotkeys', true);
 }]);
 
-app.run(['$rootScope', '$timeout', function ($rootScope, $timeout) {
-  $rootScope.isLoading = true;
-  $rootScope.socketConnected = true;
-  $rootScope.hasUnread = false;
-  $rootScope.isLoadingTakingTooLong = false;
-  $timeout(function () {
-    $rootScope.isLoadingTakingTooLong = true;
-  }, 10000);
-}]);
+app.run(['$rootScope', '$timeout', '$window',
+  function ($rootScope, $timeout, $window) {
+    $rootScope.isLoading = true;
+    $rootScope.socketConnected = true;
+    $rootScope.hasUnread = false;
+    $rootScope.isLoadingTakingTooLong = false;
+    $timeout(function () {
+      $rootScope.isLoadingTakingTooLong = true;
+    }, 10000);
+    new $window.Clipboard('.copy-btn');
+  }
+]);

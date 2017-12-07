@@ -76,6 +76,10 @@ app.factory('Message', [
       return this.type === Message.TYPE.LOADING;
     };
 
+    Message.prototype.isText = function () {
+      return this.type === Message.TYPE.TEXT;
+    };
+
     Message.prototype.getStyle = function () {
       if ((this.isFile()) || this.isEnglish()) {
         return {
