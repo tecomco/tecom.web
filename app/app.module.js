@@ -33,6 +33,7 @@ app.config(['TourConfigProvider', function (TourConfigProvider) {
 
 app.run(['$rootScope', '$timeout', '$window',
   function ($rootScope, $timeout, $window) {
+    $rootScope.title = 'خوش آمدید';
     $rootScope.isLoading = true;
     $rootScope.socketConnected = true;
     $rootScope.hasUnread = false;

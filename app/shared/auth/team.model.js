@@ -2,9 +2,9 @@
 
 app.factory('Team', [
   '$http', 'socket', '$q', '$log', '$localStorage', 'ArrayUtil', 'Member',
-  'CurrentMember',
+  'CurrentMember', '$rootScope',
   function ($http, socket, $q, $log, $localStorage, ArrayUtil, Member,
-    CurrentMember) {
+    CurrentMember, $rootScope) {
 
     function Team() {}
 
@@ -13,19 +13,7 @@ app.factory('Team', [
       Team.members = [];
       Team.plan = {};
       Team.membersPromise = Team.getTeamMembers();
-      Team.getTeamData()
-        .then(function (data) {
-          Team._name = data.data.name;
-          Team.plan.name = Team.getTeamPlanName(data.data.current_plan.name);
-          Team.plan.membersLimit = data.data.current_plan.team_members_limit;
-          Team.plan.channelsLimit = data.data.current_plan.team_channels_limit;
-          Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
-            data.data.current_plan.each_upload_storage_limit + 'MB' :
-            data.data.current_plan.each_upload_storage_limit;
-        })
-        .catch(function (err) {
-          $log.error('Error initializing Team');
-        });
+      Team.teamPromise = Team.getAndSetTeamData();
     };
 
     Team.getTeamMembers = function () {
@@ -41,14 +29,31 @@ app.factory('Team', [
       return deferred.promise;
     };
 
-    Team.getTeamData = function () {
-      return $http({
-        method: 'GET',
-        url: '/api/v1/teams/' + Team.id + '/',
-        headers: {
-          'Authorization': 'JWT ' + $localStorage.token
-        }
-      });
+    Team.getAndSetTeamData = function () {
+      var deferred = $q.defer();
+      $http({
+          method: 'GET',
+          url: '/api/v1/teams/' + Team.id + '/',
+          headers: {
+            'Authorization': 'JWT ' + $localStorage.token
+          }
+        })
+        .then(function (data) {
+          Team._name = data.data.name;
+          $rootScope.title = 'تیم ' + data.data.name;
+          Team.plan.name = Team.getTeamPlanName(data.data.current_plan.name);
+          Team.plan.membersLimit = data.data.current_plan.team_members_limit;
+          Team.plan.channelsLimit = data.data.current_plan.team_channels_limit;
+          Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
+            data.data.current_plan.each_upload_storage_limit + 'MB' :
+            data.data.current_plan.each_upload_storage_limit;
+          deferred.resolve();
+        })
+        .catch(function (err) {
+          $log.error('Error initializing Team');
+          deferred.reject();
+        });
+      return deferred.promise;
     };
 
     Team.getTeamPlanName = function (planName) {

@@ -56,6 +56,7 @@ app.controller('messagesController', [
 
     if (!$stateParams.slug) {
       channelsService.setCurrentChannelBySlug(null);
+      setBrowserTitle(false);
       return;
     } else if (channelsService.areChannelsReady()) {
       setCurrentChannel()
@@ -341,6 +342,7 @@ app.controller('messagesController', [
 
     function initialize() {
       $scope.uploadLimit = Team.plan.uploadLimit;
+      setBrowserTitle(true);
       initialLastMessageId = $scope.channel.lastMessageId;
       if (!$scope.channel.areAllMessagesHaveBeenSeen())
         initialMemberLastSeenId = $scope.channel.memberLastSeenId;
@@ -564,6 +566,12 @@ app.controller('messagesController', [
     function finishLoading() {
       $rootScope.isLoading = false;
       $rootScope.$broadcast('loading:finished');
+    }
+
+    function setBrowserTitle(isAnyChannelOpen) {
+      Team.teamPromise.then(function () {
+        $rootScope.title = 'تیم ' + Team._name + (isAnyChannelOpen ?  ' | ' + $scope.channel.name : '');
+      });
     }
 
     function scrollToMessageElementById(elementId) {
