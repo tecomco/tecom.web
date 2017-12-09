@@ -71,7 +71,7 @@
               <a ng-class="getDownloadClass(message)" ng-if="message.isFile() && !message.isFailed" href={{message.additionalData.url}} download={{message.additionalData.name}} target="_blank" tooltip-placement="top" uib-tooltip="دانلود"><i class="zmdi zmdi-download"></i></a>
                 <img class="msg-img" ng-if="message.isFile() && message.isImage() && message.isPending" ngf-src="message.imageFile">
                 <a ng-click="setReplyMessage(message)" ng-if="::!message.isLoading()" class="reply-btn"><i class="zmdi zmdi-mail-reply"></i></a>
-                <a ng-if="::message.isText()" data-clipboard-text={{message.body}} class="copy-btn"><i class="zmdi zmdi-mail-reply"></i></a>
+                <a ng-if="::message.isText()" data-clipboard-text={{message.body}} class="copy-btn"><i class="zmdi zmdi-copy"></i></a>
                 <div ng-if="message.isFailed" class="file-failed-btns">
                   <a ng-click="reuploadFile(message.timestamp)"><i class="zmdi zmdi-refresh"></i><span>دوباره</span></a>
                   <a ng-click="removeUploadFailedMessageByFileTimestamp(message.timestamp)"><i class="zmdi zmdi-close"></i><span>حذف</span></a>
