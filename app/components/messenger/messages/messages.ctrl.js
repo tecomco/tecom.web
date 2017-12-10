@@ -571,7 +571,6 @@ app.controller('messagesController', [
     function setBrowserTitle(isAnyChannelOpen) {
       Team.teamPromise.then(function () {
         $rootScope.title = (isAnyChannelOpen ? $scope.channel.name + ' |' : '') + ' تیم ' + Team._name ;
-        console.log($rootScope.title);
       });
     }
 
