@@ -13,34 +13,12 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
       this.svg = this.getSvgUrl();
     }
 
-    function getFilteredName(name, removeStep) {
-      var stringTakeLength =
-        name.length % 2 == 0 ? name.length / 2 - removeStep :
-        (name.length + 1) / 2 - removeStep;
-      return name.substring(0, stringTakeLength) + '....' + name.substr(
-        name.length - stringTakeLength);
-    }
-
     FileManagerFile.prototype.getSvgUrl = function () {
       return '/static/img/file-formats.svg#' + this.extension;
     };
 
     FileManagerFile.prototype.getFileName = function () {
-      var removeStep = 0;
-      var shouldReturnFilteredName = false;
-      var name = this.name.replace('.' + this.extension, '');
-      var filteredName = '';
-      var fileNameElement = document.createElement('canvas');
-      var fileNameCanvas = fileNameElement.getContext("2d");
-      fileNameCanvas.font = "16px iransans";
-      var width = fileNameCanvas.measureText(name).width;
-      while (width > 170) {
-        shouldReturnFilteredName = true;
-        removeStep = removeStep + 1;
-        filteredName = getFilteredName(name, removeStep);
-        width = fileNameCanvas.measureText(filteredName).width;
-      }
-      return shouldReturnFilteredName ? filteredName : name;
+      return fileUtil.getFileName(this.name);
     };
 
     FileManagerFile.prototype.canBeLived = function () {

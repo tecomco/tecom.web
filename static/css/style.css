@@ -2674,7 +2674,7 @@ ol.linenums, ol.linenums-view {
   font-size: 16px;
   display: block;
   color: #666;
-  width: 170px;
+  width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
