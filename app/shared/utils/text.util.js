@@ -116,11 +116,11 @@ app.factory('textUtil', function () {
     plainText = plainText.replace(/>/g, '&gt');
     plainText = plainText.replace(/{/g, '&#123;&zwnj;');
     plainText = plainText.replace(/}/g, '&zwnj;&#125;');
-    plainText = plainText.replace(/[ \t]{2,}/g, spaceGenerator);
+    plainText = plainText.replace(/[ \t]{2,}/g, generateSpace);
     return plainText;
   }
 
-  function spaceGenerator(text) {
+  function generateSpace(text) {
     text = text.substr(1, text.length - 2);
     text = text.replace(/[ \t]/g, '&nbsp');
     return ' ' + '\uFEFF' + text + ' ';

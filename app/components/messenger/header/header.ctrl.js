@@ -23,11 +23,11 @@ app.controller('headerController', ['$scope', '$rootScope', '$localStorage',
         });
         channelDetailsModal.opened
           .then(function () {
-            $rootScope.isAnyModalOpened = true;
+            $rootScope.isAnyModalOpen = true;
           });
         channelDetailsModal.closed
           .then(function () {
-            $rootScope.isAnyModalOpened = false;
+            $rootScope.isAnyModalOpen = false;
           });
       }
     };

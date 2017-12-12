@@ -9,7 +9,7 @@ app.controller('channelsController', [
     $scope.channels = {};
     $scope.channels.publicsAndPrivates = [];
     $scope.channels.directs = [];
-    var isAddMateTourActive = false;
+    var isAddTeammateTourActive = false;
 
     $scope.$on('channels:updated', function () {
       updateChannels();
@@ -44,7 +44,7 @@ app.controller('channelsController', [
       var tourClicked = false;
       if ($scope.tour.getStatus() === $scope.tour.Status.ON) {
         tourClicked = true;
-        isAddMateTourActive = false;
+        isAddTeammateTourActive = false;
         $scope.tour.end();
       }
       var teamProfileModal = $uibModal.open({
@@ -59,11 +59,11 @@ app.controller('channelsController', [
       });
       teamProfileModal.opened
         .then(function () {
-          $rootScope.isAnyModalOpened = true;
+          $rootScope.isAnyModalOpen = true;
         });
       teamProfileModal.closed
         .then(function () {
-          $rootScope.isAnyModalOpened = false;
+          $rootScope.isAnyModalOpen = false;
         });
     };
 
@@ -101,16 +101,16 @@ app.controller('channelsController', [
       });
       createChannelModal.opened
         .then(function () {
-          $rootScope.isAnyModalOpened = true;
+          $rootScope.isAnyModalOpen = true;
         });
       createChannelModal.closed
         .then(function () {
-          $rootScope.isAnyModalOpened = false;
+          $rootScope.isAnyModalOpen = false;
         });
     };
 
     $scope.navigateToAndWaitFor = function (stepId) {
-      isAddMateTourActive = false;
+      isAddTeammateTourActive = false;
       if ($scope.channels.publicsAndPrivates.length) {
         $state.go('messenger.messages', {
           slug: $scope.channels.publicsAndPrivates[0].slug
@@ -129,13 +129,13 @@ app.controller('channelsController', [
       document.getElementById('groups').scrollTop = 0;
     };
 
-    $scope.startAddMateAnimation = function () {
-      isAddMateTourActive = true;
+    $scope.startAddTeammateAnimation = function () {
+      isAddTeammateTourActive = true;
     };
 
-    $scope.getAddMateClass = function () {
+    $scope.getAddTeammateClass = function () {
       return ($scope.tour.getStatus() === $scope.tour.Status.ON &&
-        isAddMateTourActive) ? 'add-mate-a-animation' : '';
+        isAddTeammateTourActive) ? 'add-mate-a-animation' : '';
     };
 
     function validateUrlChannel() {

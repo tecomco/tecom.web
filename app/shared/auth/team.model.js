@@ -13,7 +13,7 @@ app.factory('Team', [
       Team.members = [];
       Team.plan = {};
       Team.membersPromise = Team.getTeamMembers();
-      Team.teamPromise = Team.getAndSetTeamData();
+      Team.getTeamDataPromise = Team.getTeamData();
     };
 
     Team.getTeamMembers = function () {
@@ -29,7 +29,7 @@ app.factory('Team', [
       return deferred.promise;
     };
 
-    Team.getAndSetTeamData = function () {
+    Team.getTeamData = function () {
       var deferred = $q.defer();
       $http({
           method: 'GET',
@@ -39,14 +39,8 @@ app.factory('Team', [
           }
         })
         .then(function (data) {
-          Team._name = data.data.name;
           $rootScope.title = 'تیم ' + data.data.name;
-          Team.plan.name = Team.getTeamPlanName(data.data.current_plan.name);
-          Team.plan.membersLimit = data.data.current_plan.team_members_limit;
-          Team.plan.channelsLimit = data.data.current_plan.team_channels_limit;
-          Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
-            data.data.current_plan.each_upload_storage_limit + 'MB' :
-            data.data.current_plan.each_upload_storage_limit;
+          Team.setTeamData(data);
           deferred.resolve();
         })
         .catch(function (err) {
@@ -54,6 +48,16 @@ app.factory('Team', [
           deferred.reject();
         });
       return deferred.promise;
+    };
+
+    Team.setTeamData = function (data) {
+      Team._name = data.data.name;
+      Team.plan.name = Team.getTeamPlanName(data.data.current_plan.name);
+      Team.plan.membersLimit = data.data.current_plan.team_members_limit;
+      Team.plan.channelsLimit = data.data.current_plan.team_channels_limit;
+      Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
+        data.data.current_plan.each_upload_storage_limit + 'MB' :
+        data.data.current_plan.each_upload_storage_limit;
     };
 
     Team.getTeamPlanName = function (planName) {

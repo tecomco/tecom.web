@@ -19,11 +19,11 @@
        });
        userProfileModal.opened
          .then(function () {
-           $rootScope.isAnyModalOpened = true;
+           $rootScope.isAnyModalOpen = true;
          });
        userProfileModal.closed
          .then(function () {
-           $rootScope.isAnyModalOpened = false;
+           $rootScope.isAnyModalOpen = false;
          });
      };
 
@@ -40,11 +40,11 @@
        });
        teamProfileModal.opened
          .then(function () {
-           $rootScope.isAnyModalOpened = true;
+           $rootScope.isAnyModalOpen = true;
          });
        teamProfileModal.closed
          .then(function () {
-           $rootScope.isAnyModalOpened = false;
+           $rootScope.isAnyModalOpen = false;
          });
      };
 

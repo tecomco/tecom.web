@@ -569,7 +569,7 @@ app.controller('messagesController', [
     }
 
     function setBrowserTitle(isAnyChannelOpen) {
-      Team.teamPromise.then(function () {
+      Team.getTeamDataPromise.then(function () {
         $rootScope.title = (isAnyChannelOpen ? $scope.channel.name + ' |' : '') + ' تیم ' + Team._name ;
       });
     }
@@ -674,7 +674,7 @@ app.controller('messagesController', [
 
     document.onkeydown = function (evt) {
       evt = evt || $window.event;
-      if (!$rootScope.isAnyModalOpened) {
+      if (!$rootScope.isAnyModalOpen) {
         if (evt.keyCode == 27) {
           if ($scope.isFullscreenVisible) {
             $timeout(function () {
@@ -693,7 +693,7 @@ app.controller('messagesController', [
       if ($rootScope.isTabFocused) {
         seenLastUnSeenMessage();
         $scope.$apply();
-        if ($rootScope.isAnyModalOpened)
+        if ($rootScope.isAnyModalOpen)
           inputPlaceHolder.focus();
       }
     });
