@@ -2059,10 +2059,10 @@ ol.linenums, ol.linenums-view {
   border-radius: 50%;
   background: rgba(36, 167, 114, 0.1);
   color: rgba(36, 167, 114, 0.8);
-  transition: all 0.3s ease 1s;
-  -o-transition: all 0.3s ease 1s;
-  -moz-transition: all 0.3s ease 1s;
-  -webkit-transition: all 0.3s ease 1s;
+  transition: all 0.3s ease 0.5s;
+  -o-transition: all 0.3s ease 0.5s;
+  -moz-transition: all 0.3s ease 0.5s;
+  -webkit-transition: all 0.3s ease 0.5s;
 }
 
 .reply-btn:hover {
@@ -2094,6 +2094,57 @@ ol.linenums, ol.linenums-view {
 .msg.msg-send.msg-has-attachment .reply-btn {
   left: -53px;
 }
+
+.copy-btn {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 14px;
+  text-align: center;
+  bottom: 4px;
+  padding: 2px;
+  border-radius: 50%;
+  background: rgba(36, 167, 114, 0.1);
+  color: rgba(36, 167, 114, 0.8);
+  transition: all 0.3s ease 0.5s;
+  -o-transition: all 0.3s ease 0.5s;
+  -moz-transition: all 0.3s ease 0.5s;
+  -webkit-transition: all 0.3s ease 0.5s;
+}
+
+.copy-btn:hover {
+  background: rgba(36, 167, 114, 0.2);
+  color: rgba(36, 167, 114, 1);
+}
+
+.msg:hover .copy-btn {
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+
+.msg.msg-send .copy-btn {
+  left: -55px;
+}
+
+.msg.msg-recieve .copy-btn {
+  right: -55px;
+}
+
+.msg.msg-recieve.msg-has-attachment .copy-btn {
+  right: -78px;
+}
+
+.msg.msg-send.msg-has-attachment .copy-btn {
+  left: -78px;
+}
+
 
 .current-reply-holder {
   background: #eee;
