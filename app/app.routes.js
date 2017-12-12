@@ -13,10 +13,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/messenger',
       views: {
         '': {
-          templateUrl: 'app/components/messenger/messenger.view.html?v=1.0.8'
+          templateUrl: 'app/components/messenger/messenger.view.html?v=1.0.9'
         },
         'channels@messenger': {
-          templateUrl: 'app/components/messenger/channels/channels.view.html?v=1.1.0'
+          templateUrl: 'app/components/messenger/channels/channels.view.html?v=1.1.1'
         }
       }
     })
@@ -28,7 +28,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/:slug',
       views: {
         '': {
-          templateUrl: 'app/components/messenger/messages/messages.view.html?v=1.1.3'
+          templateUrl: 'app/components/messenger/messages/messages.view.html?v=1.1.4'
         },
         'header@messenger.messages': {
           templateUrl: 'app/components/messenger/header/header.view.html?v=1.0.6'
@@ -40,7 +40,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
           templateUrl: 'app/components/messenger/toolbar/files/files.view.html'
         },
         'filemanager@messenger.messages': {
-          templateUrl: 'app/components/messenger/toolbar/files/filemanager-files.view.html'
+          templateUrl: 'app/components/messenger/toolbar/files/filemanager-files.view.html?v=1.0.0'
         }
       },
       params: {
