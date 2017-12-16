@@ -34,7 +34,7 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
     };
 
     FileManagerFile.prototype.getFileType = function () {
-      return fileUtil.fileManagerFileFormat(this.extension);
+      return fileUtil.getFileManagerFileFormat(this.extension);
     };
 
     FileManagerFile.prototype.downloadFile = function () {
@@ -45,10 +45,10 @@ app.factory('FileManagerFile', ['dateUtil', 'fileUtil',
     };
 
     FileManagerFile.TYPE = {
-      CODE: 1,
-      PICTURE: 2,
-      DOCUMENT: 3,
-      OTHER: 4
+      CODE: 'code',
+      PICTURE: 'picture',
+      DOCUMENT: 'document',
+      OTHER: 'other'
     };
 
     return FileManagerFile;

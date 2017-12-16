@@ -40,7 +40,7 @@ app.factory('Team', [
         })
         .then(function (data) {
           $rootScope.title = 'تیم ' + data.data.name;
-          Team.setTeamData(data);
+          Team.setTeamData(data.data);
           deferred.resolve();
         })
         .catch(function (err) {
@@ -51,13 +51,13 @@ app.factory('Team', [
     };
 
     Team.setTeamData = function (data) {
-      Team._name = data.data.name;
-      Team.plan.name = Team.getTeamPlanName(data.data.current_plan.name);
-      Team.plan.membersLimit = data.data.current_plan.team_members_limit;
-      Team.plan.channelsLimit = data.data.current_plan.team_channels_limit;
-      Team.plan.uploadLimit = data.data.current_plan.each_upload_storage_limit ?
-        data.data.current_plan.each_upload_storage_limit + 'MB' :
-        data.data.current_plan.each_upload_storage_limit;
+      Team._name = data.name;
+      Team.plan.name = Team.getTeamPlanName(data.current_plan.name);
+      Team.plan.membersLimit = data.current_plan.team_members_limit;
+      Team.plan.channelsLimit = data.current_plan.team_channels_limit;
+      Team.plan.uploadLimit = data.current_plan.each_upload_storage_limit ?
+        data.current_plan.each_upload_storage_limit + 'MB' :
+        data.current_plan.each_upload_storage_limit;
     };
 
     Team.getTeamPlanName = function (planName) {

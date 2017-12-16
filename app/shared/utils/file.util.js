@@ -1,9 +1,9 @@
 'use strict';
 
-app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
+app.factory('fileUtil', ['$window', 'ArrayUtil', function ($window, ArrayUtil) {
 
-  var fileNameCanvas = document.createElement('canvas').getContext("2d");
-  fileNameCanvas.font = "16px iransans";
+  var fileNameCanvas;
+  initialize();
 
   var textBaseFormats = ['txt', 'c', 'js', 'java', 'py', 'cpp', 'css',
     'apsx', 'htm', 'jsp', 'php', 'xml', 'asp', 'rdf', 'cs', 'fs',
@@ -37,6 +37,17 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
     'pptx', 'odx', 'txt', 'rtf'
   ];
 
+  function initialize() {
+    fileNameCanvas = document.createElement('canvas').getContext("2d");
+    var channelsElement = document.getElementById('channels');
+    var fontSize = $window.getComputedStyle(channelsElement, null)
+      .getPropertyValue('font-size');
+    var fontFamily = $window.getComputedStyle(channelsElement, null)
+      .getPropertyValue('font-family');
+    fontFamily = fontFamily.split(',')[0];
+    fileNameCanvas.font = fontSize + ' ' + fontFamily;
+  }
+
   function isTextFormat(format) {
     return ArrayUtil.contains(textBaseFormats, format);
   }
@@ -45,22 +56,26 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
     return ArrayUtil.contains(pictureFormats, format);
   }
 
-  function fileManagerFileFormat(format) {
+  function getFileManagerFileFormat(format) {
     if (ArrayUtil.contains(textBaseFormats, format))
-      return 1;
+      return 'code';
     if (ArrayUtil.contains(pictureFormats, format))
-      return 2;
+      return 'picture';
     if (ArrayUtil.contains(documentFormats, format))
-      return 3;
-    return 4;
+      return 'document';
+    return 'other';
   }
 
   function getFileName(name) {
+    var fileManagerElementWidth = getFileName.fileManagerElementWidth ||
+      (getFileName.fileManagerElementWidth =
+        document.getElementById("fileManager").offsetWidth);
+    var maxWidth = fileManagerElementWidth * 3 / 4;
     var removeStep = 0;
     var shouldReturnFilteredName = false;
     var filteredName = '';
     var width = fileNameCanvas.measureText(name).width;
-    while (width > 300) {
+    while (width > maxWidth) {
       shouldReturnFilteredName = true;
       removeStep = removeStep + 1;
       filteredName = getFilteredName(name, removeStep);
@@ -78,7 +93,7 @@ app.factory('fileUtil', ['ArrayUtil', function (ArrayUtil) {
   return {
     isTextFormat: isTextFormat,
     isPictureFormat: isPictureFormat,
-    fileManagerFileFormat: fileManagerFileFormat,
+    getFileManagerFileFormat: getFileManagerFileFormat,
     getFileName: getFileName
   };
 }]);
